@@ -1,1 +1,1 @@
-# memechan-sol-fe
+# memechain-frontend
