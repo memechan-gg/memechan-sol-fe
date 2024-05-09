@@ -5,13 +5,12 @@ import { CaretDown } from "@phosphor-icons/react";
 import Link from "next/link";
 import { Button } from "./button";
 import { Logo } from "./logo";
+import { ConnectWallet } from "./connect-wallet";
 import { useWallet } from "@solana/wallet-adapter-react";
-import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
-
 
 export const Header = () => {
   const account = useUser();
-  const { disconnect } = useWallet();
+  const {disconnect} = useWallet();
 
   return (
     <header className="lg:relative fixed top-0 w-full lg:bg-transparent bg-board">
@@ -59,17 +58,7 @@ export const Header = () => {
                 </Popover.Panel>
               </Popover>
             ) : (
-              <WalletModalProvider>
-                  <div
-                    role="button"
-                    className={cn(
-                      "bg-title gap-1 bg-opacity-15 items-center text-xs justify-center flex flex-row font-bold text-regular px-4 py-2 rounded-lg transition-all duration-300 hover:bg-opacity-25",
-                    )}
-                  >
-                    Connect
-                    <span className="lg:flex hidden">Wallet</span>
-                  </div>
-              </WalletModalProvider>
+              <ConnectWallet />
             )}
           </div>
         </div>
