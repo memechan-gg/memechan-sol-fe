@@ -1,6 +1,6 @@
 export interface ICreateForm {
   name: string;
-  ticker: string;
+  symbol: string;
   image: File[];
   description: string;
   twitter?: string;
