@@ -5,8 +5,9 @@ export const DEFAULT_PROVIDER_URL = "https://devnet.helius-rpc.com/?api-key=5f8a
 export const RPC_API_CLUSTER = "https://rpc.ankr.com/solana_devnet";
 export const WSS_API_CLUSTER = "wss://api.devnet.solana.com/";
 export const IS_TEST_ENV = false;
+export const BE_URL = "https://14r6b4r6kf.execute-api.us-east-1.amazonaws.com/prod";
 
-export const AuthInstance = new Auth();
+export const AuthInstance = new Auth(BE_URL);
 export const MemechanClientInstance = new MemechanClient({
   wallet: NoWalletAdapter,
   heliusApiUrl: DEFAULT_PROVIDER_URL,

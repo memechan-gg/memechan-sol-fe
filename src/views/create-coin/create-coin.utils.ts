@@ -3,7 +3,6 @@ import { ADMIN_PUB_KEY, BoundPoolClient, MEMECHAN_QUOTE_TOKEN } from "@avernikoz
 import { PublicKey } from "@solana/web3.js";
 import toast from "react-hot-toast";
 import { ICreateForm } from "./create-coin.types";
-import bs58 from "bs58";
 export function handleErrors(e: unknown) {
   /*if (e instanceof InvalidCoinNameError) {
     return toast.error("Invalid coin name");
@@ -51,10 +50,10 @@ export async function createBondingCurvePool() {}
 
 export async function handleAuthentication(address: string, sign: (message: Uint8Array) => Promise<Uint8Array>) {
   const messageToSign = await AuthInstance.requestMessageToSign(address);
-  const encodedMessage = new TextEncoder().encode(messageToSign)
+  const encodedMessage = new TextEncoder().encode(messageToSign);
 
   const signatureUint8Array = await sign(encodedMessage);
-  const signatureBase64 = Buffer.from(signatureUint8Array).toString('base64')
+  const signatureBase64 = Buffer.from(signatureUint8Array).toString("base64");
 
   await AuthInstance.refreshSession({
     signedMessage: signatureBase64,
