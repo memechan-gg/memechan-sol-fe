@@ -53,10 +53,10 @@ export async function handleAuthentication(address: string, sign: (message: Uint
   const encodedMessage = new TextEncoder().encode(messageToSign);
 
   const signatureUint8Array = await sign(encodedMessage);
-  const signatureBase64 = Buffer.from(signatureUint8Array).toString("base64");
+  const signatureHex = Buffer.from(signatureUint8Array).toString("hex");
 
   await AuthInstance.refreshSession({
-    signedMessage: signatureBase64,
+    signedMessage: signatureHex,
     walletAddress: address,
   });
 }
