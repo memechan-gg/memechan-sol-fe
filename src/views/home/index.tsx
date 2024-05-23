@@ -63,14 +63,6 @@ export function Home() {
             />
           ))}
         </div>
-        {/* <div className="w-full items-center justify-center flex flex-row gap-2 mt-10">
-          
-          // TODO: Implement pagination
-          <div>{"<<"}</div>
-          <div>1</div>
-          <div>2</div>
-          <div>{">>"}</div>
-        </div> */}
       </ThreadBoard>
     </>
   );
