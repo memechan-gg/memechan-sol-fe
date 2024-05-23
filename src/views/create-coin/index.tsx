@@ -1,7 +1,7 @@
 import { MemechanClientInstance } from "@/common/solana";
 import { ThreadBoard } from "@/components/thread";
 import { waitForDelay } from "@/utils";
-import { BoundPoolClient, MEMECHAN_QUOTE_TOKEN } from "@avernikoz/memechan-sol-sdk";
+import { BoundPoolClient, MEMECHAN_QUOTE_TOKEN, sleep } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -58,7 +58,8 @@ export function CreateCoin() {
         MEMECHAN_QUOTE_TOKEN.mint,
         MemechanClientInstance.memechanProgram.programId,
       );
-      console.debug("id: ", id);
+      console.log("id: ", id.toString());
+      await sleep(3000);
       const boundPool = await BoundPoolClient.fetch2(MemechanClientInstance.connection, id);
       console.log("boundPool:", boundPool);
 
@@ -84,6 +85,7 @@ export function CreateCoin() {
       const memeCoinType = "";
       router.push(`/coin/${memeCoinType}`);
     } catch (e) {
+      console.error("[Create Coin Submit] Error occured:", e);
       setState("idle");
       handleErrors(e);
     }
