@@ -5,6 +5,8 @@ export interface ICreateForm {
   description: string;
   twitter?: string;
   discord?: string;
+  telegram?: string;
+  website?: string;
 }
 
 export type CreateCoinState = "idle" | "sign" | "ipfs" | "create_meme" | "create_bonding";

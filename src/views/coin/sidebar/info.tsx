@@ -15,7 +15,7 @@ export const Info = ({ metadata, progressData }: InfoProps) => {
         </div>
       </div>
       {socialLinks && (
-        <div className="flex flex-row gap-3">
+        <div className="flex flex-row gap-4">
           {socialLinks.discord && (
             <div className="flex flex-col gap-1">
               <div className="text-xs font-bold text-regular">Discord</div>
@@ -26,6 +26,18 @@ export const Info = ({ metadata, progressData }: InfoProps) => {
             <div className="flex flex-col gap-1">
               <div className="text-xs font-bold text-regular">Twitter</div>
               <div className="text-xs font-normal text-regular">{socialLinks.twitter}</div>
+            </div>
+          )}
+          {socialLinks.telegram && (
+            <div className="flex flex-col gap-1">
+              <div className="text-xs font-bold text-regular">Telegram</div>
+              <div className="text-xs font-normal text-regular">{socialLinks.telegram}</div>
+            </div>
+          )}
+          {socialLinks.website && (
+            <div className="flex flex-col gap-1">
+              <div className="text-xs font-bold text-regular">Website</div>
+              <div className="text-xs font-normal text-regular">{socialLinks.website}</div>
             </div>
           )}
         </div>

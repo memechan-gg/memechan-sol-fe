@@ -137,7 +137,7 @@ export function CreateCoin() {
             </div>
             <div className="flex flex-col gap-2">
               <h4 className="text-sm font-bold text-regular">More Options</h4>
-              <div className="flex flex-col lg:flex-row gap-4">
+              <div className="flex flex-col lg:flex-row gap-4 flex-wrap">
                 <div className="flex flex-col gap-1">
                   <label className="text-regular text-xs">Twitter (optional)</label>
                   <div>
@@ -145,9 +145,21 @@ export function CreateCoin() {
                   </div>
                 </div>
                 <div className="flex flex-col gap-1">
+                  <label className="text-regular text-xs">Telegram (optional)</label>
+                  <div>
+                    <input {...register("telegram")} className="border w-[200px] border-regular rounded-lg p-1" />
+                  </div>
+                </div>
+                <div className="flex flex-col gap-1">
                   <label className="text-regular text-xs">Discord (optional)</label>
                   <div>
                     <input {...register("discord")} className="border w-[200px] border-regular rounded-lg p-1" />
+                  </div>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="text-regular text-xs">Website (optional)</label>
+                  <div>
+                    <input {...register("website")} className="border w-[200px] border-regular rounded-lg p-1" />
                   </div>
                 </div>
               </div>
