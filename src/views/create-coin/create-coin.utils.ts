@@ -1,3 +1,6 @@
+import { AuthInstance, MemechanClientInstance } from "@/common/solana";
+import { ADMIN_PUB_KEY, BoundPoolClient, MEMECHAN_QUOTE_TOKEN } from "@avernikoz/memechan-sol-sdk";
+import { PublicKey } from "@solana/web3.js";
 import toast from "react-hot-toast";
 import { ICreateForm } from "./create-coin.types";
 export function handleErrors(e: unknown) {
@@ -24,37 +27,46 @@ export function handleErrors(e: unknown) {
   return toast.error("An error occurred while creating meme coin, please try again");
 }
 
-export async function createCoin(data: ICreateForm, digest: string) {
-  
-}
+export async function createCoin(data: ICreateForm, digest: string) {}
 
-export async function createMemeCoin(data: ICreateForm, address: string, ipfsUrl: string) {
+export async function createMemeCoin(data: ICreateForm, publicKey: PublicKey, ipfsUrl: string) {
+  return await BoundPoolClient.getCreateNewBondingPoolAndTokenTransaction({
+    client: MemechanClientInstance,
+    quoteToken: MEMECHAN_QUOTE_TOKEN,
+    tokenMetadata: {
+      ...data,
+      image: ipfsUrl,
+      telegram: data.telegram ?? "",
+      twitter: data.twitter ?? "",
+      discord: data.discord ?? "",
+      website: data.website ?? "",
+    },
+    payer: publicKey,
+    admin: ADMIN_PUB_KEY,
+  });
 }
 
 export async function createBondingCurvePool() {}
 
-export async function handleAuthentication(
-  address: string,
-  sign: ((message: Uint8Array) => Promise<Uint8Array>)
-) {
-  /*
-  let messageToSign = await AuthInstance.requestMessageToSign(address);
+export async function handleAuthentication(address: string, sign: (message: Uint8Array) => Promise<Uint8Array>) {
+  const messageToSign = await AuthInstance.requestMessageToSign(address);
 
-  let signature = await sign({
-    message: new TextEncoder().encode(messageToSign),
-  });
+  const signatureUint8Array = await sign(new TextEncoder().encode(messageToSign));
+  const signature = new TextDecoder().decode(signatureUint8Array);
+
+  console.log("signature:", signature.toString());
+  console.log("walletAddress:", address);
 
   await AuthInstance.refreshSession({
-    signedMessage: signature.signature,
+    signedMessage: signature,
     walletAddress: address,
-  });*/
+  });
 }
 
 export async function uploadImageToIPFS(file: File) {
   //let result = await CoinAPIInstance.uploadFile(file);
   //return `https://lavender-gentle-primate-223.mypinata.cloud/ipfs/${result.IpfsHash}?pinataGatewayToken=M45Jh03NicrVqTZJJhQIwDtl7G6fGS90bjJiIQrmyaQXC_xXj4BgRqjjBNyGV7q2`;
-  return '';
+  return "";
 }
 
-export function validateCoinParams(data: ICreateForm, address: string, ipfsUrl: string) {
-}
+export function validateCoinParams(data: ICreateForm, address: string, ipfsUrl: string) {}
