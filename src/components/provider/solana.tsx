@@ -3,7 +3,8 @@ import { clusterApiUrl } from "@solana/web3.js";
 import { PhantomWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets';
 import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
 
-const endpoint = clusterApiUrl('mainnet-beta');
+// TODO: Change to mainnet
+const endpoint = clusterApiUrl('devnet');
 
 const wallets = [
   new PhantomWalletAdapter(),
