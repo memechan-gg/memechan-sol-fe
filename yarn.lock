@@ -12,10 +12,10 @@
   resolved "https://registry.npmjs.org/@alloc/quick-lru/-/quick-lru-5.2.0.tgz"
   integrity sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw==
 
-"@avernikoz/memechan-sol-sdk@1.0.15":
-  version "1.0.15"
-  resolved "https://registry.npmjs.org/@avernikoz/memechan-sol-sdk/-/memechan-sol-sdk-1.0.15.tgz#b8f97f6377a992a459f13aee3031f702d420241d"
-  integrity sha512-uqgLOzlKYblh9/V21uORCD3Lt+4YTkskbRaUY5laTNJ3J0YNOSilOliNRSTS3JMlW9drof0ElytVMj5vECmLYQ==
+"@avernikoz/memechan-sol-sdk@1.0.16":
+  version "1.0.16"
+  resolved "https://registry.npmjs.org/@avernikoz/memechan-sol-sdk/-/memechan-sol-sdk-1.0.16.tgz#bbca2240c165896e9900eb22cbaafb7e220824ee"
+  integrity sha512-hotbeJCyL8EFW9fkP88XA0ytSnLMqN5Geqvh2erbzaylkX3jh/EnUTIrXFKBK8dvhU6AzXdiJVEWrG5TaqqQcA==
   dependencies:
     "@aws-crypto/sha256-browser" "^5.2.0"
     "@aws-sdk/types" "^3.577.0"
