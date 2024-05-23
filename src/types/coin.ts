@@ -17,6 +17,8 @@ export type COIN_METADATA = {
   creator: string;
   socialLinks?:
     | {
+        website?: string | null | undefined;
+        telegram?: string | null | undefined;
         twitter?: string | null | undefined;
         discord?: string | null | undefined;
       }
