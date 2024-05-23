@@ -1,12 +1,14 @@
+import { MemechanClientInstance } from "@/common/solana";
 import { ThreadBoard } from "@/components/thread";
 import { waitForDelay } from "@/utils";
+import { BoundPoolClient, MEMECHAN_QUOTE_TOKEN } from "@avernikoz/memechan-sol-sdk";
+import { useWallet } from "@solana/wallet-adapter-react";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { CreateCoinState, ICreateForm } from "./create-coin.types";
 import {
-  createBondingCurvePool,
   createCoin,
   createMemeCoin,
   handleAuthentication,
@@ -14,7 +16,6 @@ import {
   uploadImageToIPFS,
   validateCoinParams,
 } from "./create-coin.utils";
-import { useWallet } from "@solana/wallet-adapter-react";
 
 export function CreateCoin() {
   const {
@@ -22,7 +23,7 @@ export function CreateCoin() {
     handleSubmit,
     formState: { errors },
   } = useForm<ICreateForm>();
-  const {publicKey, connected, signMessage} = useWallet();
+  const { publicKey, connected, signMessage, sendTransaction } = useWallet();
   const [state, setState] = useState<CreateCoinState>("idle");
   const router = useRouter();
 
@@ -41,17 +42,25 @@ export function CreateCoin() {
       validateCoinParams(data, walletAddress, ipfsUrl);
 
       setState("create_meme");
-      /*let createCoinResult = await doTX({
-        transactionBlock: await createMemeCoin(data, walletAddress, ipfsUrl),
-        requestType: "WaitForLocalExecution",
-        options: {
-          showBalanceChanges: true,
-          showEffects: true,
-          showEvents: true,
-          showObjectChanges: true,
-          showInput: true,
-        },
-      });*/
+      const { transaction, launchVaultId, memeMintKeypair, poolQuoteVaultId } = await createMemeCoin(
+        data,
+        publicKey,
+        ipfsUrl,
+      );
+
+      const signature = await sendTransaction(transaction, MemechanClientInstance.connection, {
+        signers: [launchVaultId, memeMintKeypair, poolQuoteVaultId],
+        maxRetries: 3,
+      });
+
+      const id = BoundPoolClient.findBoundPoolPda(
+        memeMintKeypair.publicKey,
+        MEMECHAN_QUOTE_TOKEN.mint,
+        MemechanClientInstance.memechanProgram.programId,
+      );
+      console.debug("id: ", id);
+      const boundPool = await BoundPoolClient.fetch2(MemechanClientInstance.connection, id);
+      console.log("boundPool:", boundPool);
 
       await waitForDelay(6000);
       setState("create_bonding");
@@ -70,9 +79,9 @@ export function CreateCoin() {
       });*/
 
       await new Promise((resolve) => setTimeout(resolve, 2000));
-      const digest = '';
+      const digest = "";
       await createCoin(data, digest);
-      const memeCoinType = '';
+      const memeCoinType = "";
       router.push(`/coin/${memeCoinType}`);
     } catch (e) {
       setState("idle");
@@ -99,14 +108,14 @@ export function CreateCoin() {
                   {errors.name && <p className="text-xs text-red-500">Name is required</p>}
                 </div>
                 <div className="flex flex-col gap-1">
-                  <label className="text-regular text-xs">Ticker</label>
+                  <label className="text-regular text-xs">Symbol</label>
                   <div>
                     <input
-                      {...register("ticker", { required: true })}
+                      {...register("symbol", { required: true })}
                       className="border w-[200px] border-regular rounded-lg p-1"
                     />
                   </div>
-                  {errors.ticker && <p className="text-xs text-red-500">Ticker is required</p>}
+                  {errors.symbol && <p className="text-xs text-red-500">Synbol is required</p>}
                 </div>
                 <div className="flex flex-col gap-1">
                   <label className="text-regular text-xs">Image</label>
