@@ -1,26 +1,34 @@
-import { BondingPoolSingleton } from "@avernikoz/memechan-ts-sdk";
+import { useUniqueHolders } from "@/hooks/solana/useUniqueHolders";
+import { QuoteSwapParams, SwapParams } from "@/types/hooks";
+import { FULL_MEME_AMOUNT_CONVERTED, MEMECHAN_MEME_TOKEN_DECIMALS } from "@avernikoz/memechan-sol-sdk";
+import { Transaction } from "@solana/web3.js";
+import BigNumber from "bignumber.js";
 import { SidebarProps } from "../coin.types";
 import { Holders } from "./holders";
 import { Info } from "./info";
-import { Liquidity } from "./liquidity";
 import { SidebarItem } from "./sidebar-item";
-import { StakingPool } from "./staking-pool";
 import { Swap } from "./swap/swap";
 
-export const Sidebar = ({ pool, memeBalance, coinMetadata, BondingCurve, CLAMM }: SidebarProps) => {
+// TODO: Replace these mock-methods with real ones
+const swap = (params: SwapParams) => Promise<Transaction | undefined>;
+const quoteSwap = (params: QuoteSwapParams) => Promise<string>;
+
+export const Sidebar = ({ pool, memeBalance, coinMetadata, CLAMM }: SidebarProps) => {
+  const uniqueHolders = useUniqueHolders(pool.address);
+
   return (
     <>
       <SidebarItem>
         <Swap
           memeBalance={memeBalance}
-          availableTickets={BondingCurve.availableTickets}
           pool={pool}
-          quoteSwap={coinMetadata.status === "LIVE" ? CLAMM.quoteSwap : BondingCurve.quoteSwap}
-          swap={coinMetadata.status === "LIVE" ? CLAMM.swap : BondingCurve.swap}
+          quoteSwap={coinMetadata.status === "LIVE" ? CLAMM.quoteSwap : quoteSwap}
+          swap={coinMetadata.status === "LIVE" ? CLAMM.swap : swap}
           tokenSymbol={coinMetadata.symbol}
         />
       </SidebarItem>
-      {coinMetadata.status === "LIVE" && (
+      {/* TODO: Handle live pools */}
+      {/* {coinMetadata.status === "LIVE" && (
         <>
           <SidebarItem>
             <Liquidity
@@ -35,28 +43,35 @@ export const Sidebar = ({ pool, memeBalance, coinMetadata, BondingCurve, CLAMM }
           </SidebarItem>
           <SidebarItem>
             <StakingPool
-              coinType={pool.memeCoinType}
+              coinType={pool.tokenAddress}
               ticketBalance={BondingCurve.availableTickets}
               tokenSymbol={coinMetadata.symbol}
             />
           </SidebarItem>
         </>
+      )} */}
+      <SidebarItem>
+        <Info metadata={coinMetadata} poolAddress={pool.address} />
+      </SidebarItem>
+      {uniqueHolders && uniqueHolders.size > 0 && (
+        <SidebarItem>
+          <Holders
+            holders={Array.from(uniqueHolders.entries()).map(([holder, tickets]) => {
+              const ticketsMemeAmount = tickets
+                .reduce((sum, ticket) => sum.plus(ticket.amount.toString()), new BigNumber(0))
+                .div(10 ** MEMECHAN_MEME_TOKEN_DECIMALS);
+
+              const percentage = ticketsMemeAmount.div(FULL_MEME_AMOUNT_CONVERTED).multipliedBy(100).toFixed(2);
+
+              return {
+                address: holder.slice(0, 6) + "..." + holder.slice(-4),
+                percentage,
+                type: coinMetadata.creator === holder ? "dev" : undefined,
+              };
+            })}
+          />
+        </SidebarItem>
       )}
-      <SidebarItem>
-        <Info progressData={BondingCurve.progressData} metadata={coinMetadata} />
-      </SidebarItem>
-      <SidebarItem>
-        <Holders
-          holders={BondingCurve.uniqueHolders.map((holder) => ({
-            address: holder.data.content.fields.name.slice(0, 6) + "..." + holder.data.content.fields.name.slice(-4),
-            percentage: (
-              Number(holder.data.content.fields.value.fields.notional) /
-              Number(BondingPoolSingleton.MEMECOIN_MINT_AMOUNT_FROM_CONTRACT)
-            ).toFixed(2),
-            type: coinMetadata.creator === holder.data.content.fields.name ? "dev" : undefined,
-          }))}
-        />
-      </SidebarItem>
     </>
   );
 };
