@@ -1,11 +1,11 @@
-import { COIN_METADATA } from "@/types/coin";
+import { TokenApiInstance } from "@/common/solana";
+import { CoinMetadata } from "@/types/coin";
 import { useCallback, useEffect, useState } from "react";
-import { useInterval } from "usehooks-ts";
 
 export function useCoinApi() {
   const [direction, setDirection] = useState<"asc" | "desc">("asc");
   const [sortBy, setSortBy] = useState("last_reply");
-  const [items, setItems] = useState<COIN_METADATA[]>([]);
+  const [items, setItems] = useState<CoinMetadata[]>([]);
   const [status, setStatus] = useState<"all" | "pre_sale" | "live">("all");
 
   const fetchData = useCallback(async () => {
@@ -34,22 +34,21 @@ export function useCoinApi() {
     };
 
     try {
-      let fetchedItems: COIN_METADATA[] = [];
-      /*
+      let fetchedItems: CoinMetadata[] = [];
       if (status === "all") {
         const [presaleRes, liveRes] = await Promise.all([
-          CoinAPIInstance.queryCoins({ sortBy: getSortBy(sortBy), direction, status: "PRESALE" }),
-          CoinAPIInstance.queryCoins({ sortBy: getSortBy(sortBy), direction, status: "LIVE" }),
+          TokenApiInstance.queryTokens({ sortBy: getSortBy(sortBy), direction, status: "PRESALE" }),
+          TokenApiInstance.queryTokens({ sortBy: getSortBy(sortBy), direction, status: "LIVE" }),
         ]);
         fetchedItems = [...presaleRes.result, ...liveRes.result];
       } else {
-        const res = await CoinAPIInstance.queryCoins({
+        const res = await TokenApiInstance.queryTokens({
           sortBy: getSortBy(sortBy),
           direction,
           status: getStatus(status) as "PRESALE" | "LIVE",
         });
         fetchedItems = res.result;
-      }*/
+      }
 
       setItems(fetchedItems);
     } catch (error) {
@@ -61,7 +60,8 @@ export function useCoinApi() {
     fetchData();
   }, [fetchData]);
 
-  useInterval(fetchData, 5000);
+  // TODO: Uncomment
+  // useInterval(fetchData, 5000);
 
   return {
     items,
