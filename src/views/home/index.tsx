@@ -52,8 +52,8 @@ export function Home() {
         <div className="flex flex-wrap gap-6 sm:justify-normal justify-center">
           {items.map((item) => (
             <Thread
-              type={item.type}
-              key={item.type}
+              mint={item.address}
+              key={item.address}
               title={item.name}
               image={item.image}
               createdBy={item.creator}
