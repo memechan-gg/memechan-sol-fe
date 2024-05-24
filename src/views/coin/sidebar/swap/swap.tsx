@@ -1,21 +1,23 @@
 import { Button } from "@/components/button";
 import { useUser } from "@/context/UserContext";
+import { useAvailableTickets } from "@/hooks/solana/useAvailableTickets";
 import { getSlippage } from "@/utils";
+import { useWallet } from "@solana/wallet-adapter-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { SwapComponentParams } from "../../coin.types";
 import { validateSwapInput } from "../../coin.utils";
 import { SwapButton } from "./button";
 import { AvailableTicketsToSellDialog } from "./dialog-available-tickets-to-sell";
-import { useWallet } from "@solana/wallet-adapter-react";
 
-export const Swap = ({ tokenSymbol, pool, memeBalance, swap, quoteSwap, availableTickets }: SwapComponentParams) => {
+export const Swap = ({ tokenSymbol, pool, memeBalance, swap, quoteSwap }: SwapComponentParams) => {
   const account = useWallet();
   const [isXToY, setIsXToY] = useState(true);
   const [sendTokenAmount, setSendTokenAmount] = useState("0.0");
   const [receiveTokenAmount, setReceiveTokenAmount] = useState("0.0");
   const [slippage, setSlippage] = useState<string>("0.5");
   const { balance, stakedLps } = useUser();
+  const { availableTickets } = useAvailableTickets(pool.address);
 
   useEffect(() => {
     setSendTokenAmount("0.0");
@@ -113,8 +115,8 @@ export const Swap = ({ tokenSymbol, pool, memeBalance, swap, quoteSwap, availabl
           type="number"
         />
       </div>
-      {stakedLps[pool.memeCoinType]?.length > 0 && (
-        <AvailableTicketsToSellDialog availableTickets={stakedLps[pool.memeCoinType]} symbol={tokenSymbol} />
+      {stakedLps[pool.tokenAddress]?.length > 0 && (
+        <AvailableTicketsToSellDialog availableTickets={stakedLps[pool.tokenAddress]} symbol={tokenSymbol} />
       )}
       <Button onClick={onSwap} className="w-full bg-regular bg-opacity-80 hover:bg-opacity-50">
         <div className="text-xs font-bold text-white">Swap</div>
