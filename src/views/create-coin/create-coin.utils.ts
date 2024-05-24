@@ -1,4 +1,4 @@
-import { AuthInstance, MemechanClientInstance } from "@/common/solana";
+import { AuthInstance, MemechanClientInstance, TokenApiInstance } from "@/common/solana";
 import { ADMIN_PUB_KEY, BoundPoolClient, MEMECHAN_QUOTE_TOKEN } from "@avernikoz/memechan-sol-sdk";
 import { PublicKey } from "@solana/web3.js";
 import toast from "react-hot-toast";
@@ -27,7 +27,12 @@ export function handleErrors(e: unknown) {
   return toast.error("An error occurred while creating meme coin, please try again");
 }
 
-export async function createCoin(data: ICreateForm, digest: string) {}
+export async function createCoinOnBE({ discord, telegram, twitter, website }: ICreateForm, signature: string) {
+  await TokenApiInstance.createToken({
+    txDigest: signature,
+    socialLinks: { discord, telegram, twitter, website },
+  });
+}
 
 export async function createMemeCoin(data: ICreateForm, publicKey: PublicKey, ipfsUrl: string) {
   return await BoundPoolClient.getCreateNewBondingPoolAndTokenTransaction({
