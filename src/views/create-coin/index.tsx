@@ -1,6 +1,5 @@
 import { MemechanClientInstance } from "@/common/solana";
 import { ThreadBoard } from "@/components/thread";
-import { waitForDelay } from "@/utils";
 import { BoundPoolClient, MEMECHAN_QUOTE_TOKEN, sleep } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useRouter } from "next/router";
@@ -9,7 +8,7 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { CreateCoinState, ICreateForm } from "./create-coin.types";
 import {
-  createCoin,
+  createCoinOnBE,
   createMemeCoin,
   handleAuthentication,
   handleErrors,
@@ -41,7 +40,7 @@ export function CreateCoin() {
       let ipfsUrl = await uploadImageToIPFS(data.image[0]);
       validateCoinParams(data, walletAddress, ipfsUrl);
 
-      setState("create_meme");
+      setState("create_meme_and_pool");
       const { transaction, launchVaultId, memeMintKeypair, poolQuoteVaultId } = await createMemeCoin(
         data,
         publicKey,
@@ -52,38 +51,47 @@ export function CreateCoin() {
         signers: [launchVaultId, memeMintKeypair, poolQuoteVaultId],
         maxRetries: 3,
       });
+      await sleep(3000);
 
-      const id = BoundPoolClient.findBoundPoolPda(
+      // Check pool and token creation succeeded
+      const { blockhash: blockhash, lastValidBlockHeight: lastValidBlockHeight } =
+        await MemechanClientInstance.connection.getLatestBlockhash("confirmed");
+      const createPoolAndTokenTxResult = await MemechanClientInstance.connection.confirmTransaction(
+        {
+          signature: signature,
+          blockhash: blockhash,
+          lastValidBlockHeight: lastValidBlockHeight,
+        },
+        "confirmed",
+      );
+      console.log("createPoolAndTokenTxResult:", createPoolAndTokenTxResult);
+
+      if (createPoolAndTokenTxResult.value.err) {
+        console.error(
+          "[Create Coin Submit] Pool and token creation failed:",
+          JSON.stringify(createPoolAndTokenTxResult, null, 2),
+        );
+        toast("Failed to create pool and token. Please, try again//");
+        return;
+      }
+
+      const createdPoolId = BoundPoolClient.findBoundPoolPda(
         memeMintKeypair.publicKey,
         MEMECHAN_QUOTE_TOKEN.mint,
         MemechanClientInstance.memechanProgram.programId,
       );
-      console.log("id: ", id.toString());
-      await sleep(3000);
-      const boundPool = await BoundPoolClient.fetch2(MemechanClientInstance.connection, id);
+      console.log("createdPoolId: ", createdPoolId.toString());
+      const boundPool = await BoundPoolClient.fromPoolCreationTransaction({
+        client: MemechanClientInstance,
+        poolCreationSignature: signature,
+      });
       console.log("boundPool:", boundPool);
+      console.log("memeMint:", boundPool.memeTokenMint.toString());
 
-      await waitForDelay(6000);
-      setState("create_bonding");
-      /*const { tx, memeCoin } = await createBondingCurvePool(createCoinResult.objectChanges);
-
-      await doTX({
-        transactionBlock: tx,
-        requestType: "WaitForLocalExecution",
-        options: {
-          showBalanceChanges: true,
-          showEffects: true,
-          showEvents: true,
-          showObjectChanges: true,
-          showInput: true,
-        },
-      });*/
-
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      const digest = "";
-      await createCoin(data, digest);
-      const memeCoinType = "";
-      router.push(`/coin/${memeCoinType}`);
+      await createCoinOnBE(data, signature);
+      console.log("created on BE");
+      await sleep(3000);
+      router.push(`/coin/${boundPool.memeTokenMint.toString()}`);
     } catch (e) {
       console.error("[Create Coin Submit] Error occured:", e);
       setState("idle");
@@ -187,8 +195,7 @@ export function CreateCoin() {
                       idle: "Create Meme Coin",
                       sign: "Signing Message...",
                       ipfs: "Uploading Image...",
-                      create_meme: "Creating Meme Coin...",
-                      create_bonding: "Creating Bonding Curve Pool...",
+                      create_meme_and_pool: "Creating Meme Coin and Bonding Pool...",
                     }[state]
                   }
                 </button>
