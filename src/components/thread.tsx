@@ -41,7 +41,7 @@ export function ThreadBoard({
 
 export function Thread({
   title,
-  type,
+  mint,
   image,
   createdBy,
   marketCap,
@@ -49,7 +49,7 @@ export function Thread({
   description,
 }: {
   title: string;
-  type: string;
+  mint: string;
   image: string;
   createdBy: string;
   marketCap: string;
@@ -59,7 +59,7 @@ export function Thread({
   return (
     <div className="flex flex-col gap-2">
       <h2 className="text-sm font-bold text-regular">{title}</h2>
-      <Link href={`/coin/${type}`}>
+      <Link href={`/coin/${mint}`}>
         <img className="w-[150px] border border-regular h-auto" src={image} alt="Coin Image" />
       </Link>
       <div className="flex flex-col gap-1 text-xs">
@@ -70,7 +70,7 @@ export function Thread({
           </Link>
         </div>
         <div className="text-green">market cap: {marketCap}</div>
-        <Link href={`/coin/${type}`}>
+        <Link href={`/coin/${mint}`}>
           <div className="text-regular flex flex-col">
             <span className="font-bold">{ticker}</span>
             <span>{description}</span>
