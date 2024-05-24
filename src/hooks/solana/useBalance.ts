@@ -1,31 +1,34 @@
-import { MEME_COIN_DECIMALS } from "@/constants/coin";
-import { getCoinsAndNormalizeWithDecimals } from "@/utils";
-import { useCallback, useState } from "react";
-import { useInterval } from "usehooks-ts";
+import { MemechanClientInstance } from "@/common/solana";
+import { getTokenAccount } from "@/utils";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { PublicKey } from "@solana/web3.js";
+import { useCallback, useEffect, useState } from "react";
 
 export const useBalance = (coin: string) => {
   const [balance, setBalance] = useState("0");
-  const account = useCurrentAccount();
-  const provider = useSuiClient();
+  const { publicKey } = useWallet();
 
-  const fetchBalanceData = useCallback(() => {
-    if (!account || !provider) return;
+  const fetchBalanceData = useCallback(async () => {
+    if (!publicKey) return;
 
-    getCoinsAndNormalizeWithDecimals({
-      address: account.address,
-      provider,
-      coin,
-      decimals: MEME_COIN_DECIMALS,
-    })
-      .then((data) => {
-        setBalance(data.formatted);
-      })
-      .catch((error) => {
-        console.error("Failed to fetch balance data:", error);
-      });
-  }, [account, provider, coin]);
+    const tokenAccount = await getTokenAccount({
+      connection: MemechanClientInstance.connection,
+      ownerAddress: publicKey,
+      tokenAddress: new PublicKey(coin),
+    });
 
-  useInterval(fetchBalanceData, 5000);
+    if (tokenAccount) {
+      const uiAmount = tokenAccount.info.tokenAmount.uiAmountString;
+      setBalance(uiAmount);
+    }
+  }, [coin, publicKey]);
+
+  useEffect(() => {
+    fetchBalanceData();
+  }, [fetchBalanceData]);
+
+  // TODO: Uncomment
+  // useInterval(fetchBalanceData, 5000);
 
   return {
     balance,
