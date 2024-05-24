@@ -1,7 +1,5 @@
 import { Commitment, Connection } from "@solana/web3.js";
 
-import { Metrics } from "../../utils/metrics";
-
 interface RateLimitedEndpoint {
   url: string;
   weight: number;
@@ -39,24 +37,26 @@ const getProviderNameFromUrl = ({ rawConnection }: ProviderUrl): string => {
   }
 };
 
-const processCall = (call: Promise<any>, connection: Connection) => {
+const processCall = <T>(call: Promise<T>, connection: Connection): Promise<T> => {
   const rpcProvider = getProviderNameFromUrl({
     rawConnection: connection,
   });
+
+  const timeoutDuration = 30 * 1000;
   const t = setTimeout(() => {
-    Metrics.sendMetrics({ metricName: `error.rpc.${rpcProvider}.timeout` });
-  }, 30 * 1000);
+    console.error(`RPC call to ${rpcProvider} timed out.`);
+  }, timeoutDuration);
 
   return call.then(
-    (d) => {
+    (data) => {
       clearTimeout(t);
-      return d;
+      return data;
     },
     (err: Error) => {
       clearTimeout(t);
-      const text = `${err}`.substring(0, 40).replace(/[: ]/g, "_").toLowerCase();
-      Metrics.sendMetrics({ metricName: `error.rpc.${rpcProvider}.${text}` });
-      console.error(err);
+      const errorText = `${err.message}`.substring(0, 40).replace(/[: ]/g, "_").toLowerCase();
+      console.error(`RPC call error from provider ${rpcProvider}: ${errorText}`, err);
+      return Promise.reject(err);
     },
   );
 };
