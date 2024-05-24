@@ -1,4 +1,4 @@
-import { COIN_METADATA } from "@/types/coin";
+import { CoinMetadata } from "@/types/coin";
 import {
   AddLiquidityParams,
   QuoteAddLiquidityParams,
@@ -7,12 +7,11 @@ import {
   RemoveLiquidityParams,
   SwapParams,
 } from "@/types/hooks";
-import { PoolResponse } from "@/types/pool";
-import { StakedLpObject, StakingPool, VestingDataInfo } from "@avernikoz/memechan-ts-sdk";
+import { StakedLpObject, StakingPool } from "@avernikoz/memechan-ts-sdk";
 import { TransactionBlock } from "@mysten/sui.js/transactions";
 
 export type UseQueryCoinParams = {
-  coinType?: string;
+  mint: string;
 };
 
 export type AvailableTicketToSellDialogParams = {
@@ -24,7 +23,6 @@ export type SwapComponentParams = {
   tokenSymbol: string;
   pool: PoolResponse;
   memeBalance: string;
-  availableTickets: string;
   swap: (params: SwapParams) => Promise<TransactionBlock | undefined>;
   quoteSwap: (params: QuoteSwapParams) => Promise<string>;
 };
@@ -38,30 +36,14 @@ export type SwapButtonProps = {
 export type SidebarProps = {
   pool: PoolResponse;
   memeBalance: string;
-  coinMetadata: COIN_METADATA;
-  BondingCurve: {
-    availableTickets: string;
-    progressData: {
-      progress: string;
-      suiIn: string;
-    };
-    uniqueHolders: VestingDataInfo[];
-    price: {
-      priceInSui: string;
-      priceInUsd: string;
-    };
-    swap: (params: SwapParams) => Promise<TransactionBlock | undefined>;
-    quoteSwap: (params: QuoteSwapParams) => Promise<string>;
-  };
+  coinMetadata: CoinMetadata;
+  // TODO: Remove CLAMM from SidebarProps
   CLAMM: any;
 };
 
 export type InfoProps = {
-  metadata: COIN_METADATA;
-  progressData: {
-    progress: string;
-    suiIn: string;
-  };
+  metadata: CoinMetadata;
+  poolAddress: string;
 };
 
 export type HoldersProps = {
