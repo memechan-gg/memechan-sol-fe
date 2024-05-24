@@ -1,19 +1,17 @@
-export type COIN_METADATA = {
+import { PoolStatus } from "./pool";
+
+export type CoinMetadata = {
   symbol: string;
-  type: string;
-  status: "LIVE" | "PRESALE";
+  address: string;
+  status: PoolStatus;
   marketcap: number;
   creationTime: number;
   lastReply: number;
   txDigest: string;
   name: string;
   decimals: number;
-  objectId: string;
-  treasureCapId: string;
-  objectType: string;
   description: string;
   image: string;
-  metadataObjectId: string;
   creator: string;
   socialLinks?:
     | {
@@ -24,5 +22,4 @@ export type COIN_METADATA = {
       }
     | null
     | undefined;
-  contractAddress?: string | null | undefined;
 };
