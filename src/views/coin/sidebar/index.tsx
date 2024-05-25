@@ -1,7 +1,5 @@
 import { useUniqueHolders } from "@/hooks/solana/useUniqueHolders";
-import { QuoteSwapParams, SwapParams } from "@/types/hooks";
 import { FULL_MEME_AMOUNT_CONVERTED, MEMECHAN_MEME_TOKEN_DECIMALS } from "@avernikoz/memechan-sol-sdk";
-import { Transaction } from "@solana/web3.js";
 import BigNumber from "bignumber.js";
 import { SidebarProps } from "../coin.types";
 import { Holders } from "./holders";
@@ -9,23 +7,13 @@ import { Info } from "./info";
 import { SidebarItem } from "./sidebar-item";
 import { Swap } from "./swap/swap";
 
-// TODO: Replace these mock-methods with real ones
-const swap = (params: SwapParams) => Promise<Transaction | undefined>;
-const quoteSwap = (params: QuoteSwapParams) => Promise<string>;
-
-export const Sidebar = ({ pool, memeBalance, coinMetadata, CLAMM }: SidebarProps) => {
+export const Sidebar = ({ pool, coinMetadata, swapMethods }: SidebarProps) => {
   const uniqueHolders = useUniqueHolders(pool.address);
 
   return (
     <>
       <SidebarItem>
-        <Swap
-          memeBalance={memeBalance}
-          pool={pool}
-          quoteSwap={coinMetadata.status === "LIVE" ? CLAMM.quoteSwap : quoteSwap}
-          swap={coinMetadata.status === "LIVE" ? CLAMM.swap : swap}
-          tokenSymbol={coinMetadata.symbol}
-        />
+        <Swap pool={pool} swapMethods={swapMethods} tokenSymbol={coinMetadata.symbol} status={coinMetadata.status} />
       </SidebarItem>
       {/* TODO: Handle live pools */}
       {/* {coinMetadata.status === "LIVE" && (

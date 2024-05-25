@@ -14,8 +14,10 @@ export const fetchUniqueHolders = async (poolAddress: string) => {
 };
 
 export function useUniqueHolders(poolAddress: string) {
-  const { data: uniqueHolders } = useSWR([`unique-holders-${poolAddress}`, poolAddress], ([url, pool]) =>
-    fetchUniqueHolders(pool),
+  const { data: uniqueHolders } = useSWR(
+    [`unique-holders-${poolAddress}`, poolAddress],
+    ([url, pool]) => fetchUniqueHolders(pool),
+    { refreshInterval: 5000 },
   );
 
   return uniqueHolders;

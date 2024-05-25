@@ -11,6 +11,14 @@ export type QuoteSwapParams = {
   slippagePercentage: number;
 };
 
+export type GetSwapOutputAmountParams = {
+  inputAmount: string;
+  slerfToMeme: boolean;
+  slippagePercentage: number;
+};
+
+export type GetSwapTransactionParams = GetSwapOutputAmountParams & { minOutputAmount: string };
+
 export type AddLiquidityParams = {
   memeCoinInput: string;
   suiCoinInput: string;
