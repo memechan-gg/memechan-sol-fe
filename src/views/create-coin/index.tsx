@@ -51,6 +51,7 @@ export function CreateCoin() {
       const poolSignature = await sendTransaction(createPoolTransaction, MemechanClientInstance.connection, {
         signers: [launchVaultId, memeMintKeypair, poolQuoteVaultId],
         maxRetries: 3,
+        skipPreflight: true,
       });
       await sleep(3000);
 
@@ -76,14 +77,12 @@ export function CreateCoin() {
         return;
       }
 
-      await sleep(10000);
-
-
       setState("create_meme");
       // Coin creation
       console.debug('beforesend')
       const coinSignature = await sendTransaction(createTokenTransaction, MemechanClientInstance.connection, {
         maxRetries: 3,
+        skipPreflight: true,
       })
       await sleep(3000);
 
@@ -126,7 +125,9 @@ export function CreateCoin() {
 
       // TODO: Need to confirm with Paolo
       // TODO: Need to promise.all if so
+      console.debug("coinSignature")
       await createCoinOnBE(data, coinSignature);
+      console.debug("poolSignature")
       await createCoinOnBE(data, poolSignature);
 
       console.log("created on BE");

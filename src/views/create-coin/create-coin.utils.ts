@@ -3,7 +3,8 @@ import { ADMIN_PUB_KEY, BoundPoolClient, MEMECHAN_QUOTE_TOKEN, TokenAPI } from "
 import { PublicKey } from "@solana/web3.js";
 import toast from "react-hot-toast";
 import { ICreateForm } from "./create-coin.types";
-// TODO: Handle coin validation
+// TODO: Handle coin 
+// https://explorer.solana.com/tx/3GpoZFSDbQiNtjvXRN42wxAMZxFrEUDkTa4qniy2c33xsGi5S4qQAsGbmgyrqH3G1S8yuGVGRjemaYUhR8pYyqU?cluster=devnet
 export function handleErrors(e: unknown) {
   /*if (e instanceof InvalidCoinNameError) {
     return toast.error("Invalid coin name");
