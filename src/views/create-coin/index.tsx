@@ -71,7 +71,7 @@ export function CreateCoin() {
           "[Create Coin Submit] Pool and token creation failed:",
           JSON.stringify(createPoolAndTokenTxResult, null, 2),
         );
-        toast("Failed to create pool and token. Please, try again//");
+        toast("Failed to create pool and token. Please, try again");
         return;
       }
 
