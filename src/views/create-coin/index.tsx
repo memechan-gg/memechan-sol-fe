@@ -22,7 +22,7 @@ export function CreateCoin() {
     handleSubmit,
     formState: { errors },
   } = useForm<ICreateForm>();
-  const { publicKey, connected, signMessage, sendTransaction } = useWallet();
+  const { publicKey, connected, signMessage, sendTransaction, } = useWallet();
   const [state, setState] = useState<CreateCoinState>("idle");
   const router = useRouter();
 
@@ -40,38 +40,74 @@ export function CreateCoin() {
       let ipfsUrl = await uploadImageToIPFS(data.image[0]);
       validateCoinParams(data, walletAddress, ipfsUrl);
 
-      setState("create_meme_and_pool");
-      const { transaction, launchVaultId, memeMintKeypair, poolQuoteVaultId } = await createMemeCoin(
+      const { createTokenTransaction, createPoolTransaction, launchVaultId, memeMintKeypair, poolQuoteVaultId } = await createMemeCoin(
         data,
         publicKey,
         ipfsUrl,
       );
 
-      const signature = await sendTransaction(transaction, MemechanClientInstance.connection, {
+      setState("create_bonding");
+      // Pool creation
+      const poolSignature = await sendTransaction(createPoolTransaction, MemechanClientInstance.connection, {
         signers: [launchVaultId, memeMintKeypair, poolQuoteVaultId],
         maxRetries: 3,
       });
       await sleep(3000);
 
-      // Check pool and token creation succeeded
-      const { blockhash: blockhash, lastValidBlockHeight: lastValidBlockHeight } =
+      // Check pool creation succeeded
+      const { blockhash: poolBlockhash, lastValidBlockHeight: poolLastValidBlockHeight } =
         await MemechanClientInstance.connection.getLatestBlockhash("confirmed");
-      const createPoolAndTokenTxResult = await MemechanClientInstance.connection.confirmTransaction(
+      const createPoolTxResult = await MemechanClientInstance.connection.confirmTransaction(
         {
-          signature: signature,
-          blockhash: blockhash,
-          lastValidBlockHeight: lastValidBlockHeight,
+          signature: poolSignature,
+          blockhash: poolBlockhash,
+          lastValidBlockHeight: poolLastValidBlockHeight,
         },
         "confirmed",
       );
-      console.log("createPoolAndTokenTxResult:", createPoolAndTokenTxResult);
+      console.log("createPoolTxResult:", createPoolTxResult);
 
-      if (createPoolAndTokenTxResult.value.err) {
+      if (createPoolTxResult.value.err) {
         console.error(
-          "[Create Coin Submit] Pool and token creation failed:",
-          JSON.stringify(createPoolAndTokenTxResult, null, 2),
+          "[Create Coin Submit] pool creation failed:",
+          JSON.stringify(createPoolTxResult, null, 2),
         );
-        toast("Failed to create pool and token. Please, try again//");
+        toast("Failed to create pool. Please, try again//");
+        return;
+      }
+
+      await sleep(10000);
+
+
+      setState("create_meme");
+      // Coin creation
+      console.debug('beforesend')
+      const coinSignature = await sendTransaction(createTokenTransaction, MemechanClientInstance.connection, {
+        maxRetries: 3,
+      })
+      await sleep(3000);
+
+      console.debug("coinSignature: ", coinSignature)
+
+      // Check token creation succeeded
+      const { blockhash: coinBlockhash, lastValidBlockHeight: coinLastValidBlockHeight } =
+        await MemechanClientInstance.connection.getLatestBlockhash("confirmed");
+      const createTokenTxResult = await MemechanClientInstance.connection.confirmTransaction(
+        {
+          signature: coinSignature,
+          blockhash: coinBlockhash,
+          lastValidBlockHeight: coinLastValidBlockHeight,
+        },
+        "confirmed",
+      );
+      console.log("createTokenTxResult:", createTokenTxResult);
+
+      if (createTokenTxResult.value.err) {
+        console.error(
+          "[Create Coin Submit] token creation failed:",
+          JSON.stringify(createTokenTxResult, null, 2),
+        );
+        toast("Failed to create token. Please, try again//");
         return;
       }
 
@@ -83,12 +119,16 @@ export function CreateCoin() {
       console.log("createdPoolId: ", createdPoolId.toString());
       const boundPool = await BoundPoolClient.fromPoolCreationTransaction({
         client: MemechanClientInstance,
-        poolCreationSignature: signature,
+        poolCreationSignature: poolSignature,
       });
       console.log("boundPool:", boundPool);
       console.log("memeMint:", boundPool.memeTokenMint.toString());
 
-      await createCoinOnBE(data, signature);
+      // TODO: Need to confirm with Paolo
+      // TODO: Need to promise.all if so
+      await createCoinOnBE(data, coinSignature);
+      await createCoinOnBE(data, poolSignature);
+
       console.log("created on BE");
       await sleep(3000);
       router.push(`/coin/${boundPool.memeTokenMint.toString()}`);
@@ -195,7 +235,8 @@ export function CreateCoin() {
                       idle: "Create Meme Coin",
                       sign: "Signing Message...",
                       ipfs: "Uploading Image...",
-                      create_meme_and_pool: "Creating Meme Coin and Bonding Pool...",
+                      create_meme: "Creating Meme Coin...",
+                      create_bonding: "Creating Bonding Curve Pool...",
                     }[state]
                   }
                 </button>
