@@ -34,35 +34,48 @@ const fetchMemePrice = async ({
   }
 };
 
-export function useMemePrice(
-  args: { status: "PRESALE"; boundPoolInfo: BoundPool } | { status: "LIVE"; raydiumPoolAddress: string },
+export function useMemePriceAndMarketCap(
+  args: { status: "PRESALE"; boundPoolInfo: BoundPool | undefined } | { status: "LIVE"; raydiumPoolAddress: string },
 ) {
   const { status } = args;
-  const poolAddress = status === "PRESALE" ? args.boundPoolInfo.memeReserve.toJSON().mint : args.raydiumPoolAddress;
-  const methodArgs = { status, poolData: status === "PRESALE" ? args.boundPoolInfo : args.raydiumPoolAddress } as
-    | { status: "PRESALE"; poolData: BoundPool }
-    | { status: "LIVE"; poolData: string };
+
+  let poolAddress: string | undefined;
+  let methodArgs: { status: "PRESALE"; poolData: BoundPool } | { status: "LIVE"; poolData: string } | undefined;
+
+  if (status === "PRESALE" && args.boundPoolInfo) {
+    poolAddress = args.boundPoolInfo.memeReserve.toJSON().mint;
+    methodArgs = { status: "PRESALE", poolData: args.boundPoolInfo };
+  } else if (status === "LIVE") {
+    poolAddress = args.raydiumPoolAddress;
+    methodArgs = { status: "LIVE", poolData: args.raydiumPoolAddress };
+  }
 
   const slerfPrice = useSlerfPrice();
   const { data: memePrice } = useSWR(
-    [
-      `price-${poolAddress}`,
-      {
-        slerfPriceInUsd: slerfPrice,
-        ...methodArgs,
-      },
-    ],
+    poolAddress && methodArgs
+      ? [
+          `price-${poolAddress}`,
+          {
+            slerfPriceInUsd: slerfPrice,
+            ...methodArgs,
+          },
+        ]
+      : null,
     ([url, args]) => fetchMemePrice(args),
+    { refreshInterval: 5000 },
   );
 
-  const [priceData, setPriceData] = useState<{ priceInQuote: string; priceInUsd: string }>({
-    priceInQuote: "0",
-    priceInUsd: "0",
-  });
+  const [priceData, setPriceData] = useState<{ priceInQuote: string; priceInUsd: string } | null>(null);
+  const [marketCap, setMarketCap] = useState<string | null>(null);
 
   useEffect(() => {
-    if (memePrice) setPriceData(memePrice);
+    if (memePrice) {
+      setPriceData(memePrice);
+
+      const marketCap = (+BoundPoolClient.getMemeMarketCap({ memePriceInUsd: memePrice.priceInUsd })).toFixed(2);
+      setMarketCap(marketCap);
+    }
   }, [memePrice]);
 
-  return priceData;
+  return { priceData, marketCap };
 }

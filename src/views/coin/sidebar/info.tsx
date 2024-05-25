@@ -8,7 +8,11 @@ export const Info = ({ metadata, poolAddress }: InfoProps) => {
   return (
     <div className="flex flex-col gap-2">
       <div className="flex flex-row gap-2">
-        <img className="w-32 border border-regular h-auto rounded-lg" src={image} alt="token-image" />
+        <img
+          className="w-32 border border-regular h-32 rounded-lg object-cover object-center"
+          src={image}
+          alt="token-image"
+        />
         <div className="flex flex-col gap-1">
           <div className="text-xs font-bold text-regular">
             {name} (symbol: {symbol})
@@ -17,7 +21,7 @@ export const Info = ({ metadata, poolAddress }: InfoProps) => {
         </div>
       </div>
       {socialLinks && (
-        <div className="flex flex-row gap-4">
+        <div className="flex flex-wrap flex-row gap-4 gap-x-6 my-3">
           {socialLinks.discord && (
             <div className="flex flex-col gap-1">
               <div className="text-xs font-bold text-regular">Discord</div>

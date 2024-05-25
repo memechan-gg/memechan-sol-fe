@@ -1,57 +1,69 @@
 import { CoinMetadata } from "@/types/coin";
 import {
   AddLiquidityParams,
+  GetSwapOutputAmountParams,
+  GetSwapTransactionParams,
   QuoteAddLiquidityParams,
   QuoteRemoveLiquidityParams,
-  QuoteSwapParams,
   RemoveLiquidityParams,
-  SwapParams,
 } from "@/types/hooks";
-import { StakedLpObject, StakingPool } from "@avernikoz/memechan-ts-sdk";
+import { LivePoolData, PoolStatus, SeedPoolData } from "@/types/pool";
+import { GetBuyMemeTransactionOutput, ParsedMemeTicket } from "@avernikoz/memechan-sol-sdk";
+import { StakingPool } from "@avernikoz/memechan-ts-sdk";
 import { TransactionBlock } from "@mysten/sui.js/transactions";
 
 export type UseQueryCoinParams = {
   mint: string;
 };
 
-export type AvailableTicketToSellDialogParams = {
-  availableTickets: StakedLpObject[];
+export type UnavailableTicketsToSellDialogParams = {
+  unavailableTickets: ParsedMemeTicket[];
   symbol: string;
+};
+
+export type PresaleCoinSwapProps = {
+  tokenSymbol: string;
+  pool: SeedPoolData | LivePoolData;
 };
 
 export type SwapComponentParams = {
   tokenSymbol: string;
-  pool: PoolResponse;
-  memeBalance: string;
-  swap: (params: SwapParams) => Promise<TransactionBlock | undefined>;
-  quoteSwap: (params: QuoteSwapParams) => Promise<string>;
+  pool: SeedPoolData | LivePoolData;
+  status: PoolStatus;
+  swapMethods: {
+    getSwapTransaction: (params: GetSwapTransactionParams) => Promise<GetBuyMemeTransactionOutput | undefined>;
+    getSwapOutputAmount: (params: GetSwapOutputAmountParams) => Promise<string | undefined>;
+  };
 };
 
 export type SwapButtonProps = {
-  isXToY: boolean;
+  slerfToMeme: boolean;
   onClick: () => void;
   label: string;
 };
 
-export type SidebarProps = {
-  pool: PoolResponse;
-  memeBalance: string;
+export type PresaleCoinSidebarProps = {
   coinMetadata: CoinMetadata;
-  // TODO: Remove CLAMM from SidebarProps
-  CLAMM: any;
+  pool: SeedPoolData;
+};
+
+export type HoldersProps = {
+  poolAddress: string;
+  coinMetadata: CoinMetadata;
+};
+
+export type SidebarProps = {
+  pool: SeedPoolData | LivePoolData;
+  coinMetadata: CoinMetadata;
+  swapMethods: {
+    getSwapTransaction: (params: GetSwapTransactionParams) => Promise<GetBuyMemeTransactionOutput | undefined>;
+    getSwapOutputAmount: (params: GetSwapOutputAmountParams) => Promise<string | undefined>;
+  };
 };
 
 export type InfoProps = {
   metadata: CoinMetadata;
   poolAddress: string;
-};
-
-export type HoldersProps = {
-  holders: {
-    address: string;
-    percentage: string;
-    type: "bonding_curve" | "dev" | string | undefined;
-  }[];
 };
 
 export type LiquidityProps = {
@@ -105,4 +117,28 @@ export type StakingPoolProps = {
   coinType: string;
   ticketBalance: string;
   tokenSymbol: string;
+};
+
+export type CoinThread = {
+  message: string;
+  type: "THREAD";
+  creator: string;
+  coinType: string;
+  creationDate: number;
+  id: string;
+  likeCounter: number;
+  replyCounter: number;
+};
+
+export type CoinThreadParsedMessage = { message: string; replyTo?: string };
+
+export type CoinThreadWithParsedMessage = {
+  message: CoinThreadParsedMessage;
+  type: "THREAD";
+  creator: string;
+  coinType: string;
+  creationDate: number;
+  id: string;
+  likeCounter: number;
+  replyCounter: number;
 };

@@ -60,7 +60,11 @@ export function Thread({
     <div className="flex flex-col gap-2">
       <h2 className="text-sm font-bold text-regular">{title}</h2>
       <Link href={`/coin/${mint}`}>
-        <img className="w-[150px] border border-regular h-auto" src={image} alt="Coin Image" />
+        <img
+          className="w-[150px] border border-regular h-[150px] object-cover object-center"
+          src={image}
+          alt="Coin Image"
+        />
       </Link>
       <div className="flex flex-col gap-1 text-xs">
         <div className="text-link">

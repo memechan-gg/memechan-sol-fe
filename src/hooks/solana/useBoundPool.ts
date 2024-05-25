@@ -14,7 +14,9 @@ const fetchBoundPool = async (poolAddress: string) => {
 };
 
 export function useBoundPool(poolAddress: string) {
-  const { data } = useSWR([`bound-pool-${poolAddress}`, poolAddress], ([url, pool]) => fetchBoundPool(pool));
+  const { data } = useSWR([`bound-pool-${poolAddress}`, poolAddress], ([url, pool]) => fetchBoundPool(pool), {
+    refreshInterval: 5000,
+  });
 
   return data;
 }
