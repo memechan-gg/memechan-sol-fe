@@ -48,16 +48,9 @@ export type LiveCoinInfoProps = {
 
 export type PresaleCoinInfoProps = LiveCoinInfoProps & { poolAddress: string };
 
-export type UnstakeDialogProps = {
-  tokenSymbol: string;
-  memeMint: string;
-  poolAddress: string;
-};
+export type UnstakeDialogProps = StakingPoolProps;
 
-export type WithdrawFeesDialogProps = {
-  tokenSymbol: string;
-  poolAddress: string;
-};
+export type WithdrawFeesDialogProps = StakingPoolProps;
 
 export type StakingPoolProps = {
   tokenSymbol: string;
