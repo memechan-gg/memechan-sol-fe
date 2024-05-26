@@ -15,7 +15,7 @@ export const StakingPool = ({ tokenSymbol, poolAddress, memeMint }: StakingPoolP
         {/* Add or Remove buttons */}
         <div className="flex w-full flex-row gap-2 mt-2">
           <UnstakeDialog tokenSymbol={tokenSymbol} poolAddress={poolAddress} memeMint={memeMint} />
-          <WithdrawFeesDialog tokenSymbol={tokenSymbol} poolAddress={poolAddress} />
+          <WithdrawFeesDialog tokenSymbol={tokenSymbol} poolAddress={poolAddress} memeMint={memeMint} />
         </div>
       </div>
     </div>
