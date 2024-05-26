@@ -1,8 +1,10 @@
 import { AuthInstance, MemechanClientInstance, TokenApiInstance } from "@/common/solana";
-import { ADMIN_PUB_KEY, BoundPoolClient, MEMECHAN_QUOTE_TOKEN } from "@avernikoz/memechan-sol-sdk";
+import { ADMIN_PUB_KEY, BoundPoolClient, MEMECHAN_QUOTE_TOKEN, TokenAPI } from "@avernikoz/memechan-sol-sdk";
 import { PublicKey } from "@solana/web3.js";
 import toast from "react-hot-toast";
 import { ICreateForm } from "./create-coin.types";
+// TODO: Handle coin 
+// https://explorer.solana.com/tx/3GpoZFSDbQiNtjvXRN42wxAMZxFrEUDkTa4qniy2c33xsGi5S4qQAsGbmgyrqH3G1S8yuGVGRjemaYUhR8pYyqU?cluster=devnet
 export function handleErrors(e: unknown) {
   /*if (e instanceof InvalidCoinNameError) {
     return toast.error("Invalid coin name");
@@ -67,9 +69,8 @@ export async function handleAuthentication(address: string, sign: (message: Uint
 }
 
 export async function uploadImageToIPFS(file: File) {
-  //let result = await CoinAPIInstance.uploadFile(file);
-  //return `https://lavender-gentle-primate-223.mypinata.cloud/ipfs/${result.IpfsHash}?pinataGatewayToken=M45Jh03NicrVqTZJJhQIwDtl7G6fGS90bjJiIQrmyaQXC_xXj4BgRqjjBNyGV7q2`;
-  return "";
+  let result = await TokenApiInstance.uploadFile(file);
+  return `https://lavender-gentle-primate-223.mypinata.cloud/ipfs/${result.IpfsHash}?pinataGatewayToken=M45Jh03NicrVqTZJJhQIwDtl7G6fGS90bjJiIQrmyaQXC_xXj4BgRqjjBNyGV7q2`;
 }
 
 export function validateCoinParams(data: ICreateForm, address: string, ipfsUrl: string) {}
