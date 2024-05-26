@@ -1,4 +1,4 @@
-import { getCoinsAndNormalizeWithDecimals } from "@/utils/sui/getCoins";
+// import { getCoinsAndNormalizeWithDecimals } from "@/utils/sui/getCoins";
 import { FC, PropsWithChildren, createContext, useContext, useEffect, useState } from "react";
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useInterval } from "usehooks-ts";

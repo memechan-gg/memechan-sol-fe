@@ -6,7 +6,7 @@ import { useInterval } from "usehooks-ts";
 export function useCoinApi() {
   const [direction, setDirection] = useState<"asc" | "desc">("asc");
   const [sortBy, setSortBy] = useState("last_reply");
-  const [items, setItems] = useState<CoinMetadata[]>([]);
+  const [items, setItems] = useState<CoinMetadata[] | null>(null);
   const [status, setStatus] = useState<"all" | "pre_sale" | "live">("all");
 
   const fetchData = useCallback(async () => {
