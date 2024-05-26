@@ -1,20 +1,6 @@
 import { CoinMetadata } from "@/types/coin";
-import {
-  AddLiquidityParams,
-  GetSwapOutputAmountParams,
-  GetSwapTransactionParams,
-  QuoteAddLiquidityParams,
-  QuoteRemoveLiquidityParams,
-  RemoveLiquidityParams,
-} from "@/types/hooks";
-import { LivePoolData, PoolStatus, SeedPoolData } from "@/types/pool";
-import { GetBuyMemeTransactionOutput, ParsedMemeTicket } from "@avernikoz/memechan-sol-sdk";
-import { StakingPool } from "@avernikoz/memechan-ts-sdk";
-import { TransactionBlock } from "@mysten/sui.js/transactions";
-
-export type UseQueryCoinParams = {
-  mint: string;
-};
+import { LivePoolData, SeedPoolData } from "@/types/pool";
+import { ParsedMemeTicket, StakingPool } from "@avernikoz/memechan-sol-sdk";
 
 export type UnavailableTicketsToSellDialogParams = {
   unavailableTickets: ParsedMemeTicket[];
@@ -23,17 +9,12 @@ export type UnavailableTicketsToSellDialogParams = {
 
 export type PresaleCoinSwapProps = {
   tokenSymbol: string;
-  pool: SeedPoolData | LivePoolData;
+  pool: SeedPoolData;
 };
 
-export type SwapComponentParams = {
+export type LiveCoinSwapProps = {
   tokenSymbol: string;
-  pool: SeedPoolData | LivePoolData;
-  status: PoolStatus;
-  swapMethods: {
-    getSwapTransaction: (params: GetSwapTransactionParams) => Promise<GetBuyMemeTransactionOutput | undefined>;
-    getSwapOutputAmount: (params: GetSwapOutputAmountParams) => Promise<string | undefined>;
-  };
+  pool: LivePoolData;
 };
 
 export type SwapButtonProps = {
@@ -47,59 +28,25 @@ export type PresaleCoinSidebarProps = {
   pool: SeedPoolData;
 };
 
+export type LiveCoinSidebarProps = {
+  pool: LivePoolData;
+  coinMetadata: CoinMetadata;
+};
+
 export type HoldersProps = {
   poolAddress: string;
   coinMetadata: CoinMetadata;
 };
 
-export type SidebarProps = {
-  pool: SeedPoolData | LivePoolData;
+export type LiveCoinHoldersProps = {
   coinMetadata: CoinMetadata;
-  swapMethods: {
-    getSwapTransaction: (params: GetSwapTransactionParams) => Promise<GetBuyMemeTransactionOutput | undefined>;
-    getSwapOutputAmount: (params: GetSwapOutputAmountParams) => Promise<string | undefined>;
-  };
 };
 
-export type InfoProps = {
+export type LiveCoinInfoProps = {
   metadata: CoinMetadata;
-  poolAddress: string;
 };
 
-export type LiquidityProps = {
-  memeBalance: string;
-  tokenSymbol: string;
-  lpCoinType?: string;
-  quoteAddLiquidity: (params: QuoteAddLiquidityParams) => Promise<string>;
-  addLiquidity: (params: AddLiquidityParams) => Promise<TransactionBlock>;
-  quoteRemoveLiquidity: (params: QuoteRemoveLiquidityParams) => Promise<string[]>;
-  removeLiquidity: (params: RemoveLiquidityParams) => Promise<TransactionBlock>;
-};
-
-export type ActualLiquidityProps = {
-  memeBalance: string;
-  tokenSymbol: string;
-  lpCoinType: string;
-  quoteAddLiquidity: (params: QuoteAddLiquidityParams) => Promise<string>;
-  addLiquidity: (params: AddLiquidityParams) => Promise<TransactionBlock>;
-  quoteRemoveLiquidity: (params: QuoteRemoveLiquidityParams) => Promise<string[]>;
-  removeLiquidity: (params: RemoveLiquidityParams) => Promise<TransactionBlock>;
-};
-
-export type AddLiquidityDialogProps = {
-  memeBalance: string;
-  tokenSymbol: string;
-  lpCoinBalance: string;
-  quoteAddLiquidity: (params: QuoteAddLiquidityParams) => Promise<string>;
-  addLiquidity: (params: AddLiquidityParams) => Promise<TransactionBlock>;
-};
-
-export type RemoveLiquidityDialogProps = {
-  tokenSymbol: string;
-  lpCoinBalance: string;
-  quoteRemoveLiquidity: (params: QuoteRemoveLiquidityParams) => Promise<string[]>;
-  removeLiquidity: (params: RemoveLiquidityParams) => Promise<TransactionBlock>;
-};
+export type PresaleCoinInfoProps = LiveCoinInfoProps & { poolAddress: string };
 
 export type UnstakeDialogProps = {
   tokenSymbol: string;
@@ -114,8 +61,6 @@ export type WithdrawFeesDialogProps = {
 };
 
 export type StakingPoolProps = {
-  coinType: string;
-  ticketBalance: string;
   tokenSymbol: string;
 };
 
