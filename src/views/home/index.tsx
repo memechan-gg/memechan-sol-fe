@@ -50,18 +50,26 @@ export function Home() {
         }
       >
         <div className="flex flex-wrap gap-6 sm:justify-normal justify-center">
-          {items.map((item) => (
-            <Thread
-              mint={item.address}
-              key={item.address}
-              title={item.name}
-              image={item.image}
-              createdBy={item.creator}
-              marketCap={item.marketcap.toString()}
-              ticker={item.symbol}
-              description={item.description}
-            />
-          ))}
+          {items.length > 0 ? (
+            <>
+              {items.map((item) => (
+                <Thread
+                  mint={item.address}
+                  key={item.address}
+                  title={item.name}
+                  image={item.image}
+                  createdBy={item.creator}
+                  marketCap={item.marketcap.toString()}
+                  ticker={item.symbol}
+                  description={item.description}
+                />
+              ))}
+            </>
+          ) : (
+            <>
+              <div className="text-regular">Loading...</div>
+            </>
+          )}
         </div>
       </ThreadBoard>
     </>
