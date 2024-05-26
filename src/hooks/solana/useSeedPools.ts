@@ -12,7 +12,7 @@ const fetchAllSeedPools = async () => {
 };
 
 export function useSeedPools() {
-  const { data: seedPools } = useSWR("seed-pools", fetchAllSeedPools);
+  const { data: seedPools } = useSWR("seed-pools", fetchAllSeedPools, { refreshInterval: 5000 });
 
   return seedPools;
 }

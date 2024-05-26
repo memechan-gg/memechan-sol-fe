@@ -12,7 +12,7 @@ const fetchAllLivePools = async () => {
 };
 
 export function useLivePools() {
-  const { data: livePools } = useSWR("live-pools", fetchAllLivePools);
+  const { data: livePools } = useSWR("live-pools", fetchAllLivePools, { refreshInterval: 5000 });
 
   return livePools;
 }

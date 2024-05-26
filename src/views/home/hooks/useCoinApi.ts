@@ -1,6 +1,7 @@
 import { TokenApiInstance } from "@/common/solana";
 import { CoinMetadata } from "@/types/coin";
 import { useCallback, useEffect, useState } from "react";
+import { useInterval } from "usehooks-ts";
 
 export function useCoinApi() {
   const [direction, setDirection] = useState<"asc" | "desc">("asc");
@@ -60,8 +61,7 @@ export function useCoinApi() {
     fetchData();
   }, [fetchData]);
 
-  // TODO: Uncomment
-  // useInterval(fetchData, 5000);
+  useInterval(fetchData, 5000);
 
   return {
     items,
