@@ -1,6 +1,6 @@
 import { CoinMetadata } from "@/types/coin";
 import { LivePoolData, SeedPoolData } from "@/types/pool";
-import { ParsedMemeTicket, StakingPool } from "@avernikoz/memechan-sol-sdk";
+import { ParsedMemeTicket } from "@avernikoz/memechan-sol-sdk";
 
 export type UnavailableTicketsToSellDialogParams = {
   unavailableTickets: ParsedMemeTicket[];
@@ -50,18 +50,19 @@ export type PresaleCoinInfoProps = LiveCoinInfoProps & { poolAddress: string };
 
 export type UnstakeDialogProps = {
   tokenSymbol: string;
-  ticketBalance: string;
-  stakingPool: StakingPool;
+  memeMint: string;
+  poolAddress: string;
 };
 
 export type WithdrawFeesDialogProps = {
-  stakingPool: StakingPool;
   tokenSymbol: string;
-  ticketBalance: string;
+  poolAddress: string;
 };
 
 export type StakingPoolProps = {
   tokenSymbol: string;
+  poolAddress: string;
+  memeMint: string;
 };
 
 export type CoinThread = {
