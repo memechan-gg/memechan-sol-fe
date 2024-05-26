@@ -125,11 +125,10 @@ export function CreateCoin() {
 
       // TODO: Need to confirm with Paolo
       // TODO: Need to promise.all if so
-      console.debug("coinSignature")
-      await createCoinOnBE(data, coinSignature);
       console.debug("poolSignature")
       await createCoinOnBE(data, poolSignature);
-
+      console.debug("coinSignature")
+      await createCoinOnBE(data, coinSignature);
       console.log("created on BE");
       await sleep(3000);
       router.push(`/coin/${boundPool.memeTokenMint.toString()}`);
