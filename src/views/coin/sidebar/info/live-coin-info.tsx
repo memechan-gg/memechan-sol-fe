@@ -1,15 +1,13 @@
-import { useBoundPoolProgress } from "@/hooks/solana/useBoundPoolProgress";
-import { InfoProps } from "../coin.types";
+import { LiveCoinInfoProps } from "../../coin.types";
 
-export const Info = ({ metadata, poolAddress }: InfoProps) => {
-  const { name, symbol, description, image, socialLinks, status } = metadata;
-  const { progress, slerfIn, limit } = useBoundPoolProgress(poolAddress);
+export const LiveCoinInfo = ({ metadata }: LiveCoinInfoProps) => {
+  const { name, symbol, description, image, socialLinks } = metadata;
 
   return (
     <div className="flex flex-col gap-2">
       <div className="flex flex-row gap-2">
         <img
-          className="w-32 border border-regular h-32 rounded-lg object-cover object-center"
+          className="w-32 border border-regular h-32 rounded-lg object-cover object-center float-left"
           src={image}
           alt="token-image"
         />
@@ -49,32 +47,8 @@ export const Info = ({ metadata, poolAddress }: InfoProps) => {
         </div>
       )}
       <div className="flex w-full flex-col gap-1">
-        <div className="text-xs flex flex-row gap-2 font-bold text-regular">
-          Presale Progress
-          <div className="text-xs font-bold text-regular">{progress}%</div>
-        </div>
-        <div className="w-full bg-white h-4 rounded-lg">
-          <div
-            className="bg-regular h-full rounded-lg"
-            style={{
-              width: `${progress}%`,
-            }}
-          ></div>
-        </div>
         <div className="text-regular mt-2">
-          {status === "PRESALE" && (
-            <div className="flex flex-col gap-2">
-              <div>
-                When the pool reaches {limit} <span className="!normal-case">SLERF</span>, liquidity from the bonding
-                curve will flow exclusively to Raydium Liquidity Pool and be held securely for generating fees.
-              </div>
-              <div>
-                Presently, there is {slerfIn} <span className="!normal-case">SLERF</span>.
-              </div>
-              <div>Happy trading :)</div>
-            </div>
-          )}
-          {status === "LIVE" && "Pool is now live on the Raydium! You can now swap tokens! Happy trading :)"}
+          Pool is now live on the Raydium! You can now swap tokens! Happy trading :)
         </div>
       </div>
     </div>

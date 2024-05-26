@@ -1,3 +1,5 @@
+import { SwapMemeOutput } from "@avernikoz/memechan-sol-sdk";
+
 export type SwapParams = {
   inputAmount: string;
   minOutputAmount: string;
@@ -18,6 +20,7 @@ export type GetSwapOutputAmountParams = {
 };
 
 export type GetSwapTransactionParams = GetSwapOutputAmountParams & { minOutputAmount: string };
+export type GetLiveSwapTransactionParams = { slerfToMeme: boolean; outputData: SwapMemeOutput };
 
 export type AddLiquidityParams = {
   memeCoinInput: string;
