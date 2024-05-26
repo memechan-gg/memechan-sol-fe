@@ -75,9 +75,11 @@ export function Thread({
         </div>
         <div className="text-green">market cap: {marketCap}</div>
         <Link href={`/coin/${mint}`}>
-          <div className="text-regular flex flex-col">
-            <span className="font-bold">{ticker}</span>
-            <span>{description}</span>
+          <div className="text-regular flex flex-col flex-wrap">
+            <div className="font-bold !normal-case">symbol: {ticker}</div>
+            <div className="max-w-[150px] overflow-ellipsis">
+              {description.slice(0, 50) + (description.length > 50 ? "..." : "")}
+            </div>
           </div>
         </Link>
       </div>
