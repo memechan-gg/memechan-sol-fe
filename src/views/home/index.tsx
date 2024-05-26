@@ -4,7 +4,11 @@ import Link from "next/link";
 import { useCoinApi } from "./hooks/useCoinApi";
 
 export function Home() {
-  const { items, status, setStatus, sortBy, setSortBy, direction, setDirection } = useCoinApi();
+  const { items: tokenList, status, setStatus, sortBy, setSortBy, direction, setDirection } = useCoinApi();
+
+  const isLoading = tokenList === null;
+  const isCoinsListExist = tokenList !== null && tokenList.length > 0;
+  const isCoinsListEmpty = tokenList !== null && tokenList.length === 0;
 
   return (
     <>
@@ -50,9 +54,14 @@ export function Home() {
         }
       >
         <div className="flex flex-wrap gap-6 sm:justify-normal justify-center">
-          {items.length > 0 ? (
+          {isLoading && (
             <>
-              {items.map((item) => (
+            <div className="text-regular">Loading...</div>
+            </>
+          )}
+          {isCoinsListExist && (
+            <>
+              {tokenList.map((item) => (
                 <Thread
                   mint={item.address}
                   key={item.address}
@@ -65,9 +74,10 @@ export function Home() {
                 />
               ))}
             </>
-          ) : (
+          )}
+          {isCoinsListEmpty && (
             <>
-              <div className="text-regular">Loading...</div>
+            <div className="text-regular">No memecoins yet</div>
             </>
           )}
         </div>
