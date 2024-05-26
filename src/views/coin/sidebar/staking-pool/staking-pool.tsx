@@ -1,7 +1,7 @@
 import { StakingPoolProps } from "../../coin.types";
 import { UnstakeDialog } from "./unstake-dialog";
 
-export const StakingPool = ({ tokenSymbol }: StakingPoolProps) => {
+export const StakingPool = ({ tokenSymbol, poolAddress, memeMint }: StakingPoolProps) => {
   return (
     <div className="flex flex-col gap-2 w-full">
       <div className="text-xs font-bold text-regular">Staking Pool</div>
@@ -13,7 +13,7 @@ export const StakingPool = ({ tokenSymbol }: StakingPoolProps) => {
       <div className="flex flex-col w-full gap-1">
         {/* Add or Remove buttons */}
         <div className="flex w-full flex-row gap-2 mt-2">
-          <UnstakeDialog />
+          <UnstakeDialog tokenSymbol={tokenSymbol} poolAddress={poolAddress} memeMint={memeMint} />
           {/* <WithdrawFeesDialog
             clammPoolId={clammPoolId}
             stakingPool={stakingPool}
