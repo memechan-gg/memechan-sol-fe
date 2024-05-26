@@ -1,6 +1,6 @@
-import { useLivePools } from "@/hooks/solana/useLivePools";
-import { useSeedPools } from "@/hooks/solana/useSeedPools";
-import { useTokens } from "@/hooks/solana/useTokens";
+import { useLivePools } from "@/hooks/live/useLivePools";
+import { useSeedPools } from "@/hooks/useSeedPools";
+import { useTokens } from "@/hooks/useTokens";
 import { CoinNotFound } from "./coin-not-found";
 import { LiveCoin } from "./live-coin";
 import { PresaleCoin } from "./presale-coin";

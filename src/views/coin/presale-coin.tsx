@@ -1,7 +1,7 @@
 import { ThreadBoard } from "@/components/thread";
-import { useBoundPool } from "@/hooks/solana/useBoundPool";
-import { useMemePriceAndMarketCap } from "@/hooks/solana/useMemePriceAndMarketCap";
-import { useUniqueHolders } from "@/hooks/solana/useUniqueHolders";
+import { useBoundPool } from "@/hooks/presale/useBoundPool";
+import { usePresaleCoinUniqueHolders } from "@/hooks/presale/usePresaleCoinUniqueHolders";
+import { usePresaleMemePriceAndMCap } from "@/hooks/presale/usePresaleMemePriceAndMCap";
 import { CoinMetadata } from "@/types/coin";
 import { SeedPoolData } from "@/types/pool";
 import { normalizeNumber } from "@/utils/normalizeNumber";
@@ -18,8 +18,8 @@ export function PresaleCoin({
   seedPoolData: SeedPoolData;
 }) {
   const boundPool = useBoundPool(seedPoolData.address);
-  const { marketCap, priceData } = useMemePriceAndMarketCap({ status: "PRESALE", boundPoolInfo: boundPool });
-  const uniqueHoldersMap = useUniqueHolders(seedPoolData.address);
+  const { marketCap, priceData } = usePresaleMemePriceAndMCap(boundPool);
+  const uniqueHoldersMap = usePresaleCoinUniqueHolders(seedPoolData.address);
 
   return (
     <ThreadBoard title={coinMetadata.name}>
