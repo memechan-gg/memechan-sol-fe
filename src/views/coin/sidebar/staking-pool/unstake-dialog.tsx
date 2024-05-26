@@ -1,3 +1,4 @@
+import { MemechanClientInstance } from "@/common/solana";
 import { Button } from "@/components/button";
 import {
   Dialog,
@@ -8,90 +9,82 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/dialog";
-import { useCurrentAccount, useSignAndExecuteTransactionBlock } from "@mysten/dapp-kit";
+import { useSeedPool } from "@/hooks/presale/useSeedPool";
+import { useStakingPool } from "@/hooks/staking/useStakingPool";
+import { useStakingPoolClient } from "@/hooks/staking/useStakingPoolClient";
+import { useTickets } from "@/hooks/useTickets";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { Transaction } from "@solana/web3.js";
 import BigNumber from "bignumber.js";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import Skeleton from "react-loading-skeleton";
 import { useInterval } from "usehooks-ts";
 import { UnstakeDialogProps } from "../../coin.types";
 
-export const UnstakeDialog = ({ tokenSymbol, ticketBalance, stakingPool, clammPoolId }: UnstakeDialogProps) => {
-  const [ticketAmount, setTicketAmount] = useState("0.0");
-  const account = useCurrentAccount();
-  const { mutateAsync: doTX } = useSignAndExecuteTransactionBlock();
+export const UnstakeDialog = ({ tokenSymbol, poolAddress, memeMint }: UnstakeDialogProps) => {
+  const [availableAmountToUnstake, setAvailableAmountToUnstake] = useState<string | null>(null);
   const [close, setClose] = useState(false);
 
-  useEffect(() => {
-    if (!account) return;
-    stakingPool
-      .getAvailableAmountToUnstake({
-        owner: account.address,
-      })
-      .then((res) => {
-        setTicketAmount(res.availableMemeAmountToUnstake);
-      })
-      .catch((e) => {
-        toast.error((e as Error).message);
+  const { sendTransaction } = useWallet();
+  const seedPoolData = useSeedPool(memeMint);
+  const stakingPool = useStakingPool(poolAddress);
+  const stakingPoolClient = useStakingPoolClient(poolAddress);
+  const { tickets, availableTicketsAmount } = useTickets(seedPoolData?.address);
+
+  const updateAvailableAmountToUnstake = useCallback(async () => {
+    if (!stakingPoolClient || !stakingPool || !tickets) return;
+
+    const amount = await stakingPoolClient.getAvailableUnstakeAmount({
+      tickets: tickets.map((ticket) => ticket.fields),
+      stakingPoolVestingConfig: stakingPool.vestingConfig,
+    });
+
+    setAvailableAmountToUnstake(amount);
+  }, [stakingPool, stakingPoolClient, tickets]);
+
+  const unstake = useCallback(async () => {
+    // TODO: Replace `transactions` to be from SDK
+    const transactions = [new Transaction(), new Transaction()];
+
+    for (const tx of transactions) {
+      const signature = await sendTransaction(tx, MemechanClientInstance.connection, {
+        maxRetries: 3,
       });
-  }, [stakingPool, account]);
 
-  async function onUnstake() {
-    if (!account) return;
-
-    try {
-      let tx = await stakingPool.getCollectFeesAndUnstakeTransaction({
-        inputAmount: ticketAmount,
-        signerAddress: account.address,
-        clmmPool: clammPoolId,
-        stakingPool: stakingPool.data.address,
-      });
-
-      const res = await doTX({
-        transactionBlock: tx.tx,
-        requestType: "WaitForLocalExecution",
-        options: {
-          showBalanceChanges: true,
-          showEffects: true,
-          showEvents: true,
-          showObjectChanges: true,
-          showInput: true,
+      // Check that a part of the unstake succeeded
+      const { blockhash: blockhash, lastValidBlockHeight: lastValidBlockHeight } =
+        await MemechanClientInstance.connection.getLatestBlockhash("confirmed");
+      const swapTxResult = await MemechanClientInstance.connection.confirmTransaction(
+        {
+          signature: signature,
+          blockhash: blockhash,
+          lastValidBlockHeight: lastValidBlockHeight,
         },
-      });
+        "confirmed",
+      );
 
-      const status = res.effects?.status.status;
-
-      if (status === "success") {
-        toast.success("Successfully unstaked");
+      if (swapTxResult.value.err) {
+        console.error("[UnstakeDialog.unstake] Unstake failed:", JSON.stringify(swapTxResult, null, 2));
+        toast("Unstake failed. Please, try again");
         return;
       }
-
-      if (status === "failure") {
-        toast.error("Failed to unstake");
-        return;
-      }
-
-      setClose(true);
-    } catch (e) {
-      toast.error((e as Error).message);
     }
-  }
+
+    toast.success("Successfully unstaked");
+    setClose(true);
+  }, [sendTransaction]);
+
+  useEffect(() => {
+    updateAvailableAmountToUnstake();
+  }, [updateAvailableAmountToUnstake]);
 
   useInterval(() => {
-    if (!account) return;
-    stakingPool
-      .getAvailableAmountToUnstake({
-        owner: account.address,
-      })
-      .then((res) => {
-        setTicketAmount(res.availableMemeAmountToUnstake);
-      })
-      .catch((e) => {
-        toast.error((e as Error).message);
-      });
+    updateAvailableAmountToUnstake();
   }, 5000);
 
-  const startVestingTime = new Date(+stakingPool.data.vesting.data.cliffTs).toLocaleString();
-  const endVestingTime = new Date(+stakingPool.data.vesting.data.endTs).toLocaleString();
+  const startVestingTime = new Date(+stakingPool?.vestingConfig.cliffTs).toLocaleString();
+  const endVestingTime = new Date(+stakingPool?.vestingConfig.endTs).toLocaleString();
 
   return (
     <Dialog open={close ? false : undefined}>
@@ -112,16 +105,26 @@ export const UnstakeDialog = ({ tokenSymbol, ticketBalance, stakingPool, clammPo
         </DialogHeader>
         <div className="flex w-full flex-col gap-1">
           <div className="text-xs font-bold text-regular">
-            Locked amount: {BigNumber(ticketBalance).minus(ticketAmount).toString()}{" "}
+            Locked amount:{" "}
+            {availableAmountToUnstake !== null ? (
+              BigNumber(availableTicketsAmount).minus(availableAmountToUnstake).toString()
+            ) : (
+              <Skeleton width={35} />
+            )}{" "}
             <span className="!normal-case">{tokenSymbol}</span>
           </div>
           <div className="text-xs font-bold text-regular">
-            Unlockable amount: {ticketAmount} <span className="!normal-case">{tokenSymbol}</span>
+            Unlockable amount: {availableAmountToUnstake ?? <Skeleton width={35} />}{" "}
+            <span className="!normal-case">{tokenSymbol}</span>
           </div>
         </div>
         <div className="flex w-full flex-col gap-1"></div>
         <DialogFooter>
-          <Button onClick={onUnstake} className="w-full bg-regular bg-opacity-80 hover:bg-opacity-50">
+          <Button
+            disabled={availableAmountToUnstake === null || availableAmountToUnstake === "0"}
+            onClick={unstake}
+            className="w-full bg-regular bg-opacity-80 hover:bg-opacity-50"
+          >
             <div className="text-xs font-bold text-white">Unstake</div>
           </Button>
         </DialogFooter>

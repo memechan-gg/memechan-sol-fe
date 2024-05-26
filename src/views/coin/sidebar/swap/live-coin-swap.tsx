@@ -3,8 +3,9 @@ import { Button } from "@/components/button";
 import { useBalance } from "@/hooks/useBalance";
 import { useTokenAccounts } from "@/hooks/useTokenAccounts";
 import { GetLiveSwapTransactionParams, GetSwapOutputAmountParams } from "@/types/hooks";
-import { LivePoolClient, MEMECHAN_QUOTE_MINT, SwapMemeOutput } from "@avernikoz/memechan-sol-sdk";
+import { LivePoolClient, MEMECHAN_QUOTE_MINT, SwapMemeOutput, buildTxs } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
+import { VersionedTransaction } from "@solana/web3.js";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { LiveCoinSwapProps } from "../../coin.types";
@@ -18,7 +19,7 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { address, tokenAddress } }: L
   const [isLoadingOutputAmount, setIsLoadingOutputAmount] = useState<boolean>(false);
   const [slippage, setSlippage] = useState<string>("10");
 
-  const { publicKey, sendTransaction } = useWallet();
+  const { publicKey, sendTransaction, signTransaction } = useWallet();
   const { balance: slerfBalance, refetch: refetchSlerfBalance } = useBalance(MEMECHAN_QUOTE_MINT.toString());
   const { balance: memeBalance, refetch: refetchMemeBalance } = useBalance(tokenAddress);
   const { tokenAccounts, refetch: refetchTokenAccounts } = useTokenAccounts();
@@ -101,20 +102,26 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { address, tokenAddress } }: L
   }, [getSwapOutputAmount, inputAmount, slerfToMeme, slippage]);
 
   const onSwap = useCallback(async () => {
-    if (!publicKey || !outputData) return;
+    if (!publicKey || !outputData || !signTransaction) return;
 
     if (!liveSwapParamsAreValid({ inputAmount, memeBalance, slerfBalance, slerfToMeme, slippagePercentage: +slippage }))
       return;
 
     try {
-      const swapTransactions = await getSwapTransactions({ slerfToMeme, outputData });
+      const simpleSwapTransactions = await getSwapTransactions({ slerfToMeme, outputData });
 
-      if (!swapTransactions) {
+      if (!simpleSwapTransactions) {
         toast.error("Failed to create the swap transaction. Please, try again");
         return;
       }
 
+      const swapTransactions = await buildTxs(MemechanClientInstance.connection, publicKey, simpleSwapTransactions);
+
       for (const tx of swapTransactions) {
+        if (tx instanceof VersionedTransaction) {
+          await signTransaction(tx);
+        }
+
         const signature = await sendTransaction(tx, MemechanClientInstance.connection, {
           maxRetries: 3,
         });
@@ -160,6 +167,7 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { address, tokenAddress } }: L
     memeBalance,
     refetchMemeBalance,
     refetchTokenAccounts,
+    signTransaction,
   ]);
 
   return (

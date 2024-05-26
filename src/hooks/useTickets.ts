@@ -15,7 +15,8 @@ export const fetchTickets = async (poolAddress: string, user: PublicKey) => {
   }
 };
 
-export function useTickets(poolAddress: string) {
+export function useTickets(poolAddress?: string) {
+  const [tickets, setTickets] = useState<ParsedMemeTicket[]>([]);
   const [availableTickets, setAvailableTickets] = useState<ParsedMemeTicket[]>([]);
   const [unavailableTickets, setUnavailableTickets] = useState<ParsedMemeTicket[]>([]);
   const [availableTicketsAmount, setAvailableTicketsAmount] = useState<string>("0");
@@ -23,7 +24,7 @@ export function useTickets(poolAddress: string) {
 
   const { publicKey } = useWallet();
   const { data, mutate } = useSWR(
-    publicKey ? [`tickets-${poolAddress}`, poolAddress, publicKey] : null,
+    publicKey && poolAddress ? [`tickets-${poolAddress}`, poolAddress, publicKey] : null,
     ([url, pool, user]) => fetchTickets(pool, user),
     { refreshInterval: 5000 },
   );
@@ -34,6 +35,8 @@ export function useTickets(poolAddress: string) {
 
   useEffect(() => {
     if (data) {
+      setTickets(data);
+
       const currentTimestamp = Date.now();
       const availableTickets: ParsedMemeTicket[] = [];
       const unavailableTickets: ParsedMemeTicket[] = [];
@@ -68,5 +71,12 @@ export function useTickets(poolAddress: string) {
     }
   }, [data]);
 
-  return { availableTicketsAmount, availableTickets, unavailableTicketsAmount, unavailableTickets, refresh: mutate };
+  return {
+    tickets,
+    availableTicketsAmount,
+    availableTickets,
+    unavailableTicketsAmount,
+    unavailableTickets,
+    refresh: mutate,
+  };
 }
