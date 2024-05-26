@@ -1,9 +1,9 @@
 import { MemechanClientInstance } from "@/common/solana";
 import { Button } from "@/components/button";
-import { useBalance } from "@/hooks/solana/useBalance";
-import { useBoundPool } from "@/hooks/solana/useBoundPool";
-import { useBoundPoolClient } from "@/hooks/solana/useBoundPoolClient";
-import { useTickets } from "@/hooks/solana/useTickets";
+import { useBoundPool } from "@/hooks/presale/useBoundPool";
+import { useBoundPoolClient } from "@/hooks/presale/useBoundPoolClient";
+import { useBalance } from "@/hooks/useBalance";
+import { useTickets } from "@/hooks/useTickets";
 import { GetSwapOutputAmountParams, GetSwapTransactionParams } from "@/types/hooks";
 import {
   GetBuyMemeTransactionOutput,
@@ -14,7 +14,7 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { PresaleCoinSwapProps } from "../../coin.types";
-import { validateSwapInput } from "../../coin.utils";
+import { presaleSwapParamsAreValid } from "../../coin.utils";
 import { SwapButton } from "./button";
 import { UnavailableTicketsToSellDialog } from "./dialog-unavailable-tickets-to-sell";
 
@@ -116,7 +116,15 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
   const onSwap = useCallback(async () => {
     if (!publicKey || !outputAmount) return;
 
-    if (!validateSwapInput(inputAmount, slerfBalance, availableTicketsAmount, +slippage, slerfToMeme, "PRESALE"))
+    if (
+      !presaleSwapParamsAreValid({
+        availableTicketsAmount,
+        inputAmount,
+        slerfBalance,
+        slerfToMeme,
+        slippagePercentage: +slippage,
+      })
+    )
       return;
 
     try {
@@ -241,7 +249,7 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
           type="number"
           min="0"
         />
-        {slerfToMeme && <div className="text-xs font-bold text-regular">Available SLERF: {slerfBalance}</div>}
+        {slerfToMeme && <div className="text-xs font-bold text-regular">available SLERF: {slerfBalance}</div>}
         {!slerfToMeme && availableTicketsAmount !== "0" && (
           <div className="text-xs font-bold text-regular">Available tickets to sell: {availableTicketsAmount}</div>
         )}
