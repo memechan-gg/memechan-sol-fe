@@ -1,4 +1,5 @@
 import { Connection, PublicKey } from "@solana/web3.js";
+import BigNumber from "bignumber.js";
 import { isParsedTokenAccount } from "./type-guards";
 import { ParsedTokenAccount } from "./types";
 
@@ -8,7 +9,9 @@ type GetTokenAccountsArgs = {
   connection: Connection;
 };
 
-export async function getTokenAccount(params: GetTokenAccountsArgs): Promise<ParsedTokenAccount | null> {
+export async function getTokenAccounts(
+  params: GetTokenAccountsArgs,
+): Promise<{ tokenAccounts: ParsedTokenAccount[]; amount: string } | null> {
   const { connection, ownerAddress, tokenAddress } = params;
   const accounts = await connection.getParsedTokenAccountsByOwner(ownerAddress, { mint: tokenAddress });
 
@@ -16,11 +19,20 @@ export async function getTokenAccount(params: GetTokenAccountsArgs): Promise<Par
     return null;
   }
 
-  const parsedAccountData = accounts.value[0].account.data.parsed;
+  const parsedAccounts = accounts.value.reduce((accountsArray, accountData) => {
+    const parsedAccountData = accountData.account.data.parsed;
 
-  if (isParsedTokenAccount(parsedAccountData)) {
-    return parsedAccountData;
-  }
+    if (isParsedTokenAccount(parsedAccountData)) {
+      accountsArray.push(parsedAccountData);
+    }
 
-  return null;
+    return accountsArray;
+  }, [] as ParsedTokenAccount[]);
+
+  const tokenUiAmount = parsedAccounts.reduce(
+    (amount, accountData) => amount.plus(accountData.info.tokenAmount.uiAmount),
+    new BigNumber(0),
+  );
+
+  return { tokenAccounts: parsedAccounts, amount: tokenUiAmount.toString() };
 }
