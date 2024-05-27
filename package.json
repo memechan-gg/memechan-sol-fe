@@ -13,7 +13,7 @@
     "child_process": false
   },
   "dependencies": {
-    "@avernikoz/memechan-sol-sdk": "1.0.45",
+    "@avernikoz/memechan-sol-sdk": "1.0.47",
     "@headlessui/react": "^1.7.19",
     "@phosphor-icons/react": "^2.1.5",
     "@radix-ui/react-dialog": "^1.0.5",
@@ -27,6 +27,7 @@
     "@solana/web3.js": "^1.91.8",
     "@tanstack/react-query": "^5.29.2",
     "bignumber.js": "^9.1.2",
+    "bn.js": "^5.2.1",
     "clsx": "^2.1.1",
     "next": "14.2.2",
     "next-progress": "^2.3.1",
@@ -41,6 +42,7 @@
     "usehooks-ts": "^3.1.0"
   },
   "devDependencies": {
+    "@types/bn.js": "^5.1.5",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
