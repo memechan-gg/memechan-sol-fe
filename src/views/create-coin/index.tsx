@@ -13,7 +13,8 @@ import {
   handleAuthentication,
   handleErrors,
   uploadImageToIPFS,
-  validateCoinParams,
+  validateCoinParamsWithImage,
+  validateCoinParamsWithoutImage,
 } from "./create-coin.utils";
 
 export function CreateCoin() {
@@ -22,7 +23,7 @@ export function CreateCoin() {
     handleSubmit,
     formState: { errors },
   } = useForm<ICreateForm>();
-  const { publicKey, connected, signMessage, sendTransaction, } = useWallet();
+  const { publicKey, connected, signMessage, sendTransaction } = useWallet();
   const [state, setState] = useState<CreateCoinState>("idle");
   const router = useRouter();
 
@@ -32,19 +33,21 @@ export function CreateCoin() {
         return toast.error("Please connect your wallet");
       }
 
+      // Checking all the entered coin params except of an image to let a user know, that some of them
+      // are wrong without signing.
+      validateCoinParamsWithoutImage(data);
+
       setState("sign");
       const walletAddress = publicKey.toBase58();
+      // If all the params except of the image are fine, then ask the user to sign a message to upload the image to IPFS.
       await handleAuthentication(walletAddress, signMessage);
 
       setState("ipfs");
       let ipfsUrl = await uploadImageToIPFS(data.image[0]);
-      validateCoinParams(data, walletAddress, ipfsUrl);
+      validateCoinParamsWithImage(data, ipfsUrl);
 
-      const { createTokenTransaction, createPoolTransaction, launchVaultId, memeMintKeypair, poolQuoteVaultId } = await createMemeCoin(
-        data,
-        publicKey,
-        ipfsUrl,
-      );
+      const { createTokenTransaction, createPoolTransaction, launchVaultId, memeMintKeypair, poolQuoteVaultId } =
+        await createMemeCoin(data, publicKey, ipfsUrl);
 
       setState("create_bonding");
       // Pool creation
@@ -69,24 +72,21 @@ export function CreateCoin() {
       console.log("createPoolTxResult:", createPoolTxResult);
 
       if (createPoolTxResult.value.err) {
-        console.error(
-          "[Create Coin Submit] pool creation failed:",
-          JSON.stringify(createPoolTxResult, null, 2),
-        );
+        console.error("[Create Coin Submit] pool creation failed:", JSON.stringify(createPoolTxResult, null, 2));
         toast("Failed to create pool. Please, try again//");
         return;
       }
 
       setState("create_meme");
       // Coin creation
-      console.debug('beforesend')
+      console.debug("beforesend");
       const coinSignature = await sendTransaction(createTokenTransaction, MemechanClientInstance.connection, {
         maxRetries: 3,
         skipPreflight: true,
-      })
+      });
       await sleep(3000);
 
-      console.debug("coinSignature: ", coinSignature)
+      console.debug("coinSignature: ", coinSignature);
 
       // Check token creation succeeded
       const { blockhash: coinBlockhash, lastValidBlockHeight: coinLastValidBlockHeight } =
@@ -102,10 +102,7 @@ export function CreateCoin() {
       console.log("createTokenTxResult:", createTokenTxResult);
 
       if (createTokenTxResult.value.err) {
-        console.error(
-          "[Create Coin Submit] token creation failed:",
-          JSON.stringify(createTokenTxResult, null, 2),
-        );
+        console.error("[Create Coin Submit] token creation failed:", JSON.stringify(createTokenTxResult, null, 2));
         toast("Failed to create token. Please, try again//");
         return;
       }
@@ -125,9 +122,9 @@ export function CreateCoin() {
 
       // TODO: Need to confirm with Paolo
       // TODO: Need to promise.all if so
-      console.debug("poolSignature")
+      console.debug("poolSignature");
       await createCoinOnBE(data, poolSignature);
-      console.debug("coinSignature")
+      console.debug("coinSignature");
       await createCoinOnBE(data, coinSignature);
       console.log("created on BE");
       await sleep(3000);

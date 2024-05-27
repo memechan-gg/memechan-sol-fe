@@ -9,12 +9,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/dialog";
+import { useLivePool } from "@/hooks/live/useLivePool";
 import { useSeedPool } from "@/hooks/presale/useSeedPool";
 import { useStakingPool } from "@/hooks/staking/useStakingPool";
 import { useStakingPoolClient } from "@/hooks/staking/useStakingPoolClient";
 import { useTickets } from "@/hooks/useTickets";
 import { useWallet } from "@solana/wallet-adapter-react";
-import { Transaction } from "@solana/web3.js";
+import { PublicKey } from "@solana/web3.js";
 import BigNumber from "bignumber.js";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -26,8 +27,9 @@ export const UnstakeDialog = ({ tokenSymbol, poolAddress, memeMint }: UnstakeDia
   const [availableAmountToUnstake, setAvailableAmountToUnstake] = useState<string | null>(null);
   const [close, setClose] = useState(false);
 
-  const { sendTransaction } = useWallet();
+  const { publicKey, sendTransaction } = useWallet();
   const seedPoolData = useSeedPool(memeMint);
+  const livePool = useLivePool(memeMint);
   const stakingPool = useStakingPool(poolAddress);
   const stakingPoolClient = useStakingPoolClient(poolAddress);
   const { tickets, availableTicketsAmount } = useTickets(seedPoolData?.address);
@@ -44,11 +46,21 @@ export const UnstakeDialog = ({ tokenSymbol, poolAddress, memeMint }: UnstakeDia
   }, [stakingPool, stakingPoolClient, tickets]);
 
   const unstake = useCallback(async () => {
-    // TODO: Replace `transactions` to be from SDK
-    const transactions = [new Transaction(), new Transaction()];
+    if (!livePool || !publicKey || !availableAmountToUnstake || !stakingPoolClient) return;
+
+    const ticketIds = tickets.map((ticket) => ticket.id);
+
+    const { transactions, memeAccountKeypair, quoteAccountKeypair } =
+      await stakingPoolClient.getPreparedUnstakeTransactions({
+        ammPoolId: new PublicKey(livePool.address),
+        ticketIds: ticketIds,
+        user: publicKey,
+        amount: availableAmountToUnstake,
+      });
 
     for (const tx of transactions) {
       const signature = await sendTransaction(tx, MemechanClientInstance.connection, {
+        signers: [memeAccountKeypair, quoteAccountKeypair],
         maxRetries: 3,
       });
 
@@ -73,7 +85,7 @@ export const UnstakeDialog = ({ tokenSymbol, poolAddress, memeMint }: UnstakeDia
 
     toast.success("Successfully unstaked");
     setClose(true);
-  }, [sendTransaction]);
+  }, [sendTransaction, availableAmountToUnstake, livePool, publicKey, stakingPoolClient, tickets]);
 
   useEffect(() => {
     updateAvailableAmountToUnstake();

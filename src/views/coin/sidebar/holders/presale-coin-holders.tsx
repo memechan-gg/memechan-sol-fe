@@ -30,8 +30,8 @@ export const PresaleCoinHolders = ({ poolAddress, coinMetadata }: HoldersProps) 
               </div>
             );
           })}
-        {uniqueHolders && uniqueHolders.size === 0 && <div className="font-normal">No holders yet.</div>}
-        {!uniqueHolders && <div className="font-normal">Loading...</div>}
+        {uniqueHolders && uniqueHolders.size === 0 && <div className="font-normal text-regular">No holders yet.</div>}
+        {!uniqueHolders && <div className="font-normal text-regular">Loading...</div>}
       </div>
     </div>
   );
