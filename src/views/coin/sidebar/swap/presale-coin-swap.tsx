@@ -1,4 +1,4 @@
-import { MemechanClientInstance } from "@/common/solana";
+import { ChartApiInstance, MemechanClientInstance } from "@/common/solana";
 import { Button } from "@/components/button";
 import { useBoundPool } from "@/hooks/presale/useBoundPool";
 import { useBoundPoolClient } from "@/hooks/presale/useBoundPoolClient";
@@ -200,6 +200,14 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
             return;
           }
         }
+
+        const res = Promise.all([
+          ChartApiInstance.updatePrice({ symbol: "SLERF", address: tokenSymbol, type: "seedPool" }),
+          ChartApiInstance.updatePrice({ symbol: "USD", address: tokenSymbol, type: "seedPool" })
+        ]).catch((e) => {
+          console.debug(`[OHLCV] Failed updating price for OHLCV`);
+          console.error(`Failed updating price for OHLCV, error:`, e);
+        })
 
         toast.success("Swap succeeded");
         refetchSlerfBalance();
