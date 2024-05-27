@@ -10,7 +10,7 @@ export function presaleSwapParamsAreValid({
   slippagePercentage,
 }: {
   inputAmount: string;
-  slerfBalance: string;
+  slerfBalance: number;
   availableTicketsAmount: string;
   slippagePercentage: number;
   slerfToMeme: boolean;
@@ -46,8 +46,8 @@ export function liveSwapParamsAreValid({
   slippagePercentage,
 }: {
   inputAmount: string;
-  slerfBalance: string;
-  memeBalance: string;
+  slerfBalance: number;
+  memeBalance?: number;
   slippagePercentage: number;
   slerfToMeme: boolean;
 }) {
@@ -61,7 +61,7 @@ export function liveSwapParamsAreValid({
     return false;
   }
 
-  if (!slerfToMeme && new BigNumber(inputAmount).gt(memeBalance)) {
+  if (!slerfToMeme && (!memeBalance || new BigNumber(inputAmount).gt(memeBalance))) {
     toast.error("Insufficient balance");
     return false;
   }
