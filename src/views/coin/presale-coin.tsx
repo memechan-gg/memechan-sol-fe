@@ -22,7 +22,7 @@ export function PresaleCoin({
   const { marketCap, priceData } = usePresaleMemePriceAndMCap(boundPool);
   const uniqueHoldersMap = usePresaleCoinUniqueHolders(seedPoolData.address);
 
-  const CHARTS_API_HOSTNAME = process.env.NEXT_PUBLIC_CHARTS_API_HOSTNAME;
+  const CHARTS_API_HOSTNAME = process.env.NEXT_PUBLIC_CHARTS_API_HOSTNAME || "";
 
   return (
     <ThreadBoard title={coinMetadata.name}>
@@ -63,13 +63,7 @@ export function PresaleCoin({
         <div className="flex w-full flex-col lg:flex-row gap-6">
           <div className="flex flex-col gap-3 w-full">
             {/* Mockup Chart */}
-            <div className="h-64 w-full bg-regular flex items-center justify-center">
-              <ChartIframe
-                address={seedPoolData.address}
-                symbol={"SLERF"}
-                chartsApiUrl={CHARTS_API_HOSTNAME || "main--gleaming-dusk-2a9782.netlify.app"}
-              />
-            </div>
+            <ChartIframe address={seedPoolData.address} symbol={"SLERF"} chartsApiUrl={CHARTS_API_HOSTNAME} />
             <div className="flex flex-col gap-3 lg:hidden">
               <PresaleCoinSidebar coinMetadata={coinMetadata} pool={seedPoolData} />
             </div>

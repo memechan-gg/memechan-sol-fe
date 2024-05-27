@@ -24,7 +24,7 @@ export const ChartIframe = ({ address, symbol, chartsApiUrl }: ChartIframeProps)
   };
 
   return (
-    <div className="h-64 w-full bg-regular flex items-center justify-center">
+    <div className={`h-96 w-full flex items-center justify-center ${!isLoaded ? "bg-regular" : ""}`}>
       {!hasError ? (
         <iframe
           allowFullScreen

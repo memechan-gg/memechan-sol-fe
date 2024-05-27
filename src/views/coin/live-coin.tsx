@@ -1,4 +1,3 @@
-import { ChartIframe } from "@/components/chart-iframe";
 import { ThreadBoard } from "@/components/thread";
 import { useLiveCoinUniqueHolders } from "@/hooks/live/useLiveCoinUniqueHolders";
 import { useLiveMemePriceAndMCap } from "@/hooks/live/useLiveMemePriceAndMCap";
@@ -55,16 +54,11 @@ export function LiveCoin({ coinMetadata, livePoolData }: { coinMetadata: CoinMet
         </div>
         <div className="flex w-full flex-col lg:flex-row gap-6">
           <div className="flex flex-col gap-3 w-full">
-            {/* Mockup Chart */}
-            <div className="h-64 w-full bg-regular flex items-center justify-center">
-              {seedPool?.address && CHARTS_API_HOSTNAME && (
-                <ChartIframe
-                  address={seedPool.address}
-                  symbol={"SLERF"}
-                  chartsApiUrl={CHARTS_API_HOSTNAME || "main--gleaming-dusk-2a9782.netlify.app"}
-                />
-              )}
-            </div>
+            {/* Mockup Chart for live, presale one*/}
+            {/* {seedPool?.address && CHARTS_API_HOSTNAME && (
+              <ChartIframe address={seedPool.address} symbol={"SLERF"} chartsApiUrl={CHARTS_API_HOSTNAME} />
+            )} */}
+
             <div className="flex flex-col gap-3 lg:hidden">
               <LiveCoinSidebar pool={livePoolData} coinMetadata={coinMetadata} />
             </div>
