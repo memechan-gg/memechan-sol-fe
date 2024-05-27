@@ -1,6 +1,6 @@
 import { Popover } from "@headlessui/react";
 import { CaretDown } from "@phosphor-icons/react";
-import { Fragment, useState } from "react";
+import { Fragment } from "react";
 
 export function Dropdown({
   title,
@@ -11,15 +11,13 @@ export function Dropdown({
   title: string;
   items: string[];
   activeItem: string;
-  onItemChange?: (item: string) => void;
+  onItemChange: (item: string) => void;
 }) {
-  const [selectedItem, setSelectedItem] = useState(activeItem);
-
   return (
     <Popover>
       <Popover.Button>
         <div className="bg-regular flex flex-row gap-1 text-white font-bold py-1 px-2 rounded-lg">
-          {title}: {selectedItem.split("_").join(" ")} <CaretDown className="w-4 h-4" />
+          {title}: {activeItem.split("_").join(" ")} <CaretDown className="w-4 h-4" />
         </div>
       </Popover.Button>
       {/* Dropdown should show bottom */}
@@ -28,8 +26,7 @@ export function Dropdown({
           <Fragment key={item}>
             <div
               onClick={() => {
-                setSelectedItem(item);
-                onItemChange?.(item);
+                onItemChange(item);
               }}
               className="bg-white text-regular text-xs text-left p-2 hover:bg-regular hover:text-white"
             >

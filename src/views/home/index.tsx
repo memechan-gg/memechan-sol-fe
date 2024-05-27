@@ -1,7 +1,9 @@
 import { Dropdown } from "@/components/dropdown";
 import { NoticeBoard, Thread, ThreadBoard } from "@/components/thread";
 import Link from "next/link";
+import Skeleton from "react-loading-skeleton";
 import { useCoinApi } from "./hooks/useCoinApi";
+import { isThreadsSortBy, isThreadsSortDirection, isThreadsSortStatus } from "./hooks/utils";
 
 export function Home() {
   const { items: tokenList, status, setStatus, sortBy, setSortBy, direction, setDirection } = useCoinApi();
@@ -26,37 +28,51 @@ export function Home() {
         title="Meme Coins"
         titleChildren={
           <div className="flex flex-row gap-1 text-xs">
-            <Dropdown
-              items={["all", "pre_sale", "live"]}
-              activeItem={status}
-              title="status"
-              onItemChange={(item) => {
-                setStatus(item as "all" | "pre_sale" | "live");
-              }}
-            />
-            <Dropdown
-              items={["last_reply", "creation_time", "market_cap"]}
-              activeItem={sortBy}
-              title="sort by"
-              onItemChange={(item) => {
-                setSortBy(item);
-              }}
-            />
-            <Dropdown
-              items={["asc", "desc"]}
-              activeItem={direction}
-              title="order"
-              onItemChange={(item) => {
-                setDirection(item as "asc" | "desc");
-              }}
-            />
+            {status !== null ? (
+              <Dropdown
+                items={["all", "pre_sale", "live"]}
+                activeItem={status}
+                title="status"
+                onItemChange={(item) => {
+                  if (isThreadsSortStatus(item)) setStatus(item);
+                }}
+              />
+            ) : (
+              <Skeleton width={40} />
+            )}
+
+            {sortBy !== null ? (
+              <Dropdown
+                items={["last_reply", "creation_time", "market_cap"]}
+                activeItem={sortBy}
+                title="sort by"
+                onItemChange={(item) => {
+                  if (isThreadsSortBy(item)) setSortBy(item);
+                }}
+              />
+            ) : (
+              <Skeleton width={40} />
+            )}
+
+            {direction !== null ? (
+              <Dropdown
+                items={["asc", "desc"]}
+                activeItem={direction}
+                title="order"
+                onItemChange={(item) => {
+                  if (isThreadsSortDirection(item)) setDirection(item);
+                }}
+              />
+            ) : (
+              <Skeleton width={40} />
+            )}
           </div>
         }
       >
         <div className="flex flex-wrap gap-6 sm:justify-normal justify-center">
           {isLoading && (
             <>
-            <div className="text-regular">Loading...</div>
+              <div className="text-regular">Loading...</div>
             </>
           )}
           {isCoinsListExist && (
@@ -77,7 +93,7 @@ export function Home() {
           )}
           {isCoinsListEmpty && (
             <>
-            <div className="text-regular">No memecoins yet</div>
+              <div className="text-regular">No memecoins yet</div>
             </>
           )}
         </div>
