@@ -16,8 +16,8 @@ const fetchStakingPoolClient = async (poolAddress: string) => {
   }
 };
 
-export function useStakingPoolClient(poolAddress: string) {
-  const { data } = useSWR([`staking-pool-client-${poolAddress}`, poolAddress], ([url, pool]) =>
+export function useStakingPoolClient(poolAddress?: string) {
+  const { data } = useSWR(poolAddress ? [`staking-pool-client-${poolAddress}`, poolAddress] : null, ([url, pool]) =>
     fetchStakingPoolClient(pool),
   );
 
