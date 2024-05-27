@@ -118,6 +118,7 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
 
       for (const tx of swapTransactions) {
         const signature = await sendTransaction(tx, MemechanClientInstance.connection, {
+          skipPreflight: true,
           maxRetries: 3,
         });
 
@@ -148,6 +149,7 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
     } catch (e) {
       console.error("[LiveCoinSwap.onSwap] Swap error:", e);
       toast.error("Failed to swap. Please, try again");
+      return;
     }
   }, [
     slerfBalance,
@@ -220,7 +222,7 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
         onClick={onSwap}
         className="w-full bg-regular bg-opacity-80 hover:bg-opacity-50"
       >
-        <div className="text-xs font-bold text-white">Swap</div>
+        <div className="text-xs font-bold text-white">{isLoadingOutputAmount ? "Loading..." : "Swap"}</div>
       </Button>
     </>
   );
