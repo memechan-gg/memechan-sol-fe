@@ -9,9 +9,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/dialog";
-import { useLivePool } from "@/hooks/live/useLivePool";
 import { useSeedPool } from "@/hooks/presale/useSeedPool";
 import { useStakingPoolClient } from "@/hooks/staking/useStakingPoolClient";
+import { useStakingPoolFromApi } from "@/hooks/staking/useStakingPoolFromApi";
 import { useTickets } from "@/hooks/useTickets";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
@@ -19,14 +19,14 @@ import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { WithdrawFeesDialogProps } from "../../coin.types";
 
-export const WithdrawFeesDialog = ({ tokenSymbol, poolAddress, memeMint }: WithdrawFeesDialogProps) => {
+export const WithdrawFeesDialog = ({ tokenSymbol, livePoolAddress, memeMint }: WithdrawFeesDialogProps) => {
   const [memeAmount, setMemeAmount] = useState<string | null>(null);
   const [slerfAmount, setSlerfAmount] = useState<string | null>(null);
 
   const { publicKey, sendTransaction } = useWallet();
-  const stakingPoolClient = useStakingPoolClient(poolAddress);
   const seedPoolData = useSeedPool(memeMint);
-  const livePool = useLivePool(memeMint);
+  const stakingPoolFromApi = useStakingPoolFromApi(memeMint);
+  const stakingPoolClient = useStakingPoolClient(stakingPoolFromApi?.address);
   const { tickets } = useTickets(seedPoolData?.address);
 
   const updateAvailableFeesToWithdraw = useCallback(async () => {
@@ -45,13 +45,13 @@ export const WithdrawFeesDialog = ({ tokenSymbol, poolAddress, memeMint }: Withd
   }, [updateAvailableFeesToWithdraw]);
 
   const withdrawFees = useCallback(async () => {
-    if (!livePool || !publicKey || !stakingPoolClient) return;
+    if (!publicKey || !stakingPoolClient) return;
 
     const ticketIds = tickets.map((ticket) => ticket.id);
 
     const { memeAccountKeypair, quoteAccountKeypair, transactions } =
       await stakingPoolClient.getPreparedWithdrawFeesTransactions({
-        ammPoolId: new PublicKey(livePool.address),
+        ammPoolId: new PublicKey(livePoolAddress),
         ticketIds: ticketIds,
         user: publicKey,
       });
@@ -82,7 +82,7 @@ export const WithdrawFeesDialog = ({ tokenSymbol, poolAddress, memeMint }: Withd
     }
 
     toast.success("Fees are successfully withdrawn");
-  }, [sendTransaction, livePool, publicKey, stakingPoolClient, tickets]);
+  }, [sendTransaction, publicKey, stakingPoolClient, tickets, livePoolAddress]);
 
   return (
     <Dialog>
