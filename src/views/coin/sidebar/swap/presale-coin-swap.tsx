@@ -114,7 +114,7 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
   }, [getSwapOutputAmount, inputAmount, slerfToMeme, slippage]);
 
   const onSwap = useCallback(async () => {
-    if (!publicKey || !outputAmount) return;
+    if (!publicKey || !outputAmount || !slerfBalance) return;
 
     if (
       !presaleSwapParamsAreValid({
