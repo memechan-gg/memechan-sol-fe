@@ -12,7 +12,7 @@ import { LiveCoinSwapProps } from "../../coin.types";
 import { liveSwapParamsAreValid } from "../../coin.utils";
 import { SwapButton } from "./button";
 
-export const LiveCoinSwap = ({ tokenSymbol, pool: { address, tokenAddress } }: LiveCoinSwapProps) => {
+export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: tokenAddress } }: LiveCoinSwapProps) => {
   const [slerfToMeme, setSlerfToMeme] = useState<boolean>(true);
   const [inputAmount, setInputAmount] = useState<string>("0");
   const [outputData, setOutputData] = useState<SwapMemeOutput | null>(null);

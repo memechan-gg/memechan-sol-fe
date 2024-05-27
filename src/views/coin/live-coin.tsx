@@ -11,7 +11,7 @@ import { CommentsPanel } from "./comments-panel";
 import { LiveCoinSidebar } from "./sidebar/live-coin-sidebar";
 
 export function LiveCoin({ coinMetadata, livePoolData }: { coinMetadata: CoinMetadata; livePoolData: LivePoolData }) {
-  const { priceData, marketCap } = useLiveMemePriceAndMCap(livePoolData.address);
+  const { priceData, marketCap } = useLiveMemePriceAndMCap(livePoolData.id);
   const seedPool = useSeedPool(coinMetadata.address);
   const uniqueHoldersData = useLiveCoinUniqueHolders(coinMetadata.address, seedPool?.address);
 

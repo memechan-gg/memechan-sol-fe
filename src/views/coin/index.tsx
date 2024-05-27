@@ -28,7 +28,7 @@ export function Coin({ coin }: CoinProps) {
   }
 
   if (status === "LIVE" && livePools) {
-    const poolData = livePools.find((pool) => pool.tokenAddress === coin);
+    const poolData = livePools.find((pool) => pool.baseMint === coin);
 
     if (poolData) {
       return <LiveCoin coinMetadata={coinMetadata} livePoolData={poolData} />;
