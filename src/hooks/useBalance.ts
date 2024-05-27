@@ -2,39 +2,33 @@ import { MemechanClientInstance } from "@/common/solana";
 import { getTokenAccount } from "@/utils";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
-import { useCallback, useEffect, useState } from "react";
+import useSWR from "swr";
 
-export const useBalance = (coin: string) => {
-  const [balance, setBalance] = useState("0");
-  const { publicKey } = useWallet();
-
-  const fetchBalanceData = useCallback(async () => {
-    if (!publicKey) {
-      setBalance("0");
-      return;
-    }
-
+const fetchCoinBalance = async (tokenAddress: string, ownerAddress: PublicKey) => {
+  try {
     const tokenAccount = await getTokenAccount({
       connection: MemechanClientInstance.connection,
-      ownerAddress: publicKey,
-      tokenAddress: new PublicKey(coin),
+      ownerAddress: ownerAddress,
+      tokenAddress: new PublicKey(tokenAddress),
     });
 
-    if (tokenAccount) {
-      const uiAmount = tokenAccount.info.tokenAmount.uiAmountString;
-      setBalance(uiAmount);
-    }
-  }, [coin, publicKey]);
+    return tokenAccount;
+  } catch (e) {
+    console.error(`[fetchCoinBalance] Cannot fetch balance for token ${tokenAddress} and user ${ownerAddress}:`, e);
+  }
+};
 
-  useEffect(() => {
-    fetchBalanceData();
-  }, [fetchBalanceData]);
+export const useBalance = (coin: string) => {
+  const { publicKey } = useWallet();
 
-  // TODO: Uncomment
-  // useInterval(fetchBalanceData, 5000);
+  const { data: tokenAccount, mutate } = useSWR(
+    publicKey ? [`balance-${publicKey.toString()}-${coin}`, coin, publicKey] : null,
+    ([url, tokenAddress, ownerAddress]) => fetchCoinBalance(tokenAddress, ownerAddress),
+    { refreshInterval: 5000 },
+  );
 
   return {
-    balance,
-    refetch: fetchBalanceData,
+    balance: tokenAccount?.info.tokenAmount.uiAmount,
+    refetch: mutate,
   };
 };
