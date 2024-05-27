@@ -1,8 +1,16 @@
-import { Auth, MemechanClient, NoWalletAdapter, PoolAPI, SocialAPI, TokenAPI, BE_URL } from "@avernikoz/memechan-sol-sdk";
+import {
+  Auth,
+  BE_URL,
+  MemechanClient,
+  NoWalletAdapter,
+  PoolAPI,
+  SocialAPI,
+  TokenAPI,
+} from "@avernikoz/memechan-sol-sdk";
 import { Keypair } from "@solana/web3.js";
 
 // TODO: Change to mainnet
-export const DEFAULT_PROVIDER_URL = "https://devnet.helius-rpc.com/?api-key=5f8ab112-be5c-4982-aacf-04e3bc1d8dcf";
+export const DEFAULT_PROVIDER_URL = "https://devnet.helius-rpc.com/?api-key=28685dcc-7500-4b9a-83ad-d046eb965933";
 export const RPC_API_CLUSTER = "https://rpc.ankr.com/solana_devnet";
 export const WSS_API_CLUSTER = "wss://api.devnet.solana.com/";
 export const IS_TEST_ENV = false;

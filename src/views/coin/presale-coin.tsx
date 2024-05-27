@@ -1,3 +1,4 @@
+import { ChartIframe } from "@/components/chart-iframe";
 import { ThreadBoard } from "@/components/thread";
 import { useBoundPool } from "@/hooks/presale/useBoundPool";
 import { usePresaleCoinUniqueHolders } from "@/hooks/presale/usePresaleCoinUniqueHolders";
@@ -20,6 +21,8 @@ export function PresaleCoin({
   const boundPool = useBoundPool(seedPoolData.address);
   const { marketCap, priceData } = usePresaleMemePriceAndMCap(boundPool);
   const uniqueHoldersMap = usePresaleCoinUniqueHolders(seedPoolData.address);
+
+  const CHARTS_API_HOSTNAME = process.env.NEXT_PUBLIC_CHARTS_API_HOSTNAME;
 
   return (
     <ThreadBoard title={coinMetadata.name}>
@@ -61,7 +64,11 @@ export function PresaleCoin({
           <div className="flex flex-col gap-3 w-full">
             {/* Mockup Chart */}
             <div className="h-64 w-full bg-regular flex items-center justify-center">
-              <div className="text-white text-center">Chart</div>
+              <ChartIframe
+                address={seedPoolData.address}
+                symbol={"SLERF"}
+                chartsApiUrl={CHARTS_API_HOSTNAME || "main--gleaming-dusk-2a9782.netlify.app"}
+              />
             </div>
             <div className="flex flex-col gap-3 lg:hidden">
               <PresaleCoinSidebar coinMetadata={coinMetadata} pool={seedPoolData} />

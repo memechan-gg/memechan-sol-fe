@@ -1,3 +1,4 @@
+import { ChartIframe } from "@/components/chart-iframe";
 import { ThreadBoard } from "@/components/thread";
 import { useLiveCoinUniqueHolders } from "@/hooks/live/useLiveCoinUniqueHolders";
 import { useLiveMemePriceAndMCap } from "@/hooks/live/useLiveMemePriceAndMCap";
@@ -14,6 +15,7 @@ export function LiveCoin({ coinMetadata, livePoolData }: { coinMetadata: CoinMet
   const { priceData, marketCap } = useLiveMemePriceAndMCap(livePoolData.id);
   const seedPool = useSeedPool(coinMetadata.address);
   const uniqueHoldersData = useLiveCoinUniqueHolders(coinMetadata.address, seedPool?.address);
+  const CHARTS_API_HOSTNAME = process.env.NEXT_PUBLIC_CHARTS_API_HOSTNAME;
 
   return (
     <ThreadBoard title={coinMetadata.name}>
@@ -55,7 +57,13 @@ export function LiveCoin({ coinMetadata, livePoolData }: { coinMetadata: CoinMet
           <div className="flex flex-col gap-3 w-full">
             {/* Mockup Chart */}
             <div className="h-64 w-full bg-regular flex items-center justify-center">
-              <div className="text-white text-center">Chart</div>
+              {seedPool?.address && CHARTS_API_HOSTNAME && (
+                <ChartIframe
+                  address={seedPool.address}
+                  symbol={"SLERF"}
+                  chartsApiUrl={CHARTS_API_HOSTNAME || "main--gleaming-dusk-2a9782.netlify.app"}
+                />
+              )}
             </div>
             <div className="flex flex-col gap-3 lg:hidden">
               <LiveCoinSidebar pool={livePoolData} coinMetadata={coinMetadata} />
