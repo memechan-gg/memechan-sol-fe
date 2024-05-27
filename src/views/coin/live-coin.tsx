@@ -14,6 +14,7 @@ export function LiveCoin({ coinMetadata, livePoolData }: { coinMetadata: CoinMet
   const { priceData, marketCap } = useLiveMemePriceAndMCap(livePoolData.id);
   const seedPool = useSeedPool(coinMetadata.address);
   const uniqueHoldersData = useLiveCoinUniqueHolders(coinMetadata.address, seedPool?.address);
+  const CHARTS_API_HOSTNAME = process.env.NEXT_PUBLIC_CHARTS_API_HOSTNAME;
 
   return (
     <ThreadBoard title={coinMetadata.name}>
@@ -53,10 +54,11 @@ export function LiveCoin({ coinMetadata, livePoolData }: { coinMetadata: CoinMet
         </div>
         <div className="flex w-full flex-col lg:flex-row gap-6">
           <div className="flex flex-col gap-3 w-full">
-            {/* Mockup Chart */}
-            <div className="h-64 w-full bg-regular flex items-center justify-center">
-              <div className="text-white text-center">Chart</div>
-            </div>
+            {/* Mockup Chart for live, presale one*/}
+            {/* {seedPool?.address && CHARTS_API_HOSTNAME && (
+              <ChartIframe address={seedPool.address} symbol={"SLERF"} chartsApiUrl={CHARTS_API_HOSTNAME} />
+            )} */}
+
             <div className="flex flex-col gap-3 lg:hidden">
               <LiveCoinSidebar pool={livePoolData} coinMetadata={coinMetadata} />
             </div>
