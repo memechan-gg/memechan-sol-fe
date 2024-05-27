@@ -35,7 +35,7 @@ export const UnstakeDialog = ({ tokenSymbol, livePoolAddress, memeMint }: Unstak
   const stakingPoolFromApi = useStakingPoolFromApi(memeMint);
   const stakingPool = useStakingPool(stakingPoolFromApi?.address);
   const stakingPoolClient = useStakingPoolClient(stakingPoolFromApi?.address);
-  const { tickets, ticketsAmount } = useTickets(seedPoolData?.address);
+  const { tickets, stakedAmount } = useTickets(seedPoolData?.address);
 
   const updateAvailableAmountToUnstake = useCallback(async () => {
     if (!stakingPoolClient || !stakingPool || !tickets) return;
@@ -141,12 +141,9 @@ export const UnstakeDialog = ({ tokenSymbol, livePoolAddress, memeMint }: Unstak
         </DialogHeader>
         <div className="flex w-full flex-col gap-1">
           <div className="text-xs font-bold text-regular">
-            Locked amount:{" "}
-            {availableAmountToUnstake !== null ? (
-              BigNumber(ticketsAmount).minus(availableAmountToUnstake).toString()
-            ) : (
-              <Skeleton width={35} />
-            )}{" "}
+            Locked amount:
+            {availableAmountToUnstake !== null && BigNumber(stakedAmount).minus(availableAmountToUnstake).toString()}
+            {availableAmountToUnstake === null && <Skeleton width={35} />}{" "}
             <span className="!normal-case">{tokenSymbol}</span>
           </div>
           <div className="text-xs font-bold text-regular">
