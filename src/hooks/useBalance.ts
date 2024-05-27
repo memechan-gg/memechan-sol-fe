@@ -9,7 +9,10 @@ export const useBalance = (coin: string) => {
   const { publicKey } = useWallet();
 
   const fetchBalanceData = useCallback(async () => {
-    if (!publicKey) return;
+    if (!publicKey) {
+      setBalance("0");
+      return;
+    }
 
     const tokenAccount = await getTokenAccount({
       connection: MemechanClientInstance.connection,
