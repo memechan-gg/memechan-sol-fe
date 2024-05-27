@@ -1,4 +1,4 @@
-import { MemechanClientInstance } from "@/common/solana";
+import { ChartApiInstance, MemechanClientInstance } from "@/common/solana";
 import { Button } from "@/components/button";
 import { useBoundPool } from "@/hooks/presale/useBoundPool";
 import { useBoundPoolClient } from "@/hooks/presale/useBoundPoolClient";
@@ -171,6 +171,11 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
         toast.success("Swap succeeded");
         refetchSlerfBalance();
         refreshAvailableTickets();
+        const res = await ChartApiInstance.updatePrice({ address: pool.address, type: "seedPool" })
+        .catch((e) => {
+          console.debug(`[OHLCV] Failed updating price for OHLCV`);
+          console.error(`Failed updating price for OHLCV, error:`, e);
+        })
         return;
       }
 
@@ -204,6 +209,11 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
         toast.success("Swap succeeded");
         refetchSlerfBalance();
         refreshAvailableTickets();
+        const res = await ChartApiInstance.updatePrice({ address: pool.address, type: "seedPool" })
+        .catch((e) => {
+          console.debug(`[OHLCV] Failed updating price for OHLCV`);
+          console.error(`Failed updating price for OHLCV, error:`, e);
+        })
         return;
       }
     } catch (e) {

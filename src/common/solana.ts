@@ -6,6 +6,7 @@ import {
   PoolAPI,
   SocialAPI,
   TokenAPI,
+  ChartApi,
 } from "@avernikoz/memechan-sol-sdk";
 import { Keypair } from "@solana/web3.js";
 
@@ -28,6 +29,7 @@ export const AuthInstance = new Auth(BE_URL);
 export const TokenApiInstance = new TokenAPI(BE_URL);
 export const PoolApiInstance = new PoolAPI(BE_URL);
 export const SocialApiInstance = new SocialAPI(BE_URL);
+export const ChartApiInstance = new ChartApi(BE_URL);
 export const MemechanClientInstance = new MemechanClient({
   wallet: NoWalletAdapter,
   heliusApiUrl: DEFAULT_PROVIDER_URL,
