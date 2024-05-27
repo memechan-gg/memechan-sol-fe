@@ -13,6 +13,7 @@ import { useSeedPool } from "@/hooks/presale/useSeedPool";
 import { useStakingPoolClient } from "@/hooks/staking/useStakingPoolClient";
 import { useStakingPoolFromApi } from "@/hooks/staking/useStakingPoolFromApi";
 import { useTickets } from "@/hooks/useTickets";
+import { getTransactionSigners } from "@/utils/getTransactionSigners";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import { useCallback, useEffect, useState } from "react";
@@ -57,8 +58,13 @@ export const WithdrawFeesDialog = ({ tokenSymbol, livePoolAddress, memeMint }: W
       });
 
     for (const tx of transactions) {
+      const signers = getTransactionSigners({
+        extraSigners: [memeAccountKeypair, quoteAccountKeypair],
+        transaction: tx,
+      });
+
       const signature = await sendTransaction(tx, MemechanClientInstance.connection, {
-        signers: [memeAccountKeypair, quoteAccountKeypair],
+        signers,
         maxRetries: 3,
       });
 
