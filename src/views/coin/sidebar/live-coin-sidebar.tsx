@@ -18,7 +18,7 @@ export function LiveCoinSidebar({ coinMetadata, pool }: LiveCoinSidebarProps) {
       </SidebarItem>
       {tickets.length > 0 && (
         <SidebarItem>
-          <StakingPool tokenSymbol={coinMetadata.symbol} poolAddress={pool.address} memeMint={pool.tokenAddress} />
+          <StakingPool tokenSymbol={coinMetadata.symbol} livePoolAddress={pool.id} memeMint={pool.baseMint} />
         </SidebarItem>
       )}
       <SidebarItem>
