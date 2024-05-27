@@ -9,30 +9,32 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/dialog";
-import { useLivePool } from "@/hooks/live/useLivePool";
 import { useSeedPool } from "@/hooks/presale/useSeedPool";
 import { useStakingPool } from "@/hooks/staking/useStakingPool";
 import { useStakingPoolClient } from "@/hooks/staking/useStakingPoolClient";
+import { useStakingPoolFromApi } from "@/hooks/staking/useStakingPoolFromApi";
 import { useTickets } from "@/hooks/useTickets";
+import { MEMECHAN_MEME_TOKEN_DECIMALS } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import BigNumber from "bignumber.js";
+import { BN } from "bn.js";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import Skeleton from "react-loading-skeleton";
 import { useInterval } from "usehooks-ts";
 import { UnstakeDialogProps } from "../../coin.types";
 
-export const UnstakeDialog = ({ tokenSymbol, poolAddress, memeMint }: UnstakeDialogProps) => {
+export const UnstakeDialog = ({ tokenSymbol, livePoolAddress, memeMint }: UnstakeDialogProps) => {
   const [availableAmountToUnstake, setAvailableAmountToUnstake] = useState<string | null>(null);
   const [close, setClose] = useState(false);
 
   const { publicKey, sendTransaction } = useWallet();
   const seedPoolData = useSeedPool(memeMint);
-  const livePool = useLivePool(memeMint);
-  const stakingPool = useStakingPool(poolAddress);
-  const stakingPoolClient = useStakingPoolClient(poolAddress);
-  const { tickets, availableTicketsAmount } = useTickets(seedPoolData?.address);
+  const stakingPoolFromApi = useStakingPoolFromApi(memeMint);
+  const stakingPool = useStakingPool(stakingPoolFromApi?.address);
+  const stakingPoolClient = useStakingPoolClient(stakingPoolFromApi?.address);
+  const { tickets, ticketsAmount } = useTickets(seedPoolData?.address);
 
   const updateAvailableAmountToUnstake = useCallback(async () => {
     if (!stakingPoolClient || !stakingPool || !tickets) return;
@@ -42,20 +44,26 @@ export const UnstakeDialog = ({ tokenSymbol, poolAddress, memeMint }: UnstakeDia
       stakingPoolVestingConfig: stakingPool.vestingConfig,
     });
 
-    setAvailableAmountToUnstake(amount);
+    const formattedAmount = new BigNumber(amount).div(10 ** MEMECHAN_MEME_TOKEN_DECIMALS).toString();
+
+    setAvailableAmountToUnstake(formattedAmount);
   }, [stakingPool, stakingPoolClient, tickets]);
 
   const unstake = useCallback(async () => {
-    if (!livePool || !publicKey || !availableAmountToUnstake || !stakingPoolClient) return;
+    if (!publicKey || !availableAmountToUnstake || !stakingPoolClient) return;
 
     const ticketIds = tickets.map((ticket) => ticket.id);
 
+    const rawAmountToUnstake = new BigNumber(availableAmountToUnstake)
+      .multipliedBy(10 ** MEMECHAN_MEME_TOKEN_DECIMALS)
+      .toFixed(0);
+
     const { transactions, memeAccountKeypair, quoteAccountKeypair } =
       await stakingPoolClient.getPreparedUnstakeTransactions({
-        ammPoolId: new PublicKey(livePool.address),
+        ammPoolId: new PublicKey(livePoolAddress),
         ticketIds: ticketIds,
         user: publicKey,
-        amount: availableAmountToUnstake,
+        amount: new BN(rawAmountToUnstake),
       });
 
     for (const tx of transactions) {
@@ -85,7 +93,7 @@ export const UnstakeDialog = ({ tokenSymbol, poolAddress, memeMint }: UnstakeDia
 
     toast.success("Successfully unstaked");
     setClose(true);
-  }, [sendTransaction, availableAmountToUnstake, livePool, publicKey, stakingPoolClient, tickets]);
+  }, [sendTransaction, availableAmountToUnstake, livePoolAddress, publicKey, stakingPoolClient, tickets]);
 
   useEffect(() => {
     updateAvailableAmountToUnstake();
@@ -95,8 +103,18 @@ export const UnstakeDialog = ({ tokenSymbol, poolAddress, memeMint }: UnstakeDia
     updateAvailableAmountToUnstake();
   }, 5000);
 
-  const startVestingTime = new Date(+stakingPool?.vestingConfig.cliffTs).toLocaleString();
-  const endVestingTime = new Date(+stakingPool?.vestingConfig.endTs).toLocaleString();
+  let startVestingTime: JSX.Element | string = <Skeleton width={35} />;
+  let endVestingTime: JSX.Element | string = <Skeleton width={35} />;
+
+  if (stakingPool) {
+    const startVestingTimeInMs = new BigNumber(stakingPool.vestingConfig.cliffTs.toString())
+      .multipliedBy(1000)
+      .toNumber();
+    const endVestingTimeInMs = new BigNumber(stakingPool.vestingConfig.endTs.toString()).multipliedBy(1000).toNumber();
+
+    startVestingTime = new Date(startVestingTimeInMs).toLocaleString();
+    endVestingTime = new Date(endVestingTimeInMs).toLocaleString();
+  }
 
   return (
     <Dialog open={close ? false : undefined}>
@@ -119,7 +137,7 @@ export const UnstakeDialog = ({ tokenSymbol, poolAddress, memeMint }: UnstakeDia
           <div className="text-xs font-bold text-regular">
             Locked amount:{" "}
             {availableAmountToUnstake !== null ? (
-              BigNumber(availableTicketsAmount).minus(availableAmountToUnstake).toString()
+              BigNumber(ticketsAmount).minus(availableAmountToUnstake).toString()
             ) : (
               <Skeleton width={35} />
             )}{" "}
@@ -137,7 +155,7 @@ export const UnstakeDialog = ({ tokenSymbol, poolAddress, memeMint }: UnstakeDia
             onClick={unstake}
             className="w-full bg-regular bg-opacity-80 hover:bg-opacity-50"
           >
-            <div className="text-xs font-bold text-white">Unstake</div>
+            <span className="text-xs font-bold text-white">Unstake</span>
           </Button>
         </DialogFooter>
       </DialogContent>
