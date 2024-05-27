@@ -5,7 +5,6 @@ import { useTokenAccounts } from "@/hooks/useTokenAccounts";
 import { GetLiveSwapTransactionParams, GetSwapOutputAmountParams } from "@/types/hooks";
 import { LivePoolClient, MEMECHAN_QUOTE_MINT, SwapMemeOutput, buildTxs } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
-import { VersionedTransaction } from "@solana/web3.js";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { LiveCoinSwapProps } from "../../coin.types";
@@ -102,7 +101,7 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
   }, [getSwapOutputAmount, inputAmount, slerfToMeme, slippage]);
 
   const onSwap = useCallback(async () => {
-    if (!publicKey || !outputData || !signTransaction) return;
+    if (!publicKey || !outputData || !signTransaction || !slerfBalance) return;
 
     if (!liveSwapParamsAreValid({ inputAmount, memeBalance, slerfBalance, slerfToMeme, slippagePercentage: +slippage }))
       return;
@@ -118,10 +117,6 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
       const swapTransactions = await buildTxs(MemechanClientInstance.connection, publicKey, simpleSwapTransactions);
 
       for (const tx of swapTransactions) {
-        if (tx instanceof VersionedTransaction) {
-          await signTransaction(tx);
-        }
-
         const signature = await sendTransaction(tx, MemechanClientInstance.connection, {
           maxRetries: 3,
         });
@@ -189,9 +184,9 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
           min="0"
         />
         {slerfToMeme && <div className="text-xs font-bold text-regular">available SLERF: {slerfBalance}</div>}
-        {!slerfToMeme && (
+        {!slerfToMeme && memeBalance && (
           <div className="text-xs !normal-case font-bold text-regular">
-            available {tokenSymbol} to sell: {Number(memeBalance).toFixed(2)}
+            available {tokenSymbol} to sell: {(Math.floor(Number(memeBalance) * 100) / 100).toFixed(2)}
           </div>
         )}
         {isLoadingOutputAmount && (
