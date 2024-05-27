@@ -201,13 +201,11 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
           }
         }
 
-        const res = Promise.all([
-          ChartApiInstance.updatePrice({ symbol: "SLERF", address: tokenSymbol, type: "seedPool" }),
-          ChartApiInstance.updatePrice({ symbol: "USD", address: tokenSymbol, type: "seedPool" })
-        ]).catch((e) => {
-          console.debug(`[OHLCV] Failed updating price for OHLCV`);
-          console.error(`Failed updating price for OHLCV, error:`, e);
-        })
+          const res = ChartApiInstance.updatePrice({ address: tokenSymbol, type: "seedPool" })
+          .catch((e) => {
+            console.debug(`[OHLCV] Failed updating price for OHLCV`);
+            console.error(`Failed updating price for OHLCV, error:`, e);
+          })
 
         toast.success("Swap succeeded");
         refetchSlerfBalance();
