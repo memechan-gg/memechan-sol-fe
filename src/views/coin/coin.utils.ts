@@ -10,7 +10,7 @@ export function presaleSwapParamsAreValid({
   slippagePercentage,
 }: {
   inputAmount: string;
-  slerfBalance: number;
+  slerfBalance: string;
   availableTicketsAmount: string;
   slippagePercentage: number;
   slerfToMeme: boolean;
@@ -46,8 +46,8 @@ export function liveSwapParamsAreValid({
   slippagePercentage,
 }: {
   inputAmount: string;
-  slerfBalance: number;
-  memeBalance?: number;
+  slerfBalance: string;
+  memeBalance?: string;
   slippagePercentage: number;
   slerfToMeme: boolean;
 }) {
