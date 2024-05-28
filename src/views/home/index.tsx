@@ -6,7 +6,18 @@ import { useCoinApi } from "./hooks/useCoinApi";
 import { isThreadsSortBy, isThreadsSortDirection, isThreadsSortStatus } from "./hooks/utils";
 
 export function Home() {
-  const { items: tokenList, status, setStatus, sortBy, setSortBy, direction, setDirection } = useCoinApi();
+  const {
+    items: tokenList,
+    status,
+    setStatus,
+    sortBy,
+    setSortBy,
+    direction,
+    setDirection,
+    liveNextPageToken,
+    presaleNextPageToken,
+    loadMore,
+  } = useCoinApi();
 
   const isLoading = tokenList === null;
   const isCoinsListExist = tokenList !== null && tokenList.length > 0;
@@ -69,32 +80,44 @@ export function Home() {
           </div>
         }
       >
-        <div className="flex flex-wrap gap-6 sm:justify-normal justify-center">
-          {isLoading && (
-            <>
-              <div className="text-regular">Loading...</div>
-            </>
-          )}
-          {isCoinsListExist && (
-            <>
-              {tokenList.map((item) => (
-                <Thread
-                  mint={item.address}
-                  key={item.address}
-                  title={item.name}
-                  image={item.image}
-                  createdBy={item.creator}
-                  marketCap={item.marketcap.toString()}
-                  ticker={item.symbol}
-                  description={item.description}
-                />
-              ))}
-            </>
-          )}
-          {isCoinsListEmpty && (
-            <>
-              <div className="text-regular">No memecoins yet</div>
-            </>
+        <div className="flex flex-col items-center">
+          <div className="flex flex-wrap gap-6 sm:justify-normal justify-center self-start">
+            {isLoading && (
+              <>
+                <div className="text-regular">Loading...</div>
+              </>
+            )}
+            {isCoinsListExist && (
+              <>
+                {tokenList.map((item) => (
+                  <Thread
+                    mint={item.address}
+                    key={item.address}
+                    title={item.name}
+                    image={item.image}
+                    createdBy={item.creator}
+                    marketCap={item.marketcap.toString()}
+                    ticker={item.symbol}
+                    description={item.description}
+                  />
+                ))}
+              </>
+            )}
+            {isCoinsListEmpty && (
+              <>
+                <div className="text-regular">No memecoins yet</div>
+              </>
+            )}
+          </div>
+          {((status === "live" && liveNextPageToken) ||
+            (status === "pre_sale" && presaleNextPageToken) ||
+            (status === "all" && (presaleNextPageToken || liveNextPageToken))) && (
+            <div
+              onClick={loadMore}
+              className="text-regular font-xs flex justify-self-center mt-7 cursor-pointer hover:underline"
+            >
+              Load more
+            </div>
           )}
         </div>
       </ThreadBoard>
