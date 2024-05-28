@@ -171,11 +171,10 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
         toast.success("Swap succeeded");
         refetchSlerfBalance();
         refreshAvailableTickets();
-        const res = await ChartApiInstance.updatePrice({ address: pool.address, type: "seedPool" })
-        .catch((e) => {
+        const res = await ChartApiInstance.updatePrice({ address: pool.address, type: "seedPool" }).catch((e) => {
           console.debug(`[OHLCV] Failed updating price for OHLCV`);
           console.error(`Failed updating price for OHLCV, error:`, e);
-        })
+        });
         return;
       }
 
@@ -209,11 +208,10 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
         toast.success("Swap succeeded");
         refetchSlerfBalance();
         refreshAvailableTickets();
-        const res = await ChartApiInstance.updatePrice({ address: pool.address, type: "seedPool" })
-        .catch((e) => {
+        const res = await ChartApiInstance.updatePrice({ address: pool.address, type: "seedPool" }).catch((e) => {
           console.debug(`[OHLCV] Failed updating price for OHLCV`);
           console.error(`Failed updating price for OHLCV, error:`, e);
-        })
+        });
         return;
       }
     } catch (e) {
@@ -232,6 +230,7 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
     slippage,
     refetchSlerfBalance,
     refreshAvailableTickets,
+    pool.address,
   ]);
 
   return (
