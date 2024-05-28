@@ -1,0 +1,12 @@
+githubRepoOwner: memechan-gg
+githubRepoName: memechan-sol-fe
+githubHost: github.com
+githubRemote: origin/feature
+githubBranch: chart-integration
+requireChecks: true
+requireApproval: true
+mergeMethod: rebase
+mergeQueue: false
+forceFetchTags: false
+showPrTitlesInStack: false
+branchPushIndividually: false
