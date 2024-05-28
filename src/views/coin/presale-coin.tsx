@@ -63,7 +63,8 @@ export function PresaleCoin({
         <div className="flex w-full flex-col lg:flex-row gap-6">
           <div className="flex flex-col gap-3 w-full">
             {/* Mockup Chart */}
-            <ChartIframe address={seedPoolData.address} symbol={"SLERF"} chartsApiUrl={CHARTS_API_HOSTNAME} />
+            {/* <ChartIframe address={seedPoolData.address} symbol={"SLERF"} chartsApiUrl={CHARTS_API_HOSTNAME} /> */}
+            <ChartIframe src={`https://${CHARTS_API_HOSTNAME}/?address=${seedPoolData.address}&symbol=SLERF`} />
             <div className="flex flex-col gap-3 lg:hidden">
               <PresaleCoinSidebar coinMetadata={coinMetadata} pool={seedPoolData} />
             </div>

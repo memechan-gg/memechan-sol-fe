@@ -1,3 +1,4 @@
+import { ChartIframe } from "@/components/chart-iframe";
 import { ThreadBoard } from "@/components/thread";
 import { useLiveCoinUniqueHolders } from "@/hooks/live/useLiveCoinUniqueHolders";
 import { useLiveMemePriceAndMCap } from "@/hooks/live/useLiveMemePriceAndMCap";
@@ -54,10 +55,17 @@ export function LiveCoin({ coinMetadata, livePoolData }: { coinMetadata: CoinMet
         </div>
         <div className="flex w-full flex-col lg:flex-row gap-6">
           <div className="flex flex-col gap-3 w-full">
-            {/* Mockup Chart for live, presale one*/}
+            {/* Mockup Chart for */}
+
+            {/* Prod */}
             {/* {seedPool?.address && CHARTS_API_HOSTNAME && (
-              <ChartIframe address={seedPool.address} symbol={"SLERF"} chartsApiUrl={CHARTS_API_HOSTNAME} />
+              <ChartIframe
+                src={`https://dexscreener.com/solana/${seedPool.address}?embed=1&theme=dark&trades=0&info=0`}
+              />
             )} */}
+
+            {/* Mock */}
+            <ChartIframe src="https://dexscreener.com/solana/7rtPJWdvYwGfqgUJhjGmXWYHvubwzJMG1n6iYmRr5fyw?embed=1&theme=dark&trades=0&info=0" />
 
             <div className="flex flex-col gap-3 lg:hidden">
               <LiveCoinSidebar pool={livePoolData} coinMetadata={coinMetadata} />

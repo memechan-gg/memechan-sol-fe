@@ -2,20 +2,14 @@ import { useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
-interface ChartIframeProps {
-  address: string;
-  symbol: string;
-  chartsApiUrl: string;
-}
-
-export const ChartIframe = ({ address, symbol, chartsApiUrl }: ChartIframeProps) => {
+export const ChartIframe = ({ src }: { src: string }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
     setIsLoaded(false);
     setHasError(false);
-  }, [address, symbol, chartsApiUrl]);
+  }, [src]);
 
   const handleLoad = () => {
     setIsLoaded(true);
@@ -32,7 +26,7 @@ export const ChartIframe = ({ address, symbol, chartsApiUrl }: ChartIframeProps)
           <iframe
             allowFullScreen
             style={{ borderWidth: 0, display: isLoaded ? "block" : "none" }}
-            src={`https://${chartsApiUrl}/?address=${address}&symbol=${symbol}`}
+            src={src}
             width="100%"
             height="100%"
             onLoad={handleLoad}
