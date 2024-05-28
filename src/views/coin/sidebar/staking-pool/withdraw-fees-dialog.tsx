@@ -66,6 +66,7 @@ export const WithdrawFeesDialog = ({ tokenSymbol, livePoolAddress, memeMint }: W
       const signature = await sendTransaction(tx, MemechanClientInstance.connection, {
         signers,
         maxRetries: 3,
+        skipPreflight: true,
       });
 
       // Check that a part of the withdraw fees succeeded
@@ -82,7 +83,7 @@ export const WithdrawFeesDialog = ({ tokenSymbol, livePoolAddress, memeMint }: W
 
       if (swapTxResult.value.err) {
         console.error("[WithdrawFeesDialog.withdrawFees] Withdraw fees failed:", JSON.stringify(swapTxResult, null, 2));
-        toast("Fees withdrawal failed. Please, try again");
+        toast.error("Fees withdrawal failed. Please, try again");
         return;
       }
     }

@@ -73,7 +73,7 @@ export function CreateCoin() {
 
       if (createPoolTxResult.value.err) {
         console.error("[Create Coin Submit] pool creation failed:", JSON.stringify(createPoolTxResult, null, 2));
-        toast("Failed to create pool. Please, try again//");
+        toast.error("Failed to create pool. Please, try again");
         return;
       }
 
@@ -103,7 +103,7 @@ export function CreateCoin() {
 
       if (createTokenTxResult.value.err) {
         console.error("[Create Coin Submit] token creation failed:", JSON.stringify(createTokenTxResult, null, 2));
-        toast("Failed to create token. Please, try again//");
+        toast.error("Failed to create token. Please, try again");
         return;
       }
 
