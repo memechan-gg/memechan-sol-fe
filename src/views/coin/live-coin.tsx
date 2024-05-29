@@ -31,7 +31,7 @@ export function LiveCoin({ coinMetadata, livePoolData }: { coinMetadata: CoinMet
           </div>
           <div className="flex flex-col gap-1">
             <div className="text-sm font-bold text-regular">Market Cap</div>
-            <div className="text-xs font-bold text-regular">${marketCap ?? <Skeleton width={35} />}</div>
+            <div className="text-xs font-bold text-regular">${coinMetadata.marketcap.toFixed(2)}</div>
           </div>
           <div className="flex flex-col gap-1">
             <div className="text-sm font-bold !normal-case text-regular">USD price</div>

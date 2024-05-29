@@ -52,7 +52,7 @@ export function Thread({
   mint: string;
   image: string;
   createdBy: string;
-  marketCap: string;
+  marketCap: number;
   ticker: string;
   description: string;
 }) {
@@ -73,7 +73,7 @@ export function Thread({
             <span className="font-bold hover:underline">{createdBy.slice(0, 5) + "..." + createdBy.slice(-3)}</span>
           </Link>
         </div>
-        <div className="text-green">market cap: {marketCap}</div>
+        <div className="text-green">market cap: {marketCap.toFixed(2)}</div>
         <Link href={`/coin/${mint}`}>
           <div className="text-regular flex flex-col flex-wrap">
             <div className="font-bold !normal-case">symbol: {ticker}</div>

@@ -96,7 +96,7 @@ export function Home() {
                     title={item.name}
                     image={item.image}
                     createdBy={item.creator}
-                    marketCap={item.marketcap.toString()}
+                    marketCap={item.marketcap}
                     ticker={item.symbol}
                     description={item.description}
                   />
