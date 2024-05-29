@@ -1,7 +1,6 @@
 import { ThreadBoard } from "@/components/thread";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useCoinApi } from "../home/hooks/useCoinApi";
 import { CoinItem } from "./coin-item";
 
 type ProfileProps = {
@@ -18,7 +17,6 @@ type Token = {
 };
 
 export function Profile({ address }: ProfileProps) {
-  const { items: tokenList, status, setStatus, sortBy, setSortBy, direction, setDirection } = useCoinApi();
   const [tokens, setTokens] = useState<Token[]>([]);
   const [error, setError] = useState<string | null>(null);
 
@@ -82,8 +80,6 @@ export function Profile({ address }: ProfileProps) {
 
     fetchTokens();
   }, [address]);
-
-  console.log(tokenList);
 
   return (
     <div className="w-full flex items-center justify-center">
