@@ -57,7 +57,7 @@ export function Profile({ address }: ProfileProps) {
                 decimals: 0,
                 image: presaleData.image || "",
                 name: presaleData.name || "",
-                marketCap: presaleData.marketCap || 0,
+                marketCap: presaleData.marketcap || 0,
               };
             } catch (presaleError) {
               console.error("Error fetching presale data for token:", token.tokenAddress, presaleError);
