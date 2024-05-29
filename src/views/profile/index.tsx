@@ -18,12 +18,14 @@ type Token = {
 export function Profile({ address }: ProfileProps) {
   const [tokens, setTokens] = useState<Token[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchTokens = async () => {
+      setIsLoading(true);
       try {
         const response = await fetch(
-          `https://waqxcrbt93.execute-api.us-east-1.amazonaws.com/prod/sol/holders?walletAddress=${`BdT3bBgwk6vsizdM4ozjGY4jiTHmg5kArUHVpQCeAeH`}&sortBy=tokenAmount&direction=asc`,
+          `https://waqxcrbt93.execute-api.us-east-1.amazonaws.com/prod/sol/holders?walletAddress=${address}&sortBy=tokenAmount&direction=asc`,
         );
         if (!response.ok) {
           throw new Error(`Error fetching tokens: ${response.statusText}`);
@@ -52,10 +54,10 @@ export function Profile({ address }: ProfileProps) {
               return {
                 mint: token.tokenAddress,
                 tokenAmount: token.tokenAmount,
-                decimals: 0, // Assuming you don't have decimals info from the API
-                image: presaleData.image || "", // Assuming the presale API returns an image
-                name: presaleData.name || "", // Assuming the presale API returns a name
-                marketCap: presaleData.marketCap || 0, // Assuming the presale API returns a market cap
+                decimals: 0,
+                image: presaleData.image || "",
+                name: presaleData.name || "",
+                marketCap: presaleData.marketCap || 0,
               };
             } catch (presaleError) {
               console.error("Error fetching presale data for token:", token.tokenAddress, presaleError);
@@ -78,6 +80,8 @@ export function Profile({ address }: ProfileProps) {
       } catch (error) {
         setError("Error fetching tokens.");
         console.error("Error fetching tokens:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -100,7 +104,9 @@ export function Profile({ address }: ProfileProps) {
             {/* Coins Held */}
             <div className="flex flex-col gap-2">
               <h4 className="text-sm font-bold text-regular">Coins Held</h4>
-              {error ? (
+              {isLoading ? (
+                <div className="text-blue-500">Loading...</div>
+              ) : error ? (
                 <div className="text-red-500">{error}</div>
               ) : tokens.length === 0 ? (
                 <div className="text-red-500">No coins fetched.</div>
