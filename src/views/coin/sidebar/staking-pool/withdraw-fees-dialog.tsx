@@ -13,9 +13,10 @@ import { useSeedPool } from "@/hooks/presale/useSeedPool";
 import { useStakingPoolClient } from "@/hooks/staking/useStakingPoolClient";
 import { useStakingPoolFromApi } from "@/hooks/staking/useStakingPoolFromApi";
 import { useTickets } from "@/hooks/useTickets";
-import { getTransactionSigners } from "@/utils/getTransactionSigners";
+import { MEMECHAN_MEME_TOKEN_DECIMALS, MEMECHAN_QUOTE_TOKEN_DECIMALS } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
+import BigNumber from "bignumber.js";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { WithdrawFeesDialogProps } from "../../coin.types";
@@ -25,10 +26,10 @@ export const WithdrawFeesDialog = ({ tokenSymbol, livePoolAddress, memeMint }: W
   const [slerfAmount, setSlerfAmount] = useState<string | null>(null);
 
   const { publicKey, sendTransaction } = useWallet();
-  const seedPoolData = useSeedPool(memeMint);
+  const { seedPool } = useSeedPool(memeMint);
   const stakingPoolFromApi = useStakingPoolFromApi(memeMint);
   const stakingPoolClient = useStakingPoolClient(stakingPoolFromApi?.address);
-  const { tickets } = useTickets(seedPoolData?.address);
+  const { tickets } = useTickets(seedPool?.address);
 
   const updateAvailableFeesToWithdraw = useCallback(async () => {
     if (!stakingPoolClient) return;
@@ -37,8 +38,11 @@ export const WithdrawFeesDialog = ({ tokenSymbol, livePoolAddress, memeMint }: W
 
     const { memeFees, slerfFees } = await stakingPoolClient.getAvailableWithdrawFeesAmount({ tickets: ticketFields });
 
-    setMemeAmount(memeFees);
-    setSlerfAmount(slerfFees);
+    const formattedMemeFees = new BigNumber(memeFees).div(10 ** MEMECHAN_MEME_TOKEN_DECIMALS).toString();
+    const formattedSlerfFees = new BigNumber(slerfFees).div(10 ** MEMECHAN_QUOTE_TOKEN_DECIMALS).toString();
+
+    setMemeAmount(formattedMemeFees);
+    setSlerfAmount(formattedSlerfFees);
   }, [stakingPoolClient, tickets]);
 
   useEffect(() => {
@@ -50,22 +54,16 @@ export const WithdrawFeesDialog = ({ tokenSymbol, livePoolAddress, memeMint }: W
 
     const ticketIds = tickets.map((ticket) => ticket.id);
 
-    const { memeAccountKeypair, quoteAccountKeypair, transactions } =
-      await stakingPoolClient.getPreparedWithdrawFeesTransactions({
-        ammPoolId: new PublicKey(livePoolAddress),
-        ticketIds: ticketIds,
-        user: publicKey,
-      });
+    const transactions = await stakingPoolClient.getPreparedWithdrawFeesTransactions({
+      ammPoolId: new PublicKey(livePoolAddress),
+      ticketIds: ticketIds,
+      user: publicKey,
+    });
 
     for (const tx of transactions) {
-      const signers = getTransactionSigners({
-        extraSigners: [memeAccountKeypair, quoteAccountKeypair],
-        transaction: tx,
-      });
-
       const signature = await sendTransaction(tx, MemechanClientInstance.connection, {
-        signers,
         maxRetries: 3,
+        skipPreflight: true,
       });
 
       // Check that a part of the withdraw fees succeeded
@@ -82,7 +80,7 @@ export const WithdrawFeesDialog = ({ tokenSymbol, livePoolAddress, memeMint }: W
 
       if (swapTxResult.value.err) {
         console.error("[WithdrawFeesDialog.withdrawFees] Withdraw fees failed:", JSON.stringify(swapTxResult, null, 2));
-        toast("Fees withdrawal failed. Please, try again");
+        toast.error("Fees withdrawal failed. Please, try again");
         return;
       }
     }

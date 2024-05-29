@@ -1,4 +1,5 @@
 import "@/styles/globals.css";
+import "@/styles/skeleton-chart-custom.css";
 import "react-loading-skeleton/dist/skeleton.css";
 
 import { Layout } from "@/components/layout";

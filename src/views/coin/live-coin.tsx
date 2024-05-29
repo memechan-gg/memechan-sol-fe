@@ -1,3 +1,4 @@
+import { ChartIframe } from "@/components/chart-iframe";
 import { ThreadBoard } from "@/components/thread";
 import { useLiveCoinUniqueHolders } from "@/hooks/live/useLiveCoinUniqueHolders";
 import { useLiveMemePriceAndMCap } from "@/hooks/live/useLiveMemePriceAndMCap";
@@ -12,7 +13,7 @@ import { LiveCoinSidebar } from "./sidebar/live-coin-sidebar";
 
 export function LiveCoin({ coinMetadata, livePoolData }: { coinMetadata: CoinMetadata; livePoolData: LivePoolData }) {
   const { priceData, marketCap } = useLiveMemePriceAndMCap(livePoolData.id);
-  const seedPool = useSeedPool(coinMetadata.address);
+  const { seedPool } = useSeedPool(coinMetadata.address);
   const uniqueHoldersData = useLiveCoinUniqueHolders(coinMetadata.address, seedPool?.address);
   const CHARTS_API_HOSTNAME = process.env.NEXT_PUBLIC_CHARTS_API_HOSTNAME;
 
@@ -30,7 +31,7 @@ export function LiveCoin({ coinMetadata, livePoolData }: { coinMetadata: CoinMet
           </div>
           <div className="flex flex-col gap-1">
             <div className="text-sm font-bold text-regular">Market Cap</div>
-            <div className="text-xs font-bold text-regular">${marketCap ?? <Skeleton width={35} />}</div>
+            <div className="text-xs font-bold text-regular">${coinMetadata.marketcap.toFixed(2)}</div>
           </div>
           <div className="flex flex-col gap-1">
             <div className="text-sm font-bold !normal-case text-regular">USD price</div>
@@ -54,10 +55,17 @@ export function LiveCoin({ coinMetadata, livePoolData }: { coinMetadata: CoinMet
         </div>
         <div className="flex w-full flex-col lg:flex-row gap-6">
           <div className="flex flex-col gap-3 w-full">
-            {/* Mockup Chart for live, presale one*/}
+            {/* Mockup Chart for */}
+
+            {/* Prod */}
             {/* {seedPool?.address && CHARTS_API_HOSTNAME && (
-              <ChartIframe address={seedPool.address} symbol={"SLERF"} chartsApiUrl={CHARTS_API_HOSTNAME} />
+              <ChartIframe
+                src={`https://dexscreener.com/solana/${seedPool.address}?embed=1&theme=dark&trades=0&info=0`}
+              />
             )} */}
+
+            {/* Mock */}
+            <ChartIframe src="https://dexscreener.com/solana/7rtPJWdvYwGfqgUJhjGmXWYHvubwzJMG1n6iYmRr5fyw?embed=1&theme=dark&trades=0&info=0" />
 
             <div className="flex flex-col gap-3 lg:hidden">
               <LiveCoinSidebar pool={livePoolData} coinMetadata={coinMetadata} />

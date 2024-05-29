@@ -14,7 +14,6 @@ import { useStakingPool } from "@/hooks/staking/useStakingPool";
 import { useStakingPoolClient } from "@/hooks/staking/useStakingPoolClient";
 import { useStakingPoolFromApi } from "@/hooks/staking/useStakingPoolFromApi";
 import { useTickets } from "@/hooks/useTickets";
-import { getTransactionSigners } from "@/utils/getTransactionSigners";
 import { MEMECHAN_MEME_TOKEN_DECIMALS } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
@@ -23,19 +22,17 @@ import { BN } from "bn.js";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import Skeleton from "react-loading-skeleton";
-import { useInterval } from "usehooks-ts";
 import { UnstakeDialogProps } from "../../coin.types";
 
 export const UnstakeDialog = ({ tokenSymbol, livePoolAddress, memeMint }: UnstakeDialogProps) => {
   const [availableAmountToUnstake, setAvailableAmountToUnstake] = useState<string | null>(null);
-  const [close, setClose] = useState(false);
 
   const { publicKey, sendTransaction } = useWallet();
-  const seedPoolData = useSeedPool(memeMint);
+  const { seedPool } = useSeedPool(memeMint);
   const stakingPoolFromApi = useStakingPoolFromApi(memeMint);
   const stakingPool = useStakingPool(stakingPoolFromApi?.address);
   const stakingPoolClient = useStakingPoolClient(stakingPoolFromApi?.address);
-  const { tickets, stakedAmount } = useTickets(seedPoolData?.address);
+  const { tickets, stakedAmount } = useTickets(seedPool?.address);
 
   const updateAvailableAmountToUnstake = useCallback(async () => {
     if (!stakingPoolClient || !stakingPool || !tickets) return;
@@ -59,23 +56,17 @@ export const UnstakeDialog = ({ tokenSymbol, livePoolAddress, memeMint }: Unstak
       .multipliedBy(10 ** MEMECHAN_MEME_TOKEN_DECIMALS)
       .toFixed(0);
 
-    const { transactions, memeAccountKeypair, quoteAccountKeypair } =
-      await stakingPoolClient.getPreparedUnstakeTransactions({
-        ammPoolId: new PublicKey(livePoolAddress),
-        ticketIds: ticketIds,
-        user: publicKey,
-        amount: new BN(rawAmountToUnstake),
-      });
+    const transactions = await stakingPoolClient.getPreparedUnstakeTransactions({
+      ammPoolId: new PublicKey(livePoolAddress),
+      ticketIds: ticketIds,
+      user: publicKey,
+      amount: new BN(rawAmountToUnstake),
+    });
 
     for (const tx of transactions) {
-      const signers = getTransactionSigners({
-        extraSigners: [memeAccountKeypair, quoteAccountKeypair],
-        transaction: tx,
-      });
-
       const signature = await sendTransaction(tx, MemechanClientInstance.connection, {
-        signers,
         maxRetries: 3,
+        skipPreflight: true,
       });
 
       // Check that a part of the unstake succeeded
@@ -92,22 +83,17 @@ export const UnstakeDialog = ({ tokenSymbol, livePoolAddress, memeMint }: Unstak
 
       if (swapTxResult.value.err) {
         console.error("[UnstakeDialog.unstake] Unstake failed:", JSON.stringify(swapTxResult, null, 2));
-        toast("Unstake failed. Please, try again");
+        toast.error("Unstake failed. Please, try again");
         return;
       }
     }
 
     toast.success("Successfully unstaked");
-    setClose(true);
   }, [sendTransaction, availableAmountToUnstake, livePoolAddress, publicKey, stakingPoolClient, tickets]);
 
   useEffect(() => {
     updateAvailableAmountToUnstake();
   }, [updateAvailableAmountToUnstake]);
-
-  useInterval(() => {
-    updateAvailableAmountToUnstake();
-  }, 5000);
 
   let startVestingTime: JSX.Element | string = <Skeleton width={35} />;
   let endVestingTime: JSX.Element | string = <Skeleton width={35} />;
@@ -123,7 +109,7 @@ export const UnstakeDialog = ({ tokenSymbol, livePoolAddress, memeMint }: Unstak
   }
 
   return (
-    <Dialog open={close ? false : undefined}>
+    <Dialog>
       <DialogTrigger>
         <Button className="w-full bg-regular bg-opacity-80 hover:bg-opacity-50">
           <div className="text-xs font-bold text-white">Unlock Token</div>
@@ -141,7 +127,7 @@ export const UnstakeDialog = ({ tokenSymbol, livePoolAddress, memeMint }: Unstak
         </DialogHeader>
         <div className="flex w-full flex-col gap-1">
           <div className="text-xs font-bold text-regular">
-            Locked amount:
+            Locked amount:{" "}
             {availableAmountToUnstake !== null && BigNumber(stakedAmount).minus(availableAmountToUnstake).toString()}
             {availableAmountToUnstake === null && <Skeleton width={35} />}{" "}
             <span className="!normal-case">{tokenSymbol}</span>

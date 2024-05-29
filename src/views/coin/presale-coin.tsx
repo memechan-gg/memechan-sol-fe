@@ -38,7 +38,7 @@ export function PresaleCoin({
           </div>
           <div className="flex flex-col gap-1">
             <div className="text-sm font-bold text-regular">Market Cap</div>
-            <div className="text-xs font-bold text-regular">${marketCap ?? <Skeleton width={35} />}</div>
+            <div className="text-xs font-bold text-regular">${coinMetadata.marketcap.toFixed(2)}</div>
           </div>
           <div className="flex flex-col gap-1">
             <div className="text-sm font-bold !normal-case text-regular">USD price</div>
@@ -62,7 +62,9 @@ export function PresaleCoin({
         </div>
         <div className="flex w-full flex-col lg:flex-row gap-6">
           <div className="flex flex-col gap-3 w-full">
-            <ChartIframe address={seedPoolData.address} symbol={"SLERF"} chartsApiUrl={CHARTS_API_HOSTNAME} />
+            {/* Mockup Chart */}
+            {/* <ChartIframe address={seedPoolData.address} symbol={"SLERF"} chartsApiUrl={CHARTS_API_HOSTNAME} /> */}
+            <ChartIframe src={`https://${CHARTS_API_HOSTNAME}/?address=${seedPoolData.address}&symbol=SLERF`} />
             <div className="flex flex-col gap-3 lg:hidden">
               <PresaleCoinSidebar coinMetadata={coinMetadata} pool={seedPoolData} />
             </div>

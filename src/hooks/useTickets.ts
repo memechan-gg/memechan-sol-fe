@@ -68,12 +68,14 @@ export function useTickets(poolAddress?: string) {
       const formattedUnavailableAmount = rawUnavailableAmount.div(10 ** MEMECHAN_MEME_TOKEN_DECIMALS).toString();
 
       const ticketFields = data.map((ticket) => ticket.jsonFields);
-      const formattedStakedAmount = ticketFields
+      const stakedAmount = ticketFields
         .reduce((staked, { vesting: { notional, released } }) => {
           const rest = new BigNumber(notional).minus(released);
           return staked.plus(rest);
         }, new BigNumber(0))
-        .toString();
+        .toFixed(0);
+
+      const formattedStakedAmount = new BigNumber(stakedAmount).div(10 ** MEMECHAN_MEME_TOKEN_DECIMALS).toString();
 
       setAvailableTicketsAmount(formattedAvailableAmount);
       setUnavailableTicketsAmount(formattedUnavailableAmount);

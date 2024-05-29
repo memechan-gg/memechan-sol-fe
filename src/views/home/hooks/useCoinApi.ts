@@ -1,6 +1,7 @@
 import { TokenApiInstance } from "@/common/solana";
 import { CoinMetadata } from "@/types/coin";
 import { useCallback, useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { useInterval } from "usehooks-ts";
 import { ThreadsSortBy, ThreadsSortDirection, ThreadsSortOptions, ThreadsSortStatus } from "./types";
 import { getSortBy, getStatus, isThreadsSortBy, isThreadsSortDirection, isThreadsSortStatus } from "./utils";
@@ -21,6 +22,9 @@ export function useCoinApi() {
   const [direction, setDirection] = useState<ThreadsSortDirection | null>(null);
 
   const [items, setItems] = useState<CoinMetadata[] | null>(null);
+  const [presaleNextPageToken, setPresaleNextPageToken] = useState<string | null>(null);
+  const [liveNextPageToken, setLiveNextPageToken] = useState<string | null>(null);
+  const [loadedMore, setLoadedMore] = useState<boolean>(false);
 
   // Gettings values from local storage
   useEffect(() => {
@@ -46,6 +50,7 @@ export function useCoinApi() {
     if (direction && typeof window !== "undefined") localStorage.setItem(ThreadsSortOptions.Direction, direction);
   }, [direction]);
 
+  // Method for fetching data without pagination. Using pagination `load` methods inside will cause bugs.
   const fetchData = useCallback(async () => {
     if (!status || !sortBy || !direction) return;
 
@@ -62,13 +67,22 @@ export function useCoinApi() {
           TokenApiInstance.queryTokens({ sortBy: getSortBy(sortBy), direction, status: "LIVE" }),
         ]);
 
+        setPresaleNextPageToken(presaleRes.paginationToken ?? null);
+        setLiveNextPageToken(liveRes.paginationToken ?? null);
+
         fetchedItems = [...liveRes.result, ...presaleRes.result];
       } else {
+        const formattedStatus = getStatus(status);
+
         const res = await TokenApiInstance.queryTokens({
           sortBy: getSortBy(sortBy),
           direction,
-          status: getStatus(status),
+          status: formattedStatus,
         });
+
+        formattedStatus === "LIVE"
+          ? setLiveNextPageToken(res.paginationToken ?? null)
+          : setPresaleNextPageToken(res.paginationToken ?? null);
 
         fetchedItems = res.result;
       }
@@ -79,11 +93,91 @@ export function useCoinApi() {
     }
   }, [status, sortBy, direction]);
 
+  // Pagination methods
+  const loadMoreLiveTokens = useCallback(async () => {
+    if (!sortBy || !direction) return;
+
+    const { result, paginationToken } = await TokenApiInstance.queryTokens({
+      sortBy: getSortBy(sortBy),
+      direction,
+      status: "LIVE",
+      paginationToken: liveNextPageToken,
+    });
+
+    setLiveNextPageToken(paginationToken ?? null);
+
+    setItems((prevItems) => (prevItems ? [...prevItems, ...result] : result));
+  }, [sortBy, direction, liveNextPageToken]);
+
+  const loadMorePresaleTokens = useCallback(async () => {
+    if (!sortBy || !direction) return;
+
+    const { result, paginationToken } = await TokenApiInstance.queryTokens({
+      sortBy: getSortBy(sortBy),
+      direction,
+      status: "PRESALE",
+      paginationToken: presaleNextPageToken,
+    });
+
+    setPresaleNextPageToken(paginationToken ?? null);
+
+    setItems((prevItems) => (prevItems ? [...prevItems, ...result] : result));
+  }, [sortBy, direction, presaleNextPageToken]);
+
+  const loadMoreTokens = useCallback(async () => {
+    if (liveNextPageToken) {
+      await loadMoreLiveTokens();
+    }
+
+    if (presaleNextPageToken) {
+      await loadMorePresaleTokens();
+    }
+  }, [liveNextPageToken, presaleNextPageToken, loadMoreLiveTokens, loadMorePresaleTokens]);
+
+  // The `load more` button click handler
+  const loadMore = useCallback(async () => {
+    if (!loadedMore) {
+      setLoadedMore(true);
+      toast("Disabled auto tokens update. Reload page to turn it back");
+    }
+
+    if (status === "live" && liveNextPageToken) {
+      await loadMoreLiveTokens();
+      return;
+    }
+
+    if (status === "pre_sale" && presaleNextPageToken) {
+      await loadMorePresaleTokens();
+      return;
+    }
+
+    if (status === "all" && (presaleNextPageToken || liveNextPageToken)) {
+      await loadMoreTokens();
+      return;
+    }
+  }, [
+    loadedMore,
+    liveNextPageToken,
+    status,
+    presaleNextPageToken,
+    loadMoreLiveTokens,
+    loadMorePresaleTokens,
+    loadMoreTokens,
+  ]);
+
   useEffect(() => {
     fetchData();
   }, [fetchData]);
 
-  useInterval(fetchData, 5000);
+  // Cleaning all the pagination fields when any of the sort params has changed
+  useEffect(() => {
+    setLoadedMore(false);
+    setLiveNextPageToken(null);
+    setPresaleNextPageToken(null);
+  }, [status, sortBy, direction]);
+
+  // Intervally fetch the tokens only until user started loading more tokens
+  useInterval(fetchData, loadedMore ? null : 5000);
 
   return {
     items,
@@ -93,5 +187,8 @@ export function useCoinApi() {
     setSortBy,
     direction,
     setDirection,
+    presaleNextPageToken,
+    liveNextPageToken,
+    loadMore,
   };
 }
