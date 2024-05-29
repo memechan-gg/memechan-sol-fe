@@ -1,6 +1,6 @@
-import { useLivePools } from "@/hooks/live/useLivePools";
-import { useSeedPools } from "@/hooks/useSeedPools";
-import { useTokens } from "@/hooks/useTokens";
+import { useLivePool } from "@/hooks/live/useLivePool";
+import { useSeedPool } from "@/hooks/presale/useSeedPool";
+import { useToken } from "@/hooks/useToken";
 import { CoinNotFound } from "./coin-not-found";
 import { LiveCoin } from "./live-coin";
 import { PresaleCoin } from "./presale-coin";
@@ -10,30 +10,17 @@ type CoinProps = {
 };
 
 export function Coin({ coin }: CoinProps) {
-  const seedPools = useSeedPools();
-  const livePools = useLivePools();
-  const tokens = useTokens();
+  const { token, isLoading: tokenIsLoading } = useToken(coin);
+  const { seedPool, isLoading: seedPoolIsLoading } = useSeedPool(
+    token?.status === "PRESALE" ? token?.address : undefined,
+  );
+  const { livePool, isLoading: livePoolIsLoading } = useLivePool(token?.status === "LIVE" ? token.address : undefined);
 
-  if (!tokens) return null;
-  const coinMetadata = tokens.find((token) => token.address === coin);
-  if (!coinMetadata) return null;
-  const status = coinMetadata.status;
+  if (tokenIsLoading || seedPoolIsLoading || livePoolIsLoading) return <div className="text-regular">Loading...</div>;
+  if (!token) return <CoinNotFound />;
 
-  if (status === "PRESALE" && seedPools) {
-    const poolData = seedPools.find((pool) => pool.tokenAddress === coin);
-
-    if (poolData) {
-      return <PresaleCoin coinMetadata={coinMetadata} seedPoolData={poolData} />;
-    }
-  }
-
-  if (status === "LIVE" && livePools) {
-    const poolData = livePools.find((pool) => pool.baseMint === coin);
-
-    if (poolData) {
-      return <LiveCoin coinMetadata={coinMetadata} livePoolData={poolData} />;
-    }
-  }
+  if (seedPool) return <PresaleCoin coinMetadata={token} seedPoolData={seedPool} />;
+  if (livePool) return <LiveCoin coinMetadata={token} livePoolData={livePool} />;
 
   return <CoinNotFound />;
 }
