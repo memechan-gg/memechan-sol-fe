@@ -22,8 +22,10 @@ const fetchToken = async (tokenAddress: string) => {
 };
 
 export function useToken(tokenAddress: string) {
-  const { data: token, isLoading } = useSWR([`token-${tokenAddress}`, tokenAddress], ([url, token]) =>
-    fetchToken(token),
+  const { data: token, isLoading } = useSWR(
+    [`token-${tokenAddress}`, tokenAddress],
+    ([url, token]) => fetchToken(token),
+    { refreshInterval: 5000 },
   );
 
   return { token, isLoading };
