@@ -25,10 +25,10 @@ export const WithdrawFeesDialog = ({ tokenSymbol, livePoolAddress, memeMint }: W
   const [slerfAmount, setSlerfAmount] = useState<string | null>(null);
 
   const { publicKey, sendTransaction } = useWallet();
-  const seedPoolData = useSeedPool(memeMint);
+  const { seedPool } = useSeedPool(memeMint);
   const stakingPoolFromApi = useStakingPoolFromApi(memeMint);
   const stakingPoolClient = useStakingPoolClient(stakingPoolFromApi?.address);
-  const { tickets } = useTickets(seedPoolData?.address);
+  const { tickets } = useTickets(seedPool?.address);
 
   const updateAvailableFeesToWithdraw = useCallback(async () => {
     if (!stakingPoolClient) return;

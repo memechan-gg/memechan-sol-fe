@@ -3,7 +3,7 @@ import { useSeedPool } from "@/hooks/presale/useSeedPool";
 import { LiveCoinHoldersProps } from "../../coin.types";
 
 export const LiveCoinHolders = ({ coinMetadata }: LiveCoinHoldersProps) => {
-  const seedPool = useSeedPool(coinMetadata.address);
+  const { seedPool } = useSeedPool(coinMetadata.address);
   const uniqueHoldersData = useLiveCoinUniqueHolders(coinMetadata.address, seedPool?.address);
 
   return (

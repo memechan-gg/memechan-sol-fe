@@ -29,11 +29,11 @@ export const UnstakeDialog = ({ tokenSymbol, livePoolAddress, memeMint }: Unstak
   const [availableAmountToUnstake, setAvailableAmountToUnstake] = useState<string | null>(null);
 
   const { publicKey, sendTransaction } = useWallet();
-  const seedPoolData = useSeedPool(memeMint);
+  const { seedPool } = useSeedPool(memeMint);
   const stakingPoolFromApi = useStakingPoolFromApi(memeMint);
   const stakingPool = useStakingPool(stakingPoolFromApi?.address);
   const stakingPoolClient = useStakingPoolClient(stakingPoolFromApi?.address);
-  const { tickets, stakedAmount } = useTickets(seedPoolData?.address);
+  const { tickets, stakedAmount } = useTickets(seedPool?.address);
 
   const updateAvailableAmountToUnstake = useCallback(async () => {
     if (!stakingPoolClient || !stakingPool || !tickets) return;
