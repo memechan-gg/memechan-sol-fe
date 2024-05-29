@@ -2,13 +2,12 @@ import { AuthInstance, MemechanClientInstance, TokenApiInstance } from "@/common
 import {
   ADMIN_PUB_KEY,
   BoundPoolClient,
+  CoinDescriptionTooLargeError,
   InvalidCoinDescriptionError,
   InvalidCoinImageError,
   InvalidCoinNameError,
   InvalidCoinSymbolError,
   MEMECHAN_QUOTE_TOKEN,
-  NameEqualsToDescriptionError,
-  SymbolEqualsToDescriptionError,
   validateCreateCoinParams,
 } from "@avernikoz/memechan-sol-sdk";
 import { PublicKey } from "@solana/web3.js";
@@ -24,10 +23,8 @@ export function handleErrors(e: unknown) {
     return toast.error("Invalid coin description");
   } else if (e instanceof InvalidCoinImageError) {
     return toast.error("Invalid coin image");
-  } else if (e instanceof SymbolEqualsToDescriptionError) {
-    return toast.error("Symbol equals to description, please provide a different symbol or description");
-  } else if (e instanceof NameEqualsToDescriptionError) {
-    return toast.error("Name equals to description, please provide a different name or description");
+  } else if (e instanceof CoinDescriptionTooLargeError) {
+    return toast.error("Coin description is too large");
   }
 
   return toast.error("Unrecognized error occurred while creating meme coin. Please try again");
