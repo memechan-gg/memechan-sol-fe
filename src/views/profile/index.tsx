@@ -62,14 +62,8 @@ export function Profile({ address }: ProfileProps) {
           });
 
           const formattedTokens = await Promise.all(tokenPromises);
-          if (formattedTokens.length === 0) {
-            setError("User does not hold any tokens");
-          } else {
-            setTokens(formattedTokens);
-            setError(null);
-          }
+          setTokens(formattedTokens);
         } else {
-          setError("No coins fetched.");
           console.error("Unexpected data format:", data);
         }
       } catch (error) {
@@ -99,6 +93,8 @@ export function Profile({ address }: ProfileProps) {
               <h4 className="text-sm font-bold text-regular">Coins Held</h4>
               {error ? (
                 <div className="text-red-500">{error}</div>
+              ) : tokens.length === 0 ? (
+                <div className="text-red-500">No coins held.</div>
               ) : (
                 <div className="flex flex-col gap-2 max-w-xs text-regular font-medium">
                   {tokens.map((token, index) => (
