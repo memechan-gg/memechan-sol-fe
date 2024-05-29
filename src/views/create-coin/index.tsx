@@ -123,12 +123,23 @@ export function CreateCoin() {
       console.log("boundPool:", boundPool);
       console.log("memeMint:", boundPool.memeTokenMint.toString());
 
-      // TODO: Need to confirm with Paolo
-      // TODO: Need to promise.all if so
-      console.debug("poolSignature and coinSignature");
-      await createCoinOnBE(data, [poolSignature, coinSignature]);
-      console.log("created on BE");
+      let attempt = 0;
+      let maxAttempsCount = 3;
+      let backendCreationSucceeded = false;
+      do {
+        try {
+          await createCoinOnBE(data, [poolSignature, coinSignature]);
+          backendCreationSucceeded = true;
+          console.log("created on BE");
+        } catch (e) {
+          console.error("[Create Coin Submit] Error while trying to create on the BE:", e);
+          attempt++;
+          await sleep(3000);
+        }
+      } while (!backendCreationSucceeded && attempt < maxAttempsCount);
+
       await sleep(3000);
+
       router.push(`/coin/${boundPool.memeTokenMint.toString()}`);
     } catch (e) {
       console.error("[Create Coin Submit] Error occured:", e);
