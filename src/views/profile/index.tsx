@@ -1,5 +1,4 @@
 import { ThreadBoard } from "@/components/thread";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { CoinItem } from "./coin-item";
 
@@ -23,30 +22,40 @@ export function Profile({ address }: ProfileProps) {
   useEffect(() => {
     const fetchTokens = async () => {
       try {
-        const response = await axios.get(
-          `https://waqxcrbt93.execute-api.us-east-1.amazonaws.com/prod/sol/holders?walletAddress=${address}&sortBy=tokenAmount&direction=asc`,
+        const response = await fetch(
+          `https://waqxcrbt93.execute-api.us-east-1.amazonaws.com/prod/sol/holders?walletAddress=${`BdT3bBgwk6vsizdM4ozjGY4jiTHmg5kArUHVpQCeAeH`}&sortBy=tokenAmount&direction=asc`,
         );
-        console.log("Full response:", response);
-        const data = response.data;
+        if (!response.ok) {
+          throw new Error(`Error fetching tokens: ${response.statusText}`);
+        }
+        const data = await response.json();
         console.log("Data:", data);
 
         if (data && data.result) {
           const tokenPromises = data.result.map(async (token: any) => {
             try {
-              const presaleResponse = await axios.get(
+              let presaleResponse = await fetch(
                 `https://waqxcrbt93.execute-api.us-east-1.amazonaws.com/prod/sol/presale/token?tokenAddress=${token.tokenAddress}`,
               );
-              console.log("Presale response:", presaleResponse);
-              const presaleData = presaleResponse.data;
+              let presaleData = await presaleResponse.json();
               console.log("Presale data for token:", token.tokenAddress, presaleData);
+
+              // Check if presaleData is an empty object
+              if (Object.keys(presaleData).length === 0) {
+                presaleResponse = await fetch(
+                  `https://waqxcrbt93.execute-api.us-east-1.amazonaws.com/prod/sol/live/token?tokenAddress=${token.tokenAddress}`,
+                );
+                presaleData = await presaleResponse.json();
+                console.log("Live data for token:", token.tokenAddress, presaleData);
+              }
 
               return {
                 mint: token.tokenAddress,
                 tokenAmount: token.tokenAmount,
-                decimals: 0,
-                image: presaleData.image || "",
-                name: presaleData.name || "",
-                marketCap: presaleData.marketCap || 0,
+                decimals: 0, // Assuming you don't have decimals info from the API
+                image: presaleData.image || "", // Assuming the presale API returns an image
+                name: presaleData.name || "", // Assuming the presale API returns a name
+                marketCap: presaleData.marketCap || 0, // Assuming the presale API returns a market cap
               };
             } catch (presaleError) {
               console.error("Error fetching presale data for token:", token.tokenAddress, presaleError);
@@ -94,7 +103,7 @@ export function Profile({ address }: ProfileProps) {
               {error ? (
                 <div className="text-red-500">{error}</div>
               ) : tokens.length === 0 ? (
-                <div className="text-red-500">No coins held.</div>
+                <div className="text-red-500">No coins fetched.</div>
               ) : (
                 <div className="flex flex-col gap-2 max-w-xs text-regular font-medium">
                   {tokens.map((token, index) => (
