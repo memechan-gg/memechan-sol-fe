@@ -63,7 +63,7 @@ export function Profile({ address }: ProfileProps) {
 
           const formattedTokens = await Promise.all(tokenPromises);
           if (formattedTokens.length === 0) {
-            setError("No coins fetched.");
+            setError("User does not hold any tokens");
           } else {
             setTokens(formattedTokens);
             setError(null);
