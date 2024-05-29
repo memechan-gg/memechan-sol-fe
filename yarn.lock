@@ -20,10 +20,10 @@
     "@jridgewell/gen-mapping" "^0.3.5"
     "@jridgewell/trace-mapping" "^0.3.24"
 
-"@avernikoz/memechan-sol-sdk@1.0.45":
-  version "1.0.45"
-  resolved "https://registry.npmjs.org/@avernikoz/memechan-sol-sdk/-/memechan-sol-sdk-1.0.45.tgz#6be6c30826576f3e0eb1407fa1776a0f777b503d"
-  integrity sha512-zv/rq/2cERm2nkpMBd7VtXuWpQoWZ7aZnNxrAYhltQuQzvW+P4x/GESACJxmahABqWx66rwPO0ZEUNMCsp3ODA==
+"@avernikoz/memechan-sol-sdk@1.0.54":
+  version "1.0.54"
+  resolved "https://registry.yarnpkg.com/@avernikoz/memechan-sol-sdk/-/memechan-sol-sdk-1.0.54.tgz#d599328a3135cfcf86700b5b2fc007da0d92d542"
+  integrity sha512-mDMzzppN99Nd966WlLPRioxQRNOcWJn3cplNTXutlpxI16gwx+pHrzK555QfN+EEG9MBtuoUIdzOittHaCJUBw==
   dependencies:
     "@aws-crypto/sha256-browser" "^5.2.0"
     "@aws-sdk/types" "^3.577.0"
@@ -3083,6 +3083,13 @@
   version "1.3.7"
   resolved "https://registry.yarnpkg.com/@types/accepts/-/accepts-1.3.7.tgz#3b98b1889d2b2386604c2bbbe62e4fb51e95b265"
   integrity sha512-Pay9fq2lM2wXPWbteBsRAGiWH2hig4ZE2asK+mm7kUzlxRTfL961rj89I6zV/E3PcIkDqyuBEcMxFT7rccugeQ==
+  dependencies:
+    "@types/node" "*"
+
+"@types/bn.js@^5.1.5":
+  version "5.1.5"
+  resolved "https://registry.yarnpkg.com/@types/bn.js/-/bn.js-5.1.5.tgz#2e0dacdcce2c0f16b905d20ff87aedbc6f7b4bf0"
+  integrity sha512-V46N0zwKRF5Q00AZ6hWtN0T8gGmDUaUzLWQvHFo5yThtVwK/VCenFY3wXVbOvNfajEpsTfQM4IN9k/d6gUVX3A==
   dependencies:
     "@types/node" "*"
 

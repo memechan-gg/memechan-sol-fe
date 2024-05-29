@@ -5,14 +5,20 @@ const fetchLivePool = async (memeMint: string) => {
   try {
     const livePool = await PoolApiInstance.getLivePoolByTokenAddress(memeMint);
 
+    if (Object.keys(livePool).length === 0) {
+      return;
+    }
+
     return livePool;
   } catch (e) {
     console.error(`[fetchLivePool] Failed to fetch the live pool for meme ${memeMint}:`, e);
   }
 };
 
-export function useLivePool(memeMint: string) {
-  const { data: livePools } = useSWR([`live-pool-${memeMint}`, memeMint], ([url, meme]) => fetchLivePool(meme));
+export function useLivePool(memeMint?: string) {
+  const { data: livePool, isLoading } = useSWR(memeMint ? [`live-pool-${memeMint}`, memeMint] : null, ([url, meme]) =>
+    fetchLivePool(meme),
+  );
 
-  return livePools;
+  return { livePool, isLoading };
 }

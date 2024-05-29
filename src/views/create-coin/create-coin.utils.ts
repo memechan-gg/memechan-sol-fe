@@ -33,9 +33,9 @@ export function handleErrors(e: unknown) {
   return toast.error("Unrecognized error occurred while creating meme coin. Please try again");
 }
 
-export async function createCoinOnBE({ discord, telegram, twitter, website }: ICreateForm, signature: string) {
+export async function createCoinOnBE({ discord, telegram, twitter, website }: ICreateForm, signatures: string[]) {
   await TokenApiInstance.createToken({
-    txDigest: signature,
+    txDigests: signatures,
     socialLinks: { discord, telegram, twitter, website },
   });
 }

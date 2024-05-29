@@ -19,6 +19,7 @@ export function useTickets(poolAddress?: string) {
   const [tickets, setTickets] = useState<ParsedMemeTicket[]>([]);
   const [availableTickets, setAvailableTickets] = useState<ParsedMemeTicket[]>([]);
   const [unavailableTickets, setUnavailableTickets] = useState<ParsedMemeTicket[]>([]);
+  const [stakedAmount, setStakedAmount] = useState<string>("0");
   const [availableTicketsAmount, setAvailableTicketsAmount] = useState<string>("0");
   const [unavailableTicketsAmount, setUnavailableTicketsAmount] = useState<string>("0");
 
@@ -66,13 +67,25 @@ export function useTickets(poolAddress?: string) {
       );
       const formattedUnavailableAmount = rawUnavailableAmount.div(10 ** MEMECHAN_MEME_TOKEN_DECIMALS).toString();
 
+      const ticketFields = data.map((ticket) => ticket.jsonFields);
+      const stakedAmount = ticketFields
+        .reduce((staked, { vesting: { notional, released } }) => {
+          const rest = new BigNumber(notional).minus(released);
+          return staked.plus(rest);
+        }, new BigNumber(0))
+        .toFixed(0);
+
+      const formattedStakedAmount = new BigNumber(stakedAmount).div(10 ** MEMECHAN_MEME_TOKEN_DECIMALS).toString();
+
       setAvailableTicketsAmount(formattedAvailableAmount);
       setUnavailableTicketsAmount(formattedUnavailableAmount);
+      setStakedAmount(formattedStakedAmount);
     }
   }, [data]);
 
   return {
     tickets,
+    stakedAmount,
     availableTicketsAmount,
     availableTickets,
     unavailableTicketsAmount,

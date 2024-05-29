@@ -8,8 +8,8 @@ import { StakingPool } from "./staking-pool/staking-pool";
 import { LiveCoinSwap } from "./swap/live-coin-swap";
 
 export function LiveCoinSidebar({ coinMetadata, pool }: LiveCoinSidebarProps) {
-  const seedPoolData = useSeedPool(coinMetadata.address);
-  const { tickets } = useTickets(seedPoolData?.address);
+  const { seedPool } = useSeedPool(coinMetadata.address);
+  const { tickets } = useTickets(seedPool?.address);
 
   return (
     <>
@@ -18,7 +18,7 @@ export function LiveCoinSidebar({ coinMetadata, pool }: LiveCoinSidebarProps) {
       </SidebarItem>
       {tickets.length > 0 && (
         <SidebarItem>
-          <StakingPool tokenSymbol={coinMetadata.symbol} poolAddress={pool.address} memeMint={pool.tokenAddress} />
+          <StakingPool tokenSymbol={coinMetadata.symbol} livePoolAddress={pool.id} memeMint={pool.baseMint} />
         </SidebarItem>
       )}
       <SidebarItem>

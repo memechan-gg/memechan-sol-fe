@@ -46,13 +46,16 @@ export function CreateCoin() {
       let ipfsUrl = await uploadImageToIPFS(data.image[0]);
       validateCoinParamsWithImage(data, ipfsUrl);
 
-      const { createTokenTransaction, createPoolTransaction, launchVaultId, memeMintKeypair, poolQuoteVaultId } =
-        await createMemeCoin(data, publicKey, ipfsUrl);
+      const { createTokenTransaction, createPoolTransaction, memeMintKeypair } = await createMemeCoin(
+        data,
+        publicKey,
+        ipfsUrl,
+      );
 
       setState("create_bonding");
       // Pool creation
       const poolSignature = await sendTransaction(createPoolTransaction, MemechanClientInstance.connection, {
-        signers: [launchVaultId, memeMintKeypair, poolQuoteVaultId],
+        signers: [memeMintKeypair],
         maxRetries: 3,
         skipPreflight: true,
       });
@@ -73,7 +76,7 @@ export function CreateCoin() {
 
       if (createPoolTxResult.value.err) {
         console.error("[Create Coin Submit] pool creation failed:", JSON.stringify(createPoolTxResult, null, 2));
-        toast("Failed to create pool. Please, try again//");
+        toast.error("Failed to create pool. Please, try again");
         return;
       }
 
@@ -103,7 +106,7 @@ export function CreateCoin() {
 
       if (createTokenTxResult.value.err) {
         console.error("[Create Coin Submit] token creation failed:", JSON.stringify(createTokenTxResult, null, 2));
-        toast("Failed to create token. Please, try again//");
+        toast.error("Failed to create token. Please, try again");
         return;
       }
 
@@ -122,10 +125,8 @@ export function CreateCoin() {
 
       // TODO: Need to confirm with Paolo
       // TODO: Need to promise.all if so
-      console.debug("poolSignature");
-      await createCoinOnBE(data, poolSignature);
-      console.debug("coinSignature");
-      await createCoinOnBE(data, coinSignature);
+      console.debug("poolSignature and coinSignature");
+      await createCoinOnBE(data, [poolSignature, coinSignature]);
       console.log("created on BE");
       await sleep(3000);
       router.push(`/coin/${boundPool.memeTokenMint.toString()}`);

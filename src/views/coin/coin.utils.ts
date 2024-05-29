@@ -47,7 +47,7 @@ export function liveSwapParamsAreValid({
 }: {
   inputAmount: string;
   slerfBalance: string;
-  memeBalance: string;
+  memeBalance?: string;
   slippagePercentage: number;
   slerfToMeme: boolean;
 }) {
@@ -61,7 +61,7 @@ export function liveSwapParamsAreValid({
     return false;
   }
 
-  if (!slerfToMeme && new BigNumber(inputAmount).gt(memeBalance)) {
+  if (!slerfToMeme && (!memeBalance || new BigNumber(inputAmount).gt(memeBalance))) {
     toast.error("Insufficient balance");
     return false;
   }

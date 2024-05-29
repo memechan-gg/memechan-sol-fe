@@ -9,25 +9,26 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/dialog";
-import { useLivePool } from "@/hooks/live/useLivePool";
 import { useSeedPool } from "@/hooks/presale/useSeedPool";
 import { useStakingPoolClient } from "@/hooks/staking/useStakingPoolClient";
+import { useStakingPoolFromApi } from "@/hooks/staking/useStakingPoolFromApi";
 import { useTickets } from "@/hooks/useTickets";
+import { getTransactionSigners } from "@/utils/getTransactionSigners";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { WithdrawFeesDialogProps } from "../../coin.types";
 
-export const WithdrawFeesDialog = ({ tokenSymbol, poolAddress, memeMint }: WithdrawFeesDialogProps) => {
+export const WithdrawFeesDialog = ({ tokenSymbol, livePoolAddress, memeMint }: WithdrawFeesDialogProps) => {
   const [memeAmount, setMemeAmount] = useState<string | null>(null);
   const [slerfAmount, setSlerfAmount] = useState<string | null>(null);
 
   const { publicKey, sendTransaction } = useWallet();
-  const stakingPoolClient = useStakingPoolClient(poolAddress);
-  const seedPoolData = useSeedPool(memeMint);
-  const livePool = useLivePool(memeMint);
-  const { tickets } = useTickets(seedPoolData?.address);
+  const { seedPool } = useSeedPool(memeMint);
+  const stakingPoolFromApi = useStakingPoolFromApi(memeMint);
+  const stakingPoolClient = useStakingPoolClient(stakingPoolFromApi?.address);
+  const { tickets } = useTickets(seedPool?.address);
 
   const updateAvailableFeesToWithdraw = useCallback(async () => {
     if (!stakingPoolClient) return;
@@ -45,21 +46,27 @@ export const WithdrawFeesDialog = ({ tokenSymbol, poolAddress, memeMint }: Withd
   }, [updateAvailableFeesToWithdraw]);
 
   const withdrawFees = useCallback(async () => {
-    if (!livePool || !publicKey || !stakingPoolClient) return;
+    if (!publicKey || !stakingPoolClient) return;
 
     const ticketIds = tickets.map((ticket) => ticket.id);
 
     const { memeAccountKeypair, quoteAccountKeypair, transactions } =
       await stakingPoolClient.getPreparedWithdrawFeesTransactions({
-        ammPoolId: new PublicKey(livePool.address),
+        ammPoolId: new PublicKey(livePoolAddress),
         ticketIds: ticketIds,
         user: publicKey,
       });
 
     for (const tx of transactions) {
+      const signers = getTransactionSigners({
+        extraSigners: [memeAccountKeypair, quoteAccountKeypair],
+        transaction: tx,
+      });
+
       const signature = await sendTransaction(tx, MemechanClientInstance.connection, {
-        signers: [memeAccountKeypair, quoteAccountKeypair],
+        signers,
         maxRetries: 3,
+        skipPreflight: true,
       });
 
       // Check that a part of the withdraw fees succeeded
@@ -76,13 +83,13 @@ export const WithdrawFeesDialog = ({ tokenSymbol, poolAddress, memeMint }: Withd
 
       if (swapTxResult.value.err) {
         console.error("[WithdrawFeesDialog.withdrawFees] Withdraw fees failed:", JSON.stringify(swapTxResult, null, 2));
-        toast("Fees withdrawal failed. Please, try again");
+        toast.error("Fees withdrawal failed. Please, try again");
         return;
       }
     }
 
     toast.success("Fees are successfully withdrawn");
-  }, [sendTransaction, livePool, publicKey, stakingPoolClient, tickets]);
+  }, [sendTransaction, publicKey, stakingPoolClient, tickets, livePoolAddress]);
 
   return (
     <Dialog>

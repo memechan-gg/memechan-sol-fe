@@ -54,7 +54,7 @@ export type WithdrawFeesDialogProps = StakingPoolProps;
 
 export type StakingPoolProps = {
   tokenSymbol: string;
-  poolAddress: string;
+  livePoolAddress: string;
   memeMint: string;
 };
 

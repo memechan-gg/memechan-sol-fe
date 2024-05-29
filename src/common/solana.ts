@@ -1,13 +1,14 @@
 import {
   Auth,
   BE_URL,
+  ChartApi,
   MemechanClient,
   NoWalletAdapter,
   PoolAPI,
   SocialAPI,
   TokenAPI,
 } from "@avernikoz/memechan-sol-sdk";
-import { Keypair } from "@solana/web3.js";
+import { Connection, Keypair } from "@solana/web3.js";
 
 // TODO: Change to mainnet
 export const DEFAULT_PROVIDER_URL = "https://devnet.helius-rpc.com/?api-key=28685dcc-7500-4b9a-83ad-d046eb965933";
@@ -24,15 +25,19 @@ export const SIMULATION_KEYPAIR = Keypair.fromSeed(
   ),
 );
 
+export const connection = new Connection(RPC_API_CLUSTER, {
+  httpAgent: IS_TEST_ENV ? false : undefined,
+  commitment: "confirmed",
+  wsEndpoint: WSS_API_CLUSTER,
+});
 export const AuthInstance = new Auth(BE_URL);
 export const TokenApiInstance = new TokenAPI(BE_URL);
 export const PoolApiInstance = new PoolAPI(BE_URL);
 export const SocialApiInstance = new SocialAPI(BE_URL);
+export const ChartApiInstance = new ChartApi(BE_URL);
 export const MemechanClientInstance = new MemechanClient({
   wallet: NoWalletAdapter,
   heliusApiUrl: DEFAULT_PROVIDER_URL,
-  rpcApiUrl: RPC_API_CLUSTER,
-  wssApiUrl: WSS_API_CLUSTER,
-  isTest: IS_TEST_ENV,
   simulationKeypair: SIMULATION_KEYPAIR,
+  connection,
 });

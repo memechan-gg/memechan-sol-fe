@@ -1,4 +1,4 @@
-import { MemechanClientInstance } from "@/common/solana";
+import { ChartApiInstance, MemechanClientInstance } from "@/common/solana";
 import { Button } from "@/components/button";
 import { useBoundPool } from "@/hooks/presale/useBoundPool";
 import { useBoundPoolClient } from "@/hooks/presale/useBoundPoolClient";
@@ -114,7 +114,7 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
   }, [getSwapOutputAmount, inputAmount, slerfToMeme, slippage]);
 
   const onSwap = useCallback(async () => {
-    if (!publicKey || !outputAmount) return;
+    if (!publicKey || !outputAmount || !slerfBalance) return;
 
     if (
       !presaleSwapParamsAreValid({
@@ -171,6 +171,10 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
         toast.success("Swap succeeded");
         refetchSlerfBalance();
         refreshAvailableTickets();
+        const res = await ChartApiInstance.updatePrice({ address: pool.address, type: "seedPool" }).catch((e) => {
+          console.debug(`[OHLCV] Failed updating price for OHLCV`);
+          console.error(`Failed updating price for OHLCV, error:`, e);
+        });
         return;
       }
 
@@ -204,6 +208,10 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
         toast.success("Swap succeeded");
         refetchSlerfBalance();
         refreshAvailableTickets();
+        const res = await ChartApiInstance.updatePrice({ address: pool.address, type: "seedPool" }).catch((e) => {
+          console.debug(`[OHLCV] Failed updating price for OHLCV`);
+          console.error(`Failed updating price for OHLCV, error:`, e);
+        });
         return;
       }
     } catch (e) {
@@ -222,6 +230,7 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
     slippage,
     refetchSlerfBalance,
     refreshAvailableTickets,
+    pool.address,
   ]);
 
   return (
@@ -290,7 +299,7 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
         onClick={onSwap}
         className="w-full bg-regular bg-opacity-80 hover:bg-opacity-50"
       >
-        <div className="text-xs font-bold text-white">Swap</div>
+        <div className="text-xs font-bold text-white">{isLoadingOutputAmount ? "Loading..." : "Swap"}</div>
       </Button>
     </>
   );
