@@ -14,7 +14,6 @@ import { useStakingPool } from "@/hooks/staking/useStakingPool";
 import { useStakingPoolClient } from "@/hooks/staking/useStakingPoolClient";
 import { useStakingPoolFromApi } from "@/hooks/staking/useStakingPoolFromApi";
 import { useTickets } from "@/hooks/useTickets";
-import { getTransactionSigners } from "@/utils/getTransactionSigners";
 import { MEMECHAN_MEME_TOKEN_DECIMALS } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
@@ -57,22 +56,15 @@ export const UnstakeDialog = ({ tokenSymbol, livePoolAddress, memeMint }: Unstak
       .multipliedBy(10 ** MEMECHAN_MEME_TOKEN_DECIMALS)
       .toFixed(0);
 
-    const { transactions, memeAccountKeypair, quoteAccountKeypair } =
-      await stakingPoolClient.getPreparedUnstakeTransactions({
-        ammPoolId: new PublicKey(livePoolAddress),
-        ticketIds: ticketIds,
-        user: publicKey,
-        amount: new BN(rawAmountToUnstake),
-      });
+    const transactions = await stakingPoolClient.getPreparedUnstakeTransactions({
+      ammPoolId: new PublicKey(livePoolAddress),
+      ticketIds: ticketIds,
+      user: publicKey,
+      amount: new BN(rawAmountToUnstake),
+    });
 
     for (const tx of transactions) {
-      const signers = getTransactionSigners({
-        extraSigners: [memeAccountKeypair, quoteAccountKeypair],
-        transaction: tx,
-      });
-
       const signature = await sendTransaction(tx, MemechanClientInstance.connection, {
-        signers,
         maxRetries: 3,
         skipPreflight: true,
       });
