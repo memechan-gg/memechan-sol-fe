@@ -8,7 +8,9 @@ import { GetSwapOutputAmountParams, GetSwapTransactionParams } from "@/types/hoo
 import {
   GetBuyMemeTransactionOutput,
   GetSellMemeTransactionOutput,
+  MEMECHAN_MEME_TOKEN_DECIMALS,
   MEMECHAN_QUOTE_MINT,
+  MEMECHAN_QUOTE_TOKEN_DECIMALS,
 } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useCallback, useEffect, useState } from "react";
@@ -278,7 +280,9 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
         )}
         {outputAmount !== null && !isLoadingOutputAmount && (
           <div className="text-xs font-bold text-regular">
-            {slerfToMeme ? `${tokenSymbol} to receive: ${outputAmount}` : `SLERF to receive: ${outputAmount}`}
+            {slerfToMeme
+              ? `${tokenSymbol} to receive: ${(+outputAmount).toFixed(MEMECHAN_MEME_TOKEN_DECIMALS)}`
+              : `SLERF to receive: ${(+outputAmount).toFixed(MEMECHAN_QUOTE_TOKEN_DECIMALS)}`}
           </div>
         )}
       </div>
