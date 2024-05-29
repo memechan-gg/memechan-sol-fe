@@ -1,4 +1,5 @@
 import { ThreadBoard } from "@/components/thread";
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { useCoinApi } from "../home/hooks/useCoinApi";
 import { CoinItem } from "./coin-item";
@@ -19,24 +20,64 @@ type Token = {
 export function Profile({ address }: ProfileProps) {
   const { items: tokenList, status, setStatus, sortBy, setSortBy, direction, setDirection } = useCoinApi();
   const [tokens, setTokens] = useState<Token[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchTokens = async () => {
-      const response = await fetch(
-        `https://waqxcrbt93.execute-api.us-east-1.amazonaws.com/prod/sol/holders?walletAddress=${address}&sortBy=tokenAmount&direction=asc`,
-      );
-      const data = await response.json();
+      try {
+        const response = await axios.get(
+          `https://waqxcrbt93.execute-api.us-east-1.amazonaws.com/prod/sol/holders?walletAddress=${address}&sortBy=tokenAmount&direction=asc`,
+        );
+        console.log("Full response:", response);
+        const data = response.data;
+        console.log("Data:", data);
 
-      const formattedTokens = data.result.map((token: any) => ({
-        mint: token.tokenAddress,
-        tokenAmount: token.tokenAmount,
-        decimals: 0,
-        image: "",
-        name: "",
-        marketCap: 0,
-      }));
+        if (data && data.result) {
+          const tokenPromises = data.result.map(async (token: any) => {
+            try {
+              const presaleResponse = await axios.get(
+                `https://waqxcrbt93.execute-api.us-east-1.amazonaws.com/prod/sol/presale/token?tokenAddress=${token.tokenAddress}`,
+              );
+              console.log("Presale response:", presaleResponse);
+              const presaleData = presaleResponse.data;
+              console.log("Presale data for token:", token.tokenAddress, presaleData);
 
-      setTokens(formattedTokens);
+              return {
+                mint: token.tokenAddress,
+                tokenAmount: token.tokenAmount,
+                decimals: 0,
+                image: presaleData.image || "",
+                name: presaleData.name || "",
+                marketCap: presaleData.marketCap || 0,
+              };
+            } catch (presaleError) {
+              console.error("Error fetching presale data for token:", token.tokenAddress, presaleError);
+              return {
+                mint: token.tokenAddress,
+                tokenAmount: token.tokenAmount,
+                decimals: 0,
+                image: "",
+                name: "",
+                marketCap: 0,
+              };
+            }
+          });
+
+          const formattedTokens = await Promise.all(tokenPromises);
+          if (formattedTokens.length === 0) {
+            setError("No coins fetched.");
+          } else {
+            setTokens(formattedTokens);
+            setError(null);
+          }
+        } else {
+          setError("No coins fetched.");
+          console.error("Unexpected data format:", data);
+        }
+      } catch (error) {
+        setError("Error fetching tokens.");
+        console.error("Error fetching tokens:", error);
+      }
     };
 
     fetchTokens();
@@ -60,14 +101,18 @@ export function Profile({ address }: ProfileProps) {
             {/* Coins Held */}
             <div className="flex flex-col gap-2">
               <h4 className="text-sm font-bold text-regular">Coins Held</h4>
-              <div className="flex flex-col gap-2 max-w-xs text-regular font-medium">
-                {tokens.map((token, index) => (
-                  <div key={index}>
-                    {token.mint}
-                    <CoinItem image={token.image} name={token.name} marketCap={token.marketCap.toString()} />
-                  </div>
-                ))}
-              </div>
+              {error ? (
+                <div className="text-red-500">{error}</div>
+              ) : (
+                <div className="flex flex-col gap-2 max-w-xs text-regular font-medium">
+                  {tokens.map((token, index) => (
+                    <div key={index}>
+                      {token.mint}
+                      <CoinItem image={token.image} name={token.name} marketCap={token.marketCap.toString()} />
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </ThreadBoard>
