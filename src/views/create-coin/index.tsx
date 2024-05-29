@@ -46,13 +46,16 @@ export function CreateCoin() {
       let ipfsUrl = await uploadImageToIPFS(data.image[0]);
       validateCoinParamsWithImage(data, ipfsUrl);
 
-      const { createTokenTransaction, createPoolTransaction, launchVaultId, memeMintKeypair, poolQuoteVaultId } =
-        await createMemeCoin(data, publicKey, ipfsUrl);
+      const { createTokenTransaction, createPoolTransaction, memeMintKeypair } = await createMemeCoin(
+        data,
+        publicKey,
+        ipfsUrl,
+      );
 
       setState("create_bonding");
       // Pool creation
       const poolSignature = await sendTransaction(createPoolTransaction, MemechanClientInstance.connection, {
-        signers: [launchVaultId, memeMintKeypair, poolQuoteVaultId],
+        signers: [memeMintKeypair],
         maxRetries: 3,
         skipPreflight: true,
       });
@@ -122,10 +125,8 @@ export function CreateCoin() {
 
       // TODO: Need to confirm with Paolo
       // TODO: Need to promise.all if so
-      console.debug("poolSignature");
-      await createCoinOnBE(data, poolSignature);
-      console.debug("coinSignature");
-      await createCoinOnBE(data, coinSignature);
+      console.debug("poolSignature and coinSignature");
+      await createCoinOnBE(data, [poolSignature, coinSignature]);
       console.log("created on BE");
       await sleep(3000);
       router.push(`/coin/${boundPool.memeTokenMint.toString()}`);
