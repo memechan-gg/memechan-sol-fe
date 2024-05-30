@@ -17,6 +17,7 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
   const [outputData, setOutputData] = useState<SwapMemeOutput | null>(null);
   const [isLoadingOutputAmount, setIsLoadingOutputAmount] = useState<boolean>(false);
   const [slippage, setSlippage] = useState<string>("10");
+  const [isSwapping, setIsSwapping] = useState<boolean>(false);
 
   const { publicKey, sendTransaction, signTransaction } = useWallet();
   const { balance: slerfBalance, refetch: refetchSlerfBalance } = useBalance(MEMECHAN_QUOTE_MINT.toString());
@@ -107,6 +108,7 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
       return;
 
     try {
+      setIsSwapping(true);
       const simpleSwapTransactions = await getSwapTransactions({ slerfToMeme, outputData });
 
       if (!simpleSwapTransactions) {
@@ -150,6 +152,8 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
       console.error("[LiveCoinSwap.onSwap] Swap error:", e);
       toast.error("Failed to swap. Please, try again");
       return;
+    } finally {
+      setIsSwapping(false);
     }
   }, [
     slerfBalance,
@@ -218,11 +222,13 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
         />
       </div>
       <Button
-        disabled={isLoadingOutputAmount}
+        disabled={isLoadingOutputAmount || isSwapping}
         onClick={onSwap}
-        className="w-full bg-regular bg-opacity-80 hover:bg-opacity-50"
+        className="w-full bg-regular bg-opacity-80 hover:bg-opacity-50 disabled:opacity-50"
       >
-        <div className="text-xs font-bold text-white">{isLoadingOutputAmount ? "Loading..." : "Swap"}</div>
+        <div className="text-xs font-bold text-white">
+          {isLoadingOutputAmount || isSwapping ? "Loading..." : "Swap"}
+        </div>
       </Button>
     </>
   );
