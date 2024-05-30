@@ -41,7 +41,7 @@ export function Home() {
   const handleConfirm = () => {
     setIsConfirmed(true);
     setIsDialogOpen(false);
-    Cookies.set("isConfirmed", "true", { expires: 7 });
+    Cookies.set("isConfirmed", "true", { expires: 365 });
   };
 
   if (!isMounted) {
