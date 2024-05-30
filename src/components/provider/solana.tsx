@@ -2,9 +2,7 @@ import { ConnectionProvider, WalletProvider } from "@solana/wallet-adapter-react
 import { clusterApiUrl } from "@solana/web3.js";
 import { PhantomWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets';
 import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
-
-// TODO: Change to mainnet
-const endpoint = clusterApiUrl('devnet');
+import { DEFAULT_PROVIDER_URL } from "@/common/solana";
 
 const wallets = [
   new PhantomWalletAdapter(),
@@ -13,7 +11,7 @@ const wallets = [
 
 export function SolanaProvider({ children }: { children: React.ReactNode }) {
   return (
-    <ConnectionProvider endpoint={endpoint}>
+    <ConnectionProvider endpoint={DEFAULT_PROVIDER_URL}>
       <WalletProvider wallets={wallets} autoConnect>
         <WalletModalProvider>
           {children}
