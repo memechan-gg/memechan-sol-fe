@@ -54,16 +54,16 @@ export function Home() {
         <Dialog open={isDialogOpen} onOpenChange={() => {}}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle className="text-xl">Disclaimer</DialogTitle>
+              <DialogTitle className="text-xl text-regular text-center mb-5">Disclaimer</DialogTitle>
             </DialogHeader>
-            <div>
+            <div className="text-regular text-justify mb-1">
               I confirm that I am a citizen of Afghanistan, Benin, China, Crimea region, Cuba, Iran, Iraq, Syria, USA,
               Vatican City, or for use by any person in any country or jurisdiction where such distribution or use would
-              be contrary to local law or regulation
+              be contrary to local law or regulation.
             </div>
             <DialogFooter>
               <button
-                className="border border-red-500 text-red-500 hover:bg-red-500 hover:text-white font-bold py-2 px-4 rounded"
+                className="flex border border-regular text-regular hover:bg-regular hover:text-white font-bold py-2 px-4 rounded"
                 onClick={handleConfirm}
               >
                 Confirm
