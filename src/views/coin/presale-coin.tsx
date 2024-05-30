@@ -24,7 +24,7 @@ export function PresaleCoin({
 
   const CHARTS_API_HOSTNAME = process.env.NEXT_PUBLIC_CHARTS_API_HOSTNAME || "";
 
-  const CHART_QUOTE_SYMBOL: "SLERF" | "USD" = "SLERF"
+  const CHART_QUOTE_SYMBOL: "SLERF" | "USD" = "SLERF";
 
   return (
     <ThreadBoard title={coinMetadata.name}>
@@ -66,11 +66,13 @@ export function PresaleCoin({
           <div className="flex flex-col gap-3 w-full">
             {/* Mockup Chart */}
             {/* <ChartIframe address={seedPoolData.address} symbol={"SLERF"} chartsApiUrl={CHARTS_API_HOSTNAME} /> */}
-            <ChartIframe src={`https://${CHARTS_API_HOSTNAME}/?address=${seedPoolData.address}&symbol=${CHART_QUOTE_SYMBOL}&contract=${coinMetadata.symbol.toUpperCase()}/${CHART_QUOTE_SYMBOL}`} />
+            <ChartIframe
+              src={`https://${CHARTS_API_HOSTNAME}/?address=${seedPoolData.address}&symbol=${CHART_QUOTE_SYMBOL}&contract=${coinMetadata.symbol.toUpperCase()}/${CHART_QUOTE_SYMBOL}`}
+            />
             <div className="flex flex-col gap-3 lg:hidden">
               <PresaleCoinSidebar coinMetadata={coinMetadata} pool={seedPoolData} />
             </div>
-            <CommentsPanel coinType={coinMetadata.address} />
+            <CommentsPanel coinType={coinMetadata.address} coinCreator={coinMetadata.creator} />
           </div>
           <div className="lg:flex hidden w-1/3 flex-col gap-4">
             <PresaleCoinSidebar coinMetadata={coinMetadata} pool={seedPoolData} />

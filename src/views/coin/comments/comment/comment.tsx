@@ -20,9 +20,11 @@ export function Comment({
     likeCounter,
   },
   updateThreads,
+  coinCreator,
 }: {
   thread: CoinThreadWithParsedMessage;
   updateThreads: () => void;
+  coinCreator: string;
 }) {
   const [liked, setLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(likeCounter);
@@ -82,7 +84,7 @@ export function Comment({
           <div className="flex flex-col gap-2">
             <div className="text-xs flex flex-row gap-1.5 font-bold text-regular">
               <Link className="hover:underline" href={`/profile/${creator}`}>
-                {creator.substring(0, 6)}
+                {creator.substring(0, 6)} {creator === coinCreator ? <span className="font-bold"> (dev)</span> : ""}
               </Link>
               <div className="text-xs font-medium text-regular">{new Date(creationDate).toLocaleString()}</div>
               <div className="text-xs font-medium flex flex-row gap-1 cursor-pointer" onClick={handleLikeEvent}>

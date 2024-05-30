@@ -70,7 +70,7 @@ export function LiveCoin({ coinMetadata, livePoolData }: { coinMetadata: CoinMet
             <div className="flex flex-col gap-3 lg:hidden">
               <LiveCoinSidebar pool={livePoolData} coinMetadata={coinMetadata} />
             </div>
-            <CommentsPanel coinType={coinMetadata.address} />
+            <CommentsPanel coinType={coinMetadata.address} coinCreator={coinMetadata.creator} />
           </div>
           <div className="lg:flex hidden w-1/3 flex-col gap-4">
             <LiveCoinSidebar pool={livePoolData} coinMetadata={coinMetadata} />
