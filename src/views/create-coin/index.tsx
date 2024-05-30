@@ -30,7 +30,6 @@ export function CreateCoin() {
   const router = useRouter();
   const [inputAmount, setInputAmount] = useState<string>("0");
   const { slerfThresholdAmount } = useTargetConfig();
-  console.log("slerfThresholdAmount:", slerfThresholdAmount);
 
   const onSubmit = handleSubmit(async (data) => {
     try {
