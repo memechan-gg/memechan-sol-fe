@@ -2,6 +2,7 @@ import { MemechanClientInstance } from "@/common/solana";
 import { ThreadBoard } from "@/components/thread";
 import { BoundPoolClient, MEMECHAN_QUOTE_TOKEN, sleep } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
+import BigNumber from "bignumber.js";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -9,7 +10,7 @@ import toast from "react-hot-toast";
 import { CreateCoinState, ICreateForm } from "./create-coin.types";
 import {
   createCoinOnBE,
-  createMemeCoin,
+  createMemeCoinAndPool,
   handleAuthentication,
   handleErrors,
   uploadImageToIPFS,
@@ -26,6 +27,7 @@ export function CreateCoin() {
   const { publicKey, connected, signMessage, sendTransaction } = useWallet();
   const [state, setState] = useState<CreateCoinState>("idle");
   const router = useRouter();
+  const [inputAmount, setInputAmount] = useState<string>("0");
 
   const onSubmit = handleSubmit(async (data) => {
     try {
@@ -37,6 +39,24 @@ export function CreateCoin() {
       // are wrong without signing.
       validateCoinParamsWithoutImage(data);
 
+      // Input amount validation
+      const amountBigNumber = new BigNumber(inputAmount);
+
+      if (amountBigNumber.isNaN()) {
+        toast.error("Input amount must be a valid number");
+        return;
+      }
+
+      if (amountBigNumber.lt(0)) {
+        toast.error("Input amount must be greater than zero");
+        return;
+      }
+
+      if (amountBigNumber.gt(40_000)) {
+        toast.error("The maximum SLERF amount to invest in bonding pool is 40.000 SLERF");
+        return;
+      }
+
       setState("sign");
       const walletAddress = publicKey.toBase58();
       // If all the params except of the image are fine, then ask the user to sign a message to upload the image to IPFS.
@@ -46,67 +66,46 @@ export function CreateCoin() {
       let ipfsUrl = await uploadImageToIPFS(data.image[0]);
       validateCoinParamsWithImage(data, ipfsUrl);
 
-      const { createTokenTransaction, createPoolTransaction, memeMintKeypair } = await createMemeCoin(
+      const {
+        createPoolTransaction: transaction,
+        memeMintKeypair,
+        memeTicketKeypair,
+      } = await createMemeCoinAndPool({
         data,
-        publicKey,
         ipfsUrl,
-      );
+        publicKey,
+        inputAmount: amountBigNumber.eq(0) ? undefined : amountBigNumber.toString(),
+      });
 
-      setState("create_bonding");
-      // Pool creation
-      const poolSignature = await sendTransaction(createPoolTransaction, MemechanClientInstance.connection, {
-        signers: [memeMintKeypair],
+      const signers = [memeMintKeypair];
+      if (memeTicketKeypair) signers.push(memeTicketKeypair);
+
+      setState("create_bonding_and_meme");
+      // Pool and meme creation
+      const signature = await sendTransaction(transaction, MemechanClientInstance.connection, {
+        signers,
         maxRetries: 3,
         skipPreflight: true,
       });
+      console.log("signature:", signature);
       await sleep(3000);
 
       // Check pool creation succeeded
-      const { blockhash: poolBlockhash, lastValidBlockHeight: poolLastValidBlockHeight } =
+      const { blockhash, lastValidBlockHeight } =
         await MemechanClientInstance.connection.getLatestBlockhash("confirmed");
-      const createPoolTxResult = await MemechanClientInstance.connection.confirmTransaction(
+      const txResult = await MemechanClientInstance.connection.confirmTransaction(
         {
-          signature: poolSignature,
-          blockhash: poolBlockhash,
-          lastValidBlockHeight: poolLastValidBlockHeight,
+          signature,
+          blockhash: blockhash,
+          lastValidBlockHeight: lastValidBlockHeight,
         },
         "confirmed",
       );
-      console.log("createPoolTxResult:", createPoolTxResult);
+      console.log("txResult:", txResult);
 
-      if (createPoolTxResult.value.err) {
-        console.error("[Create Coin Submit] pool creation failed:", JSON.stringify(createPoolTxResult, null, 2));
-        toast.error("Failed to create pool. Please, try again");
-        return;
-      }
-
-      setState("create_meme");
-      // Coin creation
-      console.debug("beforesend");
-      const coinSignature = await sendTransaction(createTokenTransaction, MemechanClientInstance.connection, {
-        maxRetries: 3,
-        skipPreflight: true,
-      });
-      await sleep(3000);
-
-      console.debug("coinSignature: ", coinSignature);
-
-      // Check token creation succeeded
-      const { blockhash: coinBlockhash, lastValidBlockHeight: coinLastValidBlockHeight } =
-        await MemechanClientInstance.connection.getLatestBlockhash("confirmed");
-      const createTokenTxResult = await MemechanClientInstance.connection.confirmTransaction(
-        {
-          signature: coinSignature,
-          blockhash: coinBlockhash,
-          lastValidBlockHeight: coinLastValidBlockHeight,
-        },
-        "confirmed",
-      );
-      console.log("createTokenTxResult:", createTokenTxResult);
-
-      if (createTokenTxResult.value.err) {
-        console.error("[Create Coin Submit] token creation failed:", JSON.stringify(createTokenTxResult, null, 2));
-        toast.error("Failed to create token. Please, try again");
+      if (txResult.value.err) {
+        console.error("[Create Coin Submit] pool and meme creation failed:", JSON.stringify(txResult, null, 2));
+        toast.error("Failed to create pool and meme coin. Please, try again");
         return;
       }
 
@@ -118,25 +117,33 @@ export function CreateCoin() {
       console.log("createdPoolId: ", createdPoolId.toString());
       const boundPool = await BoundPoolClient.fromPoolCreationTransaction({
         client: MemechanClientInstance,
-        poolCreationSignature: poolSignature,
+        poolCreationSignature: signature,
       });
       console.log("boundPool:", boundPool);
       console.log("memeMint:", boundPool.memeTokenMint.toString());
 
+      // Retry policy for coin creation on the BE
       let attempt = 0;
-      let maxAttempsCount = 3;
+      let maxAttempsCount = 5;
       let backendCreationSucceeded = false;
       do {
         try {
-          await createCoinOnBE(data, [poolSignature, coinSignature]);
+          await createCoinOnBE(data, [signature]);
           backendCreationSucceeded = true;
           console.log("created on BE");
         } catch (e) {
           console.error("[Create Coin Submit] Error while trying to create on the BE:", e);
           attempt++;
-          await sleep(3000);
+          toast("Almost there...");
+          await sleep(4000);
         }
       } while (!backendCreationSucceeded && attempt < maxAttempsCount);
+
+      if (!backendCreationSucceeded) {
+        toast.error("Failed to create the meme coin. Please, try again");
+        setState("idle");
+        return;
+      }
 
       await sleep(3000);
 
@@ -232,6 +239,24 @@ export function CreateCoin() {
                 </div>
               </div>
             </div>
+            <div className="flex flex-col gap-2">
+              <h4 className="text-sm font-bold text-regular">Buy your meme first</h4>
+              <div className="flex flex-col lg:flex-row gap-4 flex-wrap">
+                <div className="flex flex-col gap-1">
+                  <label className="text-regular text-xs">SLERF amount</label>
+                  <div>
+                    <input
+                      className="border w-[200px] border-regular rounded-lg p-1"
+                      onChange={(e) => setInputAmount(e.target.value)}
+                      value={inputAmount}
+                      type="number"
+                      min="0"
+                      placeholder="0"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
             <div className="flex flex-col gap-1">
               <div>
                 <button
@@ -244,8 +269,7 @@ export function CreateCoin() {
                       idle: "Create Meme Coin",
                       sign: "Signing Message...",
                       ipfs: "Uploading Image...",
-                      create_meme: "Creating Meme Coin...",
-                      create_bonding: "Creating Bonding Curve Pool...",
+                      create_bonding_and_meme: "Creating Bonding Curve Pool and Meme Coin...",
                     }[state]
                   }
                 </button>
