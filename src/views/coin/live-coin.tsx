@@ -65,7 +65,7 @@ export function LiveCoin({ coinMetadata, livePoolData }: { coinMetadata: CoinMet
             )} */}
 
             {/* Mock */}
-            <ChartIframe src="https://dexscreener.com/solana/7rtPJWdvYwGfqgUJhjGmXWYHvubwzJMG1n6iYmRr5fyw?embed=1&theme=dark&trades=0&info=0" />
+            <ChartIframe src="https://dexscreener.com/solana/4mkypiikf4fmzby16dwrxfxvth9ts4zh3yn5hoba7pty?embed=1&theme=dark&trades=0&info=0" />
 
             <div className="flex flex-col gap-3 lg:hidden">
               <LiveCoinSidebar pool={livePoolData} coinMetadata={coinMetadata} />
