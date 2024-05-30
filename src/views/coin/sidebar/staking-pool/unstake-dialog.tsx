@@ -120,7 +120,7 @@ export const UnstakeDialog = ({ tokenSymbol, livePoolAddress, memeMint }: Unstak
           <DialogTitle>Unlock</DialogTitle>
           <DialogDescription>
             Unlock your locked Meme Coins from the staking pool. Once you unlock you cannot earn fees anymore, and
-            can&apos;t lock.
+            can&apos;t lock unlocked amount anymore in the future.
             <div className="text-xs font-bold text-regular mt-2">Vesting starts at: {startVestingTime}</div>
             <div className="text-xs font-bold text-regular">Vesting ends at: {endVestingTime}</div>
           </DialogDescription>

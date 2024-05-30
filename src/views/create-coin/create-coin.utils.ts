@@ -37,10 +37,21 @@ export async function createCoinOnBE({ discord, telegram, twitter, website }: IC
   });
 }
 
-export async function createMemeCoin(data: ICreateForm, publicKey: PublicKey, ipfsUrl: string) {
-  return await BoundPoolClient.getCreateNewBondingPoolAndTokenTransaction({
+export async function createMemeCoinAndPool({
+  data,
+  ipfsUrl,
+  publicKey,
+  inputAmount,
+}: {
+  data: ICreateForm;
+  publicKey: PublicKey;
+  ipfsUrl: string;
+  inputAmount?: string;
+}) {
+  return await BoundPoolClient.getCreateNewBondingPoolAndBuyAndTokenWithBuyMemeTransaction({
+    admin: ADMIN_PUB_KEY,
     client: MemechanClientInstance,
-    quoteToken: MEMECHAN_QUOTE_TOKEN,
+    payer: publicKey,
     tokenMetadata: {
       ...data,
       image: ipfsUrl,
@@ -49,8 +60,17 @@ export async function createMemeCoin(data: ICreateForm, publicKey: PublicKey, ip
       discord: data.discord ?? "",
       website: data.website ?? "",
     },
-    payer: publicKey,
-    admin: ADMIN_PUB_KEY,
+    quoteToken: MEMECHAN_QUOTE_TOKEN,
+    buyMemeTransactionArgs:
+      inputAmount !== undefined
+        ? {
+            inputAmount,
+            // TODO: Implement output amount printing to user
+            minOutputAmount: "0",
+            slippagePercentage: 0,
+            user: publicKey,
+          }
+        : undefined,
   });
 }
 

@@ -1,9 +1,11 @@
 import { useLiveCoinUniqueHolders } from "@/hooks/live/useLiveCoinUniqueHolders";
+import { useLivePool } from "@/hooks/live/useLivePool";
 import { useSeedPool } from "@/hooks/presale/useSeedPool";
 import { LiveCoinHoldersProps } from "../../coin.types";
 
 export const LiveCoinHolders = ({ coinMetadata }: LiveCoinHoldersProps) => {
   const { seedPool } = useSeedPool(coinMetadata.address);
+  const { livePool } = useLivePool(coinMetadata.address);
   const uniqueHoldersData = useLiveCoinUniqueHolders(coinMetadata.address, seedPool?.address);
 
   return (
@@ -16,11 +18,13 @@ export const LiveCoinHolders = ({ coinMetadata }: LiveCoinHoldersProps) => {
             const percentage = tokenAmountInPercentage.toFixed(2);
             const slicedAddress = address.slice(0, 6) + "..." + address.slice(-4);
             const holderIsDev = coinMetadata.creator === address;
+            const holderIsRaydiumLiquidity = livePool?.authority === address;
 
             return (
               <div key={address} className="flex justify-between flex-row gap-2 text-xs font-bold text-regular">
                 <div>
-                  <span className="font-normal">{slicedAddress}</span> {holderIsDev ? "(dev)" : ""}
+                  <span className="font-normal">{slicedAddress}</span>{" "}
+                  {holderIsDev ? "(dev)" : holderIsRaydiumLiquidity ? "(raydium liquidity)" : ""}
                 </div>
                 <div>{percentage}%</div>
               </div>

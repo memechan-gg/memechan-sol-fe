@@ -26,6 +26,7 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
   const [outputAmount, setOutputAmount] = useState<string | null>(null);
   const [isLoadingOutputAmount, setIsLoadingOutputAmount] = useState<boolean>(false);
   const [slippage, setSlippage] = useState<string>("10");
+  const [isSwapping, setIsSwapping] = useState<boolean>(false);
 
   const { publicKey, sendTransaction } = useWallet();
   const {
@@ -130,6 +131,7 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
       return;
 
     try {
+      setIsSwapping(true);
       const transactionResult = await getSwapTransaction({
         inputAmount: inputAmount,
         minOutputAmount: outputAmount,
@@ -150,6 +152,7 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
         const signature = await sendTransaction(tx, MemechanClientInstance.connection, {
           signers: [memeTicketKeypair],
           maxRetries: 3,
+          skipPreflight: true,
         });
 
         // Check the swap succeeded
@@ -186,6 +189,7 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
         for (const tx of txs) {
           const signature = await sendTransaction(tx, MemechanClientInstance.connection, {
             maxRetries: 3,
+            skipPreflight: true,
           });
 
           // Check a part of the swap succeeded
@@ -219,6 +223,8 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
     } catch (e) {
       console.error("[Swap.onSwap] Swap error:", e);
       toast.error("Failed to swap. Please, try again");
+    } finally {
+      setIsSwapping(false);
     }
   }, [
     availableTicketsAmount,
@@ -299,11 +305,13 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
         <UnavailableTicketsToSellDialog unavailableTickets={unavailableTickets} symbol={tokenSymbol} />
       )}
       <Button
-        disabled={isLoadingOutputAmount}
+        disabled={isLoadingOutputAmount || isSwapping}
         onClick={onSwap}
-        className="w-full bg-regular bg-opacity-80 hover:bg-opacity-50"
+        className="w-full bg-regular bg-opacity-80 hover:bg-opacity-50 disabled:opacity-50"
       >
-        <div className="text-xs font-bold text-white">{isLoadingOutputAmount ? "Loading..." : "Swap"}</div>
+        <div className="text-xs font-bold text-white">
+          {isLoadingOutputAmount || isSwapping ? "Loading..." : "Swap"}
+        </div>
       </Button>
     </>
   );
