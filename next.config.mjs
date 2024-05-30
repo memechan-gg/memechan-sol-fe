@@ -3,7 +3,7 @@ import {withSentryConfig} from '@sentry/nextjs';
 const nextConfig = {
   reactStrictMode: true,
   env: {
-    NEXT_PUBLIC_CHARTS_API_HOSTNAME: "memechan-gg-chart.netlify.app",
+    NEXT_PUBLIC_CHARTS_API_HOSTNAME: "memechan-chart.netlify.app",
   },
   webpack: (config, { isServer }) => {
     if (!isServer) {
