@@ -152,6 +152,7 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
         const signature = await sendTransaction(tx, MemechanClientInstance.connection, {
           signers: [memeTicketKeypair],
           maxRetries: 3,
+          skipPreflight: true,
         });
 
         // Check the swap succeeded
@@ -188,6 +189,7 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
         for (const tx of txs) {
           const signature = await sendTransaction(tx, MemechanClientInstance.connection, {
             maxRetries: 3,
+            skipPreflight: true,
           });
 
           // Check a part of the swap succeeded
