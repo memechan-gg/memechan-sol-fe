@@ -15,9 +15,7 @@ export const LiveCoinInfo = ({ metadata }: LiveCoinInfoProps) => {
           <div className="text-xs font-bold text-regular">
             {name} (symbol: {symbol})
           </div>
-          <div className="text-xs text-regular">
-            {description.slice(0, 300) + (description.length > 300 ? "..." : "")}
-          </div>
+          <div className="text-xs text-regular">{description}</div>
         </div>
       </div>
       {socialLinks && (

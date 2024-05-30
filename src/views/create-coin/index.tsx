@@ -1,5 +1,6 @@
 import { MemechanClientInstance } from "@/common/solana";
 import { ThreadBoard } from "@/components/thread";
+import { useTargetConfig } from "@/hooks/useTargetConfig";
 import { BoundPoolClient, MEMECHAN_QUOTE_TOKEN, sleep } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import BigNumber from "bignumber.js";
@@ -28,6 +29,8 @@ export function CreateCoin() {
   const [state, setState] = useState<CreateCoinState>("idle");
   const router = useRouter();
   const [inputAmount, setInputAmount] = useState<string>("0");
+  const { slerfThresholdAmount } = useTargetConfig();
+  console.log("slerfThresholdAmount:", slerfThresholdAmount);
 
   const onSubmit = handleSubmit(async (data) => {
     try {
@@ -41,6 +44,7 @@ export function CreateCoin() {
 
       // Input amount validation
       const amountBigNumber = new BigNumber(inputAmount);
+      const thresholdWithFees = slerfThresholdAmount ? new BigNumber(slerfThresholdAmount).multipliedBy(1.01) : null;
 
       if (amountBigNumber.isNaN()) {
         toast.error("Input amount must be a valid number");
@@ -52,8 +56,8 @@ export function CreateCoin() {
         return;
       }
 
-      if (amountBigNumber.gt(40_000)) {
-        toast.error("The maximum SLERF amount to invest in bonding pool is 40.000 SLERF");
+      if (thresholdWithFees && amountBigNumber.gt(thresholdWithFees)) {
+        toast.error(`The maximum SLERF amount to invest in bonding pool is ${thresholdWithFees.toPrecision()} SLERF`);
         return;
       }
 
