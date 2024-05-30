@@ -55,7 +55,7 @@ export function LiveCoin({ coinMetadata, livePoolData }: { coinMetadata: CoinMet
         </div>
         <div className="flex w-full flex-col lg:flex-row gap-6">
           <div className="flex flex-col gap-3 w-full">
-            {livePoolData.id && CHARTS_API_HOSTNAME && (
+            {CHARTS_API_HOSTNAME && (
               <ChartIframe
                 src={`https://dexscreener.com/solana/${livePoolData.id}?embed=1&theme=dark&trades=0&info=0`}
               />
