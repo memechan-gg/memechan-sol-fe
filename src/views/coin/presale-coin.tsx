@@ -24,6 +24,8 @@ export function PresaleCoin({
 
   const CHARTS_API_HOSTNAME = process.env.NEXT_PUBLIC_CHARTS_API_HOSTNAME || "";
 
+  const CHART_QUOTE_SYMBOL: "SLERF" | "USD" = "SLERF"
+
   return (
     <ThreadBoard title={coinMetadata.name}>
       <div className="flex flex-col gap-2">
@@ -64,7 +66,7 @@ export function PresaleCoin({
           <div className="flex flex-col gap-3 w-full">
             {/* Mockup Chart */}
             {/* <ChartIframe address={seedPoolData.address} symbol={"SLERF"} chartsApiUrl={CHARTS_API_HOSTNAME} /> */}
-            <ChartIframe src={`https://${CHARTS_API_HOSTNAME}/?address=${seedPoolData.address}&symbol=SLERF`} />
+            <ChartIframe src={`https://${CHARTS_API_HOSTNAME}/?address=${seedPoolData.address}&symbol=${CHART_QUOTE_SYMBOL}&contractName=${coinMetadata.symbol}/${CHART_QUOTE_SYMBOL}}`} />
             <div className="flex flex-col gap-3 lg:hidden">
               <PresaleCoinSidebar coinMetadata={coinMetadata} pool={seedPoolData} />
             </div>
