@@ -1,12 +1,14 @@
 import "@/styles/globals.css";
+import "@/styles/skeleton-chart-custom.css";
+import "react-loading-skeleton/dist/skeleton.css";
 
 import { Layout } from "@/components/layout";
+import { SolanaProvider } from "@/components/provider/solana";
 import { UserProvider } from "@/context/UserContext";
 import NextProgress from "next-progress";
 import type { AppProps } from "next/app";
 import Head from "next/head";
 import { Toaster } from "react-hot-toast";
-import { SolanaProvider } from "@/components/provider/solana";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (

@@ -41,7 +41,7 @@ export function ThreadBoard({
 
 export function Thread({
   title,
-  type,
+  mint,
   image,
   createdBy,
   marketCap,
@@ -49,18 +49,24 @@ export function Thread({
   description,
 }: {
   title: string;
-  type: string;
+  mint: string;
   image: string;
   createdBy: string;
-  marketCap: string;
+  marketCap: number;
   ticker: string;
   description: string;
 }) {
   return (
     <div className="flex flex-col gap-2">
-      <h2 className="text-sm font-bold text-regular">{title}</h2>
-      <Link href={`/coin/${type}`}>
-        <img className="w-[150px] border border-regular h-auto" src={image} alt="Coin Image" />
+      <div className="w-[150px]">
+        <h2 className="text-sm font-bold text-regular truncate">{title}</h2>
+      </div>
+      <Link href={`/coin/${mint}`}>
+        <img
+          className="w-[150px] border border-regular h-[150px] object-cover object-center"
+          src={image}
+          alt="Coin Image"
+        />
       </Link>
       <div className="flex flex-col gap-1 text-xs">
         <div className="text-link">
@@ -69,11 +75,13 @@ export function Thread({
             <span className="font-bold hover:underline">{createdBy.slice(0, 5) + "..." + createdBy.slice(-3)}</span>
           </Link>
         </div>
-        <div className="text-green">market cap: {marketCap}</div>
-        <Link href={`/coin/${type}`}>
-          <div className="text-regular flex flex-col">
-            <span className="font-bold">{ticker}</span>
-            <span>{description}</span>
+        <div className="text-green">market cap: {marketCap.toFixed(2)}</div>
+        <Link href={`/coin/${mint}`}>
+          <div className="text-regular flex flex-col flex-wrap">
+            <div className="font-bold !normal-case">symbol: {ticker}</div>
+            <div className="max-w-[150px] overflow-ellipsis">
+              {description.slice(0, 50) + (description.length > 50 ? "..." : "")}
+            </div>
           </div>
         </Link>
       </div>
