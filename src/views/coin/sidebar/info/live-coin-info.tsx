@@ -7,13 +7,14 @@ export const LiveCoinInfo = ({ metadata }: LiveCoinInfoProps) => {
     <div className="flex flex-col gap-2">
       <div className="flex flex-row gap-2">
         <img
-          className="w-32 border border-regular h-32 rounded-lg object-cover object-center float-left"
+          className="w-32 border border-regular h-32 rounded-lg object-cover object-center"
           src={image}
           alt="token-image"
         />
-        <div className="flex flex-col gap-1">
-          <div className="text-xs font-bold text-regular">
-            {name} (symbol: {symbol})
+        <div className="flex flex-col gap-1 overflow-hidden">
+          <div className="flex-col text-xs font-bold text-regular">
+            <span className="flex">{name}</span>
+            <span className="flex">(symbol: {symbol})</span>
           </div>
           <div className="text-xs text-regular">{description}</div>
         </div>
