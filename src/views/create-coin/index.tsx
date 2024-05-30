@@ -83,6 +83,8 @@ export function CreateCoin() {
       const signers = [memeMintKeypair];
       if (memeTicketKeypair) signers.push(memeTicketKeypair);
 
+      toast("We are really close...");
+
       setState("create_bonding_and_meme");
       // Pool and meme creation
       const signature = await sendTransaction(transaction, MemechanClientInstance.connection, {
@@ -92,6 +94,8 @@ export function CreateCoin() {
       });
       console.log("signature:", signature);
       await sleep(3000);
+
+      toast("A few steps left...");
 
       // Check pool creation succeeded
       const { blockhash, lastValidBlockHeight } =
