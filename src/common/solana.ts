@@ -10,7 +10,6 @@ import {
 } from "@avernikoz/memechan-sol-sdk";
 import { Connection, Keypair } from "@solana/web3.js";
 
-// TODO: Change to mainnet
 export const DEFAULT_PROVIDER_URL = "https://mainnet.helius-rpc.com/?api-key=28685dcc-7500-4b9a-83ad-d046eb965933";
 export const RPC_API_CLUSTER = "https://rpc.ankr.com/solana_mainnet";
 export const WSS_API_CLUSTER = "wss://api.mainnet.solana.com/";
