@@ -9,4 +9,4 @@ export interface ICreateForm {
   website?: string;
 }
 
-export type CreateCoinState = "idle" | "sign" | "ipfs" | "create_meme" | "create_bonding";
+export type CreateCoinState = "idle" | "sign" | "ipfs" | "create_bonding_and_meme";
