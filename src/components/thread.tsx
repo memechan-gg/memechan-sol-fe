@@ -58,7 +58,9 @@ export function Thread({
 }) {
   return (
     <div className="flex flex-col gap-2">
-      <h2 className="text-sm font-bold text-regular">{title}</h2>
+      <div className="w-[150px]">
+        <h2 className="text-sm font-bold text-regular truncate">{title}</h2>
+      </div>
       <Link href={`/coin/${mint}`}>
         <img
           className="w-[150px] border border-regular h-[150px] object-cover object-center"
