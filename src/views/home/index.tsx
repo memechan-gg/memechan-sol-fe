@@ -57,9 +57,9 @@ export function Home() {
               <DialogTitle className="text-xl">Disclaimer</DialogTitle>
             </DialogHeader>
             <div>
-              I confirm that <strong>I am</strong> a citizen of Afghanistan, Benin, China, Crimea region, Cuba, Iran,
-              Iraq, Syria, USA, Vatican City, or for use by any person in any country or jurisdiction where such
-              distribution or use would be contrary to local law or regulation
+              I confirm that I am a citizen of Afghanistan, Benin, China, Crimea region, Cuba, Iran, Iraq, Syria, USA,
+              Vatican City, or for use by any person in any country or jurisdiction where such distribution or use would
+              be contrary to local law or regulation
             </div>
             <DialogFooter>
               <button
