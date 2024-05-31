@@ -20,10 +20,10 @@
     "@jridgewell/gen-mapping" "^0.3.5"
     "@jridgewell/trace-mapping" "^0.3.24"
 
-"@avernikoz/memechan-sol-sdk@1.0.66-mainnet":
-  version "1.0.66-mainnet"
-  resolved "https://registry.yarnpkg.com/@avernikoz/memechan-sol-sdk/-/memechan-sol-sdk-1.0.66-mainnet.tgz#fb8b6de58e9923859538cb402fef24271bf805aa"
-  integrity sha512-QsyBfPuXvMLEmi6N04JXbb9xF6C6qL9P4EfAzUhoW76GSQIjhCEvzOARfLjI/RUYGP5tN8fDL+HfPF/YHhyQmg==
+"@avernikoz/memechan-sol-sdk@1.0.69-mainnet":
+  version "1.0.69-mainnet"
+  resolved "https://registry.yarnpkg.com/@avernikoz/memechan-sol-sdk/-/memechan-sol-sdk-1.0.69-mainnet.tgz#4157a1040c1e59f518d1602ee6ff854148f12cfe"
+  integrity sha512-CzDFKOLOKzTpwg4wR9dXhys/IA5B4sucggbkfIm8DJLBkNISemJT52v7u1NvRxJX9PgP9a9nJbhe5TXHtMHFXg==
   dependencies:
     "@aws-crypto/sha256-browser" "^5.2.0"
     "@aws-sdk/types" "^3.577.0"
