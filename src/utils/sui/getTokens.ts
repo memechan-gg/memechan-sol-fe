@@ -15,10 +15,6 @@ export async function getTokenAccounts(
   const { connection, ownerAddress, tokenAddress } = params;
   const accounts = await connection.getParsedTokenAccountsByOwner(ownerAddress, { mint: tokenAddress });
 
-  if (accounts.value.length === 0) {
-    return null;
-  }
-
   const parsedAccounts = accounts.value.reduce((accountsArray, accountData) => {
     const parsedAccountData = accountData.account.data.parsed;
 
