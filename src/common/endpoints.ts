@@ -28,4 +28,5 @@ export const endpoints = [
   "https://mainnet.helius-rpc.com/?api-key=ee964c22-b0b7-415a-b857-ee1bc28db7a2",
   "https://mainnet.helius-rpc.com/?api-key=64eafd76-7c59-42c3-a564-8cd48ec87c97",
   "https://solana-mainnet.rpc.extrnode.com/5e87a0b2-e9d8-4c4f-87b0-a648fb495cef",
+  "https://ivette-6g7muw-fast-mainnet.helius-rpc.com",
 ];
