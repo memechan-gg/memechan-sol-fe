@@ -1,4 +1,4 @@
-import { MemechanClientInstance } from "@/common/solana";
+import { loadBalancedConnection } from "@/common/solana";
 import { BoundPoolClient, LivePoolClient } from "@avernikoz/memechan-sol-sdk";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
@@ -7,7 +7,7 @@ import { useSlerfPrice } from "../useSlerfPrice";
 const fetchLiveMemePrice = async (slerfPriceInUsd: number, livePoolAddress: string) => {
   try {
     const prices = await LivePoolClient.getMemePrice({
-      connection: MemechanClientInstance.connection,
+      connection: loadBalancedConnection,
       poolAddress: livePoolAddress,
       quotePriceInUsd: slerfPriceInUsd,
     });

@@ -1,11 +1,11 @@
-import { MemechanClientInstance } from "@/common/solana";
+import { loadBalancedConnection } from "@/common/solana";
 import { BoundPoolClient } from "@avernikoz/memechan-sol-sdk";
 import { PublicKey } from "@solana/web3.js";
 import useSWR from "swr";
 
 const fetchBoundPool = async (poolAddress: string) => {
   try {
-    const boundPool = await BoundPoolClient.fetch2(MemechanClientInstance.connection, new PublicKey(poolAddress));
+    const boundPool = await BoundPoolClient.fetch2(loadBalancedConnection, new PublicKey(poolAddress));
 
     return boundPool;
   } catch (e) {

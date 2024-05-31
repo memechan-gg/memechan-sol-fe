@@ -2,6 +2,7 @@ import {
   Auth,
   BE_URL,
   ChartApi,
+  LoadBalancedConnection,
   MemechanClient,
   NoWalletAdapter,
   PoolAPI,
@@ -9,6 +10,7 @@ import {
   TokenAPI,
 } from "@avernikoz/memechan-sol-sdk";
 import { Connection, Keypair } from "@solana/web3.js";
+import { endpoints } from "./endpoints";
 
 export const DEFAULT_PROVIDER_URL = "https://mainnet.helius-rpc.com/?api-key=28685dcc-7500-4b9a-83ad-d046eb965933";
 export const RPC_API_CLUSTER = "https://rpc.ankr.com/solana_mainnet";
@@ -29,6 +31,7 @@ export const connection = new Connection(RPC_API_CLUSTER, {
   commitment: "confirmed",
   wsEndpoint: WSS_API_CLUSTER,
 });
+export const loadBalancedConnection = new LoadBalancedConnection(endpoints);
 export const AuthInstance = new Auth(BE_URL);
 export const TokenApiInstance = new TokenAPI(BE_URL);
 export const PoolApiInstance = new PoolAPI(BE_URL);
