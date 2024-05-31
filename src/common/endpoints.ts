@@ -1,5 +1,4 @@
 export const endpoints = [
-  "https://mainnet.helius-rpc.com/?api-key=0c67a072-1b07-4577-85f9-1f13c970f512",
   "https://mainnet.helius-rpc.com/?api-key=b53301be-1754-49be-8678-f00697dcb122",
   "https://mainnet.helius-rpc.com/?api-key=23910eea-83b1-496a-8a37-a0dbef749c1a",
   "https://mainnet.helius-rpc.com/?api-key=64db3acd-9966-4fa6-87f1-fdfe49d91331",
