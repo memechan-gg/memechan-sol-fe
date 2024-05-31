@@ -1,13 +1,15 @@
 import { MemechanClientInstance, loadBalancedConnection } from "@/common/solana";
 import { ThreadBoard } from "@/components/thread";
+import { useBalance } from "@/hooks/useBalance";
 import { useTargetConfig } from "@/hooks/useTargetConfig";
-import { BoundPoolClient, MEMECHAN_QUOTE_TOKEN, sleep } from "@avernikoz/memechan-sol-sdk";
+import { BoundPoolClient, MEMECHAN_QUOTE_MINT, MEMECHAN_QUOTE_TOKEN, sleep } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import BigNumber from "bignumber.js";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import Skeleton from "react-loading-skeleton";
 import { CreateCoinState, ICreateForm } from "./create-coin.types";
 import {
   createCoinOnBE,
@@ -30,6 +32,7 @@ export function CreateCoin() {
   const router = useRouter();
   const [inputAmount, setInputAmount] = useState<string>("0");
   const { slerfThresholdAmount } = useTargetConfig();
+  const { balance: slerfBalance } = useBalance(MEMECHAN_QUOTE_MINT.toString());
 
   const onSubmit = handleSubmit(async (data) => {
     try {
@@ -42,23 +45,31 @@ export function CreateCoin() {
       validateCoinParamsWithoutImage(data);
 
       // Input amount validation
-      const amountBigNumber = new BigNumber(inputAmount);
-      const thresholdWithFees = slerfThresholdAmount ? new BigNumber(slerfThresholdAmount).multipliedBy(1.01) : null;
-
-      if (amountBigNumber.isNaN()) {
-        toast.error("Input amount must be a valid number");
-        return;
+      let inputAmountIsSpecified = false;
+      if (inputAmount !== "" && parseFloat(inputAmount) !== 0) {
+        inputAmountIsSpecified = true;
       }
 
-      if (amountBigNumber.lt(0)) {
-        toast.error("Input amount must be greater than zero");
-        return;
+      if (inputAmountIsSpecified) {
+        if (!slerfBalance) return toast.error("You need to have SLERF for initial buy");
+
+        const amountBigNumber = new BigNumber(inputAmount);
+        const thresholdWithFees = slerfThresholdAmount ? new BigNumber(slerfThresholdAmount).multipliedBy(1.01) : null;
+
+        if (amountBigNumber.isNaN()) return toast.error("Input amount must be a valid number");
+
+        if (amountBigNumber.lt(0)) return toast.error("Input amount must be greater than zero");
+
+        if (amountBigNumber.gt(slerfBalance)) return toast.error("Insufficient balance");
+
+        if (thresholdWithFees && amountBigNumber.gt(thresholdWithFees))
+          return toast.error(
+            `The maximum SLERF amount to invest in bonding pool is ${thresholdWithFees.toPrecision()} SLERF`,
+          );
       }
 
-      if (thresholdWithFees && amountBigNumber.gt(thresholdWithFees)) {
-        toast.error(`The maximum SLERF amount to invest in bonding pool is ${thresholdWithFees.toPrecision()} SLERF`);
-        return;
-      }
+      console.log("inputAmountIsSpecified:", inputAmountIsSpecified);
+      console.log("inputAmount:", inputAmount);
 
       setState("sign");
       const walletAddress = publicKey.toBase58();
@@ -77,13 +88,11 @@ export function CreateCoin() {
         data,
         ipfsUrl,
         publicKey,
-        inputAmount: amountBigNumber.eq(0) ? undefined : amountBigNumber.toString(),
+        inputAmount: inputAmountIsSpecified ? inputAmount : undefined,
       });
 
       const signers = [memeMintKeypair];
       if (memeTicketKeypair) signers.push(memeTicketKeypair);
-
-      toast("We are really close...");
 
       setState("create_bonding_and_meme");
       // Pool and meme creation
@@ -211,6 +220,7 @@ export function CreateCoin() {
                   <textarea
                     {...register("description", { required: true })}
                     className="border w-[200px] border-regular rounded-lg p-1"
+                    maxLength={300}
                   />
                 </div>
                 {errors.description && <p className="text-xs text-red-500">Description is required</p>}
@@ -260,6 +270,9 @@ export function CreateCoin() {
                       placeholder="0"
                     />
                   </div>
+                  <span className="text-regular">
+                    SLERF available: {publicKey ? slerfBalance ?? <Skeleton width={40} /> : 0}
+                  </span>
                 </div>
               </div>
             </div>
