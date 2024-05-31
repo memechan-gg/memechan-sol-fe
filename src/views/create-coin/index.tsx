@@ -1,14 +1,12 @@
-import { MemechanClientInstance, loadBalancedConnection } from "@/common/solana";
+import { loadBalancedConnection } from "@/common/solana";
 import { ThreadBoard } from "@/components/thread";
 import { useBalance } from "@/hooks/useBalance";
 import { useTargetConfig } from "@/hooks/useTargetConfig";
 import {
-  BoundPoolClient,
   MAX_DESCRIPTION_LENGTH,
   MAX_NAME_LENGTH,
   MAX_SYMBOL_LENGTH,
   MEMECHAN_QUOTE_MINT,
-  MEMECHAN_QUOTE_TOKEN,
   sleep,
 } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
@@ -132,26 +130,7 @@ export function CreateCoin() {
         return;
       }
 
-      const createdPoolId = BoundPoolClient.findBoundPoolPda(
-        memeMintKeypair.publicKey,
-        MEMECHAN_QUOTE_TOKEN.mint,
-        MemechanClientInstance.memechanProgram.programId,
-      );
-
-      // We need to have some sleep to make sure that we could parse transaction
-      // Otherwise, user can encounter the following error:
-      // _app-86aa935170022f74.js:360 [Create Coin Submit] Error occured: Error: No such pool found in instruction data for signature
-      //  2KvcEC4QDn2BWbvh6YLKrrbDmautt6ekUBkc25nazMcmtzVsEM3myFdcb7vFwd5gteht2ig2RmFhGy9czcmpUpj1
-      // As a better solution, we can update `fromPoolCreationTransaction` in a way, that it would accept custom commitment, e.g. processed commitment.
-      await sleep(5000)
-
-      console.log("createdPoolId: ", createdPoolId.toString());
-      const boundPool = await BoundPoolClient.fromPoolCreationTransaction({
-        client: MemechanClientInstance,
-        poolCreationSignature: signature,
-      });
-      console.log("boundPool:", boundPool);
-      console.log("memeMint:", boundPool.memeTokenMint.toString());
+      await sleep(5000);
 
       // Retry policy for coin creation on the BE
       let attempt = 0;
@@ -178,7 +157,7 @@ export function CreateCoin() {
 
       await sleep(3000);
 
-      router.push(`/coin/${boundPool.memeTokenMint.toString()}`);
+      router.push(`/coin/${memeMintKeypair.publicKey.toString()}`);
     } catch (e) {
       console.error("[Create Coin Submit] Error occured:", e);
       setState("idle");
@@ -286,6 +265,7 @@ export function CreateCoin() {
                       type="number"
                       min="0"
                       placeholder="0"
+                      step={10 ** -9}
                     />
                   </div>
                   <span className="text-regular">
