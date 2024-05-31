@@ -137,6 +137,14 @@ export function CreateCoin() {
         MEMECHAN_QUOTE_TOKEN.mint,
         MemechanClientInstance.memechanProgram.programId,
       );
+
+      // We need to have some sleep to make sure that we could parse transaction
+      // Otherwise, user can encounter the following error:
+      // _app-86aa935170022f74.js:360 [Create Coin Submit] Error occured: Error: No such pool found in instruction data for signature
+      //  2KvcEC4QDn2BWbvh6YLKrrbDmautt6ekUBkc25nazMcmtzVsEM3myFdcb7vFwd5gteht2ig2RmFhGy9czcmpUpj1
+      // As a better solution, we can update `fromPoolCreationTransaction` in a way, that it would accept custom commitment, e.g. processed commitment.
+      await sleep(5000)
+
       console.log("createdPoolId: ", createdPoolId.toString());
       const boundPool = await BoundPoolClient.fromPoolCreationTransaction({
         client: MemechanClientInstance,
