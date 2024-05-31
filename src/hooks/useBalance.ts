@@ -1,4 +1,4 @@
-import { MemechanClientInstance } from "@/common/solana";
+import { loadBalancedConnection } from "@/common/solana";
 import { getTokenAccounts } from "@/utils";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
@@ -7,7 +7,7 @@ import useSWR from "swr";
 const fetchCoinBalance = async (tokenAddress: string, ownerAddress: PublicKey) => {
   try {
     const tokenAccountsData = await getTokenAccounts({
-      connection: MemechanClientInstance.connection,
+      connection: loadBalancedConnection,
       ownerAddress: ownerAddress,
       tokenAddress: new PublicKey(tokenAddress),
     });

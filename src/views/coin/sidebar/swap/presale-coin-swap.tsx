@@ -1,4 +1,4 @@
-import { ChartApiInstance, MemechanClientInstance } from "@/common/solana";
+import { ChartApiInstance, loadBalancedConnection } from "@/common/solana";
 import { Button } from "@/components/button";
 import { useBoundPool } from "@/hooks/presale/useBoundPool";
 import { useBoundPoolClient } from "@/hooks/presale/useBoundPoolClient";
@@ -149,7 +149,7 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
       if (side === "buy") {
         const { tx, memeTicketKeypair } = result;
 
-        const signature = await sendTransaction(tx, MemechanClientInstance.connection, {
+        const signature = await sendTransaction(tx, loadBalancedConnection, {
           signers: [memeTicketKeypair],
           maxRetries: 3,
           skipPreflight: true,
@@ -157,8 +157,8 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
 
         // Check the swap succeeded
         const { blockhash: blockhash, lastValidBlockHeight: lastValidBlockHeight } =
-          await MemechanClientInstance.connection.getLatestBlockhash("confirmed");
-        const swapTxResult = await MemechanClientInstance.connection.confirmTransaction(
+          await loadBalancedConnection.getLatestBlockhash("confirmed");
+        const swapTxResult = await loadBalancedConnection.confirmTransaction(
           {
             signature: signature,
             blockhash: blockhash,
@@ -187,15 +187,15 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
         const { txs } = result;
 
         for (const tx of txs) {
-          const signature = await sendTransaction(tx, MemechanClientInstance.connection, {
+          const signature = await sendTransaction(tx, loadBalancedConnection, {
             maxRetries: 3,
             skipPreflight: true,
           });
 
           // Check a part of the swap succeeded
           const { blockhash: blockhash, lastValidBlockHeight: lastValidBlockHeight } =
-            await MemechanClientInstance.connection.getLatestBlockhash("confirmed");
-          const swapTxResult = await MemechanClientInstance.connection.confirmTransaction(
+            await loadBalancedConnection.getLatestBlockhash("confirmed");
+          const swapTxResult = await loadBalancedConnection.confirmTransaction(
             {
               signature: signature,
               blockhash: blockhash,

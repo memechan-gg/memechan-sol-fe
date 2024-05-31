@@ -1,4 +1,4 @@
-import { MemechanClientInstance } from "@/common/solana";
+import { loadBalancedConnection } from "@/common/solana";
 import { Button } from "@/components/button";
 import { useBalance } from "@/hooks/useBalance";
 import { useTokenAccounts } from "@/hooks/useTokenAccounts";
@@ -31,14 +31,14 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
             poolAddress: address,
             amountIn: inputAmount,
             slippagePercentage,
-            connection: MemechanClientInstance.connection,
+            connection: loadBalancedConnection,
             memeCoinMint: tokenAddress,
           })
         : await LivePoolClient.getSellMemeOutput({
             poolAddress: address,
             amountIn: inputAmount,
             slippagePercentage,
-            connection: MemechanClientInstance.connection,
+            connection: loadBalancedConnection,
             memeCoinMint: tokenAddress,
           });
     },
@@ -52,13 +52,13 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
       return slerfToMeme
         ? await LivePoolClient.getBuyMemeTransactionsByOutput({
             ...outputData,
-            connection: MemechanClientInstance.connection,
+            connection: loadBalancedConnection,
             payer: publicKey,
             walletTokenAccounts: tokenAccounts,
           })
         : await LivePoolClient.getSellMemeTransactionsByOutput({
             ...outputData,
-            connection: MemechanClientInstance.connection,
+            connection: loadBalancedConnection,
             payer: publicKey,
             walletTokenAccounts: tokenAccounts,
           });
@@ -116,18 +116,18 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
         return;
       }
 
-      const swapTransactions = await buildTxs(MemechanClientInstance.connection, publicKey, simpleSwapTransactions);
+      const swapTransactions = await buildTxs(loadBalancedConnection, publicKey, simpleSwapTransactions);
 
       for (const tx of swapTransactions) {
-        const signature = await sendTransaction(tx, MemechanClientInstance.connection, {
+        const signature = await sendTransaction(tx, loadBalancedConnection, {
           skipPreflight: true,
           maxRetries: 3,
         });
 
         // Check a part of the swap succeeded
         const { blockhash: blockhash, lastValidBlockHeight: lastValidBlockHeight } =
-          await MemechanClientInstance.connection.getLatestBlockhash("confirmed");
-        const swapTxResult = await MemechanClientInstance.connection.confirmTransaction(
+          await loadBalancedConnection.getLatestBlockhash("confirmed");
+        const swapTxResult = await loadBalancedConnection.confirmTransaction(
           {
             signature: signature,
             blockhash: blockhash,

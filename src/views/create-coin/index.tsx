@@ -1,4 +1,4 @@
-import { MemechanClientInstance } from "@/common/solana";
+import { MemechanClientInstance, loadBalancedConnection } from "@/common/solana";
 import { ThreadBoard } from "@/components/thread";
 import { useTargetConfig } from "@/hooks/useTargetConfig";
 import { BoundPoolClient, MEMECHAN_QUOTE_TOKEN, sleep } from "@avernikoz/memechan-sol-sdk";
@@ -87,7 +87,7 @@ export function CreateCoin() {
 
       setState("create_bonding_and_meme");
       // Pool and meme creation
-      const signature = await sendTransaction(transaction, MemechanClientInstance.connection, {
+      const signature = await sendTransaction(transaction, loadBalancedConnection, {
         signers,
         maxRetries: 3,
         skipPreflight: true,
@@ -98,9 +98,8 @@ export function CreateCoin() {
       toast("A few steps left...");
 
       // Check pool creation succeeded
-      const { blockhash, lastValidBlockHeight } =
-        await MemechanClientInstance.connection.getLatestBlockhash("confirmed");
-      const txResult = await MemechanClientInstance.connection.confirmTransaction(
+      const { blockhash, lastValidBlockHeight } = await loadBalancedConnection.getLatestBlockhash("confirmed");
+      const txResult = await loadBalancedConnection.confirmTransaction(
         {
           signature,
           blockhash: blockhash,
