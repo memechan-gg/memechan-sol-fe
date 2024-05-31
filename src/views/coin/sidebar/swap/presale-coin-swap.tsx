@@ -266,7 +266,11 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
           type="number"
           min="0"
         />
-        {slerfToMeme && <div className="text-xs font-bold text-regular">available SLERF: {slerfBalance}</div>}
+        {slerfToMeme && (
+          <div className="text-xs font-bold text-regular">
+            available SLERF: {publicKey ? slerfBalance ?? "loading..." : "0"}
+          </div>
+        )}
         {!slerfToMeme && availableTicketsAmount !== "0" && (
           <div className="text-xs font-bold text-regular">Available tickets to sell: {availableTicketsAmount}</div>
         )}

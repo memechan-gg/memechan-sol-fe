@@ -68,7 +68,7 @@ export function PostReplyDialog({
       {/* Dialog */}
       <div className="fixed inset-0 flex items-center justify-center z-50">
         <div className="gradient-bg p-4 border border-gray-300 rounded-lg w-1/3">
-          <h2 className="text-sm mb-1">
+          <h2 className="text-sm mb-1 text-regular">
             message
             {replyThreadId && (
               <span>
@@ -81,13 +81,26 @@ export function PostReplyDialog({
             ref={textareaRef}
             value={replyText}
             onChange={handleReplyChange}
-            className="w-full text-base h-24 border border-gray-300 rounded-lg p-2 mb-2"
+            className="w-full text-base h-24 border border-regular rounded-lg p-2 mb-3 focus:border-2 focus:border-regular focus:outline-none"
           ></textarea>
+          <div className="flex flex-col gap-1 mb-5">
+            <label className="text-regular text-xs">Attach a picture</label>
+            <div>
+              <input
+                type="file"
+                // file limits
+                accept="image/png, image/jpeg, image/jpg, image/gif"
+                // only select one file
+                multiple={false}
+                className="border w-[200px] border-regular rounded-lg p-1"
+              />
+            </div>
+          </div>
           <div className="flex flex-row justify-between items-center">
-            <button onClick={handleSendReply} className="text-blue py-2 rounded-lg">
+            <button onClick={handleSendReply} className="text-blue py-2 rounded-lg text-sm hover:underline">
               Send a reply
             </button>
-            <button onClick={onClose} className="text-blue-500">
+            <button onClick={onClose} className="text-regular text-sm hover:underline">
               Close
             </button>
           </div>

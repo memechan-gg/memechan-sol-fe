@@ -189,7 +189,11 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
           type="number"
           min="0"
         />
-        {slerfToMeme && <div className="text-xs font-bold text-regular">available SLERF: {slerfBalance}</div>}
+        {slerfToMeme && (
+          <div className="text-xs font-bold text-regular">
+            available SLERF: {publicKey ? slerfBalance ?? "loading..." : "0"}
+          </div>
+        )}
         {!slerfToMeme && memeBalance && (
           <div className="text-xs !normal-case font-bold text-regular">
             available {tokenSymbol} to sell: {(Math.floor(Number(memeBalance) * 100) / 100).toFixed(2)}
