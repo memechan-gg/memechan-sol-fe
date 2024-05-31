@@ -19,6 +19,7 @@ import { PresaleCoinSwapProps } from "../../coin.types";
 import { presaleSwapParamsAreValid } from "../../coin.utils";
 import { SwapButton } from "./button";
 import { UnavailableTicketsToSellDialog } from "./dialog-unavailable-tickets-to-sell";
+import { validateSlippage } from "./utils";
 
 export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => {
   const [slerfToMeme, setSlerfToMeme] = useState<boolean>(true);
@@ -95,6 +96,8 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
     const updateOutputAmount = async () => {
       try {
         setIsLoadingOutputAmount(true);
+
+        if (!validateSlippage(slippage)) return;
 
         const outputAmount = await getSwapOutputAmount({ inputAmount, slerfToMeme, slippagePercentage: +slippage });
 

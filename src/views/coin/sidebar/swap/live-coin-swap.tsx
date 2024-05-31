@@ -10,6 +10,7 @@ import toast from "react-hot-toast";
 import { LiveCoinSwapProps } from "../../coin.types";
 import { liveSwapParamsAreValid } from "../../coin.utils";
 import { SwapButton } from "./button";
+import { validateSlippage } from "./utils";
 
 export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: tokenAddress } }: LiveCoinSwapProps) => {
   const [slerfToMeme, setSlerfToMeme] = useState<boolean>(true);
@@ -80,6 +81,8 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
     const updateOutputAmount = async () => {
       try {
         setIsLoadingOutputAmount(true);
+
+        if (!validateSlippage(slippage)) return;
 
         const outputData = await getSwapOutputAmount({ inputAmount, slerfToMeme, slippagePercentage: +slippage });
 
