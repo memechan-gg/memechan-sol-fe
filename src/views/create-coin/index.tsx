@@ -265,6 +265,7 @@ export function CreateCoin() {
                       type="number"
                       min="0"
                       placeholder="0"
+                      step={10 ** -9}
                     />
                   </div>
                   <span className="text-regular">
