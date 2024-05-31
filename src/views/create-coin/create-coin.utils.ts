@@ -25,8 +25,11 @@ export function handleErrors(e: unknown) {
     return toast.error("Invalid coin image");
   } else if (e instanceof CoinDescriptionTooLargeError) {
     return toast.error("Coin description is too large");
+  } else if (e instanceof Error) {
+    return toast.error(`Unexpected error occured during coin creation: ${e.message}`);
   }
 
+  console.error(`[handleErrors] error: `, e)
   return toast.error("Unrecognized error occurred while creating meme coin. Please try again");
 }
 
