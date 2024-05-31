@@ -286,6 +286,9 @@ export function CreateCoin() {
                 </div>
               </div>
             </div>
+            <div className="text-regular">
+              <i>Creation cost: ~0.02 SOL</i>
+            </div>
             <div className="flex flex-col gap-1">
               <div>
                 <button
