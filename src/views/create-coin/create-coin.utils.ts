@@ -9,6 +9,10 @@ import {
   InvalidCoinSymbolError,
   MEMECHAN_QUOTE_TOKEN,
   validateCreateCoinParams,
+  MAX_NAME_LENGTH,
+  MAX_SYMBOL_LENGTH,
+  MAX_DESCRIPTION_LENGTH,
+
 } from "@avernikoz/memechan-sol-sdk";
 import { PublicKey } from "@solana/web3.js";
 import toast from "react-hot-toast";
@@ -16,15 +20,15 @@ import { ICreateForm } from "./create-coin.types";
 
 export function handleErrors(e: unknown) {
   if (e instanceof InvalidCoinNameError) {
-    return toast.error("Invalid coin name");
+    return toast.error(`Invalid coin name. Coin name can contain ${MAX_NAME_LENGTH} symbols as max.`);
   } else if (e instanceof InvalidCoinSymbolError) {
-    return toast.error("Invalid coin symbol");
+    return toast.error(`Invalid coin symbol. Coin symbol can contain ${MAX_SYMBOL_LENGTH} symbols as max.`);
   } else if (e instanceof InvalidCoinDescriptionError) {
-    return toast.error("Invalid coin description");
+    return toast.error(`Invalid coin description. Coin description can contain ${MAX_DESCRIPTION_LENGTH} symbols as max.`);
   } else if (e instanceof InvalidCoinImageError) {
     return toast.error("Invalid coin image");
   } else if (e instanceof CoinDescriptionTooLargeError) {
-    return toast.error("Coin description is too large");
+    return toast.error(`Coin description is too large. Max ${MAX_DESCRIPTION_LENGTH} symbols are allowed.`);
   } else if (e instanceof Error) {
     return toast.error(`Unexpected error occured during coin creation: ${e.message}`);
   }
