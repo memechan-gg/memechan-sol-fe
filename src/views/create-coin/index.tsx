@@ -2,7 +2,13 @@ import { MemechanClientInstance, loadBalancedConnection } from "@/common/solana"
 import { ThreadBoard } from "@/components/thread";
 import { useBalance } from "@/hooks/useBalance";
 import { useTargetConfig } from "@/hooks/useTargetConfig";
-import { BoundPoolClient, MEMECHAN_QUOTE_MINT, MEMECHAN_QUOTE_TOKEN, sleep } from "@avernikoz/memechan-sol-sdk";
+import {
+  BoundPoolClient,
+  MAX_DESCRIPTION_LENGTH,
+  MEMECHAN_QUOTE_MINT,
+  MEMECHAN_QUOTE_TOKEN,
+  sleep,
+} from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import BigNumber from "bignumber.js";
 import { useRouter } from "next/router";
@@ -220,7 +226,7 @@ export function CreateCoin() {
                   <textarea
                     {...register("description", { required: true })}
                     className="border w-[200px] border-regular rounded-lg p-1"
-                    maxLength={300}
+                    maxLength={MAX_DESCRIPTION_LENGTH}
                   />
                 </div>
                 {errors.description && <p className="text-xs text-red-500">Description is required</p>}
