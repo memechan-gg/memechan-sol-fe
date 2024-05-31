@@ -5,6 +5,8 @@ import { useTargetConfig } from "@/hooks/useTargetConfig";
 import {
   BoundPoolClient,
   MAX_DESCRIPTION_LENGTH,
+  MAX_NAME_LENGTH,
+  MAX_SYMBOL_LENGTH,
   MEMECHAN_QUOTE_MINT,
   MEMECHAN_QUOTE_TOKEN,
   sleep,
@@ -190,6 +192,7 @@ export function CreateCoin() {
                     <input
                       {...register("name", { required: true })}
                       className="border w-[200px] border-regular rounded-lg p-1"
+                      maxLength={MAX_NAME_LENGTH}
                     />
                   </div>
                   {errors.name && <p className="text-xs text-red-500">Name is required</p>}
@@ -200,6 +203,7 @@ export function CreateCoin() {
                     <input
                       {...register("symbol", { required: true })}
                       className="border w-[200px] border-regular rounded-lg p-1"
+                      maxLength={MAX_SYMBOL_LENGTH}
                     />
                   </div>
                   {errors.symbol && <p className="text-xs text-red-500">Synbol is required</p>}
