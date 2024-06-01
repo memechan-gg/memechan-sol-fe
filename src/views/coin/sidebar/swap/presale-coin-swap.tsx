@@ -11,6 +11,7 @@ import {
   MEMECHAN_MEME_TOKEN_DECIMALS,
   MEMECHAN_QUOTE_MINT,
   MEMECHAN_QUOTE_TOKEN_DECIMALS,
+  sleep,
 } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useCallback, useEffect, useState } from "react";
@@ -176,13 +177,16 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
           return;
         }
 
-        toast.success("Swap succeeded");
+        await sleep(2000);
+
         refetchSlerfBalance();
         refreshAvailableTickets();
         const res = await ChartApiInstance.updatePrice({ address: pool.address, type: "seedPool" }).catch((e) => {
           console.debug(`[OHLCV] Failed updating price for OHLCV`);
           console.error(`Failed updating price for OHLCV, error:`, e);
         });
+        setInputAmount("");
+        toast.success("Swap succeeded");
         return;
       }
 
@@ -214,13 +218,16 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
           }
         }
 
-        toast.success("Swap succeeded");
+        await sleep(2000);
+
         refetchSlerfBalance();
         refreshAvailableTickets();
         const res = await ChartApiInstance.updatePrice({ address: pool.address, type: "seedPool" }).catch((e) => {
           console.debug(`[OHLCV] Failed updating price for OHLCV`);
           console.error(`Failed updating price for OHLCV, error:`, e);
         });
+        toast.success("Swap succeeded");
+        setInputAmount("");
         return;
       }
     } catch (e) {
@@ -279,7 +286,8 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
         )}
         {!slerfToMeme && unavailableTicketsAmount !== "0" && (
           <div className="text-xs !normal-case font-bold text-regular">
-            unavailable {tokenSymbol} to sell (locked): {Number(unavailableTicketsAmount).toFixed(2)}
+            unavailable {tokenSymbol} to sell (locked):{" "}
+            {Number(unavailableTicketsAmount).toFixed(MEMECHAN_MEME_TOKEN_DECIMALS)}
           </div>
         )}
         {isLoadingOutputAmount && (

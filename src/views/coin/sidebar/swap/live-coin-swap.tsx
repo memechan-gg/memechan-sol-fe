@@ -3,7 +3,13 @@ import { Button } from "@/components/button";
 import { useBalance } from "@/hooks/useBalance";
 import { useTokenAccounts } from "@/hooks/useTokenAccounts";
 import { GetLiveSwapTransactionParams, GetSwapOutputAmountParams } from "@/types/hooks";
-import { LivePoolClient, MEMECHAN_QUOTE_MINT, SwapMemeOutput, buildTxs } from "@avernikoz/memechan-sol-sdk";
+import {
+  LivePoolClient,
+  MEMECHAN_MEME_TOKEN_DECIMALS,
+  MEMECHAN_QUOTE_MINT,
+  SwapMemeOutput,
+  buildTxs,
+} from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -199,7 +205,8 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
         )}
         {!slerfToMeme && memeBalance && (
           <div className="text-xs !normal-case font-bold text-regular">
-            available {tokenSymbol} to sell: {(Math.floor(Number(memeBalance) * 100) / 100).toFixed(2)}
+            available {tokenSymbol} to sell:{" "}
+            {(Math.floor(Number(memeBalance) * 100) / 100).toFixed(MEMECHAN_MEME_TOKEN_DECIMALS)}
           </div>
         )}
         {isLoadingOutputAmount && (
