@@ -1,5 +1,6 @@
 import { TokenApiInstance } from "@/common/solana";
 import useSWR from "swr";
+import { TOKEN_INTERVAL } from "./refresh-intervals";
 
 const fetchToken = async (tokenAddress: string) => {
   try {
@@ -25,7 +26,7 @@ export function useToken(tokenAddress: string) {
   const { data: token, isLoading } = useSWR(
     [`token-${tokenAddress}`, tokenAddress],
     ([url, token]) => fetchToken(token),
-    { refreshInterval: 5000 },
+    { refreshInterval: TOKEN_INTERVAL },
   );
 
   return { token, isLoading };

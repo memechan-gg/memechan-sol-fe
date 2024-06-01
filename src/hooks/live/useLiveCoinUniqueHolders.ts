@@ -2,6 +2,7 @@ import { MemechanClientInstance } from "@/common/solana";
 import { StakingPoolClient } from "@avernikoz/memechan-sol-sdk";
 import { PublicKey } from "@solana/web3.js";
 import useSWR from "swr";
+import { LIVE_POOL_HOLDERS_INTERVAL } from "../refresh-intervals";
 
 const fetchLiveUniqueHolders = async (mint: string, boundPoolId: string) => {
   try {
@@ -24,7 +25,7 @@ export function useLiveCoinUniqueHolders(mint: string, boundPoolId?: string) {
   const { data } = useSWR(
     boundPoolId ? [`unique-holders-${boundPoolId}-${mint}`, mint, boundPoolId] : null,
     ([url, meme, pool]) => fetchLiveUniqueHolders(meme, pool),
-    { refreshInterval: 5000 },
+    { refreshInterval: LIVE_POOL_HOLDERS_INTERVAL },
   );
 
   return data;

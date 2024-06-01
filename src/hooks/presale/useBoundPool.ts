@@ -2,6 +2,7 @@ import { connection } from "@/common/solana";
 import { BoundPoolClient } from "@avernikoz/memechan-sol-sdk";
 import { PublicKey } from "@solana/web3.js";
 import useSWR from "swr";
+import { BOUND_POOL_DATA_INTERVAL } from "../refresh-intervals";
 
 const fetchBoundPool = async (poolAddress: string) => {
   try {
@@ -15,7 +16,7 @@ const fetchBoundPool = async (poolAddress: string) => {
 
 export function useBoundPool(poolAddress: string) {
   const { data } = useSWR([`bound-pool-${poolAddress}`, poolAddress], ([url, pool]) => fetchBoundPool(pool), {
-    refreshInterval: 5000,
+    refreshInterval: BOUND_POOL_DATA_INTERVAL,
   });
 
   return data;

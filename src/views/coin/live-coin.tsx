@@ -1,7 +1,7 @@
 import { ChartIframe } from "@/components/chart-iframe";
 import { ThreadBoard } from "@/components/thread";
 import { useLiveCoinUniqueHolders } from "@/hooks/live/useLiveCoinUniqueHolders";
-import { useLiveMemePriceAndMCap } from "@/hooks/live/useLiveMemePriceAndMCap";
+import { useLiveMemePrice } from "@/hooks/live/useLiveMemePrice";
 import { useSeedPool } from "@/hooks/presale/useSeedPool";
 import { CoinMetadata } from "@/types/coin";
 import { LivePoolData } from "@/types/pool";
@@ -12,7 +12,7 @@ import { CommentsPanel } from "./comments-panel";
 import { LiveCoinSidebar } from "./sidebar/live-coin-sidebar";
 
 export function LiveCoin({ coinMetadata, livePoolData }: { coinMetadata: CoinMetadata; livePoolData: LivePoolData }) {
-  const { priceData, marketCap } = useLiveMemePriceAndMCap(livePoolData.id);
+  const priceData = useLiveMemePrice(livePoolData.id);
   const { seedPool } = useSeedPool(coinMetadata.address);
   const uniqueHoldersData = useLiveCoinUniqueHolders(coinMetadata.address, seedPool?.address);
   const CHARTS_API_HOSTNAME = process.env.NEXT_PUBLIC_CHARTS_API_HOSTNAME;
