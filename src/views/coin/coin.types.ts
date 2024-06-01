@@ -69,7 +69,7 @@ export type CoinThread = {
   replyCounter: number;
 };
 
-export type CoinThreadParsedMessage = { message: string; replyTo?: string };
+export type CoinThreadParsedMessage = { message: string; replyTo?: string; image?: string };
 
 export type CoinThreadWithParsedMessage = {
   message: CoinThreadParsedMessage;
