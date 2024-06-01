@@ -26,6 +26,7 @@ import { UnstakeDialogProps } from "../../coin.types";
 
 export const UnstakeDialog = ({ tokenSymbol, livePoolAddress, memeMint }: UnstakeDialogProps) => {
   const [availableAmountToUnstake, setAvailableAmountToUnstake] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const { publicKey, sendTransaction } = useWallet();
   const { seedPool } = useSeedPool(memeMint);
@@ -50,45 +51,54 @@ export const UnstakeDialog = ({ tokenSymbol, livePoolAddress, memeMint }: Unstak
   const unstake = useCallback(async () => {
     if (!publicKey || !availableAmountToUnstake || !stakingPoolClient) return;
 
-    const ticketIds = tickets.map((ticket) => ticket.id);
+    try {
+      setIsLoading(true);
 
-    const rawAmountToUnstake = new BigNumber(availableAmountToUnstake)
-      .multipliedBy(10 ** MEMECHAN_MEME_TOKEN_DECIMALS)
-      .toFixed(0);
+      const ticketIds = tickets.map((ticket) => ticket.id);
 
-    const transactions = await stakingPoolClient.getPreparedUnstakeTransactions({
-      ammPoolId: new PublicKey(livePoolAddress),
-      ticketIds: ticketIds,
-      user: publicKey,
-      amount: new BN(rawAmountToUnstake),
-    });
+      const rawAmountToUnstake = new BigNumber(availableAmountToUnstake)
+        .multipliedBy(10 ** MEMECHAN_MEME_TOKEN_DECIMALS)
+        .toFixed(0);
 
-    for (const tx of transactions) {
-      const signature = await sendTransaction(tx, connection, {
-        maxRetries: 3,
-        skipPreflight: true,
+      const transactions = await stakingPoolClient.getPreparedUnstakeTransactions({
+        ammPoolId: new PublicKey(livePoolAddress),
+        ticketIds: ticketIds,
+        user: publicKey,
+        amount: new BN(rawAmountToUnstake),
       });
 
-      // Check that a part of the unstake succeeded
-      const { blockhash: blockhash, lastValidBlockHeight: lastValidBlockHeight } =
-        await connection.getLatestBlockhash("confirmed");
-      const swapTxResult = await connection.confirmTransaction(
-        {
-          signature: signature,
-          blockhash: blockhash,
-          lastValidBlockHeight: lastValidBlockHeight,
-        },
-        "confirmed",
-      );
+      for (const tx of transactions) {
+        const signature = await sendTransaction(tx, connection, {
+          maxRetries: 3,
+          skipPreflight: true,
+        });
 
-      if (swapTxResult.value.err) {
-        console.error("[UnstakeDialog.unstake] Unstake failed:", JSON.stringify(swapTxResult, null, 2));
-        toast.error("Unstake failed. Please, try again");
-        return;
+        // Check that a part of the unstake succeeded
+        const { blockhash: blockhash, lastValidBlockHeight: lastValidBlockHeight } =
+          await connection.getLatestBlockhash("confirmed");
+        const swapTxResult = await connection.confirmTransaction(
+          {
+            signature: signature,
+            blockhash: blockhash,
+            lastValidBlockHeight: lastValidBlockHeight,
+          },
+          "confirmed",
+        );
+
+        if (swapTxResult.value.err) {
+          console.error("[UnstakeDialog.unstake] Unstake failed:", JSON.stringify(swapTxResult, null, 2));
+          toast.error("Unstake failed. Please, try again");
+          return;
+        }
       }
-    }
 
-    toast.success("Successfully unstaked");
+      toast.success("Successfully unstaked");
+    } catch (e) {
+      console.error("[UnstakeDialog.unstake] Failed to unstake:", e);
+      toast.error("Failed to unstake. Please, try again");
+    } finally {
+      setIsLoading(false);
+    }
   }, [sendTransaction, availableAmountToUnstake, livePoolAddress, publicKey, stakingPoolClient, tickets]);
 
   useEffect(() => {
@@ -107,6 +117,9 @@ export const UnstakeDialog = ({ tokenSymbol, livePoolAddress, memeMint }: Unstak
     startVestingTime = new Date(startVestingTimeInMs).toLocaleString();
     endVestingTime = new Date(endVestingTimeInMs).toLocaleString();
   }
+
+  const unstakeButtonIsDisabled =
+    availableAmountToUnstake === null || isLoading || new BigNumber(availableAmountToUnstake).isZero();
 
   return (
     <Dialog>
@@ -140,9 +153,9 @@ export const UnstakeDialog = ({ tokenSymbol, livePoolAddress, memeMint }: Unstak
         <div className="flex w-full flex-col gap-1"></div>
         <DialogFooter>
           <Button
-            disabled={availableAmountToUnstake === null || availableAmountToUnstake === "0"}
+            disabled={unstakeButtonIsDisabled}
             onClick={unstake}
-            className="w-full bg-regular bg-opacity-80 hover:bg-opacity-50"
+            className="w-full bg-regular bg-opacity-80 hover:bg-opacity-50 disabled:bg-opacity-50 disabled:cursor-not-allowed"
           >
             <span className="text-xs font-bold text-white">Unstake</span>
           </Button>
