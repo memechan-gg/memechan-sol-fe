@@ -16,7 +16,7 @@ export function Comment({
     creator,
     creationDate,
     id,
-    message: { message, replyTo },
+    message: { message, replyTo, image },
     likeCounter,
   },
   updateThreads,
@@ -104,6 +104,15 @@ export function Comment({
                 </div>
               </div>
             </div>
+            {image && (
+              <div>
+                <img
+                  src={image}
+                  alt="picture"
+                  className="mt-1 w-[150px] max-h-[250px] object-cover object-center border border-regular"
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>
