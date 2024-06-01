@@ -1,4 +1,4 @@
-import { loadBalancedConnection } from "@/common/solana";
+import { connection } from "@/common/solana";
 import { Button } from "@/components/button";
 import { useBalance } from "@/hooks/useBalance";
 import { useTokenAccounts } from "@/hooks/useTokenAccounts";
@@ -32,14 +32,14 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
             poolAddress: address,
             amountIn: inputAmount,
             slippagePercentage,
-            connection: loadBalancedConnection,
+            connection: connection,
             memeCoinMint: tokenAddress,
           })
         : await LivePoolClient.getSellMemeOutput({
             poolAddress: address,
             amountIn: inputAmount,
             slippagePercentage,
-            connection: loadBalancedConnection,
+            connection: connection,
             memeCoinMint: tokenAddress,
           });
     },
@@ -53,13 +53,13 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
       return slerfToMeme
         ? await LivePoolClient.getBuyMemeTransactionsByOutput({
             ...outputData,
-            connection: loadBalancedConnection,
+            connection: connection,
             payer: publicKey,
             walletTokenAccounts: tokenAccounts,
           })
         : await LivePoolClient.getSellMemeTransactionsByOutput({
             ...outputData,
-            connection: loadBalancedConnection,
+            connection: connection,
             payer: publicKey,
             walletTokenAccounts: tokenAccounts,
           });
@@ -119,18 +119,18 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
         return;
       }
 
-      const swapTransactions = await buildTxs(loadBalancedConnection, publicKey, simpleSwapTransactions);
+      const swapTransactions = await buildTxs(connection, publicKey, simpleSwapTransactions);
 
       for (const tx of swapTransactions) {
-        const signature = await sendTransaction(tx, loadBalancedConnection, {
+        const signature = await sendTransaction(tx, connection, {
           skipPreflight: true,
           maxRetries: 3,
         });
 
         // Check a part of the swap succeeded
         const { blockhash: blockhash, lastValidBlockHeight: lastValidBlockHeight } =
-          await loadBalancedConnection.getLatestBlockhash("confirmed");
-        const swapTxResult = await loadBalancedConnection.confirmTransaction(
+          await connection.getLatestBlockhash("confirmed");
+        const swapTxResult = await connection.confirmTransaction(
           {
             signature: signature,
             blockhash: blockhash,

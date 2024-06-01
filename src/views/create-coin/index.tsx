@@ -1,4 +1,4 @@
-import { loadBalancedConnection } from "@/common/solana";
+import { connection } from "@/common/solana";
 import { ThreadBoard } from "@/components/thread";
 import { useBalance } from "@/hooks/useBalance";
 import { useTargetConfig } from "@/hooks/useTargetConfig";
@@ -102,7 +102,7 @@ export function CreateCoin() {
 
       setState("create_bonding_and_meme");
       // Pool and meme creation
-      const signature = await sendTransaction(transaction, loadBalancedConnection, {
+      const signature = await sendTransaction(transaction, connection, {
         signers,
         maxRetries: 3,
         skipPreflight: true,
@@ -113,8 +113,8 @@ export function CreateCoin() {
       toast("A few steps left...");
 
       // Check pool creation succeeded
-      const { blockhash, lastValidBlockHeight } = await loadBalancedConnection.getLatestBlockhash("confirmed");
-      const txResult = await loadBalancedConnection.confirmTransaction(
+      const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash("confirmed");
+      const txResult = await connection.confirmTransaction(
         {
           signature,
           blockhash: blockhash,

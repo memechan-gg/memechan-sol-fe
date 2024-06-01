@@ -1,11 +1,11 @@
-import { loadBalancedConnection } from "@/common/solana";
+import { connection } from "@/common/solana";
 import { MEMECHAN_QUOTE_TOKEN_DECIMALS, MEMECHAN_TARGET_CONFIG, TargetConfigClient } from "@avernikoz/memechan-sol-sdk";
 import BigNumber from "bignumber.js";
 import useSWR from "swr";
 
 const fetchTargetConfig = async () => {
   try {
-    const targetConfig = await TargetConfigClient.fetch(loadBalancedConnection, MEMECHAN_TARGET_CONFIG);
+    const targetConfig = await TargetConfigClient.fetch(connection, MEMECHAN_TARGET_CONFIG);
 
     return targetConfig;
   } catch (e) {
