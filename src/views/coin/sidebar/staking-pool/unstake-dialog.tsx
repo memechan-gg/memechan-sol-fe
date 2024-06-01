@@ -1,4 +1,4 @@
-import { MemechanClientInstance } from "@/common/solana";
+import { connection } from "@/common/solana";
 import { Button } from "@/components/button";
 import {
   Dialog,
@@ -64,15 +64,15 @@ export const UnstakeDialog = ({ tokenSymbol, livePoolAddress, memeMint }: Unstak
     });
 
     for (const tx of transactions) {
-      const signature = await sendTransaction(tx, MemechanClientInstance.connection, {
+      const signature = await sendTransaction(tx, connection, {
         maxRetries: 3,
         skipPreflight: true,
       });
 
       // Check that a part of the unstake succeeded
       const { blockhash: blockhash, lastValidBlockHeight: lastValidBlockHeight } =
-        await MemechanClientInstance.connection.getLatestBlockhash("confirmed");
-      const swapTxResult = await MemechanClientInstance.connection.confirmTransaction(
+        await connection.getLatestBlockhash("confirmed");
+      const swapTxResult = await connection.confirmTransaction(
         {
           signature: signature,
           blockhash: blockhash,

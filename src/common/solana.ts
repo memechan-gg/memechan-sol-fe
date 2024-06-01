@@ -7,8 +7,10 @@ import {
   PoolAPI,
   SocialAPI,
   TokenAPI,
+  getRandomRpcEndpoint,
 } from "@avernikoz/memechan-sol-sdk";
 import { Connection, Keypair } from "@solana/web3.js";
+import { endpoints } from "./endpoints";
 
 export const DEFAULT_PROVIDER_URL = "https://mainnet.helius-rpc.com/?api-key=28685dcc-7500-4b9a-83ad-d046eb965933";
 export const RPC_API_CLUSTER = "https://rpc.ankr.com/solana_mainnet";
@@ -24,10 +26,10 @@ export const SIMULATION_KEYPAIR = Keypair.fromSeed(
   ),
 );
 
-export const connection = new Connection(RPC_API_CLUSTER, {
+export const randomEndpoint = getRandomRpcEndpoint(endpoints);
+export const connection = new Connection(randomEndpoint, {
   httpAgent: IS_TEST_ENV ? false : undefined,
   commitment: "confirmed",
-  wsEndpoint: WSS_API_CLUSTER,
 });
 export const AuthInstance = new Auth(BE_URL);
 export const TokenApiInstance = new TokenAPI(BE_URL);
@@ -36,7 +38,7 @@ export const SocialApiInstance = new SocialAPI(BE_URL);
 export const ChartApiInstance = new ChartApi(BE_URL);
 export const MemechanClientInstance = new MemechanClient({
   wallet: NoWalletAdapter,
-  heliusApiUrl: DEFAULT_PROVIDER_URL,
+  heliusApiUrl: randomEndpoint,
   simulationKeypair: SIMULATION_KEYPAIR,
   connection,
 });

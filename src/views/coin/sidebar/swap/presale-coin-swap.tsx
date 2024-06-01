@@ -1,4 +1,4 @@
-import { ChartApiInstance, MemechanClientInstance } from "@/common/solana";
+import { ChartApiInstance, connection } from "@/common/solana";
 import { Button } from "@/components/button";
 import { useBoundPool } from "@/hooks/presale/useBoundPool";
 import { useBoundPoolClient } from "@/hooks/presale/useBoundPoolClient";
@@ -19,6 +19,7 @@ import { PresaleCoinSwapProps } from "../../coin.types";
 import { presaleSwapParamsAreValid } from "../../coin.utils";
 import { SwapButton } from "./button";
 import { UnavailableTicketsToSellDialog } from "./dialog-unavailable-tickets-to-sell";
+import { validateSlippage } from "./utils";
 
 export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => {
   const [slerfToMeme, setSlerfToMeme] = useState<boolean>(true);
@@ -96,6 +97,8 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
       try {
         setIsLoadingOutputAmount(true);
 
+        if (!validateSlippage(slippage)) return;
+
         const outputAmount = await getSwapOutputAmount({ inputAmount, slerfToMeme, slippagePercentage: +slippage });
 
         if (!outputAmount) {
@@ -149,7 +152,7 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
       if (side === "buy") {
         const { tx, memeTicketKeypair } = result;
 
-        const signature = await sendTransaction(tx, MemechanClientInstance.connection, {
+        const signature = await sendTransaction(tx, connection, {
           signers: [memeTicketKeypair],
           maxRetries: 3,
           skipPreflight: true,
@@ -157,8 +160,8 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
 
         // Check the swap succeeded
         const { blockhash: blockhash, lastValidBlockHeight: lastValidBlockHeight } =
-          await MemechanClientInstance.connection.getLatestBlockhash("confirmed");
-        const swapTxResult = await MemechanClientInstance.connection.confirmTransaction(
+          await connection.getLatestBlockhash("confirmed");
+        const swapTxResult = await connection.confirmTransaction(
           {
             signature: signature,
             blockhash: blockhash,
@@ -187,15 +190,15 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
         const { txs } = result;
 
         for (const tx of txs) {
-          const signature = await sendTransaction(tx, MemechanClientInstance.connection, {
+          const signature = await sendTransaction(tx, connection, {
             maxRetries: 3,
             skipPreflight: true,
           });
 
           // Check a part of the swap succeeded
           const { blockhash: blockhash, lastValidBlockHeight: lastValidBlockHeight } =
-            await MemechanClientInstance.connection.getLatestBlockhash("confirmed");
-          const swapTxResult = await MemechanClientInstance.connection.confirmTransaction(
+            await connection.getLatestBlockhash("confirmed");
+          const swapTxResult = await connection.confirmTransaction(
             {
               signature: signature,
               blockhash: blockhash,

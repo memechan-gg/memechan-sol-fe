@@ -1,4 +1,4 @@
-import { MemechanClientInstance } from "@/common/solana";
+import { connection } from "@/common/solana";
 import { Button } from "@/components/button";
 import { useBalance } from "@/hooks/useBalance";
 import { useTokenAccounts } from "@/hooks/useTokenAccounts";
@@ -10,6 +10,7 @@ import toast from "react-hot-toast";
 import { LiveCoinSwapProps } from "../../coin.types";
 import { liveSwapParamsAreValid } from "../../coin.utils";
 import { SwapButton } from "./button";
+import { validateSlippage } from "./utils";
 
 export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: tokenAddress } }: LiveCoinSwapProps) => {
   const [slerfToMeme, setSlerfToMeme] = useState<boolean>(true);
@@ -31,14 +32,14 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
             poolAddress: address,
             amountIn: inputAmount,
             slippagePercentage,
-            connection: MemechanClientInstance.connection,
+            connection: connection,
             memeCoinMint: tokenAddress,
           })
         : await LivePoolClient.getSellMemeOutput({
             poolAddress: address,
             amountIn: inputAmount,
             slippagePercentage,
-            connection: MemechanClientInstance.connection,
+            connection: connection,
             memeCoinMint: tokenAddress,
           });
     },
@@ -52,13 +53,13 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
       return slerfToMeme
         ? await LivePoolClient.getBuyMemeTransactionsByOutput({
             ...outputData,
-            connection: MemechanClientInstance.connection,
+            connection: connection,
             payer: publicKey,
             walletTokenAccounts: tokenAccounts,
           })
         : await LivePoolClient.getSellMemeTransactionsByOutput({
             ...outputData,
-            connection: MemechanClientInstance.connection,
+            connection: connection,
             payer: publicKey,
             walletTokenAccounts: tokenAccounts,
           });
@@ -80,6 +81,8 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
     const updateOutputAmount = async () => {
       try {
         setIsLoadingOutputAmount(true);
+
+        if (!validateSlippage(slippage)) return;
 
         const outputData = await getSwapOutputAmount({ inputAmount, slerfToMeme, slippagePercentage: +slippage });
 
@@ -116,18 +119,18 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
         return;
       }
 
-      const swapTransactions = await buildTxs(MemechanClientInstance.connection, publicKey, simpleSwapTransactions);
+      const swapTransactions = await buildTxs(connection, publicKey, simpleSwapTransactions);
 
       for (const tx of swapTransactions) {
-        const signature = await sendTransaction(tx, MemechanClientInstance.connection, {
+        const signature = await sendTransaction(tx, connection, {
           skipPreflight: true,
           maxRetries: 3,
         });
 
         // Check a part of the swap succeeded
         const { blockhash: blockhash, lastValidBlockHeight: lastValidBlockHeight } =
-          await MemechanClientInstance.connection.getLatestBlockhash("confirmed");
-        const swapTxResult = await MemechanClientInstance.connection.confirmTransaction(
+          await connection.getLatestBlockhash("confirmed");
+        const swapTxResult = await connection.confirmTransaction(
           {
             signature: signature,
             blockhash: blockhash,
