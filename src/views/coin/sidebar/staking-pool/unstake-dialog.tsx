@@ -105,15 +105,20 @@ export const UnstakeDialog = ({ tokenSymbol, livePoolAddress, memeMint }: Unstak
     updateAvailableAmountToUnstake();
   }, [updateAvailableAmountToUnstake]);
 
+  let cliffStartedTime: JSX.Element | string = <Skeleton width={35} />;
   let startVestingTime: JSX.Element | string = <Skeleton width={35} />;
   let endVestingTime: JSX.Element | string = <Skeleton width={35} />;
 
   if (stakingPool) {
+    const cliffStartedTimeInMs = new BigNumber(stakingPool.vestingConfig.startTs.toString())
+      .multipliedBy(1000)
+      .toNumber();
     const startVestingTimeInMs = new BigNumber(stakingPool.vestingConfig.cliffTs.toString())
       .multipliedBy(1000)
       .toNumber();
     const endVestingTimeInMs = new BigNumber(stakingPool.vestingConfig.endTs.toString()).multipliedBy(1000).toNumber();
 
+    cliffStartedTime = new Date(cliffStartedTimeInMs).toLocaleString();
     startVestingTime = new Date(startVestingTimeInMs).toLocaleString();
     endVestingTime = new Date(endVestingTimeInMs).toLocaleString();
   }
@@ -134,7 +139,8 @@ export const UnstakeDialog = ({ tokenSymbol, livePoolAddress, memeMint }: Unstak
           <DialogDescription>
             Unlock your locked Meme Coins from the staking pool. Once you unlock you cannot earn fees anymore, and
             can&apos;t lock unlocked amount anymore in the future.
-            <div className="text-xs font-bold text-regular mt-2">Vesting starts at: {startVestingTime}</div>
+            <div className="text-xs font-bold text-regular mt-2">Cliff started at: {cliffStartedTime}</div>
+            <div className="text-xs font-bold text-regular">Vesting starts at: {startVestingTime}</div>
             <div className="text-xs font-bold text-regular">Vesting ends at: {endVestingTime}</div>
           </DialogDescription>
         </DialogHeader>
