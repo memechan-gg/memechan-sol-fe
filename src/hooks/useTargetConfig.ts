@@ -2,6 +2,7 @@ import { connection } from "@/common/solana";
 import { MEMECHAN_QUOTE_TOKEN_DECIMALS, MEMECHAN_TARGET_CONFIG, TargetConfigClient } from "@avernikoz/memechan-sol-sdk";
 import BigNumber from "bignumber.js";
 import useSWR from "swr";
+import { TARGET_CONFIG_INTERVAL } from "./refresh-intervals";
 
 const fetchTargetConfig = async () => {
   try {
@@ -15,7 +16,7 @@ const fetchTargetConfig = async () => {
 
 export function useTargetConfig() {
   const { data: targetConfig, isLoading } = useSWR(`target-config`, fetchTargetConfig, {
-    refreshInterval: 5000,
+    refreshInterval: TARGET_CONFIG_INTERVAL,
   });
 
   const slerfThresholdAmount = targetConfig

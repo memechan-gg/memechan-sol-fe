@@ -5,6 +5,7 @@ import { PublicKey } from "@solana/web3.js";
 import BigNumber from "bignumber.js";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
+import { TICKETS_INTERVAL } from "./refresh-intervals";
 
 export const fetchTickets = async (poolAddress: string, user: PublicKey) => {
   try {
@@ -27,7 +28,7 @@ export function useTickets(poolAddress?: string) {
   const { data, mutate } = useSWR(
     publicKey && poolAddress ? [`tickets-${poolAddress}`, poolAddress, publicKey] : null,
     ([url, pool, user]) => fetchTickets(pool, user),
-    { refreshInterval: 5000 },
+    { refreshInterval: TICKETS_INTERVAL },
   );
 
   useEffect(() => {

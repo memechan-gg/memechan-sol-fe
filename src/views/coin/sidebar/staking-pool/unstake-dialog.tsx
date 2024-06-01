@@ -26,6 +26,7 @@ import { UnstakeDialogProps } from "../../coin.types";
 
 export const UnstakeDialog = ({ tokenSymbol, livePoolAddress, memeMint }: UnstakeDialogProps) => {
   const [availableAmountToUnstake, setAvailableAmountToUnstake] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const { publicKey, sendTransaction } = useWallet();
   const { seedPool } = useSeedPool(memeMint);
@@ -50,63 +51,80 @@ export const UnstakeDialog = ({ tokenSymbol, livePoolAddress, memeMint }: Unstak
   const unstake = useCallback(async () => {
     if (!publicKey || !availableAmountToUnstake || !stakingPoolClient) return;
 
-    const ticketIds = tickets.map((ticket) => ticket.id);
+    try {
+      setIsLoading(true);
 
-    const rawAmountToUnstake = new BigNumber(availableAmountToUnstake)
-      .multipliedBy(10 ** MEMECHAN_MEME_TOKEN_DECIMALS)
-      .toFixed(0);
+      const ticketIds = tickets.map((ticket) => ticket.id);
 
-    const transactions = await stakingPoolClient.getPreparedUnstakeTransactions({
-      ammPoolId: new PublicKey(livePoolAddress),
-      ticketIds: ticketIds,
-      user: publicKey,
-      amount: new BN(rawAmountToUnstake),
-    });
+      const rawAmountToUnstake = new BigNumber(availableAmountToUnstake)
+        .multipliedBy(10 ** MEMECHAN_MEME_TOKEN_DECIMALS)
+        .toFixed(0);
 
-    for (const tx of transactions) {
-      const signature = await sendTransaction(tx, connection, {
-        maxRetries: 3,
-        skipPreflight: true,
+      const transactions = await stakingPoolClient.getPreparedUnstakeTransactions({
+        ammPoolId: new PublicKey(livePoolAddress),
+        ticketIds: ticketIds,
+        user: publicKey,
+        amount: new BN(rawAmountToUnstake),
       });
 
-      // Check that a part of the unstake succeeded
-      const { blockhash: blockhash, lastValidBlockHeight: lastValidBlockHeight } =
-        await connection.getLatestBlockhash("confirmed");
-      const swapTxResult = await connection.confirmTransaction(
-        {
-          signature: signature,
-          blockhash: blockhash,
-          lastValidBlockHeight: lastValidBlockHeight,
-        },
-        "confirmed",
-      );
+      for (const tx of transactions) {
+        const signature = await sendTransaction(tx, connection, {
+          maxRetries: 3,
+          skipPreflight: true,
+        });
 
-      if (swapTxResult.value.err) {
-        console.error("[UnstakeDialog.unstake] Unstake failed:", JSON.stringify(swapTxResult, null, 2));
-        toast.error("Unstake failed. Please, try again");
-        return;
+        // Check that a part of the unstake succeeded
+        const { blockhash: blockhash, lastValidBlockHeight: lastValidBlockHeight } =
+          await connection.getLatestBlockhash("confirmed");
+        const swapTxResult = await connection.confirmTransaction(
+          {
+            signature: signature,
+            blockhash: blockhash,
+            lastValidBlockHeight: lastValidBlockHeight,
+          },
+          "confirmed",
+        );
+
+        if (swapTxResult.value.err) {
+          console.error("[UnstakeDialog.unstake] Unstake failed:", JSON.stringify(swapTxResult, null, 2));
+          toast.error("Unstake failed. Please, try again");
+          return;
+        }
       }
-    }
 
-    toast.success("Successfully unstaked");
+      toast.success("Successfully unstaked");
+    } catch (e) {
+      console.error("[UnstakeDialog.unstake] Failed to unstake:", e);
+      toast.error("Failed to unstake. Please, try again");
+    } finally {
+      setIsLoading(false);
+    }
   }, [sendTransaction, availableAmountToUnstake, livePoolAddress, publicKey, stakingPoolClient, tickets]);
 
   useEffect(() => {
     updateAvailableAmountToUnstake();
   }, [updateAvailableAmountToUnstake]);
 
+  let cliffStartedTime: JSX.Element | string = <Skeleton width={35} />;
   let startVestingTime: JSX.Element | string = <Skeleton width={35} />;
   let endVestingTime: JSX.Element | string = <Skeleton width={35} />;
 
   if (stakingPool) {
+    const cliffStartedTimeInMs = new BigNumber(stakingPool.vestingConfig.startTs.toString())
+      .multipliedBy(1000)
+      .toNumber();
     const startVestingTimeInMs = new BigNumber(stakingPool.vestingConfig.cliffTs.toString())
       .multipliedBy(1000)
       .toNumber();
     const endVestingTimeInMs = new BigNumber(stakingPool.vestingConfig.endTs.toString()).multipliedBy(1000).toNumber();
 
+    cliffStartedTime = new Date(cliffStartedTimeInMs).toLocaleString();
     startVestingTime = new Date(startVestingTimeInMs).toLocaleString();
     endVestingTime = new Date(endVestingTimeInMs).toLocaleString();
   }
+
+  const unstakeButtonIsDisabled =
+    availableAmountToUnstake === null || isLoading || new BigNumber(availableAmountToUnstake).isZero();
 
   return (
     <Dialog>
@@ -121,7 +139,8 @@ export const UnstakeDialog = ({ tokenSymbol, livePoolAddress, memeMint }: Unstak
           <DialogDescription>
             Unlock your locked Meme Coins from the staking pool. Once you unlock you cannot earn fees anymore, and
             can&apos;t lock unlocked amount anymore in the future.
-            <div className="text-xs font-bold text-regular mt-2">Vesting starts at: {startVestingTime}</div>
+            <div className="text-xs font-bold text-regular mt-2">Cliff started at: {cliffStartedTime}</div>
+            <div className="text-xs font-bold text-regular">Vesting starts at: {startVestingTime}</div>
             <div className="text-xs font-bold text-regular">Vesting ends at: {endVestingTime}</div>
           </DialogDescription>
         </DialogHeader>
@@ -140,9 +159,9 @@ export const UnstakeDialog = ({ tokenSymbol, livePoolAddress, memeMint }: Unstak
         <div className="flex w-full flex-col gap-1"></div>
         <DialogFooter>
           <Button
-            disabled={availableAmountToUnstake === null || availableAmountToUnstake === "0"}
+            disabled={unstakeButtonIsDisabled}
             onClick={unstake}
-            className="w-full bg-regular bg-opacity-80 hover:bg-opacity-50"
+            className="w-full bg-regular bg-opacity-80 hover:bg-opacity-50 disabled:bg-opacity-50 disabled:cursor-not-allowed"
           >
             <span className="text-xs font-bold text-white">Unstake</span>
           </Button>

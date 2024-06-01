@@ -24,6 +24,7 @@ import { WithdrawFeesDialogProps } from "../../coin.types";
 export const WithdrawFeesDialog = ({ tokenSymbol, livePoolAddress, memeMint }: WithdrawFeesDialogProps) => {
   const [memeAmount, setMemeAmount] = useState<string | null>(null);
   const [slerfAmount, setSlerfAmount] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const { publicKey, sendTransaction } = useWallet();
   const { seedPool } = useSeedPool(memeMint);
@@ -52,41 +53,59 @@ export const WithdrawFeesDialog = ({ tokenSymbol, livePoolAddress, memeMint }: W
   const withdrawFees = useCallback(async () => {
     if (!publicKey || !stakingPoolClient) return;
 
-    const ticketIds = tickets.map((ticket) => ticket.id);
+    try {
+      setIsLoading(true);
 
-    const transactions = await stakingPoolClient.getPreparedWithdrawFeesTransactions({
-      ammPoolId: new PublicKey(livePoolAddress),
-      ticketIds: ticketIds,
-      user: publicKey,
-    });
+      const ticketIds = tickets.map((ticket) => ticket.id);
 
-    for (const tx of transactions) {
-      const signature = await sendTransaction(tx, connection, {
-        maxRetries: 3,
-        skipPreflight: true,
+      const transactions = await stakingPoolClient.getPreparedWithdrawFeesTransactions({
+        ammPoolId: new PublicKey(livePoolAddress),
+        ticketIds: ticketIds,
+        user: publicKey,
       });
 
-      // Check that a part of the withdraw fees succeeded
-      const { blockhash: blockhash, lastValidBlockHeight: lastValidBlockHeight } =
-        await connection.getLatestBlockhash("confirmed");
-      const swapTxResult = await connection.confirmTransaction(
-        {
-          signature: signature,
-          blockhash: blockhash,
-          lastValidBlockHeight: lastValidBlockHeight,
-        },
-        "confirmed",
-      );
+      for (const tx of transactions) {
+        const signature = await sendTransaction(tx, connection, {
+          maxRetries: 3,
+          skipPreflight: true,
+        });
 
-      if (swapTxResult.value.err) {
-        console.error("[WithdrawFeesDialog.withdrawFees] Withdraw fees failed:", JSON.stringify(swapTxResult, null, 2));
-        toast.error("Fees withdrawal failed. Please, try again");
-        return;
+        // Check that a part of the withdraw fees succeeded
+        const { blockhash: blockhash, lastValidBlockHeight: lastValidBlockHeight } =
+          await connection.getLatestBlockhash("confirmed");
+        const swapTxResult = await connection.confirmTransaction(
+          {
+            signature: signature,
+            blockhash: blockhash,
+            lastValidBlockHeight: lastValidBlockHeight,
+          },
+          "confirmed",
+        );
+
+        if (swapTxResult.value.err) {
+          console.error(
+            "[WithdrawFeesDialog.withdrawFees] Withdraw fees failed:",
+            JSON.stringify(swapTxResult, null, 2),
+          );
+          toast.error("Fees withdrawal failed. Please, try again");
+          return;
+        }
       }
-    }
 
-    toast.success("Fees are successfully withdrawn");
+      toast.success("Fees are successfully withdrawn");
+    } catch (e) {
+      console.error("[WithdrawFeesDialog.withdrawFees] Error while withdrawing:", e);
+      toast.error("Failed to withdraw the available fees. Please, try again");
+    } finally {
+      setIsLoading(false);
+    }
   }, [sendTransaction, publicKey, stakingPoolClient, tickets, livePoolAddress]);
+
+  const withdrawFeesButtonIsDisabled =
+    memeAmount === null ||
+    slerfAmount === null ||
+    isLoading ||
+    (new BigNumber(memeAmount).isZero() && new BigNumber(slerfAmount).isZero());
 
   return (
     <Dialog>
@@ -107,18 +126,22 @@ export const WithdrawFeesDialog = ({ tokenSymbol, livePoolAddress, memeMint }: W
             <input
               disabled
               className="w-full bg-white !normal-case text-xs font-bold text-regular p-2 rounded-lg"
-              value={memeAmount + " " + tokenSymbol}
+              value={memeAmount ? memeAmount + " " + tokenSymbol : "loading..."}
             />
             <input
               disabled
               className="w-full bg-white !normal-case text-xs font-bold text-regular p-2 rounded-lg"
-              value={slerfAmount + " SLERF"}
+              value={slerfAmount ? slerfAmount + " SLERF" : "loading..."}
             />
           </div>
         </div>
         <DialogFooter>
-          <Button onClick={withdrawFees} className="w-full bg-regular bg-opacity-80 hover:bg-opacity-50">
-            <div className="text-xs font-bold text-white">Withdraw Fees</div>
+          <Button
+            disabled={withdrawFeesButtonIsDisabled}
+            onClick={withdrawFees}
+            className="w-full bg-regular bg-opacity-80 hover:bg-opacity-50 disabled:bg-opacity-50 disabled:cursor-not-allowed"
+          >
+            <div className="text-xs font-bold text-white">{isLoading ? "Loading..." : "Withdraw Fees"}</div>
           </Button>
         </DialogFooter>
       </DialogContent>

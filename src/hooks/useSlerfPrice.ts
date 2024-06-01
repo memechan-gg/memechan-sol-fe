@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import useSWR from "swr";
+import { SLERF_PRICE_INTERVAL } from "./refresh-intervals";
 
 export type PriceData = {
   chainId: "solana";
@@ -22,7 +23,7 @@ const fetchSlerfPrice = async () => {
 
 export function useSlerfPrice() {
   const [price, setPrice] = useState<number | null>(null);
-  const { data: fetchedPrice } = useSWR("slerf-price", fetchSlerfPrice);
+  const { data: fetchedPrice } = useSWR("slerf-price", fetchSlerfPrice, { refreshInterval: SLERF_PRICE_INTERVAL });
 
   useEffect(() => {
     if (fetchedPrice) setPrice(fetchedPrice.price);

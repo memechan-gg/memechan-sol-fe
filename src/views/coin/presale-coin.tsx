@@ -1,11 +1,9 @@
 import { ChartIframe } from "@/components/chart-iframe";
 import { ThreadBoard } from "@/components/thread";
-import { useBoundPool } from "@/hooks/presale/useBoundPool";
 import { usePresaleCoinUniqueHolders } from "@/hooks/presale/usePresaleCoinUniqueHolders";
-import { usePresaleMemePriceAndMCap } from "@/hooks/presale/usePresaleMemePriceAndMCap";
+import { usePresaleMemePrice } from "@/hooks/presale/usePresaleMemePrice";
 import { CoinMetadata } from "@/types/coin";
 import { SeedPoolData } from "@/types/pool";
-import { normalizeNumber } from "@/utils/normalizeNumber";
 import Link from "next/link";
 import Skeleton from "react-loading-skeleton";
 import { CommentsPanel } from "./comments-panel";
@@ -18,8 +16,7 @@ export function PresaleCoin({
   coinMetadata: CoinMetadata;
   seedPoolData: SeedPoolData;
 }) {
-  const boundPool = useBoundPool(seedPoolData.address);
-  const { marketCap, priceData } = usePresaleMemePriceAndMCap(boundPool);
+  const price = usePresaleMemePrice(seedPoolData.address);
   const uniqueHoldersMap = usePresaleCoinUniqueHolders(seedPoolData.address);
 
   const CHARTS_API_HOSTNAME = process.env.NEXT_PUBLIC_CHARTS_API_HOSTNAME || "";
@@ -45,7 +42,7 @@ export function PresaleCoin({
           <div className="flex flex-col gap-1">
             <div className="text-sm font-bold !normal-case text-regular">USD price</div>
             <div className="text-xs font-bold !normal-case text-regular">
-              {priceData ? `$${normalizeNumber(priceData.priceInUsd)}` : <Skeleton />}
+              {price ? `$${(+price).toFixed(10)}` : <Skeleton />}
             </div>
           </div>
           <div className="flex flex-col gap-1">

@@ -3,6 +3,7 @@ import { getWalletTokenAccount } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import useSWR from "swr";
+import { TOKEN_ACCOUNTS_INTERVAL } from "./refresh-intervals";
 
 const fetchTokenAccounts = async (publicKey: PublicKey) => {
   try {
@@ -20,7 +21,7 @@ export function useTokenAccounts() {
     publicKey ? [`token-accounts`, publicKey] : null,
     ([url, pubKey]) => fetchTokenAccounts(pubKey),
     {
-      refreshInterval: 10_000,
+      refreshInterval: TOKEN_ACCOUNTS_INTERVAL,
     },
   );
 
