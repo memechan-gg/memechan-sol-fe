@@ -112,21 +112,43 @@ export function CreateCoin() {
 
       toast("A few steps left...");
 
-      // Check pool creation succeeded
-      const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash("confirmed");
-      const txResult = await connection.confirmTransaction(
-        {
-          signature,
-          blockhash: blockhash,
-          lastValidBlockHeight: lastValidBlockHeight,
-        },
-        "confirmed",
-      );
-      console.log("txResult:", txResult);
+      // Retry policy to check that pool creation succeeded
+      let creationCheckAttempt = 0;
+      let maxCreationCheckAttempsCount = 5;
+      let confirmationSucceeded = false;
+      do {
+        try {
+          const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash("confirmed");
+          const txResult = await connection.confirmTransaction(
+            {
+              signature,
+              blockhash: blockhash,
+              lastValidBlockHeight: lastValidBlockHeight,
+            },
+            "confirmed",
+          );
+          console.log("txResult:", txResult);
 
-      if (txResult.value.err) {
-        console.error("[Create Coin Submit] pool and meme creation failed:", JSON.stringify(txResult, null, 2));
+          if (txResult.value.err) {
+            console.error("[Create Coin Submit] Pool and meme creation failed:", JSON.stringify(txResult, null, 2));
+            toast.error("Failed to create pool and meme coin. Please, try again");
+            setState("idle");
+            confirmationSucceeded = true;
+            return;
+          }
+
+          confirmationSucceeded = true;
+        } catch (e) {
+          console.error("[Create Coin Submit] Error while trying to check the creation status:", e);
+          creationCheckAttempt++;
+          await sleep(4000);
+        }
+      } while (!confirmationSucceeded && creationCheckAttempt < maxCreationCheckAttempsCount);
+
+      if (!confirmationSucceeded) {
+        console.error("[Create Coin Submit] Pool and meme creation failed after all the retries.");
         toast.error("Failed to create pool and meme coin. Please, try again");
+        setState("idle");
         return;
       }
 
