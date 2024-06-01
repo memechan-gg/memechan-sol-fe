@@ -2,7 +2,6 @@ import {
   Auth,
   BE_URL,
   ChartApi,
-  LoadBalancedConnection,
   MemechanClient,
   NoWalletAdapter,
   PoolAPI,
@@ -33,7 +32,6 @@ export const connection = new Connection(randomEndpoint, {
   commitment: "confirmed",
   wsEndpoint: WSS_API_CLUSTER,
 });
-export const loadBalancedConnection = new LoadBalancedConnection(endpoints);
 export const AuthInstance = new Auth(BE_URL);
 export const TokenApiInstance = new TokenAPI(BE_URL);
 export const PoolApiInstance = new PoolAPI(BE_URL);
