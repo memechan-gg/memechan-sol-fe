@@ -30,7 +30,6 @@ export const randomEndpoint = getRandomRpcEndpoint(endpoints);
 export const connection = new Connection(randomEndpoint, {
   httpAgent: IS_TEST_ENV ? false : undefined,
   commitment: "confirmed",
-  wsEndpoint: WSS_API_CLUSTER,
 });
 export const AuthInstance = new Auth(BE_URL);
 export const TokenApiInstance = new TokenAPI(BE_URL);
