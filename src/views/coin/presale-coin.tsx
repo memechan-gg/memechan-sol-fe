@@ -4,6 +4,7 @@ import { usePresaleCoinUniqueHolders } from "@/hooks/presale/usePresaleCoinUniqu
 import { usePresaleMemePrice } from "@/hooks/presale/usePresaleMemePrice";
 import { CoinMetadata } from "@/types/coin";
 import { SeedPoolData } from "@/types/pool";
+import { formatNumber } from "@/utils/formatNumber";
 import Link from "next/link";
 import Skeleton from "react-loading-skeleton";
 import { CommentsPanel } from "./comments-panel";
@@ -37,7 +38,7 @@ export function PresaleCoin({
           </div>
           <div className="flex flex-col gap-1">
             <div className="text-sm font-bold text-regular">Market Cap</div>
-            <div className="text-xs font-bold text-regular">${coinMetadata.marketcap.toFixed(2)}</div>
+            <div className="text-xs font-bold text-regular">${formatNumber(coinMetadata.marketcap, 2)}</div>
           </div>
           <div className="flex flex-col gap-1">
             <div className="text-sm font-bold !normal-case text-regular">USD price</div>
