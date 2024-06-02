@@ -109,7 +109,7 @@ export function CreateCoin() {
       });
       console.log("signature:", signature);
 
-      toast("Transaction is sent");
+      toast("Transaction is sent, waiting for confirmation...");
       await sleep(3000);
 
       toast("A few steps left...");

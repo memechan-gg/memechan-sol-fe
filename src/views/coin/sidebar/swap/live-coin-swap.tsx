@@ -137,7 +137,7 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
           maxRetries: 3,
         });
 
-        toast("Transaction is sent");
+        toast("Transaction is sent, waiting for confirmation...");
 
         // Check a part of the swap succeeded
         const { blockhash: blockhash, lastValidBlockHeight: lastValidBlockHeight } =
