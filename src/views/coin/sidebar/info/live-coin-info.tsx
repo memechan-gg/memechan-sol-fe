@@ -20,29 +20,45 @@ export const LiveCoinInfo = ({ metadata }: LiveCoinInfoProps) => {
         </div>
       </div>
       {socialLinks && (
-        <div className="flex flex-wrap flex-row gap-4 gap-x-6 my-3">
+        <div className="grid grid-cols-2 gap-4 my-4">
           {socialLinks.discord && (
             <div className="flex flex-col gap-1">
               <div className="text-xs font-bold text-regular">Discord</div>
-              <div className="text-xs font-normal text-regular">{socialLinks.discord}</div>
+              <div className="text-xs font-normal text-regular truncate hover:underline">
+                <a href={socialLinks.discord} target="_blank">
+                  {socialLinks.discord}
+                </a>
+              </div>
             </div>
           )}
           {socialLinks.twitter && (
             <div className="flex flex-col gap-1">
               <div className="text-xs font-bold text-regular">Twitter</div>
-              <div className="text-xs font-normal text-regular">{socialLinks.twitter}</div>
+              <div className="text-xs font-normal text-regular truncate hover:underline">
+                <a href={socialLinks.twitter} target="_blank">
+                  {socialLinks.twitter}
+                </a>
+              </div>
             </div>
           )}
           {socialLinks.telegram && (
             <div className="flex flex-col gap-1">
               <div className="text-xs font-bold text-regular">Telegram</div>
-              <div className="text-xs font-normal text-regular">{socialLinks.telegram}</div>
+              <div className="text-xs font-normal text-regular truncate hover:underline">
+                <a href={socialLinks.telegram} target="_blank">
+                  {socialLinks.telegram}
+                </a>
+              </div>
             </div>
           )}
           {socialLinks.website && (
             <div className="flex flex-col gap-1">
               <div className="text-xs font-bold text-regular">Website</div>
-              <div className="text-xs font-normal text-regular">{socialLinks.website}</div>
+              <div className="text-xs font-normal text-regular truncate hover:underline">
+                <a href={socialLinks.website} target="_blank">
+                  {socialLinks.website}
+                </a>
+              </div>
             </div>
           )}
         </div>
