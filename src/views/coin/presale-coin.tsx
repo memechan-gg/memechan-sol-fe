@@ -19,7 +19,7 @@ export function PresaleCoin({
   const price = usePresaleMemePrice(seedPoolData.address);
   const uniqueHoldersMap = usePresaleCoinUniqueHolders(seedPoolData.address);
 
-  const CHARTS_API_HOSTNAME = process.env.NEXT_PUBLIC_CHARTS_API_HOSTNAME || "";
+  const CHARTS_API_HOSTNAME = process.env.NEXT_PUBLIC_CHARTS_API_HOSTNAME;
 
   const CHART_QUOTE_SYMBOL: "SLERF" | "USD" = "SLERF";
 
@@ -61,9 +61,11 @@ export function PresaleCoin({
         </div>
         <div className="flex w-full flex-col lg:flex-row gap-6">
           <div className="flex flex-col gap-3 w-full">
-            <ChartIframe
-              src={`https://${CHARTS_API_HOSTNAME}/?address=${seedPoolData.address}&symbol=${CHART_QUOTE_SYMBOL}&contract=${coinMetadata.symbol.toUpperCase()}/${CHART_QUOTE_SYMBOL}`}
-            />
+            {CHARTS_API_HOSTNAME && (
+              <ChartIframe
+                src={`https://${CHARTS_API_HOSTNAME}/?address=${seedPoolData.address}&symbol=${CHART_QUOTE_SYMBOL}&contract=${coinMetadata.symbol.toUpperCase()}/${CHART_QUOTE_SYMBOL}`}
+              />
+            )}
             <div className="flex flex-col gap-3 lg:hidden">
               <PresaleCoinSidebar coinMetadata={coinMetadata} pool={seedPoolData} />
             </div>
