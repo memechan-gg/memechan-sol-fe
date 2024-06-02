@@ -2,6 +2,7 @@ import { MemechanClientInstance } from "@/common/solana";
 import { StakingPoolClient } from "@avernikoz/memechan-sol-sdk";
 import { PublicKey } from "@solana/web3.js";
 import useSWR from "swr";
+import { MAX_HOLDERS_COUNT } from "../config";
 import { LIVE_POOL_HOLDERS_INTERVAL } from "../refresh-intervals";
 
 const fetchLiveUniqueHolders = async (mint: string, boundPoolId: string) => {
@@ -12,7 +13,13 @@ const fetchLiveUniqueHolders = async (mint: string, boundPoolId: string) => {
       MemechanClientInstance,
     );
 
-    return { holders, stakingData };
+    const sortedHolders = holders.sort(({ tokenAmount: amountA }, { tokenAmount: amountB }) =>
+      amountB.minus(amountA).toNumber(),
+    );
+
+    const slicedHolders = sortedHolders.slice(0, MAX_HOLDERS_COUNT);
+
+    return { holders: slicedHolders, stakingData };
   } catch (e) {
     console.error(
       `[fetchLiveUniqueHolders] Failed to fetch unique holders for bound pool ${boundPoolId} and meme mint ${mint}:`,
