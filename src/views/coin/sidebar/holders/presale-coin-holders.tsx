@@ -1,19 +1,31 @@
 import { usePresaleCoinUniqueHolders } from "@/hooks/presale/usePresaleCoinUniqueHolders";
-import { MAX_TICKET_TOKENS, MEMECHAN_MEME_TOKEN_DECIMALS } from "@avernikoz/memechan-sol-sdk";
-import BigNumber from "bignumber.js";
+import { useWallet } from "@solana/wallet-adapter-react";
 import { HoldersProps } from "../../coin.types";
-import { getBondingCurvePercentage } from "./utils";
+import { getBondingCurvePercentage, getBoundPoolHolderPercentage, getSlicedAddress } from "./utils";
 
 export const PresaleCoinHolders = ({ poolAddress, coinMetadata }: HoldersProps) => {
+  const { publicKey } = useWallet();
   const uniqueHolders = usePresaleCoinUniqueHolders(poolAddress);
 
   const bondingCurveSlicedAddress = poolAddress.slice(0, 6) + "..." + poolAddress.slice(-4);
   const bondingCurvePercentage = uniqueHolders ? getBondingCurvePercentage(uniqueHolders) : null;
 
+  const userHoldings = publicKey ? uniqueHolders?.get(publicKey?.toString()) : null;
+  const userPercentage = userHoldings ? getBoundPoolHolderPercentage(userHoldings) : null;
+  const userSlicedAddress = publicKey ? getSlicedAddress(publicKey) : null;
+
   return (
     <div className="flex flex-col gap-1">
       <div className="text-xs font-bold text-regular">Holders</div>
       <div className="flex flex-col gap-1">
+        {userHoldings && (
+          <div className="flex justify-between flex-row gap-2 text-xs font-bold text-regular">
+            <div>
+              <span className="font-normal">{userSlicedAddress}</span> (me)
+            </div>
+            <div>{userPercentage}%</div>
+          </div>
+        )}
         {uniqueHolders && (
           <div key="bonding-curve" className="flex justify-between flex-row gap-2 text-xs font-bold text-regular">
             <div>
@@ -25,18 +37,18 @@ export const PresaleCoinHolders = ({ poolAddress, coinMetadata }: HoldersProps) 
         {uniqueHolders &&
           uniqueHolders.size > 0 &&
           Array.from(uniqueHolders.entries()).map(([holder, tickets]) => {
-            const ticketsMemeAmount = tickets
-              .reduce((sum, ticket) => sum.plus(ticket.amount.toString()), new BigNumber(0))
-              .div(10 ** MEMECHAN_MEME_TOKEN_DECIMALS);
+            const holderIsUser = publicKey?.toString() === holder;
 
-            const percentage = ticketsMemeAmount.div(MAX_TICKET_TOKENS).multipliedBy(100).toFixed(2);
-            const address = holder.slice(0, 6) + "..." + holder.slice(-4);
+            if (holderIsUser) return;
+
+            const percentage = getBoundPoolHolderPercentage(tickets);
+            const slicedAddress = getSlicedAddress(holder);
             const holderIsDev = coinMetadata.creator === holder;
 
             return (
-              <div key={address} className="flex justify-between flex-row gap-2 text-xs font-bold text-regular">
+              <div key={slicedAddress} className="flex justify-between flex-row gap-2 text-xs font-bold text-regular">
                 <div>
-                  <span className="font-normal">{address}</span> {holderIsDev ? "(dev)" : ""}
+                  <span className="font-normal">{slicedAddress}</span> {holderIsDev ? "(dev)" : ""}
                 </div>
                 <div>{percentage}%</div>
               </div>

@@ -1,4 +1,5 @@
 import { MAX_TICKET_TOKENS, MEMECHAN_MEME_TOKEN_DECIMALS, MemeTicketFields } from "@avernikoz/memechan-sol-sdk";
+import { PublicKey } from "@solana/web3.js";
 import BigNumber from "bignumber.js";
 import BN from "bn.js";
 
@@ -24,4 +25,20 @@ export const getBondingCurvePercentage = (uniqueHolders: Map<string, MemeTicketF
     .toFixed(2);
 
   return bondingCurvePercentage;
+};
+
+export const getSlicedAddress = (address: string | PublicKey) => {
+  const stringAddress = address.toString();
+
+  return stringAddress.slice(0, 6) + "..." + stringAddress.slice(-4);
+};
+
+export const getBoundPoolHolderPercentage = (tickets: MemeTicketFields[]) => {
+  const ticketsMemeAmount = tickets
+    .reduce((sum, ticket) => sum.plus(ticket.amount.toString()), new BigNumber(0))
+    .div(10 ** MEMECHAN_MEME_TOKEN_DECIMALS);
+
+  const percentage = ticketsMemeAmount.div(MAX_TICKET_TOKENS).multipliedBy(100).toFixed(2);
+
+  return percentage;
 };
