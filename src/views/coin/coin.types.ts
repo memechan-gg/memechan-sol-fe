@@ -47,7 +47,7 @@ export type LiveCoinInfoProps = {
   livePoolAddress: string;
 };
 
-export type PresaleCoinInfoProps = LiveCoinInfoProps & { poolAddress: string };
+export type PresaleCoinInfoProps = { poolAddress: string; metadata: CoinMetadata };
 
 export type UnstakeDialogProps = StakingPoolProps;
 
