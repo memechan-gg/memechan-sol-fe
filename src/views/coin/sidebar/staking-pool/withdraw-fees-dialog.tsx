@@ -20,6 +20,7 @@ import BigNumber from "bignumber.js";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { WithdrawFeesDialogProps } from "../../coin.types";
+import { LOW_FEES_THRESHOLD } from "./config";
 
 export const WithdrawFeesDialog = ({ tokenSymbol, livePoolAddress, memeMint }: WithdrawFeesDialogProps) => {
   const [memeAmount, setMemeAmount] = useState<string | null>(null);
@@ -39,11 +40,16 @@ export const WithdrawFeesDialog = ({ tokenSymbol, livePoolAddress, memeMint }: W
 
     const { memeFees, slerfFees } = await stakingPoolClient.getAvailableWithdrawFeesAmount({ tickets: ticketFields });
 
-    const formattedMemeFees = new BigNumber(memeFees).div(10 ** MEMECHAN_MEME_TOKEN_DECIMALS).toString();
-    const formattedSlerfFees = new BigNumber(slerfFees).div(10 ** MEMECHAN_QUOTE_TOKEN_DECIMALS).toString();
+    const formattedMemeFees = new BigNumber(memeFees).div(10 ** MEMECHAN_MEME_TOKEN_DECIMALS);
+    const formattedSlerfFees = new BigNumber(slerfFees).div(10 ** MEMECHAN_QUOTE_TOKEN_DECIMALS);
 
-    setMemeAmount(formattedMemeFees);
-    setSlerfAmount(formattedSlerfFees);
+    if (formattedMemeFees.lt(LOW_FEES_THRESHOLD) || formattedSlerfFees.lt(LOW_FEES_THRESHOLD)) {
+      setMemeAmount("0");
+      setSlerfAmount("0");
+    } else {
+      setMemeAmount(formattedMemeFees.toString());
+      setSlerfAmount(formattedSlerfFees.toString());
+    }
   }, [stakingPoolClient, tickets]);
 
   useEffect(() => {
