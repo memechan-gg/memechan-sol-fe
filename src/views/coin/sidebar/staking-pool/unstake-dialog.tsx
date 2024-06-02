@@ -130,29 +130,33 @@ export const UnstakeDialog = ({ tokenSymbol, livePoolAddress, memeMint }: Unstak
     <Dialog>
       <DialogTrigger>
         <Button className="w-full bg-regular bg-opacity-80 hover:bg-opacity-50">
-          <div className="text-xs font-bold text-white">Unlock Token</div>
+          <div className="text-xs font-bold text-white">Unstake Token</div>
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Unlock</DialogTitle>
-          <DialogDescription>
-            Unlock your locked Meme Coins from the staking pool. Once you unlock you cannot earn fees anymore, and
-            can&apos;t lock unlocked amount anymore in the future.
-            <div className="text-xs font-bold text-regular mt-2">Cliff started at: {cliffStartedTime}</div>
-            <div className="text-xs font-bold text-regular">Vesting starts at: {startVestingTime}</div>
-            <div className="text-xs font-bold text-regular">Vesting ends at: {endVestingTime}</div>
+          <DialogTitle className="text-regular mb-2">Unstake</DialogTitle>
+          <DialogDescription className="text-regular">
+            <div>
+              Unstake your staked Meme Coins from the staking pool. Once you unstake you cannot earn fees and stake back
+              anymore.
+            </div>
+            <div className="text-xs font-bold text-regular mt-4">Cliff period started at: {cliffStartedTime}</div>
+            <div className="text-xs font-bold text-regular">Vesting period starts at: {startVestingTime}</div>
+            <div className="text-xs font-bold text-regular">Vesting period ends at: {endVestingTime}</div>
           </DialogDescription>
         </DialogHeader>
         <div className="flex w-full flex-col gap-1">
           <div className="text-xs font-bold text-regular">
             Locked amount:{" "}
-            {availableAmountToUnstake !== null && BigNumber(stakedAmount).minus(availableAmountToUnstake).toString()}
+            {availableAmountToUnstake !== null &&
+              BigNumber(stakedAmount).minus(availableAmountToUnstake).toNumber().toLocaleString()}
             {availableAmountToUnstake === null && <Skeleton width={35} />}{" "}
             <span className="!normal-case">{tokenSymbol}</span>
           </div>
           <div className="text-xs font-bold text-regular">
-            Unlockable amount: {availableAmountToUnstake ?? <Skeleton width={35} />}{" "}
+            Unstakable amount:{" "}
+            {availableAmountToUnstake ? Number(availableAmountToUnstake).toLocaleString() : <Skeleton width={35} />}{" "}
             <span className="!normal-case">{tokenSymbol}</span>
           </div>
         </div>

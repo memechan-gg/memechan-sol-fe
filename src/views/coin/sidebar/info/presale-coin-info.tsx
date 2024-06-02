@@ -21,29 +21,45 @@ export const PresaleCoinInfo = ({ metadata, poolAddress }: PresaleCoinInfoProps)
         </div>
       </div>
       {socialLinks && (
-        <div className="flex flex-wrap flex-row gap-4 gap-x-6 my-3">
+        <div className="grid grid-cols-2 gap-4 my-4">
           {socialLinks.discord && (
             <div className="flex flex-col gap-1">
               <div className="text-xs font-bold text-regular">Discord</div>
-              <div className="text-xs font-normal text-regular">{socialLinks.discord}</div>
+              <div className="text-xs font-normal text-regular truncate hover:underline">
+                <a href={socialLinks.discord} target="_blank">
+                  {socialLinks.discord}
+                </a>
+              </div>
             </div>
           )}
           {socialLinks.twitter && (
             <div className="flex flex-col gap-1">
               <div className="text-xs font-bold text-regular">Twitter</div>
-              <div className="text-xs font-normal text-regular">{socialLinks.twitter}</div>
+              <div className="text-xs font-normal text-regular truncate hover:underline">
+                <a href={socialLinks.twitter} target="_blank">
+                  {socialLinks.twitter}
+                </a>
+              </div>
             </div>
           )}
           {socialLinks.telegram && (
             <div className="flex flex-col gap-1">
               <div className="text-xs font-bold text-regular">Telegram</div>
-              <div className="text-xs font-normal text-regular">{socialLinks.telegram}</div>
+              <div className="text-xs font-normal text-regular truncate hover:underline">
+                <a href={socialLinks.telegram} target="_blank">
+                  {socialLinks.telegram}
+                </a>
+              </div>
             </div>
           )}
           {socialLinks.website && (
             <div className="flex flex-col gap-1">
               <div className="text-xs font-bold text-regular">Website</div>
-              <div className="text-xs font-normal text-regular">{socialLinks.website}</div>
+              <div className="text-xs font-normal text-regular truncate hover:underline">
+                <a href={socialLinks.website} target="_blank">
+                  {socialLinks.website}
+                </a>
+              </div>
             </div>
           )}
         </div>
@@ -64,11 +80,12 @@ export const PresaleCoinInfo = ({ metadata, poolAddress }: PresaleCoinInfoProps)
         <div className="text-regular mt-2">
           <div className="flex flex-col gap-2">
             <div>
-              When the pool reaches {limit} <span className="!normal-case">SLERF</span>, liquidity from the bonding
-              curve will flow exclusively to Raydium Liquidity Pool and be held securely for generating fees.
+              When the pool reaches {Number(limit).toLocaleString()} <span className="!normal-case">SLERF</span>,
+              liquidity from the bonding curve will flow exclusively to Raydium Liquidity Pool and be held securely for
+              generating fees.
             </div>
             <div>
-              Presently, there is {slerfIn} <span className="!normal-case">SLERF</span>.
+              Presently, there is {Number(slerfIn).toLocaleString()} <span className="!normal-case">SLERF</span>.
             </div>
             <div>Happy trading :)</div>
           </div>
