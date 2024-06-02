@@ -38,7 +38,7 @@ export function PresaleCoin({
           </div>
           <div className="flex flex-col gap-1">
             <div className="text-sm font-bold text-regular">Market Cap</div>
-            <div className="text-xs font-bold text-regular">${formatNumber(coinMetadata.marketcap, 3)}</div>
+            <div className="text-xs font-bold text-regular">${formatNumber(coinMetadata.marketcap, 2)}</div>
           </div>
           <div className="flex flex-col gap-1">
             <div className="text-sm font-bold !normal-case text-regular">USD price</div>
