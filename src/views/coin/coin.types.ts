@@ -44,6 +44,7 @@ export type LiveCoinHoldersProps = {
 
 export type LiveCoinInfoProps = {
   metadata: CoinMetadata;
+  livePoolAddress: string;
 };
 
 export type PresaleCoinInfoProps = LiveCoinInfoProps & { poolAddress: string };
