@@ -108,6 +108,8 @@ export function CreateCoin() {
         skipPreflight: true,
       });
       console.log("signature:", signature);
+
+      toast("Transaction is sent, waiting for confirmation...");
       await sleep(3000);
 
       toast("A few steps left...");

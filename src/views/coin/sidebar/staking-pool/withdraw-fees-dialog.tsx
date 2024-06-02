@@ -77,6 +77,8 @@ export const WithdrawFeesDialog = ({ tokenSymbol, livePoolAddress, memeMint }: W
           skipPreflight: true,
         });
 
+        toast("Transaction is sent, waiting for confirmation...");
+
         // Check that a part of the withdraw fees succeeded
         const { blockhash: blockhash, lastValidBlockHeight: lastValidBlockHeight } =
           await connection.getLatestBlockhash("confirmed");
@@ -126,6 +128,8 @@ export const WithdrawFeesDialog = ({ tokenSymbol, livePoolAddress, memeMint }: W
         maxRetries: 3,
         skipPreflight: true,
       });
+
+      toast("Transaction is sent, waiting for confirmation...");
 
       // Check that an add fees succeeded
       const { blockhash: blockhash, lastValidBlockHeight: lastValidBlockHeight } =

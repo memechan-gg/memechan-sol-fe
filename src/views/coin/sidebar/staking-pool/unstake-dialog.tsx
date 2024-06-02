@@ -73,6 +73,8 @@ export const UnstakeDialog = ({ tokenSymbol, livePoolAddress, memeMint }: Unstak
           skipPreflight: true,
         });
 
+        toast("Transaction is sent, waiting for confirmation...");
+
         // Check that a part of the unstake succeeded
         const { blockhash: blockhash, lastValidBlockHeight: lastValidBlockHeight } =
           await connection.getLatestBlockhash("confirmed");

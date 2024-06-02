@@ -162,6 +162,8 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
           skipPreflight: true,
         });
 
+        toast("Transaction is sent, waiting for confirmation...");
+
         // Check the swap succeeded
         const { blockhash: blockhash, lastValidBlockHeight: lastValidBlockHeight } =
           await connection.getLatestBlockhash("confirmed");
@@ -201,6 +203,8 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
             maxRetries: 3,
             skipPreflight: true,
           });
+
+          toast("Transaction is sent, waiting for confirmation...");
 
           // Check a part of the swap succeeded
           const { blockhash: blockhash, lastValidBlockHeight: lastValidBlockHeight } =
