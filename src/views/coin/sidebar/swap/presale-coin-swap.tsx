@@ -24,7 +24,7 @@ import { validateSlippage } from "./utils";
 
 export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => {
   const [slerfToMeme, setSlerfToMeme] = useState<boolean>(true);
-  const [inputAmount, setInputAmount] = useState<string>("0");
+  const [inputAmount, setInputAmount] = useState<string>("");
   const [outputAmount, setOutputAmount] = useState<string | null>(null);
   const [isLoadingOutputAmount, setIsLoadingOutputAmount] = useState<boolean>(false);
   const [slippage, setSlippage] = useState<string>("10");
@@ -84,7 +84,7 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
   );
 
   useEffect(() => {
-    setInputAmount("0");
+    setInputAmount("");
     setOutputAmount(null);
   }, [slerfToMeme]);
 
@@ -111,6 +111,7 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
       } catch (e) {
         console.error("[Swap.updateOutputAmount] Failed to get the swap output amount:", e);
         toast.error("Cannot calculate output amount for the swap");
+        setOutputAmount(null);
       } finally {
         setIsLoadingOutputAmount(false);
       }
@@ -181,7 +182,7 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
 
         refetchSlerfBalance();
         refreshAvailableTickets();
-        const res = await ChartApiInstance.updatePrice({ address: pool.address, type: "seedPool" }).catch((e) => {
+        await ChartApiInstance.updatePrice({ address: pool.address, type: "seedPool" }).catch((e) => {
           console.debug(`[OHLCV] Failed updating price for OHLCV`);
           console.error(`Failed updating price for OHLCV, error:`, e);
         });
@@ -222,7 +223,7 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
 
         refetchSlerfBalance();
         refreshAvailableTickets();
-        const res = await ChartApiInstance.updatePrice({ address: pool.address, type: "seedPool" }).catch((e) => {
+        await ChartApiInstance.updatePrice({ address: pool.address, type: "seedPool" }).catch((e) => {
           console.debug(`[OHLCV] Failed updating price for OHLCV`);
           console.error(`Failed updating price for OHLCV, error:`, e);
         });
@@ -250,6 +251,8 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
     refreshAvailableTickets,
     pool.address,
   ]);
+
+  const swapButtonIsDiabled = isLoadingOutputAmount || isSwapping || outputAmount === null;
 
   return (
     <>
@@ -320,7 +323,7 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
         <UnavailableTicketsToSellDialog unavailableTickets={unavailableTickets} symbol={tokenSymbol} />
       )}
       <Button
-        disabled={isLoadingOutputAmount || isSwapping}
+        disabled={swapButtonIsDiabled}
         onClick={onSwap}
         className="w-full bg-regular bg-opacity-80 hover:bg-opacity-50 disabled:opacity-50"
       >

@@ -20,7 +20,7 @@ import { validateSlippage } from "./utils";
 
 export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: tokenAddress } }: LiveCoinSwapProps) => {
   const [slerfToMeme, setSlerfToMeme] = useState<boolean>(true);
-  const [inputAmount, setInputAmount] = useState<string>("0");
+  const [inputAmount, setInputAmount] = useState<string>("");
   const [outputData, setOutputData] = useState<SwapMemeOutput | null>(null);
   const [isLoadingOutputAmount, setIsLoadingOutputAmount] = useState<boolean>(false);
   const [slippage, setSlippage] = useState<string>("10");
@@ -74,7 +74,7 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
   );
 
   useEffect(() => {
-    setInputAmount("0");
+    setInputAmount("");
     setOutputData(null);
   }, [slerfToMeme]);
 
@@ -100,7 +100,8 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
         setOutputData(outputData);
       } catch (e) {
         console.error("[LiveCoinSwap.updateOutputAmount] Failed to get the swap output amount:", e);
-        toast.error("Cannot calculate output amount for the swap");
+        toast.error("Please, try again: cannot calculate output amount for the swap");
+        setOutputData(null);
       } finally {
         setIsLoadingOutputAmount(false);
       }
@@ -153,6 +154,7 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
       }
 
       toast.success("Swap succeeded");
+      setInputAmount("");
       refetchSlerfBalance();
       refetchMemeBalance();
       refetchTokenAccounts();
@@ -179,6 +181,8 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
     refetchTokenAccounts,
     signTransaction,
   ]);
+
+  const swapButtonIsDiabled = isLoadingOutputAmount || isSwapping || outputData === null;
 
   return (
     <>
@@ -236,7 +240,7 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
         />
       </div>
       <Button
-        disabled={isLoadingOutputAmount || isSwapping}
+        disabled={swapButtonIsDiabled}
         onClick={onSwap}
         className="w-full bg-regular bg-opacity-80 hover:bg-opacity-50 disabled:opacity-50"
       >
