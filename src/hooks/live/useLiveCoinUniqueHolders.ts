@@ -13,13 +13,15 @@ const fetchLiveUniqueHolders = async (mint: string, boundPoolId: string) => {
       MemechanClientInstance,
     );
 
+    const fullHolders = holders.slice();
+
     const sortedHolders = holders.sort(({ tokenAmount: amountA }, { tokenAmount: amountB }) =>
       amountB.minus(amountA).toNumber(),
     );
 
     const slicedHolders = sortedHolders.slice(0, MAX_HOLDERS_COUNT);
 
-    return { holders: slicedHolders, stakingData };
+    return { holders: slicedHolders, stakingData, fullHolders };
   } catch (e) {
     console.error(
       `[fetchLiveUniqueHolders] Failed to fetch unique holders for bound pool ${boundPoolId} and meme mint ${mint}:`,

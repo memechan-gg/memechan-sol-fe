@@ -18,7 +18,7 @@ export function PresaleCoin({
   seedPoolData: SeedPoolData;
 }) {
   const price = usePresaleMemePrice(seedPoolData.address);
-  const uniqueHoldersMap = usePresaleCoinUniqueHolders(seedPoolData.address);
+  const { map: uniqueHoldersMap } = usePresaleCoinUniqueHolders(seedPoolData.address);
 
   const CHARTS_API_HOSTNAME = process.env.NEXT_PUBLIC_CHARTS_API_HOSTNAME;
 
