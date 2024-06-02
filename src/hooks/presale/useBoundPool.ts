@@ -1,5 +1,5 @@
 import { connection } from "@/common/solana";
-import { BoundPoolClient } from "@avernikoz/memechan-sol-sdk";
+import { BoundPoolClient, NoBoundPoolExist } from "@avernikoz/memechan-sol-sdk";
 import { PublicKey } from "@solana/web3.js";
 import useSWR from "swr";
 import { BOUND_POOL_DATA_INTERVAL } from "../refresh-intervals";
@@ -10,6 +10,7 @@ const fetchBoundPool = async (poolAddress: string) => {
 
     return boundPool;
   } catch (e) {
+    if (e instanceof NoBoundPoolExist) return null;
     console.error(`[fetchBoundPool] Failed to fetch bound pool ${poolAddress}:`, e);
   }
 };
