@@ -1,3 +1,4 @@
+import { Button } from "@/components/button";
 import { ChartIframe } from "@/components/chart-iframe";
 import { ThreadBoard } from "@/components/thread";
 import { useLiveCoinUniqueHolders } from "@/hooks/live/useLiveCoinUniqueHolders";
@@ -8,6 +9,7 @@ import { LivePoolData } from "@/types/pool";
 import { formatNumber } from "@/utils/formatNumber";
 import { normalizeNumber } from "@/utils/normalizeNumber";
 import Link from "next/link";
+import { useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import { CommentsPanel } from "./comments-panel";
 import { LiveCoinSidebar } from "./sidebar/live-coin-sidebar";
@@ -16,6 +18,9 @@ export function LiveCoin({ coinMetadata, livePoolData }: { coinMetadata: CoinMet
   const priceData = useLiveMemePrice(livePoolData.id);
   const { seedPool } = useSeedPool(coinMetadata.address);
   const uniqueHoldersData = useLiveCoinUniqueHolders(coinMetadata.address, seedPool?.address);
+
+  // Initialize state with 'birdeye' as the default
+  const [selectedChart, setSelectedChart] = useState<"birdeye" | "dexscreener">("birdeye");
 
   return (
     <ThreadBoard title={coinMetadata.name}>
@@ -55,11 +60,21 @@ export function LiveCoin({ coinMetadata, livePoolData }: { coinMetadata: CoinMet
         </div>
         <div className="flex w-full flex-col lg:flex-row gap-6">
           <div className="flex flex-col gap-3 w-full">
+            {selectedChart === "birdeye" ? (
+              <ChartIframe
+                src={`https://birdeye.so/tv-widget/${coinMetadata.address}/${livePoolData.id}?chain=solana&chartType=candle&chartInterval=5&chartLeftToolbar=show`}
+              />
+            ) : (
               <ChartIframe
                 src={`https://dexscreener.com/solana/${livePoolData.id}?embed=1&theme=dark&trades=0&info=0`}
               />
+            )}
             <div className="flex flex-col gap-3 lg:hidden">
               <LiveCoinSidebar pool={livePoolData} coinMetadata={coinMetadata} />
+            </div>
+            <div className="flex justify-center items-center gap-3">
+              <Button onClick={() => setSelectedChart("birdeye")}>Birdeye.so</Button>
+              <Button onClick={() => setSelectedChart("dexscreener")}>Dexscreener.com</Button>
             </div>
             <CommentsPanel coinType={coinMetadata.address} coinCreator={coinMetadata.creator} />
           </div>
