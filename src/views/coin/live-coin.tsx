@@ -16,7 +16,6 @@ export function LiveCoin({ coinMetadata, livePoolData }: { coinMetadata: CoinMet
   const priceData = useLiveMemePrice(livePoolData.id);
   const { seedPool } = useSeedPool(coinMetadata.address);
   const uniqueHoldersData = useLiveCoinUniqueHolders(coinMetadata.address, seedPool?.address);
-  const CHARTS_API_HOSTNAME = process.env.NEXT_PUBLIC_CHARTS_API_HOSTNAME;
 
   return (
     <ThreadBoard title={coinMetadata.name}>
@@ -56,12 +55,9 @@ export function LiveCoin({ coinMetadata, livePoolData }: { coinMetadata: CoinMet
         </div>
         <div className="flex w-full flex-col lg:flex-row gap-6">
           <div className="flex flex-col gap-3 w-full">
-            {CHARTS_API_HOSTNAME && (
               <ChartIframe
                 src={`https://dexscreener.com/solana/${livePoolData.id}?embed=1&theme=dark&trades=0&info=0`}
               />
-            )}
-
             <div className="flex flex-col gap-3 lg:hidden">
               <LiveCoinSidebar pool={livePoolData} coinMetadata={coinMetadata} />
             </div>
