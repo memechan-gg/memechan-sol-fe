@@ -5,6 +5,7 @@ import { useBoundPoolClient } from "@/hooks/presale/useBoundPoolClient";
 import { useBalance } from "@/hooks/useBalance";
 import { useTickets } from "@/hooks/useTickets";
 import { GetSwapOutputAmountParams, GetSwapTransactionParams } from "@/types/hooks";
+import { formatNumber } from "@/utils/formatNumber";
 import {
   GetBuyMemeTransactionOutput,
   GetSellMemeTransactionOutput,
@@ -19,8 +20,9 @@ import toast from "react-hot-toast";
 import { PresaleCoinSwapProps } from "../../coin.types";
 import { presaleSwapParamsAreValid } from "../../coin.utils";
 import { SwapButton } from "./button";
+import { MAX_SLIPPAGE, MIN_SLIPPAGE } from "./config";
 import { UnavailableTicketsToSellDialog } from "./dialog-unavailable-tickets-to-sell";
-import { validateSlippage } from "./utils";
+import { handleSlippageInputChange, handleSwapInputChange, validateSlippage } from "./utils";
 
 export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => {
   const [slerfToMeme, setSlerfToMeme] = useState<boolean>(true);
@@ -274,10 +276,15 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
         <input
           className="w-full bg-white text-xs font-bold text-regular p-2 rounded-lg"
           value={inputAmount}
-          onChange={(e) => setInputAmount(e.target.value)}
-          placeholder="0.0"
-          type="number"
-          min="0"
+          onChange={(e) =>
+            handleSwapInputChange({
+              decimalPlaces: slerfToMeme ? MEMECHAN_QUOTE_TOKEN_DECIMALS : MEMECHAN_MEME_TOKEN_DECIMALS,
+              e,
+              setValue: setInputAmount,
+            })
+          }
+          placeholder="0"
+          type="text"
         />
         {slerfToMeme && (
           <div className="text-xs font-bold text-regular">
@@ -290,7 +297,7 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
         {!slerfToMeme && unavailableTicketsAmount !== "0" && (
           <div className="text-xs !normal-case font-bold text-regular">
             unavailable {tokenSymbol} to sell (locked):{" "}
-            {Number(unavailableTicketsAmount).toFixed(MEMECHAN_MEME_TOKEN_DECIMALS)}
+            {formatNumber(Number(unavailableTicketsAmount), MEMECHAN_MEME_TOKEN_DECIMALS)}
           </div>
         )}
         {isLoadingOutputAmount && (
@@ -305,18 +312,26 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
         {outputAmount !== null && !isLoadingOutputAmount && (
           <div className="text-xs font-bold text-regular">
             {slerfToMeme
-              ? `${tokenSymbol} to receive: ${(+outputAmount).toFixed(MEMECHAN_MEME_TOKEN_DECIMALS)}`
-              : `SLERF to receive: ${(+outputAmount).toFixed(MEMECHAN_QUOTE_TOKEN_DECIMALS)}`}
+              ? `${tokenSymbol} to receive: ${formatNumber(Number(outputAmount), MEMECHAN_MEME_TOKEN_DECIMALS)}`
+              : `SLERF to receive: ${formatNumber(Number(outputAmount), MEMECHAN_QUOTE_TOKEN_DECIMALS)}`}
           </div>
         )}
       </div>
       <div className="flex w-full flex-col gap-1">
-        <div className="text-xs font-bold text-regular">Slippage</div>
+        <div className="text-xs font-bold text-regular">Slippage (0-50%)</div>
         <input
           className="w-full bg-white text-xs font-bold text-regular p-2 rounded-lg"
           value={slippage}
-          onChange={(e) => setSlippage(e.target.value)}
-          type="number"
+          onChange={(e) =>
+            handleSlippageInputChange({
+              decimalPlaces: 2,
+              e,
+              setValue: setSlippage,
+              max: MAX_SLIPPAGE,
+              min: MIN_SLIPPAGE,
+            })
+          }
+          type="text"
         />
       </div>
       {unavailableTickets.length > 0 && (

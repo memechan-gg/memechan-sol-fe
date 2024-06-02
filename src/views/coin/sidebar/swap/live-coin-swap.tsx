@@ -3,10 +3,12 @@ import { Button } from "@/components/button";
 import { useBalance } from "@/hooks/useBalance";
 import { useTokenAccounts } from "@/hooks/useTokenAccounts";
 import { GetLiveSwapTransactionParams, GetSwapOutputAmountParams } from "@/types/hooks";
+import { formatNumber } from "@/utils/formatNumber";
 import {
   LivePoolClient,
   MEMECHAN_MEME_TOKEN_DECIMALS,
   MEMECHAN_QUOTE_MINT,
+  MEMECHAN_QUOTE_TOKEN_DECIMALS,
   SwapMemeOutput,
   buildTxs,
 } from "@avernikoz/memechan-sol-sdk";
@@ -16,7 +18,8 @@ import toast from "react-hot-toast";
 import { LiveCoinSwapProps } from "../../coin.types";
 import { liveSwapParamsAreValid } from "../../coin.utils";
 import { SwapButton } from "./button";
-import { validateSlippage } from "./utils";
+import { MAX_SLIPPAGE, MIN_SLIPPAGE } from "./config";
+import { handleSlippageInputChange, handleSwapInputChange, validateSlippage } from "./utils";
 
 export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: tokenAddress } }: LiveCoinSwapProps) => {
   const [slerfToMeme, setSlerfToMeme] = useState<boolean>(true);
@@ -197,10 +200,15 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
         <input
           className="w-full bg-white text-xs font-bold text-regular p-2 rounded-lg"
           value={inputAmount}
-          onChange={(e) => setInputAmount(e.target.value)}
-          placeholder="0.0"
-          type="number"
-          min="0"
+          onChange={(e) =>
+            handleSwapInputChange({
+              decimalPlaces: slerfToMeme ? MEMECHAN_QUOTE_TOKEN_DECIMALS : MEMECHAN_MEME_TOKEN_DECIMALS,
+              e,
+              setValue: setInputAmount,
+            })
+          }
+          placeholder="0"
+          type="text"
         />
         {slerfToMeme && (
           <div className="text-xs font-bold text-regular">
@@ -209,8 +217,7 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
         )}
         {!slerfToMeme && memeBalance && (
           <div className="text-xs !normal-case font-bold text-regular">
-            available {tokenSymbol} to sell:{" "}
-            {(Math.floor(Number(memeBalance) * 100) / 100).toFixed(MEMECHAN_MEME_TOKEN_DECIMALS)}
+            available {tokenSymbol} to sell: {formatNumber(Number(memeBalance), MEMECHAN_MEME_TOKEN_DECIMALS)}
           </div>
         )}
         {isLoadingOutputAmount && (
@@ -231,12 +238,20 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
         )}
       </div>
       <div className="flex w-full flex-col gap-1">
-        <div className="text-xs font-bold text-regular">Slippage</div>
+        <div className="text-xs font-bold text-regular">Slippage (0-50%)</div>
         <input
           className="w-full bg-white text-xs font-bold text-regular p-2 rounded-lg"
           value={slippage}
-          onChange={(e) => setSlippage(e.target.value)}
-          type="number"
+          onChange={(e) =>
+            handleSlippageInputChange({
+              decimalPlaces: 2,
+              e,
+              setValue: setSlippage,
+              max: MAX_SLIPPAGE,
+              min: MIN_SLIPPAGE,
+            })
+          }
+          type="text"
         />
       </div>
       <Button
