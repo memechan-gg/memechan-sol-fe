@@ -1,17 +1,17 @@
 import { usePresaleCoinUniqueHolders } from "@/hooks/presale/usePresaleCoinUniqueHolders";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { HoldersProps } from "../../coin.types";
-import { getBondingCurvePercentage, getBoundPoolHolderPercentage, getSlicedAddress } from "./utils";
+import { getBondingCurvePercentage, getSlicedAddress } from "./utils";
 
 export const PresaleCoinHolders = ({ poolAddress, coinMetadata }: HoldersProps) => {
   const { publicKey } = useWallet();
-  const uniqueHolders = usePresaleCoinUniqueHolders(poolAddress);
+  const { holders, map } = usePresaleCoinUniqueHolders(poolAddress);
 
-  const bondingCurveSlicedAddress = poolAddress.slice(0, 6) + "..." + poolAddress.slice(-4);
-  const bondingCurvePercentage = uniqueHolders ? getBondingCurvePercentage(uniqueHolders) : null;
+  const bondingCurveSlicedAddress = getSlicedAddress(poolAddress);
+  const bondingCurvePercentage = map ? getBondingCurvePercentage(map) : null;
 
-  const userHoldings = publicKey ? uniqueHolders?.get(publicKey?.toString()) : null;
-  const userPercentage = userHoldings ? getBoundPoolHolderPercentage(userHoldings) : null;
+  const userHoldings = holders?.find(({ address }) => publicKey?.toString() === address);
+  const userPercentage = userHoldings?.tokenAmountInPercentage.toFixed(2);
   const userSlicedAddress = publicKey ? getSlicedAddress(publicKey) : null;
 
   return (
@@ -26,7 +26,7 @@ export const PresaleCoinHolders = ({ poolAddress, coinMetadata }: HoldersProps) 
             <div>{userPercentage}%</div>
           </div>
         )}
-        {uniqueHolders && (
+        {holders && (
           <div key="bonding-curve" className="flex justify-between flex-row gap-2 text-xs font-bold text-regular">
             <div>
               <span className="font-normal">{bondingCurveSlicedAddress}</span> (bonding curve)
@@ -34,16 +34,16 @@ export const PresaleCoinHolders = ({ poolAddress, coinMetadata }: HoldersProps) 
             <div>{bondingCurvePercentage}%</div>
           </div>
         )}
-        {uniqueHolders &&
-          uniqueHolders.size > 0 &&
-          Array.from(uniqueHolders.entries()).map(([holder, tickets]) => {
-            const holderIsUser = publicKey?.toString() === holder;
+        {holders &&
+          holders.length > 0 &&
+          holders.map(({ address, tokenAmountInPercentage }) => {
+            const holderIsUser = publicKey?.toString() === address;
 
             if (holderIsUser) return;
 
-            const percentage = getBoundPoolHolderPercentage(tickets);
-            const slicedAddress = getSlicedAddress(holder);
-            const holderIsDev = coinMetadata.creator === holder;
+            const percentage = tokenAmountInPercentage.toFixed(2);
+            const slicedAddress = getSlicedAddress(address);
+            const holderIsDev = coinMetadata.creator === address;
 
             return (
               <div key={slicedAddress} className="flex justify-between flex-row gap-2 text-xs font-bold text-regular">
@@ -54,7 +54,7 @@ export const PresaleCoinHolders = ({ poolAddress, coinMetadata }: HoldersProps) 
               </div>
             );
           })}
-        {!uniqueHolders && <div className="font-normal text-regular">Loading...</div>}
+        {!holders && <div className="font-normal text-regular">Loading...</div>}
       </div>
     </div>
   );
