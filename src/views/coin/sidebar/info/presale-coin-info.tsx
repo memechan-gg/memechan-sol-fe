@@ -64,11 +64,12 @@ export const PresaleCoinInfo = ({ metadata, poolAddress }: PresaleCoinInfoProps)
         <div className="text-regular mt-2">
           <div className="flex flex-col gap-2">
             <div>
-              When the pool reaches {limit} <span className="!normal-case">SLERF</span>, liquidity from the bonding
-              curve will flow exclusively to Raydium Liquidity Pool and be held securely for generating fees.
+              When the pool reaches {Number(limit).toLocaleString()} <span className="!normal-case">SLERF</span>,
+              liquidity from the bonding curve will flow exclusively to Raydium Liquidity Pool and be held securely for
+              generating fees.
             </div>
             <div>
-              Presently, there is {slerfIn} <span className="!normal-case">SLERF</span>.
+              Presently, there is {Number(slerfIn).toLocaleString()} <span className="!normal-case">SLERF</span>.
             </div>
             <div>Happy trading :)</div>
           </div>

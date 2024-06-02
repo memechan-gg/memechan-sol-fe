@@ -149,12 +149,14 @@ export const UnstakeDialog = ({ tokenSymbol, livePoolAddress, memeMint }: Unstak
         <div className="flex w-full flex-col gap-1">
           <div className="text-xs font-bold text-regular">
             Locked amount:{" "}
-            {availableAmountToUnstake !== null && BigNumber(stakedAmount).minus(availableAmountToUnstake).toString()}
+            {availableAmountToUnstake !== null &&
+              BigNumber(stakedAmount).minus(availableAmountToUnstake).toNumber().toLocaleString()}
             {availableAmountToUnstake === null && <Skeleton width={35} />}{" "}
             <span className="!normal-case">{tokenSymbol}</span>
           </div>
           <div className="text-xs font-bold text-regular">
-            Unstakable amount: {availableAmountToUnstake ?? <Skeleton width={35} />}{" "}
+            Unstakable amount:{" "}
+            {availableAmountToUnstake ? Number(availableAmountToUnstake).toLocaleString() : <Skeleton width={35} />}{" "}
             <span className="!normal-case">{tokenSymbol}</span>
           </div>
         </div>

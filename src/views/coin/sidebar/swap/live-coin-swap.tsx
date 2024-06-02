@@ -212,7 +212,12 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
         />
         {slerfToMeme && (
           <div className="text-xs font-bold text-regular">
-            available SLERF: {publicKey ? slerfBalance ?? "loading..." : "0"}
+            available SLERF:{" "}
+            {publicKey && slerfBalance
+              ? Number(slerfBalance).toLocaleString(undefined, {
+                  maximumFractionDigits: MEMECHAN_QUOTE_TOKEN_DECIMALS,
+                }) ?? "loading..."
+              : "0"}
           </div>
         )}
         {!slerfToMeme && memeBalance && (
@@ -232,8 +237,8 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
         {outputData !== null && !isLoadingOutputAmount && (
           <div className="text-xs font-bold text-regular">
             {slerfToMeme
-              ? `${tokenSymbol} to receive: ${outputData.minAmountOut.toExact()}`
-              : `SLERF to receive: ${outputData.minAmountOut.toExact()}`}
+              ? `${tokenSymbol} to receive: ${Number(outputData.minAmountOut.toExact()).toLocaleString(undefined, { maximumFractionDigits: MEMECHAN_MEME_TOKEN_DECIMALS })}`
+              : `SLERF to receive: ${Number(outputData.minAmountOut.toExact()).toLocaleString(undefined, { maximumFractionDigits: MEMECHAN_QUOTE_TOKEN_DECIMALS })}`}
           </div>
         )}
       </div>

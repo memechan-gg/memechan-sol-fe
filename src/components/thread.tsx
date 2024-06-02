@@ -1,3 +1,4 @@
+import { formatNumber } from "@/utils/formatNumber";
 import Link from "next/link";
 
 export function NoticeBoard({ title, children }: { title: string; children: React.ReactNode }) {
@@ -75,13 +76,11 @@ export function Thread({
             <span className="font-bold hover:underline">{createdBy.slice(0, 5) + "..." + createdBy.slice(-3)}</span>
           </Link>
         </div>
-        <div className="text-green">market cap: {marketCap.toFixed(2)}</div>
+        <div className="text-green">market cap: {formatNumber(marketCap, 2)}</div>
         <Link href={`/coin/${mint}`}>
           <div className="text-regular flex flex-col flex-wrap">
             <div className="font-bold !normal-case">symbol: {ticker}</div>
-            <div className="max-w-[150px] overflow-ellipsis">
-              {description.slice(0, 50) + (description.length > 50 ? "..." : "")}
-            </div>
+            <div className="max-w-[150px] truncate">{description}</div>
           </div>
         </Link>
       </div>

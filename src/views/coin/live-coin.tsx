@@ -5,6 +5,7 @@ import { useLiveMemePrice } from "@/hooks/live/useLiveMemePrice";
 import { useSeedPool } from "@/hooks/presale/useSeedPool";
 import { CoinMetadata } from "@/types/coin";
 import { LivePoolData } from "@/types/pool";
+import { formatNumber } from "@/utils/formatNumber";
 import { normalizeNumber } from "@/utils/normalizeNumber";
 import Link from "next/link";
 import Skeleton from "react-loading-skeleton";
@@ -31,7 +32,7 @@ export function LiveCoin({ coinMetadata, livePoolData }: { coinMetadata: CoinMet
           </div>
           <div className="flex flex-col gap-1">
             <div className="text-sm font-bold text-regular">Market Cap</div>
-            <div className="text-xs font-bold text-regular">${coinMetadata.marketcap.toFixed(2)}</div>
+            <div className="text-xs font-bold text-regular">${formatNumber(coinMetadata.marketcap, 2)}</div>
           </div>
           <div className="flex flex-col gap-1">
             <div className="text-sm font-bold !normal-case text-regular">USD price</div>

@@ -9,7 +9,7 @@
 export function formatNumber(num: number, decimalPlaces: number): string {
   const fixedNum = num.toFixed(decimalPlaces);
 
-  const formattedNum = parseFloat(fixedNum).toString();
+  const formattedNum = parseFloat(fixedNum).toLocaleString(undefined, { maximumFractionDigits: decimalPlaces });
 
   return formattedNum;
 }

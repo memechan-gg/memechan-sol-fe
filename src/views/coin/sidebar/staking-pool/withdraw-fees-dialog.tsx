@@ -182,16 +182,29 @@ export const WithdrawFeesDialog = ({ tokenSymbol, livePoolAddress, memeMint }: W
         <div className="flex w-full flex-col gap-1">
           <div className="text-xs font-bold text-regular mt-6">Available fees to withdraw</div>
           <div className="flex flex-row gap-2">
-            {/* Show amounts of removed */}
             <input
               disabled
               className="w-full bg-white !normal-case text-xs font-bold text-regular p-2 rounded-lg"
-              value={memeAmount ? memeAmount + " " + tokenSymbol : "loading..."}
+              value={
+                memeAmount
+                  ? Number(memeAmount).toLocaleString(undefined, {
+                      maximumFractionDigits: MEMECHAN_MEME_TOKEN_DECIMALS,
+                    }) +
+                    " " +
+                    tokenSymbol
+                  : "loading..."
+              }
             />
             <input
               disabled
               className="w-full bg-white !normal-case text-xs font-bold text-regular p-2 rounded-lg"
-              value={slerfAmount ? slerfAmount + " SLERF" : "loading..."}
+              value={
+                slerfAmount
+                  ? Number(slerfAmount).toLocaleString(undefined, {
+                      maximumFractionDigits: MEMECHAN_QUOTE_TOKEN_DECIMALS,
+                    }) + " SLERF"
+                  : "loading..."
+              }
             />
           </div>
         </div>
