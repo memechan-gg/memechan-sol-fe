@@ -258,7 +258,7 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
 
   return (
     <>
-      {boundPool?.locked && (
+      {(boundPool?.locked || boundPool === null) && (
         <div className="absolute rounded-xl top-0 left-0 w-full h-full bg-regular bg-opacity-70 flex items-center justify-center">
           <div className="text-white text-center text-balance font-bold text-lg tracking-wide">
             Pool is currently migrating to the Live Phase. Please wait.
