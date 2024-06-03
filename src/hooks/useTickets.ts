@@ -28,7 +28,7 @@ export function useTickets(poolAddress?: string) {
   const { data, mutate } = useSWR(
     publicKey && poolAddress ? [`tickets-${poolAddress}`, poolAddress, publicKey] : null,
     ([url, pool, user]) => fetchTickets(pool, user),
-    { refreshInterval: TICKETS_INTERVAL },
+    { refreshInterval: TICKETS_INTERVAL, revalidateOnMount: false, revalidateIfStale: false, revalidateOnFocus: false },
   );
 
   useEffect(() => {
