@@ -47,7 +47,7 @@ export function LiveCoin({ coinMetadata, livePoolData }: { coinMetadata: CoinMet
           <div className="flex flex-col gap-1">
             <div className="text-sm font-bold text-regular">Unique holders</div>
             <div className="text-xs font-bold text-regular">
-              {uniqueHoldersData ? uniqueHoldersData.holders.length : <Skeleton />}
+              {uniqueHoldersData ? uniqueHoldersData.fullHolders.length : <Skeleton />}
             </div>
           </div>
           <div className="flex flex-col gap-1">
