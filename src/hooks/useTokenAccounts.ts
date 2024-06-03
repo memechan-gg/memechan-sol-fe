@@ -22,6 +22,8 @@ export function useTokenAccounts() {
     ([url, pubKey]) => fetchTokenAccounts(pubKey),
     {
       refreshInterval: TOKEN_ACCOUNTS_INTERVAL,
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
     },
   );
 

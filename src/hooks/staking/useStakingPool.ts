@@ -14,8 +14,10 @@ const fetchStakingPool = async (poolAddress: string) => {
 };
 
 export function useStakingPool(poolAddress?: string) {
-  const { data } = useSWR(poolAddress ? [`staking-pool-${poolAddress}`, poolAddress] : null, ([url, pool]) =>
-    fetchStakingPool(pool),
+  const { data } = useSWR(
+    poolAddress ? [`staking-pool-${poolAddress}`, poolAddress] : null,
+    ([url, pool]) => fetchStakingPool(pool),
+    { revalidateIfStale: false, revalidateOnFocus: false },
   );
 
   return data;

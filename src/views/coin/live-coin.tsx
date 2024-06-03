@@ -16,8 +16,8 @@ import { LiveCoinSidebar } from "./sidebar/live-coin-sidebar";
 
 export function LiveCoin({ coinMetadata, livePoolData }: { coinMetadata: CoinMetadata; livePoolData: LivePoolData }) {
   const priceData = useLiveMemePrice(livePoolData.id);
-  const { seedPool } = useSeedPool(coinMetadata.address);
-  const uniqueHoldersData = useLiveCoinUniqueHolders(coinMetadata.address, seedPool?.address);
+  const seedPoolData = useSeedPool(coinMetadata.address);
+  const uniqueHoldersData = useLiveCoinUniqueHolders(coinMetadata.address, seedPoolData.seedPool?.address);
 
   // Initialize state with 'birdeye' as the default
   const [selectedChart, setSelectedChart] = useState<"birdeye" | "dexscreener">("dexscreener");
@@ -70,7 +70,12 @@ export function LiveCoin({ coinMetadata, livePoolData }: { coinMetadata: CoinMet
               />
             )}
             <div className="flex flex-col gap-3 lg:hidden">
-              <LiveCoinSidebar pool={livePoolData} coinMetadata={coinMetadata} />
+              <LiveCoinSidebar
+                pool={livePoolData}
+                coinMetadata={coinMetadata}
+                uniqueHoldersData={uniqueHoldersData}
+                seedPoolData={seedPoolData}
+              />
             </div>
             <div className="flex justify-center items-center gap-3">
               <Button onClick={() => setSelectedChart("birdeye")}>Birdeye.so</Button>
@@ -79,7 +84,12 @@ export function LiveCoin({ coinMetadata, livePoolData }: { coinMetadata: CoinMet
             <CommentsPanel coinType={coinMetadata.address} coinCreator={coinMetadata.creator} />
           </div>
           <div className="lg:flex hidden w-1/3 flex-col gap-4">
-            <LiveCoinSidebar pool={livePoolData} coinMetadata={coinMetadata} />
+            <LiveCoinSidebar
+              pool={livePoolData}
+              coinMetadata={coinMetadata}
+              uniqueHoldersData={uniqueHoldersData}
+              seedPoolData={seedPoolData}
+            />
           </div>
         </div>
       </div>

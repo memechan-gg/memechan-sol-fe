@@ -16,7 +16,7 @@ export function usePresaleMemePrice(boundPoolAddress?: string) {
   const { data: memePrice } = useSWR(
     boundPoolAddress ? [`price-${boundPoolAddress}`, boundPoolAddress] : null,
     ([url, pool]) => fetchPresaleMemePrice(pool),
-    { refreshInterval: BOUND_POOL_PRICE_INTERVAL },
+    { refreshInterval: BOUND_POOL_PRICE_INTERVAL, revalidateIfStale: false, revalidateOnFocus: false },
   );
 
   return memePrice;

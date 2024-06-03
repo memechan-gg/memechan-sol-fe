@@ -1,4 +1,3 @@
-import { useSeedPool } from "@/hooks/presale/useSeedPool";
 import { useTickets } from "@/hooks/useTickets";
 import { LiveCoinSidebarProps } from "../coin.types";
 import { LiveCoinHolders } from "./holders/live-coin-holders";
@@ -7,25 +6,29 @@ import { SidebarItem } from "./sidebar-item";
 import { StakingPool } from "./staking-pool/staking-pool";
 import { LiveCoinSwap } from "./swap/live-coin-swap";
 
-export function LiveCoinSidebar({ coinMetadata, pool }: LiveCoinSidebarProps) {
-  const { seedPool } = useSeedPool(coinMetadata.address);
-  const { tickets } = useTickets(seedPool?.address);
+export function LiveCoinSidebar({ coinMetadata, pool, seedPoolData, uniqueHoldersData }: LiveCoinSidebarProps) {
+  const ticketsData = useTickets(seedPoolData.seedPool?.address);
 
   return (
     <>
       <SidebarItem>
         <LiveCoinSwap pool={pool} tokenSymbol={coinMetadata.symbol} />
       </SidebarItem>
-      {tickets.length > 0 && (
+      {ticketsData.tickets.length > 0 && (
         <SidebarItem>
-          <StakingPool tokenSymbol={coinMetadata.symbol} livePoolAddress={pool.id} memeMint={pool.baseMint} />
+          <StakingPool
+            tokenSymbol={coinMetadata.symbol}
+            livePoolAddress={pool.id}
+            memeMint={pool.baseMint}
+            ticketsData={ticketsData}
+          />
         </SidebarItem>
       )}
       <SidebarItem>
         <LiveCoinInfo metadata={coinMetadata} livePoolAddress={pool.id} />
       </SidebarItem>
       <SidebarItem>
-        <LiveCoinHolders coinMetadata={coinMetadata} />
+        <LiveCoinHolders coinMetadata={coinMetadata} uniqueHoldersData={uniqueHoldersData} />
       </SidebarItem>
     </>
   );

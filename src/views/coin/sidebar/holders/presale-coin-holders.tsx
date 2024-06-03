@@ -1,11 +1,13 @@
-import { usePresaleCoinUniqueHolders } from "@/hooks/presale/usePresaleCoinUniqueHolders";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { HoldersProps } from "../../coin.types";
 import { getBondingCurvePercentage, getSlicedAddress } from "./utils";
 
-export const PresaleCoinHolders = ({ poolAddress, coinMetadata }: HoldersProps) => {
+export const PresaleCoinHolders = ({
+  poolAddress,
+  coinMetadata,
+  uniqueHoldersData: { holders, map },
+}: HoldersProps) => {
   const { publicKey } = useWallet();
-  const { holders, map } = usePresaleCoinUniqueHolders(poolAddress);
 
   const bondingCurveSlicedAddress = getSlicedAddress(poolAddress);
   const bondingCurvePercentage = map ? getBondingCurvePercentage(map) : null;

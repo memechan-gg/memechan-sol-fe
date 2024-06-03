@@ -1,10 +1,16 @@
-import { useBoundPoolProgress } from "@/hooks/presale/useBoundPoolProgress";
 import { PresaleCoinInfoProps } from "../../coin.types";
 import { SocialLinks } from "./social-links/social-links";
+import { getBoundPoolProgress } from "./utils";
 
-export const PresaleCoinInfo = ({ metadata, poolAddress }: PresaleCoinInfoProps) => {
+export const PresaleCoinInfo = ({ metadata, boundPool }: PresaleCoinInfoProps) => {
   const { name, symbol, description, image, socialLinks } = metadata;
-  const { progress, slerfIn, limit } = useBoundPoolProgress(poolAddress);
+  const { progress, slerfIn, limit } = boundPool
+    ? getBoundPoolProgress(boundPool)
+    : {
+        progress: "0",
+        slerfIn: "0",
+        limit: "0",
+      };
 
   return (
     <div className="flex flex-col gap-2">

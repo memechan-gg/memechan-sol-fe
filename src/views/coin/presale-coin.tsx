@@ -2,6 +2,7 @@ import { ChartIframe } from "@/components/chart-iframe";
 import { ThreadBoard } from "@/components/thread";
 import { usePresaleCoinUniqueHolders } from "@/hooks/presale/usePresaleCoinUniqueHolders";
 import { usePresaleMemePrice } from "@/hooks/presale/usePresaleMemePrice";
+import { useTickets } from "@/hooks/useTickets";
 import { CoinMetadata } from "@/types/coin";
 import { SeedPoolData } from "@/types/pool";
 import { formatNumber } from "@/utils/formatNumber";
@@ -18,7 +19,8 @@ export function PresaleCoin({
   seedPoolData: SeedPoolData;
 }) {
   const price = usePresaleMemePrice(seedPoolData.address);
-  const { map: uniqueHoldersMap } = usePresaleCoinUniqueHolders(seedPoolData.address);
+  const uniqueHoldersData = usePresaleCoinUniqueHolders(seedPoolData.address);
+  const ticketsData = useTickets(seedPoolData.address);
 
   const CHARTS_API_HOSTNAME = process.env.NEXT_PUBLIC_CHARTS_API_HOSTNAME;
 
@@ -49,7 +51,7 @@ export function PresaleCoin({
           <div className="flex flex-col gap-1">
             <div className="text-sm font-bold text-regular">Unique holders</div>
             <div className="text-xs font-bold text-regular">
-              {uniqueHoldersMap ? uniqueHoldersMap.size : <Skeleton />}
+              {uniqueHoldersData.map ? uniqueHoldersData.map.size : <Skeleton />}
             </div>
           </div>
           <div className="flex flex-col gap-1">
@@ -68,12 +70,22 @@ export function PresaleCoin({
               />
             )}
             <div className="flex flex-col gap-3 lg:hidden">
-              <PresaleCoinSidebar coinMetadata={coinMetadata} pool={seedPoolData} />
+              <PresaleCoinSidebar
+                coinMetadata={coinMetadata}
+                pool={seedPoolData}
+                uniqueHoldersData={uniqueHoldersData}
+                ticketsData={ticketsData}
+              />
             </div>
             <CommentsPanel coinType={coinMetadata.address} coinCreator={coinMetadata.creator} />
           </div>
           <div className="lg:flex hidden w-1/3 flex-col gap-4">
-            <PresaleCoinSidebar coinMetadata={coinMetadata} pool={seedPoolData} />
+            <PresaleCoinSidebar
+              coinMetadata={coinMetadata}
+              pool={seedPoolData}
+              uniqueHoldersData={uniqueHoldersData}
+              ticketsData={ticketsData}
+            />
           </div>
         </div>
       </div>

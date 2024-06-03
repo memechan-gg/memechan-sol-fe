@@ -17,6 +17,8 @@ const fetchTargetConfig = async () => {
 export function useTargetConfig() {
   const { data: targetConfig, isLoading } = useSWR(`target-config`, fetchTargetConfig, {
     refreshInterval: TARGET_CONFIG_INTERVAL,
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
   });
 
   const slerfThresholdAmount = targetConfig
