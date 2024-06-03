@@ -1,15 +1,11 @@
-import { useLiveCoinUniqueHolders } from "@/hooks/live/useLiveCoinUniqueHolders";
 import { useLivePool } from "@/hooks/live/useLivePool";
-import { useSeedPool } from "@/hooks/presale/useSeedPool";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { LiveCoinHoldersProps } from "../../coin.types";
 import { getSlicedAddress } from "./utils";
 
-export const LiveCoinHolders = ({ coinMetadata }: LiveCoinHoldersProps) => {
+export const LiveCoinHolders = ({ coinMetadata, uniqueHoldersData }: LiveCoinHoldersProps) => {
   const { publicKey } = useWallet();
-  const { seedPool } = useSeedPool(coinMetadata.address);
   const { livePool } = useLivePool(coinMetadata.address);
-  const uniqueHoldersData = useLiveCoinUniqueHolders(coinMetadata.address, seedPool?.address);
 
   const userHoldings = uniqueHoldersData?.holders.find(({ address }) => publicKey?.toString() === address);
   const userPercentage = userHoldings?.tokenAmountInPercentage.toFixed(2);

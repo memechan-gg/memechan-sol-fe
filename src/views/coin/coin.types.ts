@@ -1,3 +1,7 @@
+import { useLiveCoinUniqueHolders } from "@/hooks/live/useLiveCoinUniqueHolders";
+import { useSeedPool } from "@/hooks/presale/useSeedPool";
+import { useStakingPoolClient } from "@/hooks/staking/useStakingPoolClient";
+import { useStakingPoolFromApi } from "@/hooks/staking/useStakingPoolFromApi";
 import { useTickets } from "@/hooks/useTickets";
 import { CoinMetadata } from "@/types/coin";
 import { LivePoolData, SeedPoolData } from "@/types/pool";
@@ -32,6 +36,8 @@ export type PresaleCoinSidebarProps = {
 export type LiveCoinSidebarProps = {
   pool: LivePoolData;
   coinMetadata: CoinMetadata;
+  uniqueHoldersData: ReturnType<typeof useLiveCoinUniqueHolders>;
+  seedPoolData: ReturnType<typeof useSeedPool>;
 };
 
 export type HoldersProps = {
@@ -41,6 +47,7 @@ export type HoldersProps = {
 
 export type LiveCoinHoldersProps = {
   coinMetadata: CoinMetadata;
+  uniqueHoldersData: ReturnType<typeof useLiveCoinUniqueHolders>;
 };
 
 export type LiveCoinInfoProps = {
@@ -50,9 +57,12 @@ export type LiveCoinInfoProps = {
 
 export type PresaleCoinInfoProps = { poolAddress: string; metadata: CoinMetadata };
 
-export type UnstakeDialogProps = StakingPoolProps;
+export type UnstakeDialogProps = Omit<StakingPoolProps, "memeMint"> & {
+  stakingPoolFromApi: ReturnType<typeof useStakingPoolFromApi>;
+  stakingPoolClient: ReturnType<typeof useStakingPoolClient>;
+};
 
-export type WithdrawFeesDialogProps = StakingPoolProps;
+export type WithdrawFeesDialogProps = Omit<UnstakeDialogProps, "stakingPoolFromApi">;
 
 export type StakingPoolProps = {
   tokenSymbol: string;
