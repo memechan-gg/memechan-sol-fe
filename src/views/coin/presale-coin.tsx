@@ -1,8 +1,8 @@
 import { ChartIframe } from "@/components/chart-iframe";
 import { ThreadBoard } from "@/components/thread";
-import { usePresaleCoinUniqueHolders } from "@/hooks/presale/usePresaleCoinUniqueHolders";
 import { usePresaleMemePrice } from "@/hooks/presale/usePresaleMemePrice";
 import { useTickets } from "@/hooks/useTickets";
+import { useUniqueHolders } from "@/hooks/useUniqueHolders";
 import { CoinMetadata } from "@/types/coin";
 import { SeedPoolData } from "@/types/pool";
 import { formatNumber } from "@/utils/formatNumber";
@@ -19,7 +19,7 @@ export function PresaleCoin({
   seedPoolData: SeedPoolData;
 }) {
   const price = usePresaleMemePrice(seedPoolData.address);
-  const uniqueHoldersData = usePresaleCoinUniqueHolders(seedPoolData.address);
+  const uniqueHoldersData = useUniqueHolders(coinMetadata.address);
   const ticketsData = useTickets(seedPoolData.address);
 
   const CHARTS_API_HOSTNAME = process.env.NEXT_PUBLIC_CHARTS_API_HOSTNAME;
