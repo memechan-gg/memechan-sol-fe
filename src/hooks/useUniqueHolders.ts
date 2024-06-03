@@ -1,4 +1,3 @@
-import { getBoundPoolHolderPercentage } from "@/views/coin/sidebar/holders/utils";
 import { BE_URL, TokenApiHelper } from "@avernikoz/memechan-sol-sdk";
 import { PublicKey } from "@solana/web3.js";
 import BigNumber from "bignumber.js";
@@ -12,10 +11,11 @@ export const fetchUniqueHolders = async (memeMint: string) => {
 
     const holders: { address: string; tokenAmountInPercentage: BigNumber }[] = [];
 
-    Array.from(map.entries()).forEach(([holder, tickets]) => {
-      const percentage = getBoundPoolHolderPercentage(tickets);
-      holders.push({ address: holder, tokenAmountInPercentage: new BigNumber(percentage) });
-    });
+    // TODO: Adjust after release
+    // Array.from(map.entries()).forEach(([holder, tickets]) => {
+    //   const percentage = getBoundPoolHolderPercentage(tickets);
+    //   holders.push({ address: holder, tokenAmountInPercentage: new BigNumber(percentage) });
+    // });
 
     const sortedHolders = holders.sort(({ tokenAmountInPercentage: percentA }, { tokenAmountInPercentage: percentB }) =>
       percentB.minus(percentA).toNumber(),
