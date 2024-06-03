@@ -1,10 +1,10 @@
 import { connection } from "@/common/solana";
 import { Button } from "@/components/button";
+import { TransactionSentNotification } from "@/components/notifications/transaction-sent-notification";
 import { useBalance } from "@/hooks/useBalance";
 import { useTokenAccounts } from "@/hooks/useTokenAccounts";
 import { GetLiveSwapTransactionParams, GetSwapOutputAmountParams } from "@/types/hooks";
 import { formatNumber } from "@/utils/formatNumber";
-import { getExplorerTransactionLink } from "@/utils/getExplorerLink";
 import {
   LivePoolClient,
   MEMECHAN_MEME_TOKEN_DECIMALS,
@@ -143,14 +143,7 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
 
         signatures.push(signature);
 
-        toast(() => (
-          <span>
-            <a href={getExplorerTransactionLink(signature)} target="_blank" className="hover:underline text-blue">
-              Transaction
-            </a>{" "}
-            is sent, waiting for confirmation...
-          </span>
-        ));
+        toast(() => <TransactionSentNotification signature={signature} />);
       }
 
       setIsSwapping(false);

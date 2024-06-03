@@ -9,11 +9,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/dialog";
+import { TransactionSentNotification } from "@/components/notifications/transaction-sent-notification";
 import { useSeedPool } from "@/hooks/presale/useSeedPool";
 import { useStakingPoolClient } from "@/hooks/staking/useStakingPoolClient";
 import { useStakingPoolFromApi } from "@/hooks/staking/useStakingPoolFromApi";
 import { useTickets } from "@/hooks/useTickets";
-import { getExplorerTransactionLink } from "@/utils/getExplorerLink";
 import { MEMECHAN_MEME_TOKEN_DECIMALS, MEMECHAN_QUOTE_TOKEN_DECIMALS, sleep } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
@@ -78,14 +78,7 @@ export const WithdrawFeesDialog = ({ tokenSymbol, livePoolAddress, memeMint }: W
           skipPreflight: true,
         });
 
-        toast(() => (
-          <span>
-            <a href={getExplorerTransactionLink(signature)} target="_blank" className="hover:underline text-blue">
-              Transaction
-            </a>{" "}
-            is sent, waiting for confirmation...
-          </span>
-        ));
+        toast(() => <TransactionSentNotification signature={signature} />);
 
         // Check that a part of the withdraw fees succeeded
         const { blockhash: blockhash, lastValidBlockHeight: lastValidBlockHeight } =
@@ -137,14 +130,7 @@ export const WithdrawFeesDialog = ({ tokenSymbol, livePoolAddress, memeMint }: W
         skipPreflight: true,
       });
 
-      toast(() => (
-        <span>
-          <a href={getExplorerTransactionLink(signature)} target="_blank" className="hover:underline text-blue">
-            Transaction
-          </a>{" "}
-          is sent, waiting for confirmation...
-        </span>
-      ));
+      toast(() => <TransactionSentNotification signature={signature} />);
 
       // Check that an add fees succeeded
       const { blockhash: blockhash, lastValidBlockHeight: lastValidBlockHeight } =

@@ -1,12 +1,12 @@
 import { ChartApiInstance, connection } from "@/common/solana";
 import { Button } from "@/components/button";
+import { TransactionSentNotification } from "@/components/notifications/transaction-sent-notification";
 import { useBoundPool } from "@/hooks/presale/useBoundPool";
 import { useBoundPoolClient } from "@/hooks/presale/useBoundPoolClient";
 import { useBalance } from "@/hooks/useBalance";
 import { useTickets } from "@/hooks/useTickets";
 import { GetSwapOutputAmountParams, GetSwapTransactionParams } from "@/types/hooks";
 import { formatNumber } from "@/utils/formatNumber";
-import { getExplorerTransactionLink } from "@/utils/getExplorerLink";
 import {
   GetBuyMemeTransactionOutput,
   GetSellMemeTransactionOutput,
@@ -164,14 +164,7 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
           skipPreflight: true,
         });
 
-        toast(() => (
-          <span>
-            <a href={getExplorerTransactionLink(signature)} target="_blank" className="hover:underline text-blue">
-              Transaction
-            </a>{" "}
-            is sent, waiting for confirmation...
-          </span>
-        ));
+        toast(() => <TransactionSentNotification signature={signature} />);
         setIsSwapping(false);
 
         // Check the swap succeeded
@@ -217,14 +210,7 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
 
           signatures.push(signature);
 
-          toast(() => (
-            <span>
-              <a href={getExplorerTransactionLink(signature)} target="_blank" className="hover:underline text-blue">
-                Transaction
-              </a>{" "}
-              is sent, waiting for confirmation...
-            </span>
-          ));
+          toast(() => <TransactionSentNotification signature={signature} />);
         }
 
         setIsSwapping(false);
