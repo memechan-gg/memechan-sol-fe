@@ -13,6 +13,7 @@ export const PresaleCoinHolders = ({ poolAddress, coinMetadata }: HoldersProps) 
   const userHoldings = holders?.find(({ address }) => publicKey?.toString() === address);
   const userPercentage = userHoldings?.tokenAmountInPercentage.toFixed(2);
   const userSlicedAddress = publicKey ? getSlicedAddress(publicKey) : null;
+  const userIsDev = coinMetadata.creator === publicKey?.toString();
 
   return (
     <div className="flex flex-col gap-1">
@@ -21,7 +22,7 @@ export const PresaleCoinHolders = ({ poolAddress, coinMetadata }: HoldersProps) 
         {userHoldings && (
           <div className="flex justify-between flex-row gap-2 text-xs font-bold text-regular">
             <div>
-              <span className="font-normal">{userSlicedAddress}</span> (me)
+              <span className="font-normal">{userSlicedAddress}</span> (me) {userIsDev ? "(dev)" : ""}
             </div>
             <div>{userPercentage}%</div>
           </div>
