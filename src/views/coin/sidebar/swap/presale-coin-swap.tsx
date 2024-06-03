@@ -6,6 +6,7 @@ import { useBalance } from "@/hooks/useBalance";
 import { useTickets } from "@/hooks/useTickets";
 import { GetSwapOutputAmountParams, GetSwapTransactionParams } from "@/types/hooks";
 import { formatNumber } from "@/utils/formatNumber";
+import { getExplorerTransactionLink } from "@/utils/getExplorerLink";
 import {
   GetBuyMemeTransactionOutput,
   GetSellMemeTransactionOutput,
@@ -163,7 +164,14 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
           skipPreflight: true,
         });
 
-        toast("Transaction is sent, waiting for confirmation...");
+        toast(() => (
+          <span>
+            <a href={getExplorerTransactionLink(signature)} target="_blank" className="hover:underline text-blue">
+              Transaction
+            </a>{" "}
+            is sent, waiting for confirmation...
+          </span>
+        ));
         setIsSwapping(false);
 
         // Check the swap succeeded
@@ -209,7 +217,14 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
 
           signatures.push(signature);
 
-          toast("Transaction is sent, waiting for confirmation...");
+          toast(() => (
+            <span>
+              <a href={getExplorerTransactionLink(signature)} target="_blank" className="hover:underline text-blue">
+                Transaction
+              </a>{" "}
+              is sent, waiting for confirmation...
+            </span>
+          ));
         }
 
         setIsSwapping(false);

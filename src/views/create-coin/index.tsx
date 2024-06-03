@@ -2,6 +2,7 @@ import { connection } from "@/common/solana";
 import { ThreadBoard } from "@/components/thread";
 import { useBalance } from "@/hooks/useBalance";
 import { useTargetConfig } from "@/hooks/useTargetConfig";
+import { getExplorerTransactionLink } from "@/utils/getExplorerLink";
 import {
   MAX_DESCRIPTION_LENGTH,
   MAX_NAME_LENGTH,
@@ -109,7 +110,14 @@ export function CreateCoin() {
       });
       console.log("signature:", signature);
 
-      toast("Transaction is sent, waiting for confirmation...");
+      toast(() => (
+        <span>
+          <a href={getExplorerTransactionLink(signature)} target="_blank" className="hover:underline text-blue">
+            Transaction
+          </a>{" "}
+          is sent, waiting for confirmation...
+        </span>
+      ));
       await sleep(3000);
 
       toast("A few steps left...");
