@@ -163,6 +163,7 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
         });
 
         toast("Transaction is sent, waiting for confirmation...");
+        setIsSwapping(false);
 
         // Check the swap succeeded
         const { blockhash: blockhash, lastValidBlockHeight: lastValidBlockHeight } =
@@ -190,7 +191,6 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
           console.debug(`[OHLCV] Failed updating price for OHLCV`);
           console.error(`Failed updating price for OHLCV, error:`, e);
         });
-        setInputAmount("");
         toast.success("Swap succeeded");
         return;
       }
@@ -198,17 +198,26 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
       if (side === "sell") {
         const { txs } = result;
 
+        const signatures: string[] = [];
+
         for (const tx of txs) {
           const signature = await sendTransaction(tx, connection, {
             maxRetries: 3,
             skipPreflight: true,
           });
 
-          toast("Transaction is sent, waiting for confirmation...");
+          signatures.push(signature);
 
-          // Check a part of the swap succeeded
+          toast("Transaction is sent, waiting for confirmation...");
+        }
+
+        setIsSwapping(false);
+
+        // Check each part of the swap succeeded
+        for (const signature of signatures) {
           const { blockhash: blockhash, lastValidBlockHeight: lastValidBlockHeight } =
             await connection.getLatestBlockhash("confirmed");
+
           const swapTxResult = await connection.confirmTransaction(
             {
               signature: signature,
@@ -234,7 +243,6 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
           console.error(`Failed updating price for OHLCV, error:`, e);
         });
         toast.success("Swap succeeded");
-        setInputAmount("");
         return;
       }
     } catch (e) {
