@@ -17,8 +17,10 @@ const fetchBoundPoolClient = async (poolAddress: string) => {
 };
 
 export function useBoundPoolClient(poolAddress: string) {
-  const { data } = useSWR([`bound-pool-client-${poolAddress}`, poolAddress], ([url, pool]) =>
-    fetchBoundPoolClient(pool),
+  const { data } = useSWR(
+    [`bound-pool-client-${poolAddress}`, poolAddress],
+    ([url, pool]) => fetchBoundPoolClient(pool),
+    { revalidateIfStale: false, revalidateOnFocus: false },
   );
 
   return data;

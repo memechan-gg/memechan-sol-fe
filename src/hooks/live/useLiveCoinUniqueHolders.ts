@@ -34,7 +34,7 @@ export function useLiveCoinUniqueHolders(mint: string, boundPoolId?: string) {
   const { data } = useSWR(
     boundPoolId ? [`unique-holders-${boundPoolId}-${mint}`, mint, boundPoolId] : null,
     ([url, meme, pool]) => fetchLiveUniqueHolders(meme, pool),
-    { refreshInterval: LIVE_POOL_HOLDERS_INTERVAL },
+    { refreshInterval: LIVE_POOL_HOLDERS_INTERVAL, revalidateIfStale: false, revalidateOnFocus: false },
   );
 
   return data;

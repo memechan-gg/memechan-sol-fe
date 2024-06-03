@@ -25,7 +25,7 @@ export const useBalance = (coin: string) => {
   const { data: tokenAccountsData, mutate } = useSWR(
     publicKey ? [`balance-${publicKey.toString()}-${coin}`, coin, publicKey] : null,
     ([url, tokenAddress, ownerAddress]) => fetchCoinBalance(tokenAddress, ownerAddress),
-    { refreshInterval: BALANCE_INTERVAL },
+    { refreshInterval: BALANCE_INTERVAL, revalidateIfStale: false, revalidateOnFocus: false },
   );
 
   return {

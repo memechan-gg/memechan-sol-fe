@@ -24,7 +24,7 @@ export function useLiveMemePrice(raydiumPoolAddress: string) {
   const { data: memePrice } = useSWR(
     slerfPrice ? [`price-${raydiumPoolAddress}`, slerfPrice, raydiumPoolAddress] : null,
     ([url, price, poolAddress]) => fetchLiveMemePrice(price, poolAddress),
-    { refreshInterval: LIVE_POOL_PRICE_INTERVAL },
+    { refreshInterval: LIVE_POOL_PRICE_INTERVAL, revalidateIfStale: false, revalidateOnFocus: false },
   );
 
   return memePrice;

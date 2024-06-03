@@ -16,8 +16,10 @@ const fetchSeedPoolByMeme = async (memeMint: string) => {
 };
 
 export function useSeedPool(memeMint?: string) {
-  const { data: seedPool, isLoading } = useSWR(memeMint ? [`seed-pool-${memeMint}`, memeMint] : null, ([url, mint]) =>
-    fetchSeedPoolByMeme(mint),
+  const { data: seedPool, isLoading } = useSWR(
+    memeMint ? [`seed-pool-${memeMint}`, memeMint] : null,
+    ([url, mint]) => fetchSeedPoolByMeme(mint),
+    { revalidateIfStale: false, revalidateOnFocus: false },
   );
 
   return { seedPool, isLoading };

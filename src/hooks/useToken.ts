@@ -26,7 +26,7 @@ export function useToken(tokenAddress: string) {
   const { data: token, isLoading } = useSWR(
     [`token-${tokenAddress}`, tokenAddress],
     ([url, token]) => fetchToken(token),
-    { refreshInterval: TOKEN_INTERVAL },
+    { refreshInterval: TOKEN_INTERVAL, revalidateIfStale: false, revalidateOnFocus: false },
   );
 
   return { token, isLoading };

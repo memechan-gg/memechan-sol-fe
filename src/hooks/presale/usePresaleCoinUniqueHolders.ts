@@ -34,7 +34,7 @@ export function usePresaleCoinUniqueHolders(poolAddress: string) {
   const { data: uniqueHolders } = useSWR(
     [`unique-holders-${poolAddress}`, poolAddress],
     ([url, pool]) => fetchPresaleCoinUniqueHolders(pool),
-    { refreshInterval: BOUND_POOL_HOLDERS_INTERVAL },
+    { refreshInterval: BOUND_POOL_HOLDERS_INTERVAL, revalidateIfStale: false, revalidateOnFocus: false },
   );
 
   return { holders: uniqueHolders?.slicedHolders, map: uniqueHolders?.map };
