@@ -1,5 +1,6 @@
 import { useBoundPoolProgress } from "@/hooks/presale/useBoundPoolProgress";
 import { PresaleCoinInfoProps } from "../../coin.types";
+import { SocialLinks } from "./social-links/social-links";
 
 export const PresaleCoinInfo = ({ metadata, poolAddress }: PresaleCoinInfoProps) => {
   const { name, symbol, description, image, socialLinks } = metadata;
@@ -20,50 +21,7 @@ export const PresaleCoinInfo = ({ metadata, poolAddress }: PresaleCoinInfoProps)
           <div className="text-xs text-regular">{description}</div>
         </div>
       </div>
-      {socialLinks && (
-        <div className="grid grid-cols-2 gap-4 my-4">
-          {socialLinks.discord && (
-            <div className="flex flex-col gap-1">
-              <div className="text-xs font-bold text-regular">Discord</div>
-              <div className="text-xs font-normal text-regular truncate hover:underline">
-                <a href={socialLinks.discord} target="_blank">
-                  {socialLinks.discord}
-                </a>
-              </div>
-            </div>
-          )}
-          {socialLinks.twitter && (
-            <div className="flex flex-col gap-1">
-              <div className="text-xs font-bold text-regular">Twitter</div>
-              <div className="text-xs font-normal text-regular truncate hover:underline">
-                <a href={socialLinks.twitter} target="_blank">
-                  {socialLinks.twitter}
-                </a>
-              </div>
-            </div>
-          )}
-          {socialLinks.telegram && (
-            <div className="flex flex-col gap-1">
-              <div className="text-xs font-bold text-regular">Telegram</div>
-              <div className="text-xs font-normal text-regular truncate hover:underline">
-                <a href={socialLinks.telegram} target="_blank">
-                  {socialLinks.telegram}
-                </a>
-              </div>
-            </div>
-          )}
-          {socialLinks.website && (
-            <div className="flex flex-col gap-1">
-              <div className="text-xs font-bold text-regular">Website</div>
-              <div className="text-xs font-normal text-regular truncate hover:underline">
-                <a href={socialLinks.website} target="_blank">
-                  {socialLinks.website}
-                </a>
-              </div>
-            </div>
-          )}
-        </div>
-      )}
+      <SocialLinks socialLinks={socialLinks} />
       <div className="flex w-full flex-col gap-1">
         <div className="text-xs flex flex-row gap-2 font-bold text-regular">
           Presale Progress
