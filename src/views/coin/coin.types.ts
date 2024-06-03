@@ -1,10 +1,9 @@
-import { useLiveCoinUniqueHolders } from "@/hooks/live/useLiveCoinUniqueHolders";
 import { useBoundPool } from "@/hooks/presale/useBoundPool";
-import { usePresaleCoinUniqueHolders } from "@/hooks/presale/usePresaleCoinUniqueHolders";
 import { useSeedPool } from "@/hooks/presale/useSeedPool";
 import { useStakingPoolClient } from "@/hooks/staking/useStakingPoolClient";
 import { useStakingPoolFromApi } from "@/hooks/staking/useStakingPoolFromApi";
 import { useTickets } from "@/hooks/useTickets";
+import { useUniqueHolders } from "@/hooks/useUniqueHolders";
 import { CoinMetadata } from "@/types/coin";
 import { LivePoolData, SeedPoolData } from "@/types/pool";
 import { ParsedMemeTicket } from "@avernikoz/memechan-sol-sdk";
@@ -35,26 +34,26 @@ export type SwapButtonProps = {
 export type PresaleCoinSidebarProps = {
   coinMetadata: CoinMetadata;
   pool: SeedPoolData;
-  uniqueHoldersData: ReturnType<typeof usePresaleCoinUniqueHolders>;
+  uniqueHoldersData: ReturnType<typeof useUniqueHolders>;
   ticketsData: ReturnType<typeof useTickets>;
 };
 
 export type LiveCoinSidebarProps = {
   pool: LivePoolData;
   coinMetadata: CoinMetadata;
-  uniqueHoldersData: ReturnType<typeof useLiveCoinUniqueHolders>;
+  uniqueHoldersData: ReturnType<typeof useUniqueHolders>;
   seedPoolData: ReturnType<typeof useSeedPool>;
 };
 
 export type HoldersProps = {
   poolAddress: string;
   coinMetadata: CoinMetadata;
-  uniqueHoldersData: ReturnType<typeof usePresaleCoinUniqueHolders>;
+  uniqueHoldersData: ReturnType<typeof useUniqueHolders>;
 };
 
 export type LiveCoinHoldersProps = {
   coinMetadata: CoinMetadata;
-  uniqueHoldersData: ReturnType<typeof useLiveCoinUniqueHolders>;
+  uniqueHoldersData: ReturnType<typeof useUniqueHolders>;
 };
 
 export type LiveCoinInfoProps = {

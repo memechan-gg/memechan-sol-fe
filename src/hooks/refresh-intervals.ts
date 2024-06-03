@@ -12,3 +12,4 @@ export const TARGET_CONFIG_INTERVAL = 15_000;
 export const TICKETS_INTERVAL = 15_000;
 export const TOKEN_INTERVAL = 5_000;
 export const TOKEN_ACCOUNTS_INTERVAL = 15_000;
+export const HOLDERS_INTERVAL = 15_000;

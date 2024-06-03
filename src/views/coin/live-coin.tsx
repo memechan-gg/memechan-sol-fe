@@ -1,9 +1,9 @@
 import { Button } from "@/components/button";
 import { ChartIframe } from "@/components/chart-iframe";
 import { ThreadBoard } from "@/components/thread";
-import { useLiveCoinUniqueHolders } from "@/hooks/live/useLiveCoinUniqueHolders";
 import { useLiveMemePrice } from "@/hooks/live/useLiveMemePrice";
 import { useSeedPool } from "@/hooks/presale/useSeedPool";
+import { useUniqueHolders } from "@/hooks/useUniqueHolders";
 import { CoinMetadata } from "@/types/coin";
 import { LivePoolData } from "@/types/pool";
 import { formatNumber } from "@/utils/formatNumber";
@@ -17,7 +17,7 @@ import { LiveCoinSidebar } from "./sidebar/live-coin-sidebar";
 export function LiveCoin({ coinMetadata, livePoolData }: { coinMetadata: CoinMetadata; livePoolData: LivePoolData }) {
   const priceData = useLiveMemePrice(livePoolData.id);
   const seedPoolData = useSeedPool(coinMetadata.address);
-  const uniqueHoldersData = useLiveCoinUniqueHolders(coinMetadata.address, seedPoolData.seedPool?.address);
+  const uniqueHoldersData = useUniqueHolders(coinMetadata.address);
 
   // Initialize state with 'birdeye' as the default
   const [selectedChart, setSelectedChart] = useState<"birdeye" | "dexscreener">("dexscreener");
@@ -47,7 +47,7 @@ export function LiveCoin({ coinMetadata, livePoolData }: { coinMetadata: CoinMet
           <div className="flex flex-col gap-1">
             <div className="text-sm font-bold text-regular">Unique holders</div>
             <div className="text-xs font-bold text-regular">
-              {uniqueHoldersData ? uniqueHoldersData.fullHolders.length : <Skeleton />}
+              {uniqueHoldersData.holders ? uniqueHoldersData.holders.length : <Skeleton />}
             </div>
           </div>
           <div className="flex flex-col gap-1">

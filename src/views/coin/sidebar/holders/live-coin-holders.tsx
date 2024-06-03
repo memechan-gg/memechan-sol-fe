@@ -3,11 +3,11 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import { LiveCoinHoldersProps } from "../../coin.types";
 import { getSlicedAddress } from "./utils";
 
-export const LiveCoinHolders = ({ coinMetadata, uniqueHoldersData }: LiveCoinHoldersProps) => {
+export const LiveCoinHolders = ({ coinMetadata, uniqueHoldersData: { holders } }: LiveCoinHoldersProps) => {
   const { publicKey } = useWallet();
   const { livePool } = useLivePool(coinMetadata.address);
 
-  const userHoldings = uniqueHoldersData?.holders.find(({ address }) => publicKey?.toString() === address);
+  const userHoldings = holders?.find(({ address }) => publicKey?.toString() === address);
   const userPercentage = userHoldings?.tokenAmountInPercentage.toFixed(2);
   const userSlicedAddress = publicKey ? getSlicedAddress(publicKey) : null;
   const userIsDev = coinMetadata.creator === publicKey?.toString();
@@ -24,9 +24,9 @@ export const LiveCoinHolders = ({ coinMetadata, uniqueHoldersData }: LiveCoinHol
             <div>{userPercentage}%</div>
           </div>
         )}
-        {uniqueHoldersData &&
-          uniqueHoldersData.holders.length > 0 &&
-          uniqueHoldersData.holders.map(({ address, tokenAmountInPercentage }) => {
+        {holders &&
+          holders.length > 0 &&
+          holders.map(({ address, tokenAmountInPercentage }) => {
             const holderIsUser = publicKey?.toString() === address;
 
             if (holderIsUser) return;
@@ -46,10 +46,8 @@ export const LiveCoinHolders = ({ coinMetadata, uniqueHoldersData }: LiveCoinHol
               </div>
             );
           })}
-        {uniqueHoldersData && uniqueHoldersData.holders.length === 0 && (
-          <div className="font-normal">No holders yet.</div>
-        )}
-        {!uniqueHoldersData && <div className="font-normal text-regular">Loading...</div>}
+        {holders && holders.length === 0 && <div className="font-normal">No holders yet.</div>}
+        {!holders && <div className="font-normal text-regular">Loading...</div>}
       </div>
     </div>
   );
