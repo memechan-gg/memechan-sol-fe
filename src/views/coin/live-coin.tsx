@@ -20,7 +20,7 @@ export function LiveCoin({ coinMetadata, livePoolData }: { coinMetadata: CoinMet
   const uniqueHoldersData = useLiveCoinUniqueHolders(coinMetadata.address, seedPool?.address);
 
   // Initialize state with 'birdeye' as the default
-  const [selectedChart, setSelectedChart] = useState<"birdeye" | "dexscreener">("birdeye");
+  const [selectedChart, setSelectedChart] = useState<"birdeye" | "dexscreener">("dexscreener");
 
   return (
     <ThreadBoard title={coinMetadata.name}>
