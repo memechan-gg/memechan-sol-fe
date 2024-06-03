@@ -10,10 +10,8 @@ import {
   DialogTrigger,
 } from "@/components/dialog";
 import { TransactionSentNotification } from "@/components/notifications/transaction-sent-notification";
-import { useSeedPool } from "@/hooks/presale/useSeedPool";
 import { useStakingPoolClient } from "@/hooks/staking/useStakingPoolClient";
 import { useStakingPoolFromApi } from "@/hooks/staking/useStakingPoolFromApi";
-import { useTickets } from "@/hooks/useTickets";
 import { MEMECHAN_MEME_TOKEN_DECIMALS, MEMECHAN_QUOTE_TOKEN_DECIMALS, sleep } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
@@ -23,17 +21,20 @@ import toast from "react-hot-toast";
 import { WithdrawFeesDialogProps } from "../../coin.types";
 import { LOW_FEES_THRESHOLD } from "./config";
 
-export const WithdrawFeesDialog = ({ tokenSymbol, livePoolAddress, memeMint }: WithdrawFeesDialogProps) => {
+export const WithdrawFeesDialog = ({
+  tokenSymbol,
+  livePoolAddress,
+  memeMint,
+  ticketsData: { tickets },
+}: WithdrawFeesDialogProps) => {
   const [memeAmount, setMemeAmount] = useState<string | null>(null);
   const [slerfAmount, setSlerfAmount] = useState<string | null>(null);
   const [isWithdrawLoading, setIsWithdrawLoading] = useState<boolean>(false);
   const [isUpdateLoading, setIsUpdateLoading] = useState<boolean>(false);
 
   const { publicKey, sendTransaction } = useWallet();
-  const { seedPool } = useSeedPool(memeMint);
   const stakingPoolFromApi = useStakingPoolFromApi(memeMint);
   const stakingPoolClient = useStakingPoolClient(stakingPoolFromApi?.address);
-  const { tickets } = useTickets(seedPool?.address);
 
   const updateAvailableFeesToWithdraw = useCallback(async () => {
     if (!stakingPoolClient) return;

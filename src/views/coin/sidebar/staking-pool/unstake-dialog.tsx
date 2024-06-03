@@ -10,11 +10,9 @@ import {
   DialogTrigger,
 } from "@/components/dialog";
 import { TransactionSentNotification } from "@/components/notifications/transaction-sent-notification";
-import { useSeedPool } from "@/hooks/presale/useSeedPool";
 import { useStakingPool } from "@/hooks/staking/useStakingPool";
 import { useStakingPoolClient } from "@/hooks/staking/useStakingPoolClient";
 import { useStakingPoolFromApi } from "@/hooks/staking/useStakingPoolFromApi";
-import { useTickets } from "@/hooks/useTickets";
 import { MEMECHAN_MEME_TOKEN_DECIMALS } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
@@ -25,16 +23,19 @@ import toast from "react-hot-toast";
 import Skeleton from "react-loading-skeleton";
 import { UnstakeDialogProps } from "../../coin.types";
 
-export const UnstakeDialog = ({ tokenSymbol, livePoolAddress, memeMint }: UnstakeDialogProps) => {
+export const UnstakeDialog = ({
+  tokenSymbol,
+  livePoolAddress,
+  memeMint,
+  ticketsData: { tickets, stakedAmount },
+}: UnstakeDialogProps) => {
   const [availableAmountToUnstake, setAvailableAmountToUnstake] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const { publicKey, sendTransaction } = useWallet();
-  const { seedPool } = useSeedPool(memeMint);
   const stakingPoolFromApi = useStakingPoolFromApi(memeMint);
   const stakingPool = useStakingPool(stakingPoolFromApi?.address);
   const stakingPoolClient = useStakingPoolClient(stakingPoolFromApi?.address);
-  const { tickets, stakedAmount } = useTickets(seedPool?.address);
 
   const updateAvailableAmountToUnstake = useCallback(async () => {
     if (!stakingPoolClient || !stakingPool || !tickets) return;

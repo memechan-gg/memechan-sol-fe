@@ -1,3 +1,4 @@
+import { useTickets } from "@/hooks/useTickets";
 import { CoinMetadata } from "@/types/coin";
 import { LivePoolData, SeedPoolData } from "@/types/pool";
 import { ParsedMemeTicket } from "@avernikoz/memechan-sol-sdk";
@@ -57,6 +58,7 @@ export type StakingPoolProps = {
   tokenSymbol: string;
   livePoolAddress: string;
   memeMint: string;
+  ticketsData: ReturnType<typeof useTickets>;
 };
 
 export type CoinThread = {
