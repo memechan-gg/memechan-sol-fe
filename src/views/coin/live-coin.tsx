@@ -20,7 +20,7 @@ export function LiveCoin({ coinMetadata, livePoolData }: { coinMetadata: CoinMet
   const uniqueHoldersData = useLiveCoinUniqueHolders(coinMetadata.address, seedPool?.address);
 
   // Initialize state with 'birdeye' as the default
-  const [selectedChart, setSelectedChart] = useState<"birdeye" | "dexscreener">("birdeye");
+  const [selectedChart, setSelectedChart] = useState<"birdeye" | "dexscreener">("dexscreener");
 
   return (
     <ThreadBoard title={coinMetadata.name}>
@@ -66,7 +66,7 @@ export function LiveCoin({ coinMetadata, livePoolData }: { coinMetadata: CoinMet
               />
             ) : (
               <ChartIframe
-                src={`https://dexscreener.com/solana/${livePoolData.id}?embed=1&theme=dark&trades=0&info=0`}
+                src={`https://dexscreener.com/solana/${livePoolData.id}?embed=1&theme=dark&trades=0&info=0&interval=5`}
               />
             )}
             <div className="flex flex-col gap-3 lg:hidden">
