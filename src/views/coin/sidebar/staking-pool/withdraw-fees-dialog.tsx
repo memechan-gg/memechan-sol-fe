@@ -51,6 +51,7 @@ export const WithdrawFeesDialog = ({
     }
   }, [stakingPoolClient, tickets]);
 
+  // TODO: This executes more than should
   useEffect(() => {
     updateAvailableFeesToWithdraw();
   }, [updateAvailableFeesToWithdraw]);
