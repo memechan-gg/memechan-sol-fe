@@ -1,7 +1,6 @@
 import { ChartApiInstance, connection } from "@/common/solana";
 import { Button } from "@/components/button";
 import { TransactionSentNotification } from "@/components/notifications/transaction-sent-notification";
-import { useBoundPool } from "@/hooks/presale/useBoundPool";
 import { useBoundPoolClient } from "@/hooks/presale/useBoundPoolClient";
 import { useBalance } from "@/hooks/useBalance";
 import { useTickets } from "@/hooks/useTickets";
@@ -26,7 +25,7 @@ import { UnavailableTicketsToSellDialog } from "./dialog-unavailable-tickets-to-
 import { InputAmountTitle } from "./input-amount-title";
 import { handleSlippageInputChange, handleSwapInputChange, validateSlippage } from "./utils";
 
-export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => {
+export const PresaleCoinSwap = ({ tokenSymbol, pool, boundPool }: PresaleCoinSwapProps) => {
   const [slerfToMeme, setSlerfToMeme] = useState<boolean>(true);
   const [inputAmount, setInputAmount] = useState<string>("");
   const [outputAmount, setOutputAmount] = useState<string | null>(null);
@@ -43,7 +42,6 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
   } = useTickets(pool.address);
   const { balance: slerfBalance, refetch: refetchSlerfBalance } = useBalance(MEMECHAN_QUOTE_MINT.toString());
   const boundPoolClient = useBoundPoolClient(pool.address);
-  const boundPool = useBoundPool(pool.address);
 
   const getSwapOutputAmount = useCallback(
     async ({ inputAmount, slerfToMeme, slippagePercentage }: GetSwapOutputAmountParams) => {
