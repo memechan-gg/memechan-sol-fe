@@ -131,17 +131,26 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
 
       const swapTransactions = await buildTxs(connection, publicKey, simpleSwapTransactions);
 
+      const signatures: string[] = [];
+
       for (const tx of swapTransactions) {
         const signature = await sendTransaction(tx, connection, {
           skipPreflight: true,
           maxRetries: 3,
         });
 
-        toast("Transaction is sent, waiting for confirmation...");
+        signatures.push(signature);
 
-        // Check a part of the swap succeeded
+        toast("Transaction is sent, waiting for confirmation...");
+      }
+
+      setIsSwapping(false);
+
+      // Check each part of the swap succeeded
+      for (const signature of signatures) {
         const { blockhash: blockhash, lastValidBlockHeight: lastValidBlockHeight } =
           await connection.getLatestBlockhash("confirmed");
+
         const swapTxResult = await connection.confirmTransaction(
           {
             signature: signature,
@@ -159,7 +168,6 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
       }
 
       toast.success("Swap succeeded");
-      setInputAmount("");
       refetchSlerfBalance();
       refetchMemeBalance();
       refetchTokenAccounts();
