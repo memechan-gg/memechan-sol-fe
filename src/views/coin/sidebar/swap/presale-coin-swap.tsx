@@ -1,5 +1,6 @@
 import { ChartApiInstance, connection } from "@/common/solana";
 import { Button } from "@/components/button";
+import { TransactionSentNotification } from "@/components/notifications/transaction-sent-notification";
 import { useBoundPool } from "@/hooks/presale/useBoundPool";
 import { useBoundPoolClient } from "@/hooks/presale/useBoundPoolClient";
 import { useBalance } from "@/hooks/useBalance";
@@ -163,7 +164,7 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
           skipPreflight: true,
         });
 
-        toast("Transaction is sent, waiting for confirmation...");
+        toast(() => <TransactionSentNotification signature={signature} />);
         setIsSwapping(false);
 
         // Check the swap succeeded
@@ -209,7 +210,7 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
 
           signatures.push(signature);
 
-          toast("Transaction is sent, waiting for confirmation...");
+          toast(() => <TransactionSentNotification signature={signature} />);
         }
 
         setIsSwapping(false);

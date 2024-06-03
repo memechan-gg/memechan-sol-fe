@@ -1,5 +1,6 @@
 import { connection } from "@/common/solana";
 import { Button } from "@/components/button";
+import { TransactionSentNotification } from "@/components/notifications/transaction-sent-notification";
 import { useBalance } from "@/hooks/useBalance";
 import { useTokenAccounts } from "@/hooks/useTokenAccounts";
 import { GetLiveSwapTransactionParams, GetSwapOutputAmountParams } from "@/types/hooks";
@@ -142,7 +143,7 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
 
         signatures.push(signature);
 
-        toast("Transaction is sent, waiting for confirmation...");
+        toast(() => <TransactionSentNotification signature={signature} />);
       }
 
       setIsSwapping(false);

@@ -9,6 +9,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/dialog";
+import { TransactionSentNotification } from "@/components/notifications/transaction-sent-notification";
 import { useSeedPool } from "@/hooks/presale/useSeedPool";
 import { useStakingPool } from "@/hooks/staking/useStakingPool";
 import { useStakingPoolClient } from "@/hooks/staking/useStakingPoolClient";
@@ -73,7 +74,7 @@ export const UnstakeDialog = ({ tokenSymbol, livePoolAddress, memeMint }: Unstak
           skipPreflight: true,
         });
 
-        toast("Transaction is sent, waiting for confirmation...");
+        toast(() => <TransactionSentNotification signature={signature} />);
 
         // Check that a part of the unstake succeeded
         const { blockhash: blockhash, lastValidBlockHeight: lastValidBlockHeight } =

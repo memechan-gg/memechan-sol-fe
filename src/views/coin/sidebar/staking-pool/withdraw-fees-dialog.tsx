@@ -9,6 +9,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/dialog";
+import { TransactionSentNotification } from "@/components/notifications/transaction-sent-notification";
 import { useSeedPool } from "@/hooks/presale/useSeedPool";
 import { useStakingPoolClient } from "@/hooks/staking/useStakingPoolClient";
 import { useStakingPoolFromApi } from "@/hooks/staking/useStakingPoolFromApi";
@@ -77,7 +78,7 @@ export const WithdrawFeesDialog = ({ tokenSymbol, livePoolAddress, memeMint }: W
           skipPreflight: true,
         });
 
-        toast("Transaction is sent, waiting for confirmation...");
+        toast(() => <TransactionSentNotification signature={signature} />);
 
         // Check that a part of the withdraw fees succeeded
         const { blockhash: blockhash, lastValidBlockHeight: lastValidBlockHeight } =
@@ -129,7 +130,7 @@ export const WithdrawFeesDialog = ({ tokenSymbol, livePoolAddress, memeMint }: W
         skipPreflight: true,
       });
 
-      toast("Transaction is sent, waiting for confirmation...");
+      toast(() => <TransactionSentNotification signature={signature} />);
 
       // Check that an add fees succeeded
       const { blockhash: blockhash, lastValidBlockHeight: lastValidBlockHeight } =

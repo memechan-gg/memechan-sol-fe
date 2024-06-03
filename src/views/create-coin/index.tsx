@@ -1,4 +1,5 @@
 import { connection } from "@/common/solana";
+import { TransactionSentNotification } from "@/components/notifications/transaction-sent-notification";
 import { ThreadBoard } from "@/components/thread";
 import { useBalance } from "@/hooks/useBalance";
 import { useTargetConfig } from "@/hooks/useTargetConfig";
@@ -109,7 +110,7 @@ export function CreateCoin() {
       });
       console.log("signature:", signature);
 
-      toast("Transaction is sent, waiting for confirmation...");
+      toast(() => <TransactionSentNotification signature={signature} />);
       await sleep(3000);
 
       toast("A few steps left...");
