@@ -22,6 +22,7 @@ import { presaleSwapParamsAreValid } from "../../coin.utils";
 import { SwapButton } from "./button";
 import { MAX_SLIPPAGE, MIN_SLIPPAGE } from "./config";
 import { UnavailableTicketsToSellDialog } from "./dialog-unavailable-tickets-to-sell";
+import { InputAmountTitle } from "./input-amount-title";
 import { handleSlippageInputChange, handleSwapInputChange, validateSlippage } from "./utils";
 
 export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => {
@@ -282,9 +283,14 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
         <SwapButton slerfToMeme={!slerfToMeme} onClick={() => setSlerfToMeme(false)} label="Sell" />
       </div>
       <div className="flex w-full flex-col gap-1">
-        <div className="text-xs font-bold text-regular">
-          {slerfToMeme ? `SLERF to ${tokenSymbol}` : `${tokenSymbol} to SLERF`}
-        </div>
+        <InputAmountTitle
+          memeBalance={availableTicketsAmount}
+          setInputAmount={setInputAmount}
+          setOutputData={setOutputAmount}
+          slerfBalance={slerfBalance}
+          slerfToMeme={slerfToMeme}
+          tokenSymbol={tokenSymbol}
+        />
         <input
           className="w-full bg-white text-xs font-bold text-regular p-2 rounded-lg"
           value={inputAmount}
@@ -310,10 +316,7 @@ export const PresaleCoinSwap = ({ tokenSymbol, pool }: PresaleCoinSwapProps) => 
         )}
         {!slerfToMeme && availableTicketsAmount !== "0" && (
           <div className="text-xs font-bold text-regular">
-            Available tickets to sell:{" "}
-            {Number(availableTicketsAmount).toLocaleString(undefined, {
-              maximumFractionDigits: MEMECHAN_MEME_TOKEN_DECIMALS,
-            })}
+            Available tickets to sell: {formatNumber(+availableTicketsAmount, MEMECHAN_MEME_TOKEN_DECIMALS)}
           </div>
         )}
         {!slerfToMeme && unavailableTicketsAmount !== "0" && (

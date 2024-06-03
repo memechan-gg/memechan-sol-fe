@@ -19,6 +19,7 @@ import { LiveCoinSwapProps } from "../../coin.types";
 import { liveSwapParamsAreValid } from "../../coin.utils";
 import { SwapButton } from "./button";
 import { MAX_SLIPPAGE, MIN_SLIPPAGE } from "./config";
+import { InputAmountTitle } from "./input-amount-title";
 import { handleSlippageInputChange, handleSwapInputChange, validateSlippage } from "./utils";
 
 export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: tokenAddress } }: LiveCoinSwapProps) => {
@@ -204,9 +205,14 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
         <SwapButton slerfToMeme={!slerfToMeme} onClick={() => setSlerfToMeme(false)} label="Sell" />
       </div>
       <div className="flex w-full flex-col gap-1">
-        <div className="text-xs font-bold text-regular">
-          {slerfToMeme ? `SLERF to ${tokenSymbol}` : `${tokenSymbol} to SLERF`}
-        </div>
+        <InputAmountTitle
+          memeBalance={memeBalance}
+          setInputAmount={setInputAmount}
+          setOutputData={setOutputData}
+          slerfBalance={slerfBalance}
+          slerfToMeme={slerfToMeme}
+          tokenSymbol={tokenSymbol}
+        />
         <input
           className="w-full bg-white text-xs font-bold text-regular p-2 rounded-lg"
           value={inputAmount}
