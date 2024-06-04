@@ -1,4 +1,4 @@
-import { useLiveCoinUniqueHolders } from "@/hooks/live/useLiveCoinUniqueHolders";
+import { useLiveCoinUniqueHoldersFromBE } from "@/hooks/live/useLiveCoinUniqueHoldersFromBE";
 import { useBoundPool } from "@/hooks/presale/useBoundPool";
 import { usePresaleCoinUniqueHolders } from "@/hooks/presale/usePresaleCoinUniqueHolders";
 import { useSeedPool } from "@/hooks/presale/useSeedPool";
@@ -42,8 +42,9 @@ export type PresaleCoinSidebarProps = {
 export type LiveCoinSidebarProps = {
   pool: LivePoolData;
   coinMetadata: CoinMetadata;
-  uniqueHoldersData: ReturnType<typeof useLiveCoinUniqueHolders>;
+  uniqueHoldersData: ReturnType<typeof useLiveCoinUniqueHoldersFromBE>;
   seedPoolData: ReturnType<typeof useSeedPool>;
+  stakingPoolFromApi: ReturnType<typeof useStakingPoolFromApi>;
 };
 
 export type HoldersProps = {
@@ -54,7 +55,7 @@ export type HoldersProps = {
 
 export type LiveCoinHoldersProps = {
   coinMetadata: CoinMetadata;
-  uniqueHoldersData: ReturnType<typeof useLiveCoinUniqueHolders>;
+  uniqueHoldersData: ReturnType<typeof useLiveCoinUniqueHoldersFromBE>;
 };
 
 export type LiveCoinInfoProps = {
@@ -77,8 +78,8 @@ export type WithdrawFeesDialogProps = Omit<UnstakeDialogProps, "stakingPoolFromA
 export type StakingPoolProps = {
   tokenSymbol: string;
   livePoolAddress: string;
-  memeMint: string;
   ticketsData: ReturnType<typeof useTickets>;
+  stakingPoolFromApi: ReturnType<typeof useStakingPoolFromApi>;
 };
 
 export type CoinThread = {
