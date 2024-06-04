@@ -1,6 +1,6 @@
 import { useStakingPoolClient } from "@/hooks/staking/useStakingPoolClient";
 import { StakingPoolProps } from "../../coin.types";
-import { UnstakeDialog } from "./unstake-dialog";
+import { UnstakeDialog } from "./unstake/unstake-dialog";
 import { WithdrawFeesDialog } from "./withdraw-fees-dialog";
 
 export const StakingPool = ({ tokenSymbol, livePoolAddress, ticketsData, stakingPoolFromApi }: StakingPoolProps) => {

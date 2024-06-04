@@ -1,27 +1,19 @@
 import { connection } from "@/common/solana";
 import { Button } from "@/components/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/dialog";
+import { DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/dialog";
 import { TransactionSentNotification } from "@/components/notifications/transaction-sent-notification";
 import { useStakingPool } from "@/hooks/staking/useStakingPool";
+import { UnstakeDialogProps } from "@/views/coin/coin.types";
 import { MEMECHAN_MEME_TOKEN_DECIMALS } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import BigNumber from "bignumber.js";
-import { BN } from "bn.js";
+import BN from "bn.js";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import Skeleton from "react-loading-skeleton";
-import { UnstakeDialogProps } from "../../coin.types";
 
-export const UnstakeDialog = ({
+export const UnstakePopUp = ({
   tokenSymbol,
   livePoolAddress,
   ticketsData: { tickets, stakedAmount },
@@ -128,50 +120,43 @@ export const UnstakeDialog = ({
     availableAmountToUnstake === null || isLoading || new BigNumber(availableAmountToUnstake).isZero();
 
   return (
-    <Dialog>
-      <DialogTrigger>
-        <Button className="w-full bg-regular bg-opacity-80 hover:bg-opacity-50">
-          <div className="text-xs font-bold text-white">Unstake Token</div>
-        </Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle className="text-regular mb-2">Unstake</DialogTitle>
-          <DialogDescription className="text-regular">
-            <div>
-              Unstake your staked Meme Coins from the staking pool. Once you unstake you cannot earn fees and stake back
-              anymore.
-            </div>
-            <div className="text-xs font-bold text-regular mt-4">Cliff period started at: {cliffStartedTime}</div>
-            <div className="text-xs font-bold text-regular">Vesting period starts at: {startVestingTime}</div>
-            <div className="text-xs font-bold text-regular">Vesting period ends at: {endVestingTime}</div>
-          </DialogDescription>
-        </DialogHeader>
-        <div className="flex w-full flex-col gap-1">
-          <div className="text-xs font-bold text-regular">
-            Locked amount:{" "}
-            {availableAmountToUnstake !== null &&
-              BigNumber(stakedAmount).minus(availableAmountToUnstake).toNumber().toLocaleString()}
-            {availableAmountToUnstake === null && <Skeleton width={35} />}{" "}
-            <span className="!normal-case">{tokenSymbol}</span>
+    <DialogContent>
+      <DialogHeader>
+        <DialogTitle className="text-regular mb-2">Unstake</DialogTitle>
+        <DialogDescription className="text-regular">
+          <div>
+            Unstake your staked Meme Coins from the staking pool. Once you unstake you cannot earn fees and stake back
+            anymore.
           </div>
-          <div className="text-xs font-bold text-regular">
-            Unstakable amount:{" "}
-            {availableAmountToUnstake ? Number(availableAmountToUnstake).toLocaleString() : <Skeleton width={35} />}{" "}
-            <span className="!normal-case">{tokenSymbol}</span>
-          </div>
+          <div className="text-xs font-bold text-regular mt-4">Cliff period started at: {cliffStartedTime}</div>
+          <div className="text-xs font-bold text-regular">Vesting period starts at: {startVestingTime}</div>
+          <div className="text-xs font-bold text-regular">Vesting period ends at: {endVestingTime}</div>
+        </DialogDescription>
+      </DialogHeader>
+      <div className="flex w-full flex-col gap-1">
+        <div className="text-xs font-bold text-regular">
+          Locked amount:{" "}
+          {availableAmountToUnstake !== null &&
+            BigNumber(stakedAmount).minus(availableAmountToUnstake).toNumber().toLocaleString()}
+          {availableAmountToUnstake === null && <Skeleton width={35} />}{" "}
+          <span className="!normal-case">{tokenSymbol}</span>
         </div>
-        <div className="flex w-full flex-col gap-1"></div>
-        <DialogFooter>
-          <Button
-            disabled={unstakeButtonIsDisabled}
-            onClick={unstake}
-            className="w-full bg-regular bg-opacity-80 hover:bg-opacity-50 disabled:bg-opacity-50 disabled:cursor-not-allowed"
-          >
-            <span className="text-xs font-bold text-white">Unstake</span>
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        <div className="text-xs font-bold text-regular">
+          Unstakable amount:{" "}
+          {availableAmountToUnstake ? Number(availableAmountToUnstake).toLocaleString() : <Skeleton width={35} />}{" "}
+          <span className="!normal-case">{tokenSymbol}</span>
+        </div>
+      </div>
+      <div className="flex w-full flex-col gap-1"></div>
+      <DialogFooter>
+        <Button
+          disabled={unstakeButtonIsDisabled}
+          onClick={unstake}
+          className="w-full bg-regular bg-opacity-80 hover:bg-opacity-50 disabled:bg-opacity-50 disabled:cursor-not-allowed"
+        >
+          <span className="text-xs font-bold text-white">Unstake</span>
+        </Button>
+      </DialogFooter>
+    </DialogContent>
   );
 };
