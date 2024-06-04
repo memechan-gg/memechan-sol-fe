@@ -1,9 +1,10 @@
 import { Button } from "@/components/button";
 import { ChartIframe } from "@/components/chart-iframe";
 import { ThreadBoard } from "@/components/thread";
-import { useLiveCoinUniqueHolders } from "@/hooks/live/useLiveCoinUniqueHolders";
+import { useLiveCoinUniqueHoldersFromBE } from "@/hooks/live/useLiveCoinUniqueHoldersFromBE";
 import { useLiveMemePrice } from "@/hooks/live/useLiveMemePrice";
 import { useSeedPool } from "@/hooks/presale/useSeedPool";
+import { useStakingPoolFromApi } from "@/hooks/staking/useStakingPoolFromApi";
 import { CoinMetadata } from "@/types/coin";
 import { LivePoolData } from "@/types/pool";
 import { formatNumber } from "@/utils/formatNumber";
@@ -17,7 +18,8 @@ import { LiveCoinSidebar } from "./sidebar/live-coin-sidebar";
 export function LiveCoin({ coinMetadata, livePoolData }: { coinMetadata: CoinMetadata; livePoolData: LivePoolData }) {
   const priceData = useLiveMemePrice(livePoolData.id);
   const seedPoolData = useSeedPool(coinMetadata.address);
-  const uniqueHoldersData = useLiveCoinUniqueHolders(coinMetadata.address, seedPoolData.seedPool?.address);
+  const stakingPoolFromApi = useStakingPoolFromApi(coinMetadata.address);
+  const uniqueHoldersData = useLiveCoinUniqueHoldersFromBE(coinMetadata.address, stakingPoolFromApi?.address);
 
   // Initialize state with 'birdeye' as the default
   const [selectedChart, setSelectedChart] = useState<"birdeye" | "dexscreener">("dexscreener");
@@ -75,6 +77,7 @@ export function LiveCoin({ coinMetadata, livePoolData }: { coinMetadata: CoinMet
                 coinMetadata={coinMetadata}
                 uniqueHoldersData={uniqueHoldersData}
                 seedPoolData={seedPoolData}
+                stakingPoolFromApi={stakingPoolFromApi}
               />
             </div>
             <div className="flex justify-center items-center gap-3">
@@ -89,6 +92,7 @@ export function LiveCoin({ coinMetadata, livePoolData }: { coinMetadata: CoinMet
               coinMetadata={coinMetadata}
               uniqueHoldersData={uniqueHoldersData}
               seedPoolData={seedPoolData}
+              stakingPoolFromApi={stakingPoolFromApi}
             />
           </div>
         </div>

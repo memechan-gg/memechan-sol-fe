@@ -1,6 +1,6 @@
 import { ChartIframe } from "@/components/chart-iframe";
 import { ThreadBoard } from "@/components/thread";
-import { usePresaleCoinUniqueHolders } from "@/hooks/presale/usePresaleCoinUniqueHolders";
+import { usePresaleCoinUniqueHoldersFromBE } from "@/hooks/presale/usePresaleCoinUniqueHoldersFromBE";
 import { usePresaleMemePrice } from "@/hooks/presale/usePresaleMemePrice";
 import { useTickets } from "@/hooks/useTickets";
 import { CoinMetadata } from "@/types/coin";
@@ -19,7 +19,7 @@ export function PresaleCoin({
   seedPoolData: SeedPoolData;
 }) {
   const price = usePresaleMemePrice(seedPoolData.address);
-  const uniqueHoldersData = usePresaleCoinUniqueHolders(seedPoolData.address);
+  const uniqueHoldersData = usePresaleCoinUniqueHoldersFromBE(coinMetadata.address);
   const ticketsData = useTickets(seedPoolData.address);
 
   const CHARTS_API_HOSTNAME = process.env.NEXT_PUBLIC_CHARTS_API_HOSTNAME;
@@ -51,7 +51,7 @@ export function PresaleCoin({
           <div className="flex flex-col gap-1">
             <div className="text-sm font-bold text-regular">Unique holders</div>
             <div className="text-xs font-bold text-regular">
-              {uniqueHoldersData.map ? uniqueHoldersData.map.size : <Skeleton />}
+              {uniqueHoldersData ? uniqueHoldersData.fullHolders.length : <Skeleton />}
             </div>
           </div>
           <div className="flex flex-col gap-1">

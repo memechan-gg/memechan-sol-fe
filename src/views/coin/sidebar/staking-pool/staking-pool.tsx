@@ -1,13 +1,8 @@
-import { useStakingPoolClient } from "@/hooks/staking/useStakingPoolClient";
-import { useStakingPoolFromApi } from "@/hooks/staking/useStakingPoolFromApi";
 import { StakingPoolProps } from "../../coin.types";
-import { UnstakeDialog } from "./unstake-dialog";
-import { WithdrawFeesDialog } from "./withdraw-fees-dialog";
+import { UnstakeDialog } from "./unstake/unstake-dialog";
+import { WithdrawFeesDialog } from "./withdraw-fees/withdraw-fees-dialog";
 
-export const StakingPool = ({ tokenSymbol, livePoolAddress, memeMint, ticketsData }: StakingPoolProps) => {
-  const stakingPoolFromApi = useStakingPoolFromApi(memeMint);
-  const stakingPoolClient = useStakingPoolClient(stakingPoolFromApi?.address);
-
+export const StakingPool = ({ tokenSymbol, livePoolAddress, ticketsData, stakingPoolFromApi }: StakingPoolProps) => {
   return (
     <div className="flex flex-col gap-2 w-full">
       <div className="text-xs font-bold text-regular">Staking Pool</div>
@@ -23,14 +18,13 @@ export const StakingPool = ({ tokenSymbol, livePoolAddress, memeMint, ticketsDat
             tokenSymbol={tokenSymbol}
             livePoolAddress={livePoolAddress}
             ticketsData={ticketsData}
-            stakingPoolClient={stakingPoolClient}
             stakingPoolFromApi={stakingPoolFromApi}
           />
           <WithdrawFeesDialog
             tokenSymbol={tokenSymbol}
             livePoolAddress={livePoolAddress}
             ticketsData={ticketsData}
-            stakingPoolClient={stakingPoolClient}
+            stakingPoolFromApi={stakingPoolFromApi}
           />
         </div>
       </div>
