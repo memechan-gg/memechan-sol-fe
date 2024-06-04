@@ -2,7 +2,6 @@ import { useLiveCoinUniqueHoldersFromBE } from "@/hooks/live/useLiveCoinUniqueHo
 import { useBoundPool } from "@/hooks/presale/useBoundPool";
 import { usePresaleCoinUniqueHoldersFromBE } from "@/hooks/presale/usePresaleCoinUniqueHoldersFromBE";
 import { useSeedPool } from "@/hooks/presale/useSeedPool";
-import { useStakingPoolClient } from "@/hooks/staking/useStakingPoolClient";
 import { useStakingPoolFromApi } from "@/hooks/staking/useStakingPoolFromApi";
 import { useTickets } from "@/hooks/useTickets";
 import { CoinMetadata } from "@/types/coin";
@@ -70,10 +69,9 @@ export type PresaleCoinInfoProps = {
 
 export type UnstakeDialogProps = Omit<StakingPoolProps, "memeMint"> & {
   stakingPoolFromApi: ReturnType<typeof useStakingPoolFromApi>;
-  stakingPoolClient: ReturnType<typeof useStakingPoolClient>;
 };
 
-export type WithdrawFeesDialogProps = Omit<UnstakeDialogProps, "stakingPoolFromApi">;
+export type WithdrawFeesDialogProps = UnstakeDialogProps;
 
 export type StakingPoolProps = {
   tokenSymbol: string;

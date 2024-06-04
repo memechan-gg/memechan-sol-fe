@@ -2,6 +2,7 @@ import { connection } from "@/common/solana";
 import { Button } from "@/components/button";
 import { DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/dialog";
 import { TransactionSentNotification } from "@/components/notifications/transaction-sent-notification";
+import { useStakingPoolClient } from "@/hooks/staking/useStakingPoolClient";
 import { WithdrawFeesDialogProps } from "@/views/coin/coin.types";
 import { MEMECHAN_MEME_TOKEN_DECIMALS, MEMECHAN_QUOTE_TOKEN_DECIMALS, sleep } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
@@ -15,7 +16,7 @@ export const WithdrawFeesPopUp = ({
   tokenSymbol,
   livePoolAddress,
   ticketsData: { tickets },
-  stakingPoolClient,
+  stakingPoolFromApi,
 }: WithdrawFeesDialogProps) => {
   const [memeAmount, setMemeAmount] = useState<string | null>(null);
   const [slerfAmount, setSlerfAmount] = useState<string | null>(null);
@@ -23,6 +24,7 @@ export const WithdrawFeesPopUp = ({
   const [isUpdateLoading, setIsUpdateLoading] = useState<boolean>(false);
 
   const { publicKey, sendTransaction } = useWallet();
+  const stakingPoolClient = useStakingPoolClient(stakingPoolFromApi?.address);
 
   const updateAvailableFeesToWithdraw = useCallback(async () => {
     if (!stakingPoolClient) return;
