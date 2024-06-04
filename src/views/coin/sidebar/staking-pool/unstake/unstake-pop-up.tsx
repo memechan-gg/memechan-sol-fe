@@ -3,6 +3,7 @@ import { Button } from "@/components/button";
 import { DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/dialog";
 import { TransactionSentNotification } from "@/components/notifications/transaction-sent-notification";
 import { useStakingPool } from "@/hooks/staking/useStakingPool";
+import { useStakingPoolClient } from "@/hooks/staking/useStakingPoolClient";
 import { UnstakeDialogProps } from "@/views/coin/coin.types";
 import { MEMECHAN_MEME_TOKEN_DECIMALS } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
@@ -17,7 +18,6 @@ export const UnstakePopUp = ({
   tokenSymbol,
   livePoolAddress,
   ticketsData: { tickets, stakedAmount },
-  stakingPoolClient,
   stakingPoolFromApi,
 }: UnstakeDialogProps) => {
   const [availableAmountToUnstake, setAvailableAmountToUnstake] = useState<string | null>(null);
@@ -25,6 +25,7 @@ export const UnstakePopUp = ({
 
   const { publicKey, sendTransaction } = useWallet();
   const stakingPool = useStakingPool(stakingPoolFromApi?.address);
+  const stakingPoolClient = useStakingPoolClient(stakingPoolFromApi?.address);
 
   const updateAvailableAmountToUnstake = useCallback(async () => {
     if (!stakingPoolClient || !stakingPool || !tickets) return;
