@@ -12,6 +12,8 @@ export const PresaleCoinInfo = ({ metadata, boundPool }: PresaleCoinInfoProps) =
         limit: "0",
       };
 
+  const poolIsMigratingToLive = boundPool?.locked || boundPool === null;
+
   return (
     <div className="flex flex-col gap-2">
       <div className="flex flex-row gap-2">
@@ -28,33 +30,35 @@ export const PresaleCoinInfo = ({ metadata, boundPool }: PresaleCoinInfoProps) =
         </div>
       </div>
       <SocialLinks socialLinks={socialLinks} />
-      <div className="flex w-full flex-col gap-1">
-        <div className="text-xs flex flex-row gap-2 font-bold text-regular">
-          Presale Progress
-          <div className="text-xs font-bold text-regular">{progress}%</div>
-        </div>
-        <div className="w-full bg-white h-4 rounded-lg">
-          <div
-            className="bg-regular h-full rounded-lg"
-            style={{
-              width: `${progress}%`,
-            }}
-          ></div>
-        </div>
-        <div className="text-regular mt-2">
-          <div className="flex flex-col gap-2">
-            <div>
-              When the pool reaches {Number(limit).toLocaleString()} <span className="!normal-case">SLERF</span>,
-              liquidity from the bonding curve will flow exclusively to Raydium Liquidity Pool and be held securely for
-              generating fees.
+      {!poolIsMigratingToLive && (
+        <div className="flex w-full flex-col gap-1">
+          <div className="text-xs flex flex-row gap-2 font-bold text-regular">
+            Presale Progress
+            <div className="text-xs font-bold text-regular">{progress}%</div>
+          </div>
+          <div className="w-full bg-white h-4 rounded-lg">
+            <div
+              className="bg-regular h-full rounded-lg"
+              style={{
+                width: `${progress}%`,
+              }}
+            ></div>
+          </div>
+          <div className="text-regular mt-2">
+            <div className="flex flex-col gap-2">
+              <div>
+                When the pool reaches {Number(limit).toLocaleString()} <span className="!normal-case">SLERF</span>,
+                liquidity from the bonding curve will flow exclusively to Raydium Liquidity Pool and be held securely
+                for generating fees.
+              </div>
+              <div>
+                Presently, there is {Number(slerfIn).toLocaleString()} <span className="!normal-case">SLERF</span>.
+              </div>
+              <div>Happy trading :)</div>
             </div>
-            <div>
-              Presently, there is {Number(slerfIn).toLocaleString()} <span className="!normal-case">SLERF</span>.
-            </div>
-            <div>Happy trading :)</div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

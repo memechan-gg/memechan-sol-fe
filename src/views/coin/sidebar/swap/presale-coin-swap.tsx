@@ -270,10 +270,11 @@ export const PresaleCoinSwap = ({
   ]);
 
   const swapButtonIsDiabled = isLoadingOutputAmount || isSwapping || outputAmount === null;
+  const poolIsMigratingToLive = boundPool?.locked || boundPool === null;
 
   return (
     <>
-      {(boundPool?.locked || boundPool === null) && (
+      {poolIsMigratingToLive && (
         <div className="absolute rounded-xl top-0 left-0 w-full h-full bg-regular bg-opacity-70 flex items-center justify-center">
           <div className="text-white text-center text-balance font-bold text-lg tracking-wide">
             Pool is currently migrating to the Live Phase. Please wait.
@@ -294,6 +295,7 @@ export const PresaleCoinSwap = ({
           tokenSymbol={tokenSymbol}
         />
         <input
+          disabled={poolIsMigratingToLive}
           className="w-full bg-white text-xs font-bold text-regular p-2 rounded-lg"
           value={inputAmount}
           onChange={(e) =>
