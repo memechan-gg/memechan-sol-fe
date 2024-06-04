@@ -1,11 +1,11 @@
-import { connection } from "@/common/solana";
+import { useConnection } from "@/context/ConnectionContext";
 import { getWalletTokenAccount } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
-import { PublicKey } from "@solana/web3.js";
+import { Connection, PublicKey } from "@solana/web3.js";
 import useSWR from "swr";
 import { TOKEN_ACCOUNTS_INTERVAL } from "./refresh-intervals";
 
-const fetchTokenAccounts = async (publicKey: PublicKey) => {
+const fetchTokenAccounts = async (publicKey: PublicKey, connection: Connection) => {
   try {
     const walletTokenAccounts = await getWalletTokenAccount(connection, publicKey);
 
@@ -17,9 +17,11 @@ const fetchTokenAccounts = async (publicKey: PublicKey) => {
 
 export function useTokenAccounts() {
   const { publicKey } = useWallet();
+  const { connection } = useConnection();
+
   const { data: tokenAccounts, mutate } = useSWR(
-    publicKey ? [`token-accounts`, publicKey] : null,
-    ([url, pubKey]) => fetchTokenAccounts(pubKey),
+    publicKey ? [`token-accounts`, publicKey, connection] : null,
+    ([url, pubKey, connection]) => fetchTokenAccounts(pubKey, connection),
     {
       refreshInterval: TOKEN_ACCOUNTS_INTERVAL,
       revalidateIfStale: false,

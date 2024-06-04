@@ -1,7 +1,7 @@
-import { connection } from "@/common/solana";
 import { Button } from "@/components/button";
 import { DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/dialog";
 import { TransactionSentNotification } from "@/components/notifications/transaction-sent-notification";
+import { useConnection } from "@/context/ConnectionContext";
 import { useStakingPool } from "@/hooks/staking/useStakingPool";
 import { useStakingPoolClient } from "@/hooks/staking/useStakingPoolClient";
 import { UnstakeDialogProps } from "@/views/coin/coin.types";
@@ -24,6 +24,7 @@ export const UnstakePopUp = ({
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const { publicKey, sendTransaction } = useWallet();
+  const { connection } = useConnection();
   const stakingPool = useStakingPool(stakingPoolFromApi?.address);
   const stakingPoolClient = useStakingPoolClient(stakingPoolFromApi?.address);
 
@@ -93,7 +94,7 @@ export const UnstakePopUp = ({
     } finally {
       setIsLoading(false);
     }
-  }, [sendTransaction, availableAmountToUnstake, livePoolAddress, publicKey, stakingPoolClient, tickets]);
+  }, [sendTransaction, availableAmountToUnstake, livePoolAddress, publicKey, stakingPoolClient, tickets, connection]);
 
   useEffect(() => {
     updateAvailableAmountToUnstake();

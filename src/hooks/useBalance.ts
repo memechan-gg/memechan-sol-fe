@@ -1,11 +1,11 @@
-import { connection } from "@/common/solana";
+import { useConnection } from "@/context/ConnectionContext";
 import { getTokenAccounts } from "@/utils";
 import { useWallet } from "@solana/wallet-adapter-react";
-import { PublicKey } from "@solana/web3.js";
+import { Connection, PublicKey } from "@solana/web3.js";
 import useSWR from "swr";
 import { BALANCE_INTERVAL } from "./refresh-intervals";
 
-const fetchCoinBalance = async (tokenAddress: string, ownerAddress: PublicKey) => {
+const fetchCoinBalance = async (tokenAddress: string, ownerAddress: PublicKey, connection: Connection) => {
   try {
     const tokenAccountsData = await getTokenAccounts({
       connection: connection,
@@ -21,10 +21,11 @@ const fetchCoinBalance = async (tokenAddress: string, ownerAddress: PublicKey) =
 
 export const useBalance = (coin: string) => {
   const { publicKey } = useWallet();
+  const { connection } = useConnection();
 
   const { data: tokenAccountsData, mutate } = useSWR(
-    publicKey ? [`balance-${publicKey.toString()}-${coin}`, coin, publicKey] : null,
-    ([url, tokenAddress, ownerAddress]) => fetchCoinBalance(tokenAddress, ownerAddress),
+    publicKey ? [`balance-${publicKey.toString()}-${coin}`, coin, publicKey, connection] : null,
+    ([url, tokenAddress, ownerAddress, connection]) => fetchCoinBalance(tokenAddress, ownerAddress, connection),
     { refreshInterval: BALANCE_INTERVAL, revalidateIfStale: false, revalidateOnFocus: false },
   );
 

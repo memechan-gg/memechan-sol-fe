@@ -1,6 +1,7 @@
-import { ChartApiInstance, connection } from "@/common/solana";
+import { ChartApiInstance } from "@/common/solana";
 import { Button } from "@/components/button";
 import { TransactionSentNotification } from "@/components/notifications/transaction-sent-notification";
+import { useConnection } from "@/context/ConnectionContext";
 import { useBoundPoolClient } from "@/hooks/presale/useBoundPoolClient";
 import { useBalance } from "@/hooks/useBalance";
 import { GetSwapOutputAmountParams, GetSwapTransactionParams } from "@/types/hooks";
@@ -43,6 +44,7 @@ export const PresaleCoinSwap = ({
   const [isSwapping, setIsSwapping] = useState<boolean>(false);
 
   const { publicKey, sendTransaction } = useWallet();
+  const { connection } = useConnection();
   const { balance: slerfBalance, refetch: refetchSlerfBalance } = useBalance(MEMECHAN_QUOTE_MINT.toString());
   const boundPoolClient = useBoundPoolClient(pool.address);
 
@@ -267,6 +269,7 @@ export const PresaleCoinSwap = ({
     refetchSlerfBalance,
     refreshAvailableTickets,
     pool.address,
+    connection,
   ]);
 
   const swapButtonIsDiabled = isLoadingOutputAmount || isSwapping || outputAmount === null;
