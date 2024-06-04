@@ -4,37 +4,31 @@ import useSWR from "swr";
 import { MAX_HOLDERS_COUNT } from "../config";
 import { LIVE_POOL_HOLDERS_INTERVAL } from "../refresh-intervals";
 
-const fetchLiveCoinUniqueHoldersFromBE = async (livePoolAddress: string, stakingPoolAddress: string) => {
+const fetchLiveCoinUniqueHoldersFromBE = async (memeMint: string, stakingPoolAddress: string) => {
   try {
     const [holders, stakingData] = await TokenApiHelper.getStakingPoolHoldersList(
-      new PublicKey(livePoolAddress),
+      new PublicKey(memeMint),
       new PublicKey(stakingPoolAddress),
     );
 
-    const fullHolders = holders.slice();
+    const slicedHolders = holders.slice(0, MAX_HOLDERS_COUNT);
 
-    const sortedHolders = holders.sort(({ tokenAmount: amountA }, { tokenAmount: amountB }) =>
-      amountB.minus(amountA).toNumber(),
-    );
-
-    const slicedHolders = sortedHolders.slice(0, MAX_HOLDERS_COUNT);
-
-    return { holders: slicedHolders, stakingData, fullHolders };
+    return { holders: slicedHolders, stakingData, fullHolders: holders };
   } catch (e) {
     console.error(
       `[fetchLiveCoinUniqueHoldersFromBE] Cannot fetch live pool holders from BE for staking pool ` +
-        `${stakingPoolAddress} and live pool ${livePoolAddress}:`,
+        `${stakingPoolAddress} and meme ${memeMint}`,
       e,
     );
   }
 };
 
-export const useLiveCoinUniqueHoldersFromBE = (livePoolAddress?: string, stakingPoolAddress?: string) => {
+export const useLiveCoinUniqueHoldersFromBE = (memeMint?: string, stakingPoolAddress?: string) => {
   const { data } = useSWR(
-    livePoolAddress && stakingPoolAddress
-      ? [`be-holders-${livePoolAddress}-${stakingPoolAddress}`, livePoolAddress, stakingPoolAddress]
+    memeMint && stakingPoolAddress
+      ? [`be-holders-${memeMint}-${stakingPoolAddress}`, memeMint, stakingPoolAddress]
       : null,
-    ([url, liveAddress, stakingAddress]) => fetchLiveCoinUniqueHoldersFromBE(liveAddress, stakingAddress),
+    ([url, meme, stakingAddress]) => fetchLiveCoinUniqueHoldersFromBE(meme, stakingAddress),
     { refreshInterval: LIVE_POOL_HOLDERS_INTERVAL, revalidateIfStale: false, revalidateOnFocus: false },
   );
 

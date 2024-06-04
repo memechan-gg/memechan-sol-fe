@@ -19,7 +19,7 @@ export function LiveCoin({ coinMetadata, livePoolData }: { coinMetadata: CoinMet
   const priceData = useLiveMemePrice(livePoolData.id);
   const seedPoolData = useSeedPool(coinMetadata.address);
   const stakingPoolFromApi = useStakingPoolFromApi(coinMetadata.address);
-  const uniqueHoldersData = useLiveCoinUniqueHoldersFromBE(livePoolData.id, stakingPoolFromApi?.address);
+  const uniqueHoldersData = useLiveCoinUniqueHoldersFromBE(coinMetadata.address, stakingPoolFromApi?.address);
 
   // Initialize state with 'birdeye' as the default
   const [selectedChart, setSelectedChart] = useState<"birdeye" | "dexscreener">("dexscreener");
