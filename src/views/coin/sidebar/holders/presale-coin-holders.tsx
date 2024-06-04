@@ -1,20 +1,35 @@
-import { usePresaleCoinUniqueHolders } from "@/hooks/presale/usePresaleCoinUniqueHolders";
-import { MAX_TICKET_TOKENS, MEMECHAN_MEME_TOKEN_DECIMALS } from "@avernikoz/memechan-sol-sdk";
-import BigNumber from "bignumber.js";
+import { useWallet } from "@solana/wallet-adapter-react";
 import { HoldersProps } from "../../coin.types";
-import { getBondingCurvePercentage } from "./utils";
+import { getBondingCurvePercentage, getSlicedAddress } from "./utils";
 
-export const PresaleCoinHolders = ({ poolAddress, coinMetadata }: HoldersProps) => {
-  const uniqueHolders = usePresaleCoinUniqueHolders(poolAddress);
+export const PresaleCoinHolders = ({
+  poolAddress,
+  coinMetadata,
+  uniqueHoldersData: { holders, map },
+}: HoldersProps) => {
+  const { publicKey } = useWallet();
 
-  const bondingCurveSlicedAddress = poolAddress.slice(0, 6) + "..." + poolAddress.slice(-4);
-  const bondingCurvePercentage = uniqueHolders ? getBondingCurvePercentage(uniqueHolders) : null;
+  const bondingCurveSlicedAddress = getSlicedAddress(poolAddress);
+  const bondingCurvePercentage = map ? getBondingCurvePercentage(map) : null;
+
+  const userHoldings = holders?.find(({ address }) => publicKey?.toString() === address);
+  const userPercentage = userHoldings?.tokenAmountInPercentage.toFixed(2);
+  const userSlicedAddress = publicKey ? getSlicedAddress(publicKey) : null;
+  const userIsDev = coinMetadata.creator === publicKey?.toString();
 
   return (
     <div className="flex flex-col gap-1">
       <div className="text-xs font-bold text-regular">Holders</div>
       <div className="flex flex-col gap-1">
-        {uniqueHolders && (
+        {userHoldings && (
+          <div className="flex justify-between flex-row gap-2 text-xs font-bold text-regular">
+            <div>
+              <span className="font-normal">{userSlicedAddress}</span> (me) {userIsDev ? "(dev)" : ""}
+            </div>
+            <div>{userPercentage}%</div>
+          </div>
+        )}
+        {holders && (
           <div key="bonding-curve" className="flex justify-between flex-row gap-2 text-xs font-bold text-regular">
             <div>
               <span className="font-normal">{bondingCurveSlicedAddress}</span> (bonding curve)
@@ -22,27 +37,27 @@ export const PresaleCoinHolders = ({ poolAddress, coinMetadata }: HoldersProps) 
             <div>{bondingCurvePercentage}%</div>
           </div>
         )}
-        {uniqueHolders &&
-          uniqueHolders.size > 0 &&
-          Array.from(uniqueHolders.entries()).map(([holder, tickets]) => {
-            const ticketsMemeAmount = tickets
-              .reduce((sum, ticket) => sum.plus(ticket.amount.toString()), new BigNumber(0))
-              .div(10 ** MEMECHAN_MEME_TOKEN_DECIMALS);
+        {holders &&
+          holders.length > 0 &&
+          holders.map(({ address, tokenAmountInPercentage }) => {
+            const holderIsUser = publicKey?.toString() === address;
 
-            const percentage = ticketsMemeAmount.div(MAX_TICKET_TOKENS).multipliedBy(100).toFixed(2);
-            const address = holder.slice(0, 6) + "..." + holder.slice(-4);
-            const holderIsDev = coinMetadata.creator === holder;
+            if (holderIsUser) return;
+
+            const percentage = tokenAmountInPercentage.toFixed(2);
+            const slicedAddress = getSlicedAddress(address);
+            const holderIsDev = coinMetadata.creator === address;
 
             return (
-              <div key={address} className="flex justify-between flex-row gap-2 text-xs font-bold text-regular">
+              <div key={slicedAddress} className="flex justify-between flex-row gap-2 text-xs font-bold text-regular">
                 <div>
-                  <span className="font-normal">{address}</span> {holderIsDev ? "(dev)" : ""}
+                  <span className="font-normal">{slicedAddress}</span> {holderIsDev ? "(dev)" : ""}
                 </div>
                 <div>{percentage}%</div>
               </div>
             );
           })}
-        {!uniqueHolders && <div className="font-normal text-regular">Loading...</div>}
+        {!holders && <div className="font-normal text-regular">Loading...</div>}
       </div>
     </div>
   );

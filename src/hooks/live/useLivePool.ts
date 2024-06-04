@@ -16,8 +16,10 @@ const fetchLivePool = async (memeMint: string) => {
 };
 
 export function useLivePool(memeMint?: string) {
-  const { data: livePool, isLoading } = useSWR(memeMint ? [`live-pool-${memeMint}`, memeMint] : null, ([url, meme]) =>
-    fetchLivePool(meme),
+  const { data: livePool, isLoading } = useSWR(
+    memeMint ? [`live-pool-${memeMint}`, memeMint] : null,
+    ([url, meme]) => fetchLivePool(meme),
+    { revalidateIfStale: false, revalidateOnFocus: false },
   );
 
   return { livePool, isLoading };

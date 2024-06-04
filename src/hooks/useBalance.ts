@@ -1,13 +1,14 @@
-import { MemechanClientInstance } from "@/common/solana";
+import { connection } from "@/common/solana";
 import { getTokenAccounts } from "@/utils";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import useSWR from "swr";
+import { BALANCE_INTERVAL } from "./refresh-intervals";
 
 const fetchCoinBalance = async (tokenAddress: string, ownerAddress: PublicKey) => {
   try {
     const tokenAccountsData = await getTokenAccounts({
-      connection: MemechanClientInstance.connection,
+      connection: connection,
       ownerAddress: ownerAddress,
       tokenAddress: new PublicKey(tokenAddress),
     });
@@ -24,7 +25,7 @@ export const useBalance = (coin: string) => {
   const { data: tokenAccountsData, mutate } = useSWR(
     publicKey ? [`balance-${publicKey.toString()}-${coin}`, coin, publicKey] : null,
     ([url, tokenAddress, ownerAddress]) => fetchCoinBalance(tokenAddress, ownerAddress),
-    { refreshInterval: 5000 },
+    { refreshInterval: BALANCE_INTERVAL, revalidateIfStale: false, revalidateOnFocus: false },
   );
 
   return {

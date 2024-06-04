@@ -1,9 +1,16 @@
-import { useBoundPoolProgress } from "@/hooks/presale/useBoundPoolProgress";
 import { PresaleCoinInfoProps } from "../../coin.types";
+import { SocialLinks } from "./social-links/social-links";
+import { getBoundPoolProgress } from "./utils";
 
-export const PresaleCoinInfo = ({ metadata, poolAddress }: PresaleCoinInfoProps) => {
+export const PresaleCoinInfo = ({ metadata, boundPool }: PresaleCoinInfoProps) => {
   const { name, symbol, description, image, socialLinks } = metadata;
-  const { progress, slerfIn, limit } = useBoundPoolProgress(poolAddress);
+  const { progress, slerfIn, limit } = boundPool
+    ? getBoundPoolProgress(boundPool)
+    : {
+        progress: "0",
+        slerfIn: "0",
+        limit: "0",
+      };
 
   return (
     <div className="flex flex-col gap-2">
@@ -20,34 +27,7 @@ export const PresaleCoinInfo = ({ metadata, poolAddress }: PresaleCoinInfoProps)
           <div className="text-xs text-regular">{description}</div>
         </div>
       </div>
-      {socialLinks && (
-        <div className="flex flex-wrap flex-row gap-4 gap-x-6 my-3">
-          {socialLinks.discord && (
-            <div className="flex flex-col gap-1">
-              <div className="text-xs font-bold text-regular">Discord</div>
-              <div className="text-xs font-normal text-regular">{socialLinks.discord}</div>
-            </div>
-          )}
-          {socialLinks.twitter && (
-            <div className="flex flex-col gap-1">
-              <div className="text-xs font-bold text-regular">Twitter</div>
-              <div className="text-xs font-normal text-regular">{socialLinks.twitter}</div>
-            </div>
-          )}
-          {socialLinks.telegram && (
-            <div className="flex flex-col gap-1">
-              <div className="text-xs font-bold text-regular">Telegram</div>
-              <div className="text-xs font-normal text-regular">{socialLinks.telegram}</div>
-            </div>
-          )}
-          {socialLinks.website && (
-            <div className="flex flex-col gap-1">
-              <div className="text-xs font-bold text-regular">Website</div>
-              <div className="text-xs font-normal text-regular">{socialLinks.website}</div>
-            </div>
-          )}
-        </div>
-      )}
+      <SocialLinks socialLinks={socialLinks} />
       <div className="flex w-full flex-col gap-1">
         <div className="text-xs flex flex-row gap-2 font-bold text-regular">
           Presale Progress
@@ -64,11 +44,12 @@ export const PresaleCoinInfo = ({ metadata, poolAddress }: PresaleCoinInfoProps)
         <div className="text-regular mt-2">
           <div className="flex flex-col gap-2">
             <div>
-              When the pool reaches {limit} <span className="!normal-case">SLERF</span>, liquidity from the bonding
-              curve will flow exclusively to Raydium Liquidity Pool and be held securely for generating fees.
+              When the pool reaches {Number(limit).toLocaleString()} <span className="!normal-case">SLERF</span>,
+              liquidity from the bonding curve will flow exclusively to Raydium Liquidity Pool and be held securely for
+              generating fees.
             </div>
             <div>
-              Presently, there is {slerfIn} <span className="!normal-case">SLERF</span>.
+              Presently, there is {Number(slerfIn).toLocaleString()} <span className="!normal-case">SLERF</span>.
             </div>
             <div>Happy trading :)</div>
           </div>

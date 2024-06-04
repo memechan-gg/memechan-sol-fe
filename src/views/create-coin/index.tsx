@@ -1,13 +1,22 @@
-import { MemechanClientInstance } from "@/common/solana";
+import { connection } from "@/common/solana";
+import { TransactionSentNotification } from "@/components/notifications/transaction-sent-notification";
 import { ThreadBoard } from "@/components/thread";
+import { useBalance } from "@/hooks/useBalance";
 import { useTargetConfig } from "@/hooks/useTargetConfig";
-import { BoundPoolClient, MEMECHAN_QUOTE_TOKEN, sleep } from "@avernikoz/memechan-sol-sdk";
+import {
+  MAX_DESCRIPTION_LENGTH,
+  MAX_NAME_LENGTH,
+  MAX_SYMBOL_LENGTH,
+  MEMECHAN_QUOTE_MINT,
+  sleep,
+} from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import BigNumber from "bignumber.js";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import Skeleton from "react-loading-skeleton";
 import { CreateCoinState, ICreateForm } from "./create-coin.types";
 import {
   createCoinOnBE,
@@ -30,6 +39,7 @@ export function CreateCoin() {
   const router = useRouter();
   const [inputAmount, setInputAmount] = useState<string>("0");
   const { slerfThresholdAmount } = useTargetConfig();
+  const { balance: slerfBalance } = useBalance(MEMECHAN_QUOTE_MINT.toString());
 
   const onSubmit = handleSubmit(async (data) => {
     try {
@@ -42,23 +52,31 @@ export function CreateCoin() {
       validateCoinParamsWithoutImage(data);
 
       // Input amount validation
-      const amountBigNumber = new BigNumber(inputAmount);
-      const thresholdWithFees = slerfThresholdAmount ? new BigNumber(slerfThresholdAmount).multipliedBy(1.01) : null;
-
-      if (amountBigNumber.isNaN()) {
-        toast.error("Input amount must be a valid number");
-        return;
+      let inputAmountIsSpecified = false;
+      if (inputAmount !== "" && parseFloat(inputAmount) !== 0) {
+        inputAmountIsSpecified = true;
       }
 
-      if (amountBigNumber.lt(0)) {
-        toast.error("Input amount must be greater than zero");
-        return;
+      if (inputAmountIsSpecified) {
+        if (!slerfBalance) return toast.error("You need to have SLERF for initial buy");
+
+        const amountBigNumber = new BigNumber(inputAmount);
+        const thresholdWithFees = slerfThresholdAmount ? new BigNumber(slerfThresholdAmount).multipliedBy(1.01) : null;
+
+        if (amountBigNumber.isNaN()) return toast.error("Input amount must be a valid number");
+
+        if (amountBigNumber.lt(0)) return toast.error("Input amount must be greater than zero");
+
+        if (amountBigNumber.gt(slerfBalance)) return toast.error("Insufficient balance");
+
+        if (thresholdWithFees && amountBigNumber.gt(thresholdWithFees))
+          return toast.error(
+            `The maximum SLERF amount to invest in bonding pool is ${thresholdWithFees.toPrecision()} SLERF`,
+          );
       }
 
-      if (thresholdWithFees && amountBigNumber.gt(thresholdWithFees)) {
-        toast.error(`The maximum SLERF amount to invest in bonding pool is ${thresholdWithFees.toPrecision()} SLERF`);
-        return;
-      }
+      console.log("inputAmountIsSpecified:", inputAmountIsSpecified);
+      console.log("inputAmount:", inputAmount);
 
       setState("sign");
       const walletAddress = publicKey.toBase58();
@@ -77,57 +95,67 @@ export function CreateCoin() {
         data,
         ipfsUrl,
         publicKey,
-        inputAmount: amountBigNumber.eq(0) ? undefined : amountBigNumber.toString(),
+        inputAmount: inputAmountIsSpecified ? inputAmount : undefined,
       });
 
       const signers = [memeMintKeypair];
       if (memeTicketKeypair) signers.push(memeTicketKeypair);
 
-      toast("We are really close...");
-
       setState("create_bonding_and_meme");
       // Pool and meme creation
-      const signature = await sendTransaction(transaction, MemechanClientInstance.connection, {
+      const signature = await sendTransaction(transaction, connection, {
         signers,
         maxRetries: 3,
         skipPreflight: true,
       });
       console.log("signature:", signature);
+
+      toast(() => <TransactionSentNotification signature={signature} />);
       await sleep(3000);
 
       toast("A few steps left...");
 
-      // Check pool creation succeeded
-      const { blockhash, lastValidBlockHeight } =
-        await MemechanClientInstance.connection.getLatestBlockhash("confirmed");
-      const txResult = await MemechanClientInstance.connection.confirmTransaction(
-        {
-          signature,
-          blockhash: blockhash,
-          lastValidBlockHeight: lastValidBlockHeight,
-        },
-        "confirmed",
-      );
-      console.log("txResult:", txResult);
+      // Retry policy to check that pool creation succeeded
+      let creationCheckAttempt = 0;
+      let maxCreationCheckAttempsCount = 5;
+      let confirmationSucceeded = false;
+      do {
+        try {
+          const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash("confirmed");
+          const txResult = await connection.confirmTransaction(
+            {
+              signature,
+              blockhash: blockhash,
+              lastValidBlockHeight: lastValidBlockHeight,
+            },
+            "confirmed",
+          );
+          console.log("txResult:", txResult);
 
-      if (txResult.value.err) {
-        console.error("[Create Coin Submit] pool and meme creation failed:", JSON.stringify(txResult, null, 2));
+          if (txResult.value.err) {
+            console.error("[Create Coin Submit] Pool and meme creation failed:", JSON.stringify(txResult, null, 2));
+            toast.error("Failed to create pool and meme coin. Please, try again");
+            setState("idle");
+            confirmationSucceeded = true;
+            return;
+          }
+
+          confirmationSucceeded = true;
+        } catch (e) {
+          console.error("[Create Coin Submit] Error while trying to check the creation status:", e);
+          creationCheckAttempt++;
+          await sleep(4000);
+        }
+      } while (!confirmationSucceeded && creationCheckAttempt < maxCreationCheckAttempsCount);
+
+      if (!confirmationSucceeded) {
+        console.error("[Create Coin Submit] Pool and meme creation failed after all the retries.");
         toast.error("Failed to create pool and meme coin. Please, try again");
+        setState("idle");
         return;
       }
 
-      const createdPoolId = BoundPoolClient.findBoundPoolPda(
-        memeMintKeypair.publicKey,
-        MEMECHAN_QUOTE_TOKEN.mint,
-        MemechanClientInstance.memechanProgram.programId,
-      );
-      console.log("createdPoolId: ", createdPoolId.toString());
-      const boundPool = await BoundPoolClient.fromPoolCreationTransaction({
-        client: MemechanClientInstance,
-        poolCreationSignature: signature,
-      });
-      console.log("boundPool:", boundPool);
-      console.log("memeMint:", boundPool.memeTokenMint.toString());
+      await sleep(5000);
 
       // Retry policy for coin creation on the BE
       let attempt = 0;
@@ -154,7 +182,7 @@ export function CreateCoin() {
 
       await sleep(3000);
 
-      router.push(`/coin/${boundPool.memeTokenMint.toString()}`);
+      router.push(`/coin/${memeMintKeypair.publicKey.toString()}`);
     } catch (e) {
       console.error("[Create Coin Submit] Error occured:", e);
       setState("idle");
@@ -176,6 +204,7 @@ export function CreateCoin() {
                     <input
                       {...register("name", { required: true })}
                       className="border w-[200px] border-regular rounded-lg p-1"
+                      maxLength={MAX_NAME_LENGTH}
                     />
                   </div>
                   {errors.name && <p className="text-xs text-red-500">Name is required</p>}
@@ -186,6 +215,7 @@ export function CreateCoin() {
                     <input
                       {...register("symbol", { required: true })}
                       className="border w-[200px] border-regular rounded-lg p-1"
+                      maxLength={MAX_SYMBOL_LENGTH}
                     />
                   </div>
                   {errors.symbol && <p className="text-xs text-red-500">Synbol is required</p>}
@@ -212,6 +242,7 @@ export function CreateCoin() {
                   <textarea
                     {...register("description", { required: true })}
                     className="border w-[200px] border-regular rounded-lg p-1"
+                    maxLength={MAX_DESCRIPTION_LENGTH}
                   />
                 </div>
                 {errors.description && <p className="text-xs text-red-500">Description is required</p>}
@@ -259,10 +290,17 @@ export function CreateCoin() {
                       type="number"
                       min="0"
                       placeholder="0"
+                      step={10 ** -9}
                     />
                   </div>
+                  <span className="text-regular">
+                    SLERF available: {publicKey ? slerfBalance ?? <Skeleton width={40} /> : 0}
+                  </span>
                 </div>
               </div>
+            </div>
+            <div className="text-regular">
+              <i>Creation cost: ~0.02 SOL</i>
             </div>
             <div className="flex flex-col gap-1">
               <div>

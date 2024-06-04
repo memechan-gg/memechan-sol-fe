@@ -1,6 +1,7 @@
 import { ThreadBoard } from "@/components/thread";
 import { useEffect, useState } from "react";
 import { CoinItem } from "./coin-item";
+import { BE_URL } from "@avernikoz/memechan-sol-sdk";
 
 type ProfileProps = {
   address: string;
@@ -25,7 +26,7 @@ export function Profile({ address }: ProfileProps) {
       setIsLoading(true);
       try {
         const response = await fetch(
-          `https://waqxcrbt93.execute-api.us-east-1.amazonaws.com/prod/sol/holders?walletAddress=${address}&sortBy=tokenAmount&direction=asc`,
+          `${BE_URL}/sol/holders?walletAddress=${address}&sortBy=tokenAmount&direction=asc`,
         );
         if (!response.ok) {
           throw new Error(`Error fetching tokens: ${response.statusText}`);
@@ -37,7 +38,7 @@ export function Profile({ address }: ProfileProps) {
           const tokenPromises = data.result.map(async (token: any) => {
             try {
               let presaleResponse = await fetch(
-                `https://waqxcrbt93.execute-api.us-east-1.amazonaws.com/prod/sol/presale/token?tokenAddress=${token.tokenAddress}`,
+                `${BE_URL}/sol/presale/token?tokenAddress=${token.tokenAddress}`,
               );
               let presaleData = await presaleResponse.json();
               console.log("Presale data for token:", token.tokenAddress, presaleData);
@@ -45,7 +46,7 @@ export function Profile({ address }: ProfileProps) {
               // Check if presaleData is an empty object
               if (Object.keys(presaleData).length === 0) {
                 presaleResponse = await fetch(
-                  `https://waqxcrbt93.execute-api.us-east-1.amazonaws.com/prod/sol/live/token?tokenAddress=${token.tokenAddress}`,
+                  `${BE_URL}/sol/live/token?tokenAddress=${token.tokenAddress}`,
                 );
                 presaleData = await presaleResponse.json();
                 console.log("Live data for token:", token.tokenAddress, presaleData);

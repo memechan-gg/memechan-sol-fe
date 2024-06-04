@@ -12,8 +12,10 @@ const fetchStakingPoolFromApi = async (memeMint: string) => {
 };
 
 export function useStakingPoolFromApi(memeMint: string) {
-  const { data } = useSWR([`staking-pool-from-api-${memeMint}`, memeMint], ([url, meme]) =>
-    fetchStakingPoolFromApi(meme),
+  const { data } = useSWR(
+    [`staking-pool-from-api-${memeMint}`, memeMint],
+    ([url, meme]) => fetchStakingPoolFromApi(meme),
+    { revalidateIfStale: false, revalidateOnFocus: false },
   );
 
   return data;

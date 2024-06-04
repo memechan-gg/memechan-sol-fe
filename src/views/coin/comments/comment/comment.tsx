@@ -6,6 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { CoinThreadWithParsedMessage } from "../../coin.types";
 import { PostReplyDialog } from "../../post-reply/dialog";
+import { getSlicedAddress } from "../../sidebar/holders/utils";
 import { EmptyLikeIconSvgComponent } from "../likes/empty-like-icon";
 import { FullLikeIconSvgComponent } from "../likes/full-like-icon";
 import classes from "./comment.module.css";
@@ -16,7 +17,7 @@ export function Comment({
     creator,
     creationDate,
     id,
-    message: { message, replyTo },
+    message: { message, replyTo, image },
     likeCounter,
   },
   updateThreads,
@@ -77,6 +78,10 @@ export function Comment({
     openPostReplyDialog();
   };
 
+  const isUsersComment = publicKey?.toString() === creator;
+  const devsComment = coinCreator === creator;
+  const slicedAddress = getSlicedAddress(creator);
+
   return (
     <>
       <div id={id} className="flex flex-col gap-3">
@@ -84,7 +89,7 @@ export function Comment({
           <div className="flex flex-col gap-2">
             <div className="text-xs flex flex-row gap-1.5 font-bold text-regular">
               <Link className="hover:underline" href={`/profile/${creator}`}>
-                {creator.substring(0, 6)} {creator === coinCreator ? <span className="font-bold"> (dev)</span> : ""}
+                {slicedAddress} {isUsersComment ? "(me)" : ""} {devsComment ? "(dev)" : ""}
               </Link>
               <div className="text-xs font-medium text-regular">{new Date(creationDate).toLocaleString()}</div>
               <div className="text-xs font-medium flex flex-row gap-1 cursor-pointer" onClick={handleLikeEvent}>
@@ -104,6 +109,15 @@ export function Comment({
                 </div>
               </div>
             </div>
+            {image && (
+              <div>
+                <img
+                  src={image}
+                  alt="picture"
+                  className="mt-1 w-[150px] max-h-[250px] object-cover object-center border border-regular"
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>

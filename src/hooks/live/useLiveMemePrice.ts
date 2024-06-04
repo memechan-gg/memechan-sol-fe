@@ -1,7 +1,7 @@
 import { MemechanClientInstance } from "@/common/solana";
-import { BoundPoolClient, LivePoolClient } from "@avernikoz/memechan-sol-sdk";
-import { useEffect, useState } from "react";
+import { LivePoolClient } from "@avernikoz/memechan-sol-sdk";
 import useSWR from "swr";
+import { LIVE_POOL_PRICE_INTERVAL } from "../refresh-intervals";
 import { useSlerfPrice } from "../useSlerfPrice";
 
 const fetchLiveMemePrice = async (slerfPriceInUsd: number, livePoolAddress: string) => {
@@ -18,25 +18,14 @@ const fetchLiveMemePrice = async (slerfPriceInUsd: number, livePoolAddress: stri
   }
 };
 
-export function useLiveMemePriceAndMCap(raydiumPoolAddress: string) {
+export function useLiveMemePrice(raydiumPoolAddress: string) {
   const slerfPrice = useSlerfPrice();
+
   const { data: memePrice } = useSWR(
     slerfPrice ? [`price-${raydiumPoolAddress}`, slerfPrice, raydiumPoolAddress] : null,
     ([url, price, poolAddress]) => fetchLiveMemePrice(price, poolAddress),
-    { refreshInterval: 5000 },
+    { refreshInterval: LIVE_POOL_PRICE_INTERVAL, revalidateIfStale: false, revalidateOnFocus: false },
   );
 
-  const [priceData, setPriceData] = useState<{ priceInQuote: string; priceInUsd: string } | null>(null);
-  const [marketCap, setMarketCap] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (memePrice) {
-      setPriceData(memePrice);
-
-      const marketCap = (+BoundPoolClient.getMemeMarketCap({ memePriceInUsd: memePrice.priceInUsd })).toFixed(2);
-      setMarketCap(marketCap);
-    }
-  }, [memePrice]);
-
-  return { priceData, marketCap };
+  return memePrice;
 }
