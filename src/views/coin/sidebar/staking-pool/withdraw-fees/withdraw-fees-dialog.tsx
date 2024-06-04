@@ -1,20 +1,20 @@
 import { Button } from "@/components/button";
 import { Dialog, DialogTrigger } from "@/components/dialog";
 import { useState } from "react";
-import { UnstakeDialogProps } from "../../../coin.types";
-import { UnstakePopUp } from "./unstake-pop-up";
+import { WithdrawFeesDialogProps } from "../../../coin.types";
+import { WithdrawFeesPopUp } from "./withdraw-pop-up";
 
-export const UnstakeDialog = (props: UnstakeDialogProps) => {
+export const WithdrawFeesDialog = (props: WithdrawFeesDialogProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => setIsOpen(open)}>
       <DialogTrigger>
         <Button className="w-full bg-regular bg-opacity-80 hover:bg-opacity-50">
-          <div className="text-xs font-bold text-white">Unstake Token</div>
+          <div className="text-xs font-bold text-white">Withdraw Fees</div>
         </Button>
       </DialogTrigger>
-      {isOpen && <UnstakePopUp {...props} />}
+      {isOpen && <WithdrawFeesPopUp {...props} />}
     </Dialog>
   );
 };
