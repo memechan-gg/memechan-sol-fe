@@ -47,7 +47,7 @@ export const LiveCoinHolders = ({ coinMetadata, uniqueHoldersData }: LiveCoinHol
             );
           })}
         {uniqueHoldersData && uniqueHoldersData.holders.length === 0 && (
-          <div className="font-normal">No holders yet.</div>
+          <div className="font-normal text-regular">No holders yet.</div>
         )}
         {!uniqueHoldersData && <div className="font-normal text-regular">Loading...</div>}
       </div>

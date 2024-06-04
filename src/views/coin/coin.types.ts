@@ -1,6 +1,6 @@
-import { useLiveCoinUniqueHolders } from "@/hooks/live/useLiveCoinUniqueHolders";
+import { useLiveCoinUniqueHoldersFromBE } from "@/hooks/live/useLiveCoinUniqueHoldersFromBE";
 import { useBoundPool } from "@/hooks/presale/useBoundPool";
-import { usePresaleCoinUniqueHolders } from "@/hooks/presale/usePresaleCoinUniqueHolders";
+import { usePresaleCoinUniqueHoldersFromBE } from "@/hooks/presale/usePresaleCoinUniqueHoldersFromBE";
 import { useSeedPool } from "@/hooks/presale/useSeedPool";
 import { useStakingPoolClient } from "@/hooks/staking/useStakingPoolClient";
 import { useStakingPoolFromApi } from "@/hooks/staking/useStakingPoolFromApi";
@@ -35,26 +35,27 @@ export type SwapButtonProps = {
 export type PresaleCoinSidebarProps = {
   coinMetadata: CoinMetadata;
   pool: SeedPoolData;
-  uniqueHoldersData: ReturnType<typeof usePresaleCoinUniqueHolders>;
+  uniqueHoldersData: ReturnType<typeof usePresaleCoinUniqueHoldersFromBE>;
   ticketsData: ReturnType<typeof useTickets>;
 };
 
 export type LiveCoinSidebarProps = {
   pool: LivePoolData;
   coinMetadata: CoinMetadata;
-  uniqueHoldersData: ReturnType<typeof useLiveCoinUniqueHolders>;
+  uniqueHoldersData: ReturnType<typeof useLiveCoinUniqueHoldersFromBE>;
   seedPoolData: ReturnType<typeof useSeedPool>;
+  stakingPoolFromApi: ReturnType<typeof useStakingPoolFromApi>;
 };
 
 export type HoldersProps = {
   poolAddress: string;
   coinMetadata: CoinMetadata;
-  uniqueHoldersData: ReturnType<typeof usePresaleCoinUniqueHolders>;
+  uniqueHoldersData: ReturnType<typeof usePresaleCoinUniqueHoldersFromBE>;
 };
 
 export type LiveCoinHoldersProps = {
   coinMetadata: CoinMetadata;
-  uniqueHoldersData: ReturnType<typeof useLiveCoinUniqueHolders>;
+  uniqueHoldersData: ReturnType<typeof useLiveCoinUniqueHoldersFromBE>;
 };
 
 export type LiveCoinInfoProps = {
@@ -77,8 +78,8 @@ export type WithdrawFeesDialogProps = Omit<UnstakeDialogProps, "stakingPoolFromA
 export type StakingPoolProps = {
   tokenSymbol: string;
   livePoolAddress: string;
-  memeMint: string;
   ticketsData: ReturnType<typeof useTickets>;
+  stakingPoolFromApi: ReturnType<typeof useStakingPoolFromApi>;
 };
 
 export type CoinThread = {
