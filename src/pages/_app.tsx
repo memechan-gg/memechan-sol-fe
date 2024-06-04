@@ -4,6 +4,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 
 import { Layout } from "@/components/layout";
 import { SolanaProvider } from "@/components/provider/solana";
+import { ConnectionProvider } from "@/context/ConnectionContext";
 import { UserProvider } from "@/context/UserContext";
 import NextProgress from "next-progress";
 import type { AppProps } from "next/app";
@@ -49,9 +50,11 @@ export default function App({ Component, pageProps }: AppProps) {
       <NextProgress options={{ showSpinner: false }} />
       <SolanaProvider>
         <UserProvider>
-          <Layout>
-            <Component {...pageProps} />
-          </Layout>
+          <ConnectionProvider>
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </ConnectionProvider>
           <Toaster position="bottom-right" />
         </UserProvider>
       </SolanaProvider>

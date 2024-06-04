@@ -2,14 +2,12 @@ import {
   Auth,
   BE_URL,
   ChartApi,
-  MemechanClient,
-  NoWalletAdapter,
   PoolAPI,
   SocialAPI,
   TokenAPI,
   getRandomRpcEndpoint,
 } from "@avernikoz/memechan-sol-sdk";
-import { Connection, Keypair } from "@solana/web3.js";
+import { Keypair } from "@solana/web3.js";
 import { endpoints } from "./endpoints";
 
 export const DEFAULT_PROVIDER_URL = "https://rpc1.memechan.xyz";
@@ -25,18 +23,8 @@ export const SIMULATION_KEYPAIR = Keypair.fromSeed(
 );
 
 export const randomEndpoint = getRandomRpcEndpoint(endpoints);
-export const connection = new Connection(randomEndpoint, {
-  httpAgent: IS_TEST_ENV ? false : undefined,
-  commitment: "confirmed",
-});
 export const AuthInstance = new Auth(BE_URL);
 export const TokenApiInstance = new TokenAPI(BE_URL);
 export const PoolApiInstance = new PoolAPI(BE_URL);
 export const SocialApiInstance = new SocialAPI(BE_URL);
 export const ChartApiInstance = new ChartApi(BE_URL);
-export const MemechanClientInstance = new MemechanClient({
-  wallet: NoWalletAdapter,
-  heliusApiUrl: randomEndpoint,
-  simulationKeypair: SIMULATION_KEYPAIR,
-  connection,
-});
