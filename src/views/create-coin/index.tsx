@@ -8,6 +8,7 @@ import {
   MAX_NAME_LENGTH,
   MAX_SYMBOL_LENGTH,
   MEMECHAN_QUOTE_MINT,
+  MEMECHAN_QUOTE_TOKEN_DECIMALS,
   sleep,
 } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
@@ -39,7 +40,7 @@ export function CreateCoin() {
   const router = useRouter();
   const [inputAmount, setInputAmount] = useState<string>("0");
   const { slerfThresholdAmount } = useTargetConfig();
-  const { balance: slerfBalance } = useBalance(MEMECHAN_QUOTE_MINT.toString());
+  const { balance: slerfBalance } = useBalance(MEMECHAN_QUOTE_MINT.toString(), MEMECHAN_QUOTE_TOKEN_DECIMALS);
   const { connection, memechanClient } = useConnection();
 
   const onSubmit = handleSubmit(async (data) => {

@@ -45,7 +45,10 @@ export const PresaleCoinSwap = ({
 
   const { publicKey, sendTransaction } = useWallet();
   const { connection } = useConnection();
-  const { balance: slerfBalance, refetch: refetchSlerfBalance } = useBalance(MEMECHAN_QUOTE_MINT.toString());
+  const { balance: slerfBalance, refetch: refetchSlerfBalance } = useBalance(
+    MEMECHAN_QUOTE_MINT.toString(),
+    MEMECHAN_QUOTE_TOKEN_DECIMALS,
+  );
   const boundPoolClient = useBoundPoolClient(pool.address);
 
   const getSwapOutputAmount = useCallback(
