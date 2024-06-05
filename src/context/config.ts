@@ -5,9 +5,9 @@ import { ConnectionConfig } from "@solana/web3.js";
 export const CONNECTION_CONFIG: ConnectionConfig = {
   httpAgent: IS_TEST_ENV ? false : undefined,
   commitment: "confirmed",
-  httpHeaders: {
-    "rpc-time": Date.now().toString(),
-  },
+  // httpHeaders: {
+  //   "Rpc-time": Date.now().toString(),
+  // },
 };
 
 export const MEMECHAN_CLIENT_CONFIG = {
