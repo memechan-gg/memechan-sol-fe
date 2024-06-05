@@ -3,7 +3,6 @@ import { MemeTicketClient, MemechanClient } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import useSWR from "swr";
-import { TICKETS_INTERVAL } from "./refresh-intervals";
 import { getTicketsData } from "./utils";
 
 export const fetchTickets = async (poolAddress: string, user: PublicKey, client: MemechanClient) => {
@@ -15,14 +14,14 @@ export const fetchTickets = async (poolAddress: string, user: PublicKey, client:
   }
 };
 
-export function useTickets(poolAddress?: string) {
+export function useTickets(poolAddress?: string, options?: { refreshInterval: number }) {
   const { publicKey } = useWallet();
   const { memechanClient } = useConnection();
 
   const { data, mutate } = useSWR(
     publicKey && poolAddress ? [`tickets-${poolAddress}`, poolAddress, publicKey, memechanClient] : null,
     ([url, pool, user, client]) => fetchTickets(pool, user, client),
-    { refreshInterval: TICKETS_INTERVAL, revalidateIfStale: false, revalidateOnFocus: false },
+    { refreshInterval: options?.refreshInterval, revalidateIfStale: false, revalidateOnFocus: false },
   );
 
   const ticketsData = getTicketsData(data);
