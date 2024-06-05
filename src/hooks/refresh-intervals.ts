@@ -13,3 +13,4 @@ export const TICKETS_INTERVAL = 15_000;
 export const TOKEN_INTERVAL = 5_000;
 export const TOKEN_ACCOUNTS_INTERVAL = 15_000;
 export const HOLDERS_INTERVAL = 15_000;
+export const POOL_PRICE_INTERVAL = 15_000;
