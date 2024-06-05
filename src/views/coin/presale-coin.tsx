@@ -2,7 +2,6 @@ import { ChartIframe } from "@/components/chart-iframe";
 import { ThreadBoard } from "@/components/thread";
 import { usePresaleCoinUniqueHoldersFromBE } from "@/hooks/presale/usePresaleCoinUniqueHoldersFromBE";
 import { useMemePriceFromBE } from "@/hooks/useMemePriceFromBE";
-import { useTickets } from "@/hooks/useTickets";
 import { CoinMetadata } from "@/types/coin";
 import { SeedPoolData } from "@/types/pool";
 import { formatNumber } from "@/utils/formatNumber";
@@ -20,7 +19,6 @@ export function PresaleCoin({
 }) {
   const price = useMemePriceFromBE({ memeMint: coinMetadata.address, poolType: "seedPool" });
   const uniqueHoldersData = usePresaleCoinUniqueHoldersFromBE(coinMetadata.address);
-  const ticketsData = useTickets(seedPoolData.address);
 
   const CHARTS_API_HOSTNAME = process.env.NEXT_PUBLIC_CHARTS_API_HOSTNAME;
 
@@ -74,18 +72,12 @@ export function PresaleCoin({
                 coinMetadata={coinMetadata}
                 pool={seedPoolData}
                 uniqueHoldersData={uniqueHoldersData}
-                ticketsData={ticketsData}
               />
             </div>
             <CommentsPanel coinType={coinMetadata.address} coinCreator={coinMetadata.creator} />
           </div>
           <div className="lg:flex hidden w-1/3 flex-col gap-4">
-            <PresaleCoinSidebar
-              coinMetadata={coinMetadata}
-              pool={seedPoolData}
-              uniqueHoldersData={uniqueHoldersData}
-              ticketsData={ticketsData}
-            />
+            <PresaleCoinSidebar coinMetadata={coinMetadata} pool={seedPoolData} uniqueHoldersData={uniqueHoldersData} />
           </div>
         </div>
       </div>

@@ -17,7 +17,6 @@ export type PresaleCoinSwapProps = {
   tokenSymbol: string;
   pool: SeedPoolData;
   boundPool: ReturnType<typeof useBoundPool>;
-  ticketsData: ReturnType<typeof useTickets>;
 };
 
 export type LiveCoinSwapProps = {
@@ -35,7 +34,6 @@ export type PresaleCoinSidebarProps = {
   coinMetadata: CoinMetadata;
   pool: SeedPoolData;
   uniqueHoldersData: ReturnType<typeof usePresaleCoinUniqueHoldersFromBE>;
-  ticketsData: ReturnType<typeof useTickets>;
 };
 
 export type LiveCoinSidebarProps = {
