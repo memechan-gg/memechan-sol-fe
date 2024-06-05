@@ -1,6 +1,6 @@
-import { connection } from "@/common/solana";
 import { TransactionSentNotification } from "@/components/notifications/transaction-sent-notification";
 import { ThreadBoard } from "@/components/thread";
+import { useConnection } from "@/context/ConnectionContext";
 import { useBalance } from "@/hooks/useBalance";
 import { useTargetConfig } from "@/hooks/useTargetConfig";
 import {
@@ -40,6 +40,7 @@ export function CreateCoin() {
   const [inputAmount, setInputAmount] = useState<string>("0");
   const { slerfThresholdAmount } = useTargetConfig();
   const { balance: slerfBalance } = useBalance(MEMECHAN_QUOTE_MINT.toString());
+  const { connection, memechanClient } = useConnection();
 
   const onSubmit = handleSubmit(async (data) => {
     try {
@@ -96,6 +97,7 @@ export function CreateCoin() {
         ipfsUrl,
         publicKey,
         inputAmount: inputAmountIsSpecified ? inputAmount : undefined,
+        client: memechanClient,
       });
 
       const signers = [memeMintKeypair];

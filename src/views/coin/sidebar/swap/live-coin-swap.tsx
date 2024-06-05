@@ -1,6 +1,6 @@
-import { connection } from "@/common/solana";
 import { Button } from "@/components/button";
 import { TransactionSentNotification } from "@/components/notifications/transaction-sent-notification";
+import { useConnection } from "@/context/ConnectionContext";
 import { useBalance } from "@/hooks/useBalance";
 import { useTokenAccounts } from "@/hooks/useTokenAccounts";
 import { GetLiveSwapTransactionParams, GetSwapOutputAmountParams } from "@/types/hooks";
@@ -32,6 +32,7 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
   const [isSwapping, setIsSwapping] = useState<boolean>(false);
 
   const { publicKey, sendTransaction, signTransaction } = useWallet();
+  const { connection } = useConnection();
   const { balance: slerfBalance, refetch: refetchSlerfBalance } = useBalance(MEMECHAN_QUOTE_MINT.toString());
   const { balance: memeBalance, refetch: refetchMemeBalance } = useBalance(tokenAddress);
   const { tokenAccounts, refetch: refetchTokenAccounts } = useTokenAccounts();
@@ -43,18 +44,18 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
             poolAddress: address,
             amountIn: inputAmount,
             slippagePercentage,
-            connection: connection,
+            connection,
             memeCoinMint: tokenAddress,
           })
         : await LivePoolClient.getSellMemeOutput({
             poolAddress: address,
             amountIn: inputAmount,
             slippagePercentage,
-            connection: connection,
+            connection,
             memeCoinMint: tokenAddress,
           });
     },
-    [address, tokenAddress],
+    [address, tokenAddress, connection],
   );
 
   const getSwapTransactions = useCallback(
@@ -64,18 +65,18 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
       return slerfToMeme
         ? await LivePoolClient.getBuyMemeTransactionsByOutput({
             ...outputData,
-            connection: connection,
+            connection,
             payer: publicKey,
             walletTokenAccounts: tokenAccounts,
           })
         : await LivePoolClient.getSellMemeTransactionsByOutput({
             ...outputData,
-            connection: connection,
+            connection,
             payer: publicKey,
             walletTokenAccounts: tokenAccounts,
           });
     },
-    [publicKey, tokenAccounts],
+    [publicKey, tokenAccounts, connection],
   );
 
   useEffect(() => {
@@ -195,6 +196,7 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
     refetchMemeBalance,
     refetchTokenAccounts,
     signTransaction,
+    connection,
   ]);
 
   const swapButtonIsDiabled = isLoadingOutputAmount || isSwapping || outputData === null;

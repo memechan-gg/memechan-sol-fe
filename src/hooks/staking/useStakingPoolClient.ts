@@ -1,12 +1,12 @@
-import { MemechanClientInstance } from "@/common/solana";
-import { StakingPoolClient } from "@avernikoz/memechan-sol-sdk";
+import { useConnection } from "@/context/ConnectionContext";
+import { MemechanClient, StakingPoolClient } from "@avernikoz/memechan-sol-sdk";
 import { PublicKey } from "@solana/web3.js";
 import useSWR from "swr";
 
-const fetchStakingPoolClient = async (poolAddress: string) => {
+const fetchStakingPoolClient = async (poolAddress: string, client: MemechanClient) => {
   try {
     const stakingPool = await StakingPoolClient.fromStakingPoolId({
-      client: MemechanClientInstance,
+      client,
       poolAccountAddressId: new PublicKey(poolAddress),
     });
 
@@ -17,9 +17,11 @@ const fetchStakingPoolClient = async (poolAddress: string) => {
 };
 
 export function useStakingPoolClient(poolAddress?: string) {
+  const { memechanClient } = useConnection();
+
   const { data } = useSWR(
-    poolAddress ? [`staking-pool-client-${poolAddress}`, poolAddress] : null,
-    ([url, pool]) => fetchStakingPoolClient(pool),
+    poolAddress ? [`staking-pool-client-${poolAddress}`, poolAddress, memechanClient] : null,
+    ([url, pool, client]) => fetchStakingPoolClient(pool, client),
     { revalidateIfStale: false, revalidateOnFocus: false },
   );
 

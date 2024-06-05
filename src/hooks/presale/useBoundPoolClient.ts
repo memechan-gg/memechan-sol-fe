@@ -1,12 +1,12 @@
-import { MemechanClientInstance } from "@/common/solana";
-import { BoundPoolClient } from "@avernikoz/memechan-sol-sdk";
+import { useConnection } from "@/context/ConnectionContext";
+import { BoundPoolClient, MemechanClient } from "@avernikoz/memechan-sol-sdk";
 import { PublicKey } from "@solana/web3.js";
 import useSWR from "swr";
 
-const fetchBoundPoolClient = async (poolAddress: string) => {
+const fetchBoundPoolClient = async (poolAddress: string, client: MemechanClient) => {
   try {
     const boundPool = await BoundPoolClient.fromBoundPoolId({
-      client: MemechanClientInstance,
+      client,
       poolAccountAddressId: new PublicKey(poolAddress),
     });
 
@@ -17,9 +17,11 @@ const fetchBoundPoolClient = async (poolAddress: string) => {
 };
 
 export function useBoundPoolClient(poolAddress: string) {
+  const { memechanClient } = useConnection();
+
   const { data } = useSWR(
-    [`bound-pool-client-${poolAddress}`, poolAddress],
-    ([url, pool]) => fetchBoundPoolClient(pool),
+    [`bound-pool-client-${poolAddress}`, poolAddress, memechanClient],
+    ([url, pool, client]) => fetchBoundPoolClient(pool, client),
     { revalidateIfStale: false, revalidateOnFocus: false },
   );
 
