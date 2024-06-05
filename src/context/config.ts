@@ -6,7 +6,7 @@ export const CONNECTION_CONFIG: ConnectionConfig = {
   httpAgent: IS_TEST_ENV ? false : undefined,
   commitment: "confirmed",
   httpHeaders: {
-    rpcTime: Date.now().toString(),
+    "rpc-time": Date.now().toString(),
   },
 };
 
