@@ -2,13 +2,12 @@ import { Button } from "@/components/button";
 import { ChartIframe } from "@/components/chart-iframe";
 import { ThreadBoard } from "@/components/thread";
 import { useLiveCoinUniqueHoldersFromBE } from "@/hooks/live/useLiveCoinUniqueHoldersFromBE";
-import { useLiveMemePrice } from "@/hooks/live/useLiveMemePrice";
 import { useSeedPool } from "@/hooks/presale/useSeedPool";
 import { useStakingPoolFromApi } from "@/hooks/staking/useStakingPoolFromApi";
+import { useMemePriceFromBE } from "@/hooks/useMemePriceFromBE";
 import { CoinMetadata } from "@/types/coin";
 import { LivePoolData } from "@/types/pool";
 import { formatNumber } from "@/utils/formatNumber";
-import { normalizeNumber } from "@/utils/normalizeNumber";
 import Link from "next/link";
 import { useState } from "react";
 import Skeleton from "react-loading-skeleton";
@@ -16,7 +15,7 @@ import { CommentsPanel } from "./comments-panel";
 import { LiveCoinSidebar } from "./sidebar/live-coin-sidebar";
 
 export function LiveCoin({ coinMetadata, livePoolData }: { coinMetadata: CoinMetadata; livePoolData: LivePoolData }) {
-  const priceData = useLiveMemePrice(livePoolData.id);
+  const price = useMemePriceFromBE({ memeMint: coinMetadata.address, poolType: "livePool" });
   const seedPoolData = useSeedPool(coinMetadata.address);
   const stakingPoolFromApi = useStakingPoolFromApi(coinMetadata.address);
   const uniqueHoldersData = useLiveCoinUniqueHoldersFromBE(coinMetadata.address, stakingPoolFromApi?.address);
@@ -43,7 +42,7 @@ export function LiveCoin({ coinMetadata, livePoolData }: { coinMetadata: CoinMet
           <div className="flex flex-col gap-1">
             <div className="text-sm font-bold !normal-case text-regular">USD price</div>
             <div className="text-xs font-bold !normal-case text-regular">
-              {priceData ? `$${normalizeNumber(priceData.priceInUsd)}` : <Skeleton />}
+              {price ? `$${(+price).toFixed(10)}` : <Skeleton />}
             </div>
           </div>
           <div className="flex flex-col gap-1">

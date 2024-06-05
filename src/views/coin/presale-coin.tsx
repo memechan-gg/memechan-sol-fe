@@ -1,7 +1,7 @@
 import { ChartIframe } from "@/components/chart-iframe";
 import { ThreadBoard } from "@/components/thread";
 import { usePresaleCoinUniqueHoldersFromBE } from "@/hooks/presale/usePresaleCoinUniqueHoldersFromBE";
-import { usePresaleMemePrice } from "@/hooks/presale/usePresaleMemePrice";
+import { useMemePriceFromBE } from "@/hooks/useMemePriceFromBE";
 import { useTickets } from "@/hooks/useTickets";
 import { CoinMetadata } from "@/types/coin";
 import { SeedPoolData } from "@/types/pool";
@@ -18,7 +18,7 @@ export function PresaleCoin({
   coinMetadata: CoinMetadata;
   seedPoolData: SeedPoolData;
 }) {
-  const price = usePresaleMemePrice(seedPoolData.address);
+  const price = useMemePriceFromBE({ memeMint: coinMetadata.address, poolType: "seedPool" });
   const uniqueHoldersData = usePresaleCoinUniqueHoldersFromBE(coinMetadata.address);
   const ticketsData = useTickets(seedPoolData.address);
 
