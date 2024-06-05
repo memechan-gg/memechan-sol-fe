@@ -1,4 +1,5 @@
-import { IS_TEST_ENV, SIMULATION_KEYPAIR, randomEndpoint } from "@/common/solana";
+import { MEMECHAN_RPC_ENDPOINT } from "@/common/endpoints";
+import { IS_TEST_ENV, SIMULATION_KEYPAIR } from "@/common/solana";
 import { MemechanClient, NoWalletAdapter } from "@avernikoz/memechan-sol-sdk";
 import { Connection, ConnectionConfig } from "@solana/web3.js";
 import { Dispatch, FC, PropsWithChildren, SetStateAction, createContext, useContext, useEffect, useState } from "react";
@@ -10,7 +11,8 @@ export const CONNECTION_CONFIG: ConnectionConfig = {
 
 export const MEMECHAN_CLIENT_CONFIG = {
   wallet: NoWalletAdapter,
-  heliusApiUrl: randomEndpoint,
+  // TODO: This field should be removed later from MemechanClient constructor options
+  heliusApiUrl: MEMECHAN_RPC_ENDPOINT,
   simulationKeypair: SIMULATION_KEYPAIR,
 };
 
@@ -20,7 +22,11 @@ export type ConnectionContextType = {
   setRpcEndpoint: Dispatch<SetStateAction<string>>;
 };
 
-const initialConnection = new Connection(randomEndpoint, CONNECTION_CONFIG);
+const getInitialRpcEndpoint = () => {
+  return (typeof window !== "undefined" && localStorage.getItem("rpc-endpoint")) || MEMECHAN_RPC_ENDPOINT;
+};
+
+const initialConnection = new Connection(getInitialRpcEndpoint(), CONNECTION_CONFIG);
 
 const ConnectionContext = createContext<ConnectionContextType>({
   connection: initialConnection,
@@ -29,7 +35,7 @@ const ConnectionContext = createContext<ConnectionContextType>({
 });
 
 export const ConnectionProvider: FC<PropsWithChildren> = ({ children }) => {
-  const [rpcEndpoint, setRpcEndpoint] = useState(randomEndpoint);
+  const [rpcEndpoint, setRpcEndpoint] = useState(getInitialRpcEndpoint());
   const [connection, setConnection] = useState<Connection>(initialConnection);
   const [memechanClient, setMemechanClient] = useState<MemechanClient>(
     new MemechanClient({
@@ -43,6 +49,8 @@ export const ConnectionProvider: FC<PropsWithChildren> = ({ children }) => {
 
     setConnection(newConnection);
     setMemechanClient(new MemechanClient({ ...MEMECHAN_CLIENT_CONFIG, connection: newConnection }));
+
+    typeof window !== "undefined" && localStorage.setItem("rpc-endpoint", rpcEndpoint);
   }, [rpcEndpoint]);
 
   return (
