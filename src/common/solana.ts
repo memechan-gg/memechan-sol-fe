@@ -1,14 +1,5 @@
-import {
-  Auth,
-  BE_URL,
-  ChartApi,
-  PoolAPI,
-  SocialAPI,
-  TokenAPI,
-  getRandomRpcEndpoint,
-} from "@avernikoz/memechan-sol-sdk";
+import { Auth, BE_URL, ChartApi, PoolAPI, SocialAPI, TokenAPI } from "@avernikoz/memechan-sol-sdk";
 import { Keypair } from "@solana/web3.js";
-import { endpoints } from "./endpoints";
 
 export const DEFAULT_PROVIDER_URL = "https://rpc1.memechan.xyz";
 export const IS_TEST_ENV = false;
@@ -22,7 +13,6 @@ export const SIMULATION_KEYPAIR = Keypair.fromSeed(
   ),
 );
 
-export const randomEndpoint = getRandomRpcEndpoint(endpoints);
 export const AuthInstance = new Auth(BE_URL);
 export const TokenApiInstance = new TokenAPI(BE_URL);
 export const PoolApiInstance = new PoolAPI(BE_URL);
