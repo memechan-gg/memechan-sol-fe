@@ -1,21 +1,15 @@
+import { MEMECHAN_RPC_ENDPOINT } from "@/config/config";
 import { ConnectionProvider, WalletProvider } from "@solana/wallet-adapter-react";
-import { clusterApiUrl } from "@solana/web3.js";
-import { PhantomWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets';
 import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
-import { DEFAULT_PROVIDER_URL } from "@/common/solana";
+import { PhantomWalletAdapter, SolflareWalletAdapter } from "@solana/wallet-adapter-wallets";
 
-const wallets = [
-  new PhantomWalletAdapter(),
-  new SolflareWalletAdapter(),
-];
+const wallets = [new PhantomWalletAdapter(), new SolflareWalletAdapter()];
 
 export function SolanaProvider({ children }: { children: React.ReactNode }) {
   return (
-    <ConnectionProvider endpoint={DEFAULT_PROVIDER_URL}>
+    <ConnectionProvider endpoint={MEMECHAN_RPC_ENDPOINT}>
       <WalletProvider wallets={wallets} autoConnect>
-        <WalletModalProvider>
-          {children}
-        </WalletModalProvider>
+        <WalletModalProvider>{children}</WalletModalProvider>
       </WalletProvider>
     </ConnectionProvider>
   );

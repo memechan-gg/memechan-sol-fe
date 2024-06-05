@@ -1,8 +1,6 @@
 import { Auth, BE_URL, ChartApi, PoolAPI, SocialAPI, TokenAPI } from "@avernikoz/memechan-sol-sdk";
 import { Keypair } from "@solana/web3.js";
 
-export const DEFAULT_PROVIDER_URL = "https://rpc1.memechan.xyz";
-export const IS_TEST_ENV = false;
 export const SIMULATION_KEYPAIR = Keypair.fromSeed(
   Uint8Array.from(
     [
