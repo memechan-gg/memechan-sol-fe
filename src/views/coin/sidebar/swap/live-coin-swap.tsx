@@ -33,8 +33,8 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
 
   const { publicKey, sendTransaction, signTransaction } = useWallet();
   const { connection } = useConnection();
-  const { balance: slerfBalance, refetch: refetchSlerfBalance } = useBalance(MEMECHAN_QUOTE_MINT.toString());
-  const { balance: memeBalance, refetch: refetchMemeBalance } = useBalance(tokenAddress);
+  const { balance: slerfBalance } = useBalance(MEMECHAN_QUOTE_MINT.toString(), MEMECHAN_QUOTE_TOKEN_DECIMALS);
+  const { balance: memeBalance } = useBalance(tokenAddress, MEMECHAN_MEME_TOKEN_DECIMALS);
   const { tokenAccounts, refetch: refetchTokenAccounts } = useTokenAccounts();
 
   const getSwapOutputAmount = useCallback(
@@ -171,8 +171,6 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
       }
 
       toast.success("Swap succeeded");
-      refetchSlerfBalance();
-      refetchMemeBalance();
       refetchTokenAccounts();
       return;
     } catch (e) {
@@ -191,9 +189,7 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
     sendTransaction,
     slerfToMeme,
     slippage,
-    refetchSlerfBalance,
     memeBalance,
-    refetchMemeBalance,
     refetchTokenAccounts,
     signTransaction,
     connection,

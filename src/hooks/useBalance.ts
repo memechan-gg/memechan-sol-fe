@@ -1,36 +1,10 @@
-import { useConnection } from "@/context/ConnectionContext";
-import { getTokenAccounts } from "@/utils";
-import { useWallet } from "@solana/wallet-adapter-react";
-import { Connection, PublicKey } from "@solana/web3.js";
-import useSWR from "swr";
-import { BALANCE_INTERVAL } from "./refresh-intervals";
+import { getMintBalanceFromTokenAccounts } from "@avernikoz/memechan-sol-sdk";
+import { useTokenAccounts } from "./useTokenAccounts";
 
-const fetchCoinBalance = async (tokenAddress: string, ownerAddress: PublicKey, connection: Connection) => {
-  try {
-    const tokenAccountsData = await getTokenAccounts({
-      connection: connection,
-      ownerAddress: ownerAddress,
-      tokenAddress: new PublicKey(tokenAddress),
-    });
+export const useBalance = (coin: string, decimals: number) => {
+  const { tokenAccounts, refetch } = useTokenAccounts();
 
-    return tokenAccountsData;
-  } catch (e) {
-    console.error(`[fetchCoinBalance] Cannot fetch balance for token ${tokenAddress} and user ${ownerAddress}:`, e);
-  }
-};
+  const balance = tokenAccounts && getMintBalanceFromTokenAccounts({ mint: coin, tokenAccounts, decimals });
 
-export const useBalance = (coin: string) => {
-  const { publicKey } = useWallet();
-  const { connection } = useConnection();
-
-  const { data: tokenAccountsData, mutate } = useSWR(
-    publicKey ? [`balance-${publicKey.toString()}-${coin}`, coin, publicKey, connection] : null,
-    ([url, tokenAddress, ownerAddress, connection]) => fetchCoinBalance(tokenAddress, ownerAddress, connection),
-    { refreshInterval: BALANCE_INTERVAL, revalidateIfStale: false, revalidateOnFocus: false },
-  );
-
-  return {
-    balance: tokenAccountsData?.amount,
-    refetch: mutate,
-  };
+  return { balance: balance?.formattedBalance, refetch };
 };
