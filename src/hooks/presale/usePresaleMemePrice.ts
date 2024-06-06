@@ -1,6 +1,6 @@
 import { ChartApiInstance } from "@/common/solana";
+import { BOUND_POOL_PRICE_INTERVAL } from "@/config/config";
 import useSWR from "swr";
-import { BOUND_POOL_PRICE_INTERVAL } from "../refresh-intervals";
 
 const fetchPresaleMemePrice = async (poolAddress: string) => {
   try {

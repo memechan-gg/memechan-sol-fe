@@ -1,8 +1,8 @@
+import { BOUND_POOL_DATA_INTERVAL } from "@/config/config";
 import { useConnection } from "@/context/ConnectionContext";
 import { BoundPoolClient, NoBoundPoolExist } from "@avernikoz/memechan-sol-sdk";
 import { Connection, PublicKey } from "@solana/web3.js";
 import useSWR from "swr";
-import { BOUND_POOL_DATA_INTERVAL } from "../refresh-intervals";
 
 const fetchBoundPool = async (poolAddress: string, connection: Connection) => {
   try {

@@ -1,6 +1,7 @@
 import { Button } from "@/components/button";
 import { DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/dialog";
 import { TransactionSentNotification } from "@/components/notifications/transaction-sent-notification";
+import { LOW_FEES_THRESHOLD } from "@/config/config";
 import { useConnection } from "@/context/ConnectionContext";
 import { useStakingPoolClient } from "@/hooks/staking/useStakingPoolClient";
 import { WithdrawFeesDialogProps } from "@/views/coin/coin.types";
@@ -10,7 +11,6 @@ import { PublicKey } from "@solana/web3.js";
 import BigNumber from "bignumber.js";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { LOW_FEES_THRESHOLD } from "../config";
 
 export const WithdrawFeesPopUp = ({
   tokenSymbol,

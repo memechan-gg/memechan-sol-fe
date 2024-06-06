@@ -1,9 +1,11 @@
 import { ChartApiInstance } from "@/common/solana";
 import { Button } from "@/components/button";
 import { TransactionSentNotification } from "@/components/notifications/transaction-sent-notification";
+import { MAX_SLIPPAGE, MIN_SLIPPAGE } from "@/config/config";
 import { useConnection } from "@/context/ConnectionContext";
 import { useBoundPoolClient } from "@/hooks/presale/useBoundPoolClient";
 import { useBalance } from "@/hooks/useBalance";
+import { useTickets } from "@/hooks/useTickets";
 import { GetSwapOutputAmountParams, GetSwapTransactionParams } from "@/types/hooks";
 import { formatNumber } from "@/utils/formatNumber";
 import {
@@ -20,22 +22,11 @@ import toast from "react-hot-toast";
 import { PresaleCoinSwapProps } from "../../coin.types";
 import { presaleSwapParamsAreValid } from "../../coin.utils";
 import { SwapButton } from "./button";
-import { MAX_SLIPPAGE, MIN_SLIPPAGE } from "./config";
 import { UnavailableTicketsToSellDialog } from "./dialog-unavailable-tickets-to-sell";
 import { InputAmountTitle } from "./input-amount-title";
 import { handleSlippageInputChange, handleSwapInputChange, validateSlippage } from "./utils";
 
-export const PresaleCoinSwap = ({
-  tokenSymbol,
-  pool,
-  boundPool,
-  ticketsData: {
-    availableTicketsAmount,
-    unavailableTicketsAmount,
-    unavailableTickets,
-    refresh: refreshAvailableTickets,
-  },
-}: PresaleCoinSwapProps) => {
+export const PresaleCoinSwap = ({ tokenSymbol, pool, boundPool }: PresaleCoinSwapProps) => {
   const [slerfToMeme, setSlerfToMeme] = useState<boolean>(true);
   const [inputAmount, setInputAmount] = useState<string>("");
   const [outputAmount, setOutputAmount] = useState<string | null>(null);
@@ -50,6 +41,12 @@ export const PresaleCoinSwap = ({
     MEMECHAN_QUOTE_TOKEN_DECIMALS,
   );
   const boundPoolClient = useBoundPoolClient(pool.address);
+  const {
+    availableTicketsAmount,
+    unavailableTicketsAmount,
+    unavailableTickets,
+    refresh: refreshAvailableTickets,
+  } = useTickets({ poolAddress: !slerfToMeme ? pool.address : undefined, poolStatus: "PRESALE" });
 
   const getSwapOutputAmount = useCallback(
     async ({ inputAmount, slerfToMeme, slippagePercentage }: GetSwapOutputAmountParams) => {

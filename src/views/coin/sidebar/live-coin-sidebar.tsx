@@ -13,7 +13,7 @@ export function LiveCoinSidebar({
   uniqueHoldersData,
   stakingPoolFromApi,
 }: LiveCoinSidebarProps) {
-  const ticketsData = useTickets(seedPoolData.seedPool?.address);
+  const ticketsData = useTickets({ poolAddress: seedPoolData.seedPool?.address, poolStatus: "LIVE" });
 
   return (
     <>

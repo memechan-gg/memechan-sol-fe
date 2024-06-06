@@ -17,7 +17,7 @@ import Skeleton from "react-loading-skeleton";
 export const UnstakePopUp = ({
   tokenSymbol,
   livePoolAddress,
-  ticketsData: { tickets, stakedAmount },
+  ticketsData: { tickets, stakedAmount, refresh: refetchTickets },
   stakingPoolFromApi,
 }: UnstakeDialogProps) => {
   const [availableAmountToUnstake, setAvailableAmountToUnstake] = useState<string | null>(null);
@@ -87,6 +87,7 @@ export const UnstakePopUp = ({
         }
       }
 
+      refetchTickets();
       toast.success("Successfully unstaked");
     } catch (e) {
       console.error("[UnstakeDialog.unstake] Failed to unstake:", e);
@@ -94,7 +95,16 @@ export const UnstakePopUp = ({
     } finally {
       setIsLoading(false);
     }
-  }, [sendTransaction, availableAmountToUnstake, livePoolAddress, publicKey, stakingPoolClient, tickets, connection]);
+  }, [
+    sendTransaction,
+    availableAmountToUnstake,
+    livePoolAddress,
+    publicKey,
+    stakingPoolClient,
+    tickets,
+    connection,
+    refetchTickets,
+  ]);
 
   useEffect(() => {
     updateAvailableAmountToUnstake();

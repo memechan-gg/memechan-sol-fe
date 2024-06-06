@@ -1,8 +1,8 @@
+import { IS_LIVE_POOL_CREATED_INTERVAL } from "@/config/config";
 import { useConnection } from "@/context/ConnectionContext";
 import { StakingPoolClient } from "@avernikoz/memechan-sol-sdk";
 import { Connection, PublicKey } from "@solana/web3.js";
 import useSWR from "swr";
-import { IS_LIVE_POOL_CREATED_INTERVAL } from "../refresh-intervals";
 
 const fetchIsLivePoolCreated = async (memeMint: string, connection: Connection) => {
   try {

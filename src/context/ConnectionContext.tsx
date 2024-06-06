@@ -1,7 +1,7 @@
+import { CONNECTION_CONFIG, MEMECHAN_CLIENT_CONFIG } from "@/config/config";
 import { MemechanClient } from "@avernikoz/memechan-sol-sdk";
 import { Connection } from "@solana/web3.js";
 import { Dispatch, FC, PropsWithChildren, SetStateAction, createContext, useContext, useEffect, useState } from "react";
-import { CONNECTION_CONFIG, MEMECHAN_CLIENT_CONFIG } from "./config";
 import { getInitialRpcEndpoint } from "./utils";
 
 export type ConnectionContextType = {
