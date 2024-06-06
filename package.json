@@ -6,14 +6,14 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "tsc --noEmit && eslint src/**/*.ts",
     "format": "prettier --write ."
   },
   "browser": {
     "child_process": false
   },
   "dependencies": {
-    "@avernikoz/memechan-sol-sdk": "1.0.101-mainnet-slerf-fake",
+    "@avernikoz/memechan-sol-sdk": "1.0.103-mainnet-slerf-fake",
     "@headlessui/react": "^1.7.19",
     "@phosphor-icons/react": "^2.1.5",
     "@radix-ui/react-dialog": "^1.0.5",
