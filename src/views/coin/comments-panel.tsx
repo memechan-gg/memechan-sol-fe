@@ -19,7 +19,7 @@ export function CommentsPanel({ coinType, coinCreator }: { coinType: string; coi
   return (
     <>
       {threads && threads.length > 0 && <PostReply openDialog={openPostReplyDialog} />}
-      <Comments threads={threads} updateThreads={updateThreads} coinCreator={coinCreator} />
+      <Comments threads={threads} updateThreads={updateThreads} coinCreator={coinCreator} coinType={coinType} />
       <PostReply openDialog={openPostReplyDialog} />
       {isPostReplyDialogOpen && (
         <PostReplyDialog onClose={closePostReplyDialog} updateThreads={updateThreads} coinType={coinType} />
