@@ -5,13 +5,18 @@ import { PresaleCoinInfo } from "./info/presale-coin-info";
 import { SidebarItem } from "./sidebar-item";
 import { PresaleCoinSwap } from "./swap/presale-coin-swap";
 
-export function PresaleCoinSidebar({ pool, coinMetadata, uniqueHoldersData }: PresaleCoinSidebarProps) {
+export function PresaleCoinSidebar({ pool, coinMetadata, uniqueHoldersData, ticketsData }: PresaleCoinSidebarProps) {
   const boundPool = useBoundPool(pool.address);
 
   return (
     <>
       <SidebarItem>
-        <PresaleCoinSwap pool={pool} tokenSymbol={coinMetadata.symbol} boundPool={boundPool} />
+        <PresaleCoinSwap
+          pool={pool}
+          tokenSymbol={coinMetadata.symbol}
+          boundPool={boundPool}
+          ticketsData={ticketsData}
+        />
       </SidebarItem>
       <SidebarItem>
         <PresaleCoinInfo metadata={coinMetadata} boundPool={boundPool} />
