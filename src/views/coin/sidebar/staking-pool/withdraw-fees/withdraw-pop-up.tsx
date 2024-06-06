@@ -15,7 +15,7 @@ import toast from "react-hot-toast";
 export const WithdrawFeesPopUp = ({
   tokenSymbol,
   livePoolAddress,
-  ticketsData: { tickets },
+  ticketsData: { tickets, refresh: refreshTickets },
   stakingPoolFromApi,
 }: WithdrawFeesDialogProps) => {
   const [memeAmount, setMemeAmount] = useState<string | null>(null);
@@ -98,6 +98,8 @@ export const WithdrawFeesPopUp = ({
       setMemeAmount("0");
       setSlerfAmount("0");
 
+      refreshTickets();
+
       toast.success("Fees are successfully withdrawn");
     } catch (e) {
       console.error("[WithdrawFeesDialog.withdrawFees] Error while withdrawing:", e);
@@ -105,7 +107,7 @@ export const WithdrawFeesPopUp = ({
     } finally {
       setIsWithdrawLoading(false);
     }
-  }, [sendTransaction, publicKey, stakingPoolClient, tickets, livePoolAddress, connection]);
+  }, [sendTransaction, publicKey, stakingPoolClient, tickets, livePoolAddress, connection, refreshTickets]);
 
   const updateFees = useCallback(async () => {
     if (!stakingPoolClient || !publicKey) return;
