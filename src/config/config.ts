@@ -9,6 +9,9 @@ export const IS_TEST_ENV = false;
 export const CONNECTION_CONFIG: ConnectionConfig = {
   httpAgent: IS_TEST_ENV ? false : undefined,
   commitment: "confirmed",
+  // httpHeaders: {
+  //   "Rpc-time": Date.now().toString(),
+  // },
 };
 
 export const MEMECHAN_CLIENT_CONFIG = {
