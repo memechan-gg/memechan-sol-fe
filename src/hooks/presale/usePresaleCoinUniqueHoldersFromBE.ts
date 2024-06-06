@@ -1,9 +1,8 @@
+import { BOUND_POOL_HOLDERS_INTERVAL, MAX_HOLDERS_COUNT } from "@/config/config";
 import { TokenApiHelper } from "@avernikoz/memechan-sol-sdk";
 import { PublicKey } from "@solana/web3.js";
 import BigNumber from "bignumber.js";
 import useSWR from "swr";
-import { MAX_HOLDERS_COUNT } from "../config";
-import { BOUND_POOL_HOLDERS_INTERVAL } from "../refresh-intervals";
 
 const fetchPresaleCoinUniqueHoldersFromBE = async (memeMint: string) => {
   try {

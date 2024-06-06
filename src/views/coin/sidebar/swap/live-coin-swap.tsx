@@ -1,5 +1,6 @@
 import { Button } from "@/components/button";
 import { TransactionSentNotification } from "@/components/notifications/transaction-sent-notification";
+import { MAX_SLIPPAGE, MIN_SLIPPAGE } from "@/config/config";
 import { useConnection } from "@/context/ConnectionContext";
 import { useBalance } from "@/hooks/useBalance";
 import { useTokenAccounts } from "@/hooks/useTokenAccounts";
@@ -19,7 +20,6 @@ import toast from "react-hot-toast";
 import { LiveCoinSwapProps } from "../../coin.types";
 import { liveSwapParamsAreValid } from "../../coin.utils";
 import { SwapButton } from "./button";
-import { MAX_SLIPPAGE, MIN_SLIPPAGE } from "./config";
 import { InputAmountTitle } from "./input-amount-title";
 import { handleSlippageInputChange, handleSwapInputChange, validateSlippage } from "./utils";
 

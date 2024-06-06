@@ -1,11 +1,10 @@
+import { BOUND_POOL_HOLDERS_INTERVAL, MAX_HOLDERS_COUNT } from "@/config/config";
 import { useConnection } from "@/context/ConnectionContext";
 import { getBoundPoolHolderPercentage } from "@/views/coin/sidebar/holders/utils";
 import { BoundPoolClient, MemechanClient } from "@avernikoz/memechan-sol-sdk";
 import { PublicKey } from "@solana/web3.js";
 import BigNumber from "bignumber.js";
 import useSWR from "swr";
-import { MAX_HOLDERS_COUNT } from "../config";
-import { BOUND_POOL_HOLDERS_INTERVAL } from "../refresh-intervals";
 
 export const fetchPresaleCoinUniqueHolders = async (poolAddress: string, client: MemechanClient) => {
   try {

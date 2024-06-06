@@ -1,6 +1,6 @@
 import { TokenApiInstance } from "@/common/solana";
+import { TOKEN_INTERVAL } from "@/config/config";
 import useSWR from "swr";
-import { TOKEN_INTERVAL } from "./refresh-intervals";
 
 const fetchToken = async (tokenAddress: string) => {
   try {
