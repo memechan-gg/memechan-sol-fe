@@ -96,43 +96,43 @@ export const PresaleCoinSwap = ({
     [boundPoolClient, publicKey, tickets],
   );
 
+  const updateOutputAmount = useCallback(async () => {
+    if (inputAmount === "0" || inputAmount === "") {
+      setOutputAmount(null);
+      return;
+    }
+
+    try {
+      setIsLoadingOutputAmount(true);
+
+      if (!validateSlippage(slippage)) return;
+
+      const outputAmount = await getSwapOutputAmount({ inputAmount, slerfToMeme, slippagePercentage: +slippage });
+
+      if (!outputAmount) {
+        setOutputAmount(null);
+        return;
+      }
+
+      setOutputAmount(outputAmount);
+    } catch (e) {
+      console.error("[Swap.updateOutputAmount] Failed to get the swap output amount:", e);
+      toast.error("Cannot calculate output amount for the swap");
+      setOutputAmount(null);
+    } finally {
+      setIsLoadingOutputAmount(false);
+    }
+  }, [getSwapOutputAmount, inputAmount, slerfToMeme, slippage]);
+
   useEffect(() => {
     setInputAmount("");
     setOutputAmount(null);
   }, [slerfToMeme]);
 
   useEffect(() => {
-    if (inputAmount === "0" || inputAmount === "") {
-      setOutputAmount(null);
-      return;
-    }
-
-    const updateOutputAmount = async () => {
-      try {
-        setIsLoadingOutputAmount(true);
-
-        if (!validateSlippage(slippage)) return;
-
-        const outputAmount = await getSwapOutputAmount({ inputAmount, slerfToMeme, slippagePercentage: +slippage });
-
-        if (!outputAmount) {
-          setOutputAmount(null);
-          return;
-        }
-
-        setOutputAmount(outputAmount);
-      } catch (e) {
-        console.error("[Swap.updateOutputAmount] Failed to get the swap output amount:", e);
-        toast.error("Cannot calculate output amount for the swap");
-        setOutputAmount(null);
-      } finally {
-        setIsLoadingOutputAmount(false);
-      }
-    };
-
     const timeoutId = setTimeout(() => updateOutputAmount(), 1000);
     return () => clearTimeout(timeoutId);
-  }, [getSwapOutputAmount, inputAmount, slerfToMeme, slippage]);
+  }, [updateOutputAmount]);
 
   const onSwap = useCallback(async () => {
     if (!publicKey || !outputAmount || !slerfBalance) return;
@@ -260,6 +260,7 @@ export const PresaleCoinSwap = ({
       toast.error("Failed to swap. Please, try again");
     } finally {
       setIsSwapping(false);
+      updateOutputAmount();
     }
   }, [
     availableTicketsAmount,
@@ -275,6 +276,7 @@ export const PresaleCoinSwap = ({
     refreshAvailableTickets,
     pool.address,
     connection,
+    updateOutputAmount,
   ]);
 
   const swapButtonIsDiabled = isLoadingOutputAmount || isSwapping || outputAmount === null;
@@ -328,19 +330,20 @@ export const PresaleCoinSwap = ({
         )}
         {!slerfToMeme && availableTicketsAmount !== "0" && (
           <div className="text-xs font-bold text-regular">
-            Available tickets to sell: {formatNumber(+availableTicketsAmount, MEMECHAN_MEME_TOKEN_DECIMALS)}
+            Available {tokenSymbol} tickets to sell:{" "}
+            {formatNumber(+availableTicketsAmount, MEMECHAN_MEME_TOKEN_DECIMALS)}
           </div>
         )}
         {!slerfToMeme && unavailableTicketsAmount !== "0" && (
           <div className="text-xs !normal-case font-bold text-regular">
-            unavailable {tokenSymbol} to sell (locked):{" "}
+            unavailable {tokenSymbol} tickets to sell (locked):{" "}
             {formatNumber(Number(unavailableTicketsAmount), MEMECHAN_MEME_TOKEN_DECIMALS)}
           </div>
         )}
         {isLoadingOutputAmount && (
           <div className="text-xs font-bold text-regular">
             {slerfToMeme ? (
-              <span>{tokenSymbol} to receive: loading...</span>
+              <span>{tokenSymbol} tickets to receive: loading...</span>
             ) : (
               <span>SLERF to receive: loading...</span>
             )}
@@ -349,7 +352,7 @@ export const PresaleCoinSwap = ({
         {outputAmount !== null && !isLoadingOutputAmount && (
           <div className="text-xs font-bold text-regular">
             {slerfToMeme
-              ? `${tokenSymbol} to receive: ${formatNumber(Number(outputAmount), MEMECHAN_MEME_TOKEN_DECIMALS)}`
+              ? `${tokenSymbol} tickets to receive: ${formatNumber(Number(outputAmount), MEMECHAN_MEME_TOKEN_DECIMALS)}`
               : `SLERF to receive: ${formatNumber(Number(outputAmount), MEMECHAN_QUOTE_TOKEN_DECIMALS)}`}
           </div>
         )}
