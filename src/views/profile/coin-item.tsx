@@ -8,7 +8,7 @@ export const CoinItem = ({ image, name, marketCap }: CoinItemProps) => {
       </div>
       <div className="flex flex-col gap-2">
         <div className="text-xs">Name: {name}</div>
-        <div className="text-xs">Marketcap: {marketCap}</div>
+        <div className="text-xs">Marketcap: ${marketCap}</div>
       </div>
     </div>
   );
