@@ -1,7 +1,7 @@
 import { ThreadBoard } from "@/components/thread";
+import { BE_URL } from "@avernikoz/memechan-sol-sdk";
 import { useEffect, useState } from "react";
 import { CoinItem } from "./coin-item";
-import { BE_URL } from "@avernikoz/memechan-sol-sdk";
 
 type ProfileProps = {
   address: string;
@@ -26,7 +26,7 @@ export function Profile({ address }: ProfileProps) {
       setIsLoading(true);
       try {
         const response = await fetch(
-          `${BE_URL}/sol/holders?walletAddress=${address}&sortBy=tokenAmount&direction=asc`,
+          `${BE_URL}/sol/holders?walletAddress=${address}&sortBy=tokenAmountInPercentage&direction=asc`,
         );
         if (!response.ok) {
           throw new Error(`Error fetching tokens: ${response.statusText}`);
@@ -37,17 +37,13 @@ export function Profile({ address }: ProfileProps) {
         if (data && data.result) {
           const tokenPromises = data.result.map(async (token: any) => {
             try {
-              let presaleResponse = await fetch(
-                `${BE_URL}/sol/presale/token?tokenAddress=${token.tokenAddress}`,
-              );
+              let presaleResponse = await fetch(`${BE_URL}/sol/presale/token?tokenAddress=${token.tokenAddress}`);
               let presaleData = await presaleResponse.json();
               console.log("Presale data for token:", token.tokenAddress, presaleData);
 
               // Check if presaleData is an empty object
               if (Object.keys(presaleData).length === 0) {
-                presaleResponse = await fetch(
-                  `${BE_URL}/sol/live/token?tokenAddress=${token.tokenAddress}`,
-                );
+                presaleResponse = await fetch(`${BE_URL}/sol/live/token?tokenAddress=${token.tokenAddress}`);
                 presaleData = await presaleResponse.json();
                 console.log("Live data for token:", token.tokenAddress, presaleData);
               }
