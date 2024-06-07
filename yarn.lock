@@ -20,10 +20,10 @@
     "@jridgewell/gen-mapping" "^0.3.5"
     "@jridgewell/trace-mapping" "^0.3.24"
 
-"@avernikoz/memechan-sol-sdk@1.0.103-mainnet-slerf-fake":
-  version "1.0.103-mainnet-slerf-fake"
-  resolved "https://registry.yarnpkg.com/@avernikoz/memechan-sol-sdk/-/memechan-sol-sdk-1.0.103-mainnet-slerf-fake.tgz#877554c2b551705b3dbc0e90c659d172c50d4b81"
-  integrity sha512-w8gHmtAYnGGQFf3+/Z0vtiZmyfDi7Bfg8nI9H04mkdTtZ8FnK8fpFxgmjzT4NIpqkHwg+7dFfkYR0BviQF5yUA==
+"@avernikoz/memechan-sol-sdk@1.1.1-gpa-fix":
+  version "1.1.1-gpa-fix"
+  resolved "https://registry.yarnpkg.com/@avernikoz/memechan-sol-sdk/-/memechan-sol-sdk-1.1.1-gpa-fix.tgz#cf3c7507f964e977ceace2c308a5c5ddc0bd178d"
+  integrity sha512-kHoAwRkDe/GBhcuUIPNEDIJkIsl/RGXK/3oFUUy6hbx8baxJMGTLduLjRkdb//LwdLWI3fnlOlmo3Lv9NObnag==
   dependencies:
     "@aws-crypto/sha256-browser" "^5.2.0"
     "@aws-sdk/types" "^3.577.0"
