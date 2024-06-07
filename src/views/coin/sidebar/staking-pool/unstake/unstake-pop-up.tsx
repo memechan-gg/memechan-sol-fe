@@ -4,6 +4,7 @@ import { TransactionSentNotification } from "@/components/notifications/transact
 import { useConnection } from "@/context/ConnectionContext";
 import { useStakingPool } from "@/hooks/staking/useStakingPool";
 import { useStakingPoolClient } from "@/hooks/staking/useStakingPoolClient";
+import { confirmTransaction } from "@/utils/confirmTransaction";
 import { UnstakeDialogProps } from "@/views/coin/coin.types";
 import { MEMECHAN_MEME_TOKEN_DECIMALS } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
@@ -69,22 +70,8 @@ export const UnstakePopUp = ({
         toast(() => <TransactionSentNotification signature={signature} />);
 
         // Check that a part of the unstake succeeded
-        const { blockhash: blockhash, lastValidBlockHeight: lastValidBlockHeight } =
-          await connection.getLatestBlockhash("confirmed");
-        const swapTxResult = await connection.confirmTransaction(
-          {
-            signature: signature,
-            blockhash: blockhash,
-            lastValidBlockHeight: lastValidBlockHeight,
-          },
-          "confirmed",
-        );
-
-        if (swapTxResult.value.err) {
-          console.error("[UnstakeDialog.unstake] Unstake failed:", JSON.stringify(swapTxResult, null, 2));
-          toast.error("Unstake failed. Please, try again");
-          return;
-        }
+        const swapSucceeded = await confirmTransaction({ connection, signature });
+        if (!swapSucceeded) return;
       }
 
       refetchTickets();
