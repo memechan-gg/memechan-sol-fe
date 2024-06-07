@@ -14,7 +14,7 @@ export const fetchTickets = async (
   poolStatus: PoolStatus,
 ) => {
   try {
-    const tickets = await MemeTicketClient.fetchTicketsByUser(new PublicKey(poolAddress), client, user);
+    const tickets = await MemeTicketClient.fetchTicketsByUser2(new PublicKey(poolAddress), client, user);
     return tickets;
   } catch (e) {
     console.error(`[fetchTickets] Cannot fetch tickets for ${poolAddress} pool ${poolAddress}:`, e);

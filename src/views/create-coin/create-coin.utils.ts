@@ -80,6 +80,7 @@ export async function createMemeCoinAndPool({
             minOutputAmount: "0",
             slippagePercentage: 0,
             user: publicKey,
+            memeTicketNumber: 1,
           }
         : undefined,
   });

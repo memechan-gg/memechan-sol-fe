@@ -30,6 +30,7 @@ export const PresaleCoinSwap = ({
   pool,
   boundPool,
   ticketsData: {
+    tickets,
     availableTicketsAmount,
     unavailableTicketsAmount,
     unavailableTickets,
@@ -75,6 +76,7 @@ export const PresaleCoinSwap = ({
                 inputAmount,
                 minOutputAmount,
                 slippagePercentage,
+                memeTicketNumber: tickets.length + 1,
               }),
             }
           : {
@@ -90,7 +92,7 @@ export const PresaleCoinSwap = ({
         | { side: "buy"; result: GetBuyMemeTransactionOutput }
         | { side: "sell"; result: GetSellMemeTransactionOutput };
     },
-    [boundPoolClient, publicKey],
+    [boundPoolClient, publicKey, tickets],
   );
 
   useEffect(() => {
