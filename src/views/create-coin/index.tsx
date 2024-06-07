@@ -1,6 +1,6 @@
-import { connection } from "@/common/solana";
 import { TransactionSentNotification } from "@/components/notifications/transaction-sent-notification";
 import { ThreadBoard } from "@/components/thread";
+import { useConnection } from "@/context/ConnectionContext";
 import { useBalance } from "@/hooks/useBalance";
 import { useTargetConfig } from "@/hooks/useTargetConfig";
 import {
@@ -8,6 +8,7 @@ import {
   MAX_NAME_LENGTH,
   MAX_SYMBOL_LENGTH,
   MEMECHAN_QUOTE_MINT,
+  MEMECHAN_QUOTE_TOKEN_DECIMALS,
   sleep,
 } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
@@ -39,7 +40,8 @@ export function CreateCoin() {
   const router = useRouter();
   const [inputAmount, setInputAmount] = useState<string>("0");
   const { slerfThresholdAmount } = useTargetConfig();
-  const { balance: slerfBalance } = useBalance(MEMECHAN_QUOTE_MINT.toString());
+  const { balance: slerfBalance } = useBalance(MEMECHAN_QUOTE_MINT.toString(), MEMECHAN_QUOTE_TOKEN_DECIMALS);
+  const { connection, memechanClient } = useConnection();
 
   const onSubmit = handleSubmit(async (data) => {
     try {
@@ -87,24 +89,18 @@ export function CreateCoin() {
       let ipfsUrl = await uploadImageToIPFS(data.image[0]);
       validateCoinParamsWithImage(data, ipfsUrl);
 
-      const {
-        createPoolTransaction: transaction,
-        memeMintKeypair,
-        memeTicketKeypair,
-      } = await createMemeCoinAndPool({
+      const { createPoolTransaction: transaction, memeMintKeypair } = await createMemeCoinAndPool({
         data,
         ipfsUrl,
         publicKey,
         inputAmount: inputAmountIsSpecified ? inputAmount : undefined,
+        client: memechanClient,
       });
-
-      const signers = [memeMintKeypair];
-      if (memeTicketKeypair) signers.push(memeTicketKeypair);
 
       setState("create_bonding_and_meme");
       // Pool and meme creation
       const signature = await sendTransaction(transaction, connection, {
-        signers,
+        signers: [memeMintKeypair],
         maxRetries: 3,
         skipPreflight: true,
       });

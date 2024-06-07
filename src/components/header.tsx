@@ -1,19 +1,20 @@
 import { useUser } from "@/context/UserContext";
 import { cn } from "@/utils/cn";
+import { RpcConnectionDialog } from "@/views/rpc-connection/rpc-connection-dialog";
 import { Popover } from "@headlessui/react";
 import { CaretDown } from "@phosphor-icons/react";
+import { useWallet } from "@solana/wallet-adapter-react";
 import Link from "next/link";
 import { Button } from "./button";
-import { Logo } from "./logo";
 import { ConnectWallet } from "./connect-wallet";
-import { useWallet } from "@solana/wallet-adapter-react";
+import { Logo } from "./logo";
 
 export const Header = () => {
   const account = useUser();
-  const {disconnect} = useWallet();
+  const { disconnect } = useWallet();
 
   return (
-    <header className="lg:relative fixed top-0 w-full lg:bg-transparent bg-board">
+    <header className="lg:relative fixed top-0 w-full lg:bg-transparent bg-board z-10">
       <div className="container mx-auto px-4 py-2 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center w-full">
@@ -49,6 +50,7 @@ export const Header = () => {
                       Profile
                     </div>
                   </Link>
+                  <RpcConnectionDialog />
                   <button
                     onClick={() => disconnect()}
                     className="bg-white text-regular text-xs text-left p-2 hover:bg-regular hover:text-white"

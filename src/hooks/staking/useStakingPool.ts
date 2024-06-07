@@ -1,9 +1,9 @@
-import { connection } from "@/common/solana";
+import { useConnection } from "@/context/ConnectionContext";
 import { StakingPool } from "@avernikoz/memechan-sol-sdk";
-import { PublicKey } from "@solana/web3.js";
+import { Connection, PublicKey } from "@solana/web3.js";
 import useSWR from "swr";
 
-const fetchStakingPool = async (poolAddress: string) => {
+const fetchStakingPool = async (poolAddress: string, connection: Connection) => {
   try {
     const stakingPool = await StakingPool.fetch(connection, new PublicKey(poolAddress));
 
@@ -14,9 +14,11 @@ const fetchStakingPool = async (poolAddress: string) => {
 };
 
 export function useStakingPool(poolAddress?: string) {
+  const { connection } = useConnection();
+
   const { data } = useSWR(
-    poolAddress ? [`staking-pool-${poolAddress}`, poolAddress] : null,
-    ([url, pool]) => fetchStakingPool(pool),
+    poolAddress ? [`staking-pool-${poolAddress}`, poolAddress, connection] : null,
+    ([url, pool, connection]) => fetchStakingPool(pool, connection),
     { revalidateIfStale: false, revalidateOnFocus: false },
   );
 

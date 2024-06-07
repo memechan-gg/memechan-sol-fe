@@ -1,6 +1,8 @@
-import { ChartApiInstance, connection } from "@/common/solana";
+import { ChartApiInstance } from "@/common/solana";
 import { Button } from "@/components/button";
 import { TransactionSentNotification } from "@/components/notifications/transaction-sent-notification";
+import { MAX_SLIPPAGE, MIN_SLIPPAGE } from "@/config/config";
+import { useConnection } from "@/context/ConnectionContext";
 import { useBoundPoolClient } from "@/hooks/presale/useBoundPoolClient";
 import { useBalance } from "@/hooks/useBalance";
 import { GetSwapOutputAmountParams, GetSwapTransactionParams } from "@/types/hooks";
@@ -11,6 +13,7 @@ import {
   MEMECHAN_MEME_TOKEN_DECIMALS,
   MEMECHAN_QUOTE_MINT,
   MEMECHAN_QUOTE_TOKEN_DECIMALS,
+  MemeTicketClient,
   sleep,
 } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
@@ -19,7 +22,6 @@ import toast from "react-hot-toast";
 import { PresaleCoinSwapProps } from "../../coin.types";
 import { presaleSwapParamsAreValid } from "../../coin.utils";
 import { SwapButton } from "./button";
-import { MAX_SLIPPAGE, MIN_SLIPPAGE } from "./config";
 import { UnavailableTicketsToSellDialog } from "./dialog-unavailable-tickets-to-sell";
 import { InputAmountTitle } from "./input-amount-title";
 import { handleSlippageInputChange, handleSwapInputChange, validateSlippage } from "./utils";
@@ -29,6 +31,7 @@ export const PresaleCoinSwap = ({
   pool,
   boundPool,
   ticketsData: {
+    tickets,
     availableTicketsAmount,
     unavailableTicketsAmount,
     unavailableTickets,
@@ -43,7 +46,11 @@ export const PresaleCoinSwap = ({
   const [isSwapping, setIsSwapping] = useState<boolean>(false);
 
   const { publicKey, sendTransaction } = useWallet();
-  const { balance: slerfBalance, refetch: refetchSlerfBalance } = useBalance(MEMECHAN_QUOTE_MINT.toString());
+  const { connection } = useConnection();
+  const { balance: slerfBalance, refetch: refetchSlerfBalance } = useBalance(
+    MEMECHAN_QUOTE_MINT.toString(),
+    MEMECHAN_QUOTE_TOKEN_DECIMALS,
+  );
   const boundPoolClient = useBoundPoolClient(pool.address);
 
   const getSwapOutputAmount = useCallback(
@@ -70,6 +77,7 @@ export const PresaleCoinSwap = ({
                 inputAmount,
                 minOutputAmount,
                 slippagePercentage,
+                memeTicketNumber: tickets.length + MemeTicketClient.TICKET_NUMBER_START,
               }),
             }
           : {
@@ -85,7 +93,7 @@ export const PresaleCoinSwap = ({
         | { side: "buy"; result: GetBuyMemeTransactionOutput }
         | { side: "sell"; result: GetSellMemeTransactionOutput };
     },
-    [boundPoolClient, publicKey],
+    [boundPoolClient, publicKey, tickets],
   );
 
   useEffect(() => {
@@ -157,10 +165,9 @@ export const PresaleCoinSwap = ({
       const { side, result } = transactionResult;
 
       if (side === "buy") {
-        const { tx, memeTicketKeypair } = result;
+        const { tx } = result;
 
         const signature = await sendTransaction(tx, connection, {
-          signers: [memeTicketKeypair],
           maxRetries: 3,
           skipPreflight: true,
         });
@@ -267,6 +274,7 @@ export const PresaleCoinSwap = ({
     refetchSlerfBalance,
     refreshAvailableTickets,
     pool.address,
+    connection,
   ]);
 
   const swapButtonIsDiabled = isLoadingOutputAmount || isSwapping || outputAmount === null;

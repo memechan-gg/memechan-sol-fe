@@ -1,10 +1,11 @@
-import { connection } from "@/common/solana";
+import { TARGET_CONFIG_INTERVAL } from "@/config/config";
+import { useConnection } from "@/context/ConnectionContext";
 import { MEMECHAN_QUOTE_TOKEN_DECIMALS, MEMECHAN_TARGET_CONFIG, TargetConfigClient } from "@avernikoz/memechan-sol-sdk";
+import { Connection } from "@solana/web3.js";
 import BigNumber from "bignumber.js";
 import useSWR from "swr";
-import { TARGET_CONFIG_INTERVAL } from "./refresh-intervals";
 
-const fetchTargetConfig = async () => {
+const fetchTargetConfig = async (connection: Connection) => {
   try {
     const targetConfig = await TargetConfigClient.fetch(connection, MEMECHAN_TARGET_CONFIG);
 
@@ -15,11 +16,16 @@ const fetchTargetConfig = async () => {
 };
 
 export function useTargetConfig() {
-  const { data: targetConfig, isLoading } = useSWR(`target-config`, fetchTargetConfig, {
-    refreshInterval: TARGET_CONFIG_INTERVAL,
-    revalidateIfStale: false,
-    revalidateOnFocus: false,
-  });
+  const { connection } = useConnection();
+  const { data: targetConfig, isLoading } = useSWR(
+    [`target-config`, connection],
+    ([url, connection]) => fetchTargetConfig(connection),
+    {
+      refreshInterval: TARGET_CONFIG_INTERVAL,
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+    },
+  );
 
   const slerfThresholdAmount = targetConfig
     ? new BigNumber(targetConfig.tokenTargetAmount.toString()).div(10 ** MEMECHAN_QUOTE_TOKEN_DECIMALS).toString()

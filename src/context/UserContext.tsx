@@ -1,7 +1,6 @@
 // import { getCoinsAndNormalizeWithDecimals } from "@/utils/sui/getCoins";
+import { useWallet } from "@solana/wallet-adapter-react";
 import { FC, PropsWithChildren, createContext, useContext, useEffect, useState } from "react";
-import { useWallet } from '@solana/wallet-adapter-react';
-import { useInterval } from "usehooks-ts";
 
 type StakedLpObject = {};
 
@@ -20,16 +19,12 @@ const UserContext = createContext<UserContextType>({
 });
 
 export const UserProvider: FC<PropsWithChildren> = ({ children }) => {
-  const {wallet} = useWallet();
+  const { wallet } = useWallet();
 
   const [balance, setBalance] = useState("0");
   const [stakedLps, setStakedLps] = useState<{
     [ticketType: string]: StakedLpObject[];
   }>({});
-
-  useInterval(() => {
-    //TODO implement balance refetching
-  }, 5000);
 
   useEffect(() => {
     if (!wallet) {

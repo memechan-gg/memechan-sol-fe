@@ -1,6 +1,6 @@
+import { SLERF_PRICE_INTERVAL } from "@/config/config";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
-import { SLERF_PRICE_INTERVAL } from "./refresh-intervals";
 
 export type PriceData = {
   chainId: "solana";

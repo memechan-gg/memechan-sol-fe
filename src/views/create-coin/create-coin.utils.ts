@@ -1,4 +1,4 @@
-import { AuthInstance, MemechanClientInstance, TokenApiInstance } from "@/common/solana";
+import { AuthInstance, TokenApiInstance } from "@/common/solana";
 import {
   ADMIN_PUB_KEY,
   BoundPoolClient,
@@ -7,12 +7,13 @@ import {
   InvalidCoinImageError,
   InvalidCoinNameError,
   InvalidCoinSymbolError,
-  MEMECHAN_QUOTE_TOKEN,
-  validateCreateCoinParams,
+  MAX_DESCRIPTION_LENGTH,
   MAX_NAME_LENGTH,
   MAX_SYMBOL_LENGTH,
-  MAX_DESCRIPTION_LENGTH,
-
+  MEMECHAN_QUOTE_TOKEN,
+  MemeTicketClient,
+  MemechanClient,
+  validateCreateCoinParams,
 } from "@avernikoz/memechan-sol-sdk";
 import { PublicKey } from "@solana/web3.js";
 import toast from "react-hot-toast";
@@ -24,7 +25,9 @@ export function handleErrors(e: unknown) {
   } else if (e instanceof InvalidCoinSymbolError) {
     return toast.error(`Invalid coin symbol. Coin symbol can contain ${MAX_SYMBOL_LENGTH} symbols as max.`);
   } else if (e instanceof InvalidCoinDescriptionError) {
-    return toast.error(`Invalid coin description. Coin description can contain ${MAX_DESCRIPTION_LENGTH} symbols as max.`);
+    return toast.error(
+      `Invalid coin description. Coin description can contain ${MAX_DESCRIPTION_LENGTH} symbols as max.`,
+    );
   } else if (e instanceof InvalidCoinImageError) {
     return toast.error("Invalid coin image");
   } else if (e instanceof CoinDescriptionTooLargeError) {
@@ -33,7 +36,7 @@ export function handleErrors(e: unknown) {
     return toast.error(`Unexpected error occured during coin creation: ${e.message}`);
   }
 
-  console.error(`[handleErrors] error: `, e)
+  console.error(`[handleErrors] error: `, e);
   return toast.error("Unrecognized error occurred while creating meme coin. Please try again");
 }
 
@@ -49,15 +52,17 @@ export async function createMemeCoinAndPool({
   ipfsUrl,
   publicKey,
   inputAmount,
+  client,
 }: {
   data: ICreateForm;
   publicKey: PublicKey;
   ipfsUrl: string;
   inputAmount?: string;
+  client: MemechanClient;
 }) {
   return await BoundPoolClient.getCreateNewBondingPoolAndBuyAndTokenWithBuyMemeTransaction({
     admin: ADMIN_PUB_KEY,
-    client: MemechanClientInstance,
+    client,
     payer: publicKey,
     tokenMetadata: {
       ...data,
@@ -76,6 +81,7 @@ export async function createMemeCoinAndPool({
             minOutputAmount: "0",
             slippagePercentage: 0,
             user: publicKey,
+            memeTicketNumber: MemeTicketClient.TICKET_NUMBER_START,
           }
         : undefined,
   });

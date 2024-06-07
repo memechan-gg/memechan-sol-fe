@@ -22,15 +22,24 @@ export function Comment({
   },
   updateThreads,
   coinCreator,
+  isLiked,
+  refetchLikedThreads,
 }: {
   thread: CoinThreadWithParsedMessage;
   updateThreads: () => void;
   coinCreator: string;
+  isLiked: boolean;
+  refetchLikedThreads: () => {};
 }) {
-  const [liked, setLiked] = useState(false);
+  const [liked, setLiked] = useState(isLiked);
   const [likesCount, setLikesCount] = useState(likeCounter);
-  const { publicKey, signMessage } = useWallet();
   const [isPostReplyDialogOpen, setIsPostReplyDialogOpen] = useState(false);
+
+  const { publicKey, signMessage } = useWallet();
+
+  useEffect(() => {
+    setLiked(isLiked);
+  }, [isLiked]);
 
   const openPostReplyDialog = useCallback(() => {
     setIsPostReplyDialogOpen(true);
@@ -39,18 +48,6 @@ export function Comment({
   const closePostReplyDialog = useCallback(() => {
     setIsPostReplyDialogOpen(false);
   }, []);
-
-  useEffect(() => {
-    if (!publicKey) return;
-
-    SocialApiInstance.getLike({ creator: publicKey.toString(), threadId: id })
-      .then((alreadyLiked) => {
-        setLiked(alreadyLiked);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, [publicKey, id]);
 
   const handleLikeEvent = useCallback(async () => {
     if (!publicKey || !signMessage) {
@@ -69,10 +66,12 @@ export function Comment({
         setLikesCount((curCount) => curCount + 1);
         await SocialApiInstance.like({ coinType, threadId: id });
       }
+
+      refetchLikedThreads();
     } catch (error) {
       console.error(error);
     }
-  }, [publicKey, liked, signMessage, coinType, id]);
+  }, [publicKey, liked, signMessage, coinType, id, refetchLikedThreads]);
 
   const handleReplyThreadEvent = () => {
     openPostReplyDialog();

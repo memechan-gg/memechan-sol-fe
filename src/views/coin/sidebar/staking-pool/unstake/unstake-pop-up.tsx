@@ -1,7 +1,7 @@
-import { connection } from "@/common/solana";
 import { Button } from "@/components/button";
 import { DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/dialog";
 import { TransactionSentNotification } from "@/components/notifications/transaction-sent-notification";
+import { useConnection } from "@/context/ConnectionContext";
 import { useStakingPool } from "@/hooks/staking/useStakingPool";
 import { useStakingPoolClient } from "@/hooks/staking/useStakingPoolClient";
 import { UnstakeDialogProps } from "@/views/coin/coin.types";
@@ -17,13 +17,14 @@ import Skeleton from "react-loading-skeleton";
 export const UnstakePopUp = ({
   tokenSymbol,
   livePoolAddress,
-  ticketsData: { tickets, stakedAmount },
+  ticketsData: { tickets, stakedAmount, refresh: refetchTickets },
   stakingPoolFromApi,
 }: UnstakeDialogProps) => {
   const [availableAmountToUnstake, setAvailableAmountToUnstake] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const { publicKey, sendTransaction } = useWallet();
+  const { connection } = useConnection();
   const stakingPool = useStakingPool(stakingPoolFromApi?.address);
   const stakingPoolClient = useStakingPoolClient(stakingPoolFromApi?.address);
 
@@ -86,6 +87,7 @@ export const UnstakePopUp = ({
         }
       }
 
+      refetchTickets();
       toast.success("Successfully unstaked");
     } catch (e) {
       console.error("[UnstakeDialog.unstake] Failed to unstake:", e);
@@ -93,7 +95,16 @@ export const UnstakePopUp = ({
     } finally {
       setIsLoading(false);
     }
-  }, [sendTransaction, availableAmountToUnstake, livePoolAddress, publicKey, stakingPoolClient, tickets]);
+  }, [
+    sendTransaction,
+    availableAmountToUnstake,
+    livePoolAddress,
+    publicKey,
+    stakingPoolClient,
+    tickets,
+    connection,
+    refetchTickets,
+  ]);
 
   useEffect(() => {
     updateAvailableAmountToUnstake();

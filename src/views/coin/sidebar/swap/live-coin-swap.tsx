@@ -1,6 +1,7 @@
-import { connection } from "@/common/solana";
 import { Button } from "@/components/button";
 import { TransactionSentNotification } from "@/components/notifications/transaction-sent-notification";
+import { MAX_SLIPPAGE, MIN_SLIPPAGE } from "@/config/config";
+import { useConnection } from "@/context/ConnectionContext";
 import { useBalance } from "@/hooks/useBalance";
 import { useTokenAccounts } from "@/hooks/useTokenAccounts";
 import { GetLiveSwapTransactionParams, GetSwapOutputAmountParams } from "@/types/hooks";
@@ -19,7 +20,6 @@ import toast from "react-hot-toast";
 import { LiveCoinSwapProps } from "../../coin.types";
 import { liveSwapParamsAreValid } from "../../coin.utils";
 import { SwapButton } from "./button";
-import { MAX_SLIPPAGE, MIN_SLIPPAGE } from "./config";
 import { InputAmountTitle } from "./input-amount-title";
 import { handleSlippageInputChange, handleSwapInputChange, validateSlippage } from "./utils";
 
@@ -32,8 +32,9 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
   const [isSwapping, setIsSwapping] = useState<boolean>(false);
 
   const { publicKey, sendTransaction, signTransaction } = useWallet();
-  const { balance: slerfBalance, refetch: refetchSlerfBalance } = useBalance(MEMECHAN_QUOTE_MINT.toString());
-  const { balance: memeBalance, refetch: refetchMemeBalance } = useBalance(tokenAddress);
+  const { connection } = useConnection();
+  const { balance: slerfBalance } = useBalance(MEMECHAN_QUOTE_MINT.toString(), MEMECHAN_QUOTE_TOKEN_DECIMALS);
+  const { balance: memeBalance } = useBalance(tokenAddress, MEMECHAN_MEME_TOKEN_DECIMALS);
   const { tokenAccounts, refetch: refetchTokenAccounts } = useTokenAccounts();
 
   const getSwapOutputAmount = useCallback(
@@ -43,18 +44,18 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
             poolAddress: address,
             amountIn: inputAmount,
             slippagePercentage,
-            connection: connection,
+            connection,
             memeCoinMint: tokenAddress,
           })
         : await LivePoolClient.getSellMemeOutput({
             poolAddress: address,
             amountIn: inputAmount,
             slippagePercentage,
-            connection: connection,
+            connection,
             memeCoinMint: tokenAddress,
           });
     },
-    [address, tokenAddress],
+    [address, tokenAddress, connection],
   );
 
   const getSwapTransactions = useCallback(
@@ -64,18 +65,18 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
       return slerfToMeme
         ? await LivePoolClient.getBuyMemeTransactionsByOutput({
             ...outputData,
-            connection: connection,
+            connection,
             payer: publicKey,
             walletTokenAccounts: tokenAccounts,
           })
         : await LivePoolClient.getSellMemeTransactionsByOutput({
             ...outputData,
-            connection: connection,
+            connection,
             payer: publicKey,
             walletTokenAccounts: tokenAccounts,
           });
     },
-    [publicKey, tokenAccounts],
+    [publicKey, tokenAccounts, connection],
   );
 
   useEffect(() => {
@@ -170,8 +171,6 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
       }
 
       toast.success("Swap succeeded");
-      refetchSlerfBalance();
-      refetchMemeBalance();
       refetchTokenAccounts();
       return;
     } catch (e) {
@@ -190,11 +189,10 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
     sendTransaction,
     slerfToMeme,
     slippage,
-    refetchSlerfBalance,
     memeBalance,
-    refetchMemeBalance,
     refetchTokenAccounts,
     signTransaction,
+    connection,
   ]);
 
   const swapButtonIsDiabled = isLoadingOutputAmount || isSwapping || outputData === null;
