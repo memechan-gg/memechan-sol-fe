@@ -1,6 +1,7 @@
 import { Button } from "@/components/button";
 import { DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/dialog";
 import { TransactionSentNotification } from "@/components/notifications/transaction-sent-notification";
+import { LOW_FEES_THRESHOLD } from "@/config/config";
 import { useConnection } from "@/context/ConnectionContext";
 import { useStakingPoolClient } from "@/hooks/staking/useStakingPoolClient";
 import { WithdrawFeesDialogProps } from "@/views/coin/coin.types";
@@ -10,12 +11,11 @@ import { PublicKey } from "@solana/web3.js";
 import BigNumber from "bignumber.js";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { LOW_FEES_THRESHOLD } from "../config";
 
 export const WithdrawFeesPopUp = ({
   tokenSymbol,
   livePoolAddress,
-  ticketsData: { tickets },
+  ticketsData: { tickets, refresh: refreshTickets },
   stakingPoolFromApi,
 }: WithdrawFeesDialogProps) => {
   const [memeAmount, setMemeAmount] = useState<string | null>(null);
@@ -98,6 +98,8 @@ export const WithdrawFeesPopUp = ({
       setMemeAmount("0");
       setSlerfAmount("0");
 
+      refreshTickets();
+
       toast.success("Fees are successfully withdrawn");
     } catch (e) {
       console.error("[WithdrawFeesDialog.withdrawFees] Error while withdrawing:", e);
@@ -105,7 +107,7 @@ export const WithdrawFeesPopUp = ({
     } finally {
       setIsWithdrawLoading(false);
     }
-  }, [sendTransaction, publicKey, stakingPoolClient, tickets, livePoolAddress, connection]);
+  }, [sendTransaction, publicKey, stakingPoolClient, tickets, livePoolAddress, connection, refreshTickets]);
 
   const updateFees = useCallback(async () => {
     if (!stakingPoolClient || !publicKey) return;

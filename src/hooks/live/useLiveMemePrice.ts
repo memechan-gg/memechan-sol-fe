@@ -1,8 +1,8 @@
+import { LIVE_POOL_PRICE_INTERVAL } from "@/config/config";
 import { useConnection } from "@/context/ConnectionContext";
 import { LivePoolClient } from "@avernikoz/memechan-sol-sdk";
 import { Connection } from "@solana/web3.js";
 import useSWR from "swr";
-import { LIVE_POOL_PRICE_INTERVAL } from "../refresh-intervals";
 import { useSlerfPrice } from "../useSlerfPrice";
 
 const fetchLiveMemePrice = async (slerfPriceInUsd: number, livePoolAddress: string, connection: Connection) => {

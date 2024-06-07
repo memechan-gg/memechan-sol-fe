@@ -1,6 +1,6 @@
+import { MAX_SLIPPAGE, MIN_SLIPPAGE } from "@/config/config";
 import { ChangeEvent, SetStateAction } from "react";
 import toast from "react-hot-toast";
-import { MAX_SLIPPAGE, MIN_SLIPPAGE } from "./config";
 
 export const validateSlippage = (slippage: string) => {
   const parsedSlippage = parseFloat(slippage);

@@ -1,8 +1,7 @@
+import { LIVE_POOL_HOLDERS_INTERVAL, MAX_HOLDERS_COUNT } from "@/config/config";
 import { MEMECHAN_PROGRAM_ID, TokenApiHelper } from "@avernikoz/memechan-sol-sdk";
 import { PublicKey } from "@solana/web3.js";
 import useSWR from "swr";
-import { MAX_HOLDERS_COUNT } from "../config";
-import { LIVE_POOL_HOLDERS_INTERVAL } from "../refresh-intervals";
 
 const fetchLiveCoinUniqueHoldersFromBE = async (memeMint: string, stakingPoolAddress: string) => {
   try {

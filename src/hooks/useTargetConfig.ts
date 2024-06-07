@@ -1,9 +1,9 @@
+import { TARGET_CONFIG_INTERVAL } from "@/config/config";
 import { useConnection } from "@/context/ConnectionContext";
 import { MEMECHAN_QUOTE_TOKEN_DECIMALS, MEMECHAN_TARGET_CONFIG, TargetConfigClient } from "@avernikoz/memechan-sol-sdk";
 import { Connection } from "@solana/web3.js";
 import BigNumber from "bignumber.js";
 import useSWR from "swr";
-import { TARGET_CONFIG_INTERVAL } from "./refresh-intervals";
 
 const fetchTargetConfig = async (connection: Connection) => {
   try {

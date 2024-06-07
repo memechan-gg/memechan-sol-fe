@@ -20,7 +20,7 @@ export function PresaleCoin({
 }) {
   const price = useMemePriceFromBE({ memeMint: coinMetadata.address, poolType: "seedPool" });
   const uniqueHoldersData = usePresaleCoinUniqueHoldersFromBE(coinMetadata.address);
-  const ticketsData = useTickets(seedPoolData.address);
+  const ticketsData = useTickets({ poolAddress: seedPoolData.address, poolStatus: "PRESALE" });
 
   const CHARTS_API_HOSTNAME = process.env.NEXT_PUBLIC_CHARTS_API_HOSTNAME;
 
