@@ -19,7 +19,12 @@ export const LiveCoinHolders = ({ coinMetadata, uniqueHoldersData }: LiveCoinHol
         {userHoldings && (
           <div className="flex justify-between flex-row gap-2 text-xs font-bold text-regular">
             <div>
-              <span className="font-normal">{userSlicedAddress}</span> (me) {userIsDev ? "(dev)" : ""}
+              <span className="font-normal hover:underline cursor-pointer">
+                <a target="_blank" href={`https://solana.fm/address/${publicKey?.toString()}`}>
+                  {userSlicedAddress}
+                </a>
+              </span>{" "}
+              (me) {userIsDev ? "(dev)" : ""}
             </div>
             <div>{userPercentage}%</div>
           </div>
@@ -39,7 +44,11 @@ export const LiveCoinHolders = ({ coinMetadata, uniqueHoldersData }: LiveCoinHol
             return (
               <div key={address} className="flex justify-between flex-row gap-2 text-xs font-bold text-regular">
                 <div>
-                  <span className="font-normal">{slicedAddress}</span>{" "}
+                  <span className="font-normal hover:underline cursor-pointer">
+                    <a target="_blank" href={`https://solana.fm/address/${address}`}>
+                      {slicedAddress}
+                    </a>
+                  </span>{" "}
                   {holderIsDev ? "(dev)" : holderIsRaydiumLiquidity ? "(raydium liquidity)" : ""}
                 </div>
                 <div>{percentage}%</div>
