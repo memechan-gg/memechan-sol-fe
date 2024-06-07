@@ -162,10 +162,9 @@ export const PresaleCoinSwap = ({
       const { side, result } = transactionResult;
 
       if (side === "buy") {
-        const { tx, memeTicketKeypair } = result;
+        const { tx } = result;
 
         const signature = await sendTransaction(tx, connection, {
-          signers: [memeTicketKeypair],
           maxRetries: 3,
           skipPreflight: true,
         });
