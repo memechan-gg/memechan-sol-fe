@@ -178,7 +178,8 @@ export const PresaleCoinSwap = ({
         toast(() => <TransactionSentNotification signature={signature} />);
 
         // Check the swap succeeded
-        await confirmTransaction({ connection, signature });
+        const swapSucceeded = await confirmTransaction({ connection, signature });
+        if (!swapSucceeded) return;
 
         await ChartApiInstance.updatePrice({ address: pool.address, type: "seedPool" }).catch((e) => {
           console.debug(`[OHLCV] Failed updating price for OHLCV`);
@@ -206,7 +207,8 @@ export const PresaleCoinSwap = ({
 
         // Check each part of the swap succeeded
         for (const signature of signatures) {
-          await confirmTransaction({ connection, signature });
+          const swapSucceeded = await confirmTransaction({ connection, signature });
+          if (!swapSucceeded) return;
         }
 
         await ChartApiInstance.updatePrice({ address: pool.address, type: "seedPool" }).catch((e) => {
