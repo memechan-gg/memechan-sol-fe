@@ -32,20 +32,17 @@ export function Profile({ address }: ProfileProps) {
           throw new Error(`Error fetching tokens: ${response.statusText}`);
         }
         const data = await response.json();
-        console.log("Data:", data);
 
         if (data && data.result) {
           const tokenPromises = data.result.map(async (token: any) => {
             try {
               let presaleResponse = await fetch(`${BE_URL}/sol/presale/token?tokenAddress=${token.tokenAddress}`);
               let presaleData = await presaleResponse.json();
-              console.log("Presale data for token:", token.tokenAddress, presaleData);
 
               // Check if presaleData is an empty object
               if (Object.keys(presaleData).length === 0) {
                 presaleResponse = await fetch(`${BE_URL}/sol/live/token?tokenAddress=${token.tokenAddress}`);
                 presaleData = await presaleResponse.json();
-                console.log("Live data for token:", token.tokenAddress, presaleData);
               }
 
               return {
