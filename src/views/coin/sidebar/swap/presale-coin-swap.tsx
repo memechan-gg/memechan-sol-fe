@@ -13,6 +13,7 @@ import {
   MEMECHAN_MEME_TOKEN_DECIMALS,
   MEMECHAN_QUOTE_MINT,
   MEMECHAN_QUOTE_TOKEN_DECIMALS,
+  MemeTicketClient,
   sleep,
 } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
@@ -30,6 +31,7 @@ export const PresaleCoinSwap = ({
   pool,
   boundPool,
   ticketsData: {
+    tickets,
     availableTicketsAmount,
     unavailableTicketsAmount,
     unavailableTickets,
@@ -75,6 +77,7 @@ export const PresaleCoinSwap = ({
                 inputAmount,
                 minOutputAmount,
                 slippagePercentage,
+                memeTicketNumber: tickets.length + MemeTicketClient.TICKET_NUMBER_START,
               }),
             }
           : {
@@ -90,7 +93,7 @@ export const PresaleCoinSwap = ({
         | { side: "buy"; result: GetBuyMemeTransactionOutput }
         | { side: "sell"; result: GetSellMemeTransactionOutput };
     },
-    [boundPoolClient, publicKey],
+    [boundPoolClient, publicKey, tickets],
   );
 
   useEffect(() => {
@@ -162,10 +165,9 @@ export const PresaleCoinSwap = ({
       const { side, result } = transactionResult;
 
       if (side === "buy") {
-        const { tx, memeTicketKeypair } = result;
+        const { tx } = result;
 
         const signature = await sendTransaction(tx, connection, {
-          signers: [memeTicketKeypair],
           maxRetries: 3,
           skipPreflight: true,
         });

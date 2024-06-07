@@ -1,41 +1,61 @@
 import { SocialApiInstance } from "@/common/solana";
-import { ThreadsResult } from "@avernikoz/memechan-sol-sdk";
 import { useCallback, useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { useInterval } from "usehooks-ts";
 import { CoinThreadWithParsedMessage } from "../coin.types";
 import { filterThreads } from "../comments/utils";
 
 export function useSocialAPI({ coinType }: { coinType: string }) {
-  const [threads, setThreads] = useState<CoinThreadWithParsedMessage[]>();
+  const [threads, setThreads] = useState<CoinThreadWithParsedMessage[]>([]);
+  const [nextPageToken, setNextPageToken] = useState<string | null>();
+  const [loadedMore, setLoadedMore] = useState<boolean>(false);
 
-  const fetchCoinThreads = useCallback(
-    async function () {
-      if (!coinType) {
-        return;
-      }
+  const fetchCoinThreads = useCallback(async () => {
+    try {
+      const { result, paginationToken } = await SocialApiInstance.getThreads({
+        coinType,
+        direction: "asc",
+        sortBy: "creationTime",
+      });
 
-      let threads: ThreadsResult | null = null;
+      const filtredThreads = filterThreads(result);
 
-      try {
-        threads = await SocialApiInstance.getThreads({ coinType, direction: "asc", sortBy: "creationTime" });
-      } catch (error) {}
-
-      if (!threads) {
-        return;
-      }
-
-      const filtredThreads = filterThreads(threads.result);
-
+      setNextPageToken(paginationToken ?? null);
       setThreads(filtredThreads);
-    },
-    [coinType],
-  );
+    } catch (e) {
+      console.error(`[fetchCoinThreads] Failed to fetch threads for coin ${coinType}:`, e);
+    }
+  }, [coinType]);
+
+  // The `load more` button click handler
+  const loadMore = useCallback(async () => {
+    if (!loadedMore) {
+      setLoadedMore(true);
+      toast("Disabled auto comments update. Reload page to turn it back");
+    }
+
+    try {
+      const { result, paginationToken } = await SocialApiInstance.getThreads({
+        coinType,
+        direction: "asc",
+        sortBy: "creationTime",
+        paginationToken: nextPageToken,
+      });
+
+      const filtredThreads = filterThreads(result);
+
+      setNextPageToken(paginationToken ?? null);
+      setThreads((prevThreads) => (prevThreads ? [...prevThreads, ...filtredThreads] : filtredThreads));
+    } catch (e) {
+      console.error(`[fetchCoinThreads] Failed to fetch threads for coin ${coinType}:`, e);
+    }
+  }, [loadedMore, coinType, nextPageToken]);
 
   useEffect(() => {
     fetchCoinThreads();
-  }, [coinType, fetchCoinThreads]);
+  }, [fetchCoinThreads]);
 
-  useInterval(fetchCoinThreads, 10000);
+  useInterval(fetchCoinThreads, loadedMore ? null : 10_000);
 
-  return { threads, updateThreads: fetchCoinThreads };
+  return { threads, updateThreads: fetchCoinThreads, loadMore, nextPageToken };
 }
