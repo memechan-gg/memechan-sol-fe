@@ -1,5 +1,6 @@
 import { ChartIframe } from "@/components/chart-iframe";
 import { ThreadBoard } from "@/components/thread";
+import { TICKETS_INTERVAL } from "@/config/config";
 import { usePresaleCoinUniqueHoldersFromBE } from "@/hooks/presale/usePresaleCoinUniqueHoldersFromBE";
 import { useMemePriceFromBE } from "@/hooks/useMemePriceFromBE";
 import { useTickets } from "@/hooks/useTickets";
@@ -20,7 +21,11 @@ export function PresaleCoin({
 }) {
   const price = useMemePriceFromBE({ memeMint: coinMetadata.address, poolType: "seedPool" });
   const uniqueHoldersData = usePresaleCoinUniqueHoldersFromBE(coinMetadata.address);
-  const ticketsData = useTickets({ poolAddress: seedPoolData.address, poolStatus: "PRESALE" });
+  const ticketsData = useTickets({
+    poolAddress: seedPoolData.address,
+    poolStatus: "PRESALE",
+    refreshInterval: TICKETS_INTERVAL,
+  });
 
   const CHARTS_API_HOSTNAME = process.env.NEXT_PUBLIC_CHARTS_API_HOSTNAME;
 
