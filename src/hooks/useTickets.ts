@@ -14,14 +14,14 @@ export const fetchTickets = async (
   poolStatus: PoolStatus,
 ) => {
   try {
-    const tickets = await MemeTicketClient.fetchTicketsByUser2(new PublicKey(poolAddress), client, user);
-    return tickets;
+    const ticketsData = await MemeTicketClient.fetchTicketsByUser2(new PublicKey(poolAddress), client, user);
+    return ticketsData;
   } catch (e) {
     console.error(`[fetchTickets] Cannot fetch tickets for ${poolAddress} pool ${poolAddress}:`, e);
 
     const ticketsValue = poolStatus === "PRESALE" ? "available tickets" : "staked meme coins";
     toast.error(`Failed to get your ${ticketsValue}. Please, try to refresh the page`);
-    return [];
+    return { tickets: [], freeIndexes: [], lockedIndexes: [] };
   }
 };
 
@@ -47,10 +47,12 @@ export function useTickets({
     },
   );
 
-  const ticketsData = getTicketsData(data);
+  const ticketsData = getTicketsData(data?.tickets);
 
   return {
     ...ticketsData,
+    freeIndexes: data?.freeIndexes,
+    lockedIndexes: data?.lockedIndexes,
     refresh: mutate,
   };
 }

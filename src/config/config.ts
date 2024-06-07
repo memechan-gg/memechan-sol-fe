@@ -5,6 +5,7 @@ import { ConnectionConfig } from "@solana/web3.js";
 // Connection Config
 export const MEMECHAN_RPC_ENDPOINT = "https://rpc1.memechan.xyz";
 export const IS_TEST_ENV = false;
+export const TX_CONFIRMATION_TIMEOUT_IN_MS = 15_000;
 
 export const CONNECTION_CONFIG: ConnectionConfig = {
   httpAgent: IS_TEST_ENV ? false : undefined,

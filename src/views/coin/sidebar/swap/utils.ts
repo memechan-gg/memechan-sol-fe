@@ -1,4 +1,5 @@
 import { MAX_SLIPPAGE, MIN_SLIPPAGE } from "@/config/config";
+import { MemeTicketClient } from "@avernikoz/memechan-sol-sdk";
 import { ChangeEvent, SetStateAction } from "react";
 import toast from "react-hot-toast";
 
@@ -71,4 +72,8 @@ export const handleSlippageInputChange = ({
       setValue(input);
     }
   }
+};
+
+export const getFreeMemeTicketIndex = (freeIndexes: number[]) => {
+  return freeIndexes[0] + MemeTicketClient.TICKET_NUMBER_START;
 };
