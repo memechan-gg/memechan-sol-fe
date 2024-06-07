@@ -139,16 +139,7 @@ export function Home() {
                 {isCoinsListExist && (
                   <>
                     {tokenList.map((item) => (
-                      <Thread
-                        mint={item.address}
-                        key={item.address}
-                        title={item.name}
-                        image={item.image}
-                        createdBy={item.creator}
-                        marketCap={item.marketcap}
-                        ticker={item.symbol}
-                        description={item.description}
-                      />
+                      <Thread key={item.address} coinMetadata={item} />
                     ))}
                   </>
                 )}
