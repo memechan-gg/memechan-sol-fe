@@ -66,6 +66,7 @@ export function PostReplyDialog({
 
       const stringifiedMessage = JSON.stringify(messageObject);
       await SocialApiInstance.createThread({ message: stringifiedMessage, coinType });
+
       updateThreads();
 
       onClose();

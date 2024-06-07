@@ -4,6 +4,7 @@ import { TransactionSentNotification } from "@/components/notifications/transact
 import { LOW_FEES_THRESHOLD } from "@/config/config";
 import { useConnection } from "@/context/ConnectionContext";
 import { useStakingPoolClient } from "@/hooks/staking/useStakingPoolClient";
+import { confirmTransaction } from "@/utils/confirmTransaction";
 import { WithdrawFeesDialogProps } from "@/views/coin/coin.types";
 import { MEMECHAN_MEME_TOKEN_DECIMALS, MEMECHAN_QUOTE_TOKEN_DECIMALS, sleep } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
@@ -74,25 +75,8 @@ export const WithdrawFeesPopUp = ({
         toast(() => <TransactionSentNotification signature={signature} />);
 
         // Check that a part of the withdraw fees succeeded
-        const { blockhash: blockhash, lastValidBlockHeight: lastValidBlockHeight } =
-          await connection.getLatestBlockhash("confirmed");
-        const swapTxResult = await connection.confirmTransaction(
-          {
-            signature: signature,
-            blockhash: blockhash,
-            lastValidBlockHeight: lastValidBlockHeight,
-          },
-          "confirmed",
-        );
-
-        if (swapTxResult.value.err) {
-          console.error(
-            "[WithdrawFeesDialog.withdrawFees] Withdraw fees failed:",
-            JSON.stringify(swapTxResult, null, 2),
-          );
-          toast.error("Fees withdrawal failed. Please, try again");
-          return;
-        }
+        const swapSucceeded = await confirmTransaction({ connection, signature });
+        if (!swapSucceeded) return;
       }
 
       setMemeAmount("0");

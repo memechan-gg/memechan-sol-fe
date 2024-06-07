@@ -1,7 +1,7 @@
 import { ThreadBoard } from "@/components/thread";
+import { BE_URL } from "@avernikoz/memechan-sol-sdk";
 import { useEffect, useState } from "react";
 import { CoinItem } from "./coin-item";
-import { BE_URL } from "@avernikoz/memechan-sol-sdk";
 
 type ProfileProps = {
   address: string;
@@ -26,30 +26,23 @@ export function Profile({ address }: ProfileProps) {
       setIsLoading(true);
       try {
         const response = await fetch(
-          `${BE_URL}/sol/holders?walletAddress=${address}&sortBy=tokenAmount&direction=asc`,
+          `${BE_URL}/sol/holders?walletAddress=${address}&sortBy=tokenAmountInPercentage&direction=asc`,
         );
         if (!response.ok) {
           throw new Error(`Error fetching tokens: ${response.statusText}`);
         }
         const data = await response.json();
-        console.log("Data:", data);
 
         if (data && data.result) {
           const tokenPromises = data.result.map(async (token: any) => {
             try {
-              let presaleResponse = await fetch(
-                `${BE_URL}/sol/presale/token?tokenAddress=${token.tokenAddress}`,
-              );
+              let presaleResponse = await fetch(`${BE_URL}/sol/presale/token?tokenAddress=${token.tokenAddress}`);
               let presaleData = await presaleResponse.json();
-              console.log("Presale data for token:", token.tokenAddress, presaleData);
 
               // Check if presaleData is an empty object
               if (Object.keys(presaleData).length === 0) {
-                presaleResponse = await fetch(
-                  `${BE_URL}/sol/live/token?tokenAddress=${token.tokenAddress}`,
-                );
+                presaleResponse = await fetch(`${BE_URL}/sol/live/token?tokenAddress=${token.tokenAddress}`);
                 presaleData = await presaleResponse.json();
-                console.log("Live data for token:", token.tokenAddress, presaleData);
               }
 
               return {
@@ -95,18 +88,19 @@ export function Profile({ address }: ProfileProps) {
         <ThreadBoard title="Profile">
           <div className="flex flex-col gap-3">
             {/* Address */}
-            <div className="flex flex-col gap-1">
-              <h4 className="text-sm font-bold text-regular">Address</h4>
-              <div className="text-xs">{address}</div>
-              <a target="_blank" rel="noreferrer" href={`https://solscan.io/account/${address}`}>
-                <h4 className="text-sm font-bold text-regular">Show on solscan</h4>
-              </a>
+            <div className="flex flex-col gap-1 text-regular">
+              <h4 className="text-base font-bold">Address</h4>
+              <div className="text-xs cursor-pointer hover:underline">
+                <a target="_blank" rel="noreferrer" href={`https://solana.fm/address/${address}`}>
+                  {address}
+                </a>
+              </div>
             </div>
             {/* Coins Held */}
-            <div className="flex flex-col gap-2">
-              <h4 className="text-sm font-bold text-regular">Coins Held</h4>
+            <div className="flex flex-col gap-2 mt-2">
+              <h4 className="text-base font-bold text-regular">Coins Held</h4>
               {isLoading ? (
-                <div className="text-blue-500">Loading...</div>
+                <div className="text-regular">Loading...</div>
               ) : error ? (
                 <div className="text-red-500">{error}</div>
               ) : tokens.length === 0 ? (

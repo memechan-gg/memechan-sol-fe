@@ -32,7 +32,12 @@ export const PresaleCoinHolders = ({ poolAddress, coinMetadata, uniqueHoldersDat
         {userHoldings && (
           <div className="flex justify-between flex-row gap-2 text-xs font-bold text-regular">
             <div>
-              <span className="font-normal">{userSlicedAddress}</span> (me) {userIsDev ? "(dev)" : ""}
+              <span className="font-normal hover:underline cursor-pointer">
+                <a target="_blank" href={`https://solana.fm/address/${publicKey?.toString()}`}>
+                  {userSlicedAddress}
+                </a>
+              </span>{" "}
+              (me) {userIsDev ? "(dev)" : ""}
             </div>
             <div>{userPercentage}%</div>
           </div>
@@ -40,7 +45,12 @@ export const PresaleCoinHolders = ({ poolAddress, coinMetadata, uniqueHoldersDat
         {bondingCurvePercentage && (
           <div key="bonding-curve" className="flex justify-between flex-row gap-2 text-xs font-bold text-regular">
             <div>
-              <span className="font-normal">{bondingCurveSlicedAddress}</span> (bonding curve)
+              <span className="font-normal hover:underline cursor-pointer">
+                <a target="_blank" href={`https://solana.fm/address/${poolAddress}`}>
+                  {bondingCurveSlicedAddress}
+                </a>
+              </span>{" "}
+              (bonding curve)
             </div>
             <div>{bondingCurvePercentage}%</div>
           </div>
@@ -59,7 +69,12 @@ export const PresaleCoinHolders = ({ poolAddress, coinMetadata, uniqueHoldersDat
             return (
               <div key={slicedAddress} className="flex justify-between flex-row gap-2 text-xs font-bold text-regular">
                 <div>
-                  <span className="font-normal">{slicedAddress}</span> {holderIsDev ? "(dev)" : ""}
+                  <span className="font-normal hover:underline cursor-pointer">
+                    <a target="_blank" href={`https://solana.fm/address/${owner.toString()}`}>
+                      {slicedAddress}
+                    </a>
+                  </span>{" "}
+                  {holderIsDev ? "(dev)" : ""}
                 </div>
                 <div>{percentage}%</div>
               </div>
