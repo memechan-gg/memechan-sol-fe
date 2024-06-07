@@ -12,8 +12,8 @@ export const DEFAULT_SORT_PARAMS: {
   direction: ThreadsSortDirection;
 } = {
   status: "all",
-  sortBy: "last_reply",
-  direction: "asc",
+  sortBy: "creation_time",
+  direction: "desc",
 };
 
 export function useCoinApi() {
