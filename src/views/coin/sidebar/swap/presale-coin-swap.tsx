@@ -6,6 +6,7 @@ import { useConnection } from "@/context/ConnectionContext";
 import { useBoundPoolClient } from "@/hooks/presale/useBoundPoolClient";
 import { useBalance } from "@/hooks/useBalance";
 import { GetSwapOutputAmountParams, GetSwapTransactionParams } from "@/types/hooks";
+import { confirmTransaction } from "@/utils/confirmTransaction";
 import { formatNumber } from "@/utils/formatNumber";
 import {
   GetBuyMemeTransactionOutput,
@@ -13,8 +14,6 @@ import {
   MEMECHAN_MEME_TOKEN_DECIMALS,
   MEMECHAN_QUOTE_MINT,
   MEMECHAN_QUOTE_TOKEN_DECIMALS,
-  MemeTicketClient,
-  sleep,
 } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useCallback, useEffect, useState } from "react";
@@ -24,14 +23,14 @@ import { presaleSwapParamsAreValid } from "../../coin.utils";
 import { SwapButton } from "./button";
 import { UnavailableTicketsToSellDialog } from "./dialog-unavailable-tickets-to-sell";
 import { InputAmountTitle } from "./input-amount-title";
-import { handleSlippageInputChange, handleSwapInputChange, validateSlippage } from "./utils";
+import { getFreeMemeTicketIndex, handleSlippageInputChange, handleSwapInputChange, validateSlippage } from "./utils";
 
 export const PresaleCoinSwap = ({
   tokenSymbol,
   pool,
   boundPool,
   ticketsData: {
-    tickets,
+    freeIndexes,
     availableTicketsAmount,
     unavailableTicketsAmount,
     unavailableTickets,
@@ -66,7 +65,11 @@ export const PresaleCoinSwap = ({
 
   const getSwapTransaction = useCallback(
     async ({ inputAmount, minOutputAmount, slerfToMeme, slippagePercentage }: GetSwapTransactionParams) => {
-      if (!boundPoolClient || !publicKey) return;
+      if (!publicKey) {
+        toast.error("Please, connect your wallet to make swaps");
+        return;
+      }
+      if (!boundPoolClient || !freeIndexes) return;
 
       return (
         slerfToMeme
@@ -77,7 +80,7 @@ export const PresaleCoinSwap = ({
                 inputAmount,
                 minOutputAmount,
                 slippagePercentage,
-                memeTicketNumber: tickets.length + MemeTicketClient.TICKET_NUMBER_START,
+                memeTicketNumber: getFreeMemeTicketIndex(freeIndexes),
               }),
             }
           : {
@@ -93,7 +96,7 @@ export const PresaleCoinSwap = ({
         | { side: "buy"; result: GetBuyMemeTransactionOutput }
         | { side: "sell"; result: GetSellMemeTransactionOutput };
     },
-    [boundPoolClient, publicKey, tickets],
+    [boundPoolClient, publicKey, freeIndexes],
   );
 
   const updateOutputAmount = useCallback(async () => {
@@ -173,30 +176,10 @@ export const PresaleCoinSwap = ({
         });
 
         toast(() => <TransactionSentNotification signature={signature} />);
-        setIsSwapping(false);
 
         // Check the swap succeeded
-        const { blockhash: blockhash, lastValidBlockHeight: lastValidBlockHeight } =
-          await connection.getLatestBlockhash("confirmed");
-        const swapTxResult = await connection.confirmTransaction(
-          {
-            signature: signature,
-            blockhash: blockhash,
-            lastValidBlockHeight: lastValidBlockHeight,
-          },
-          "confirmed",
-        );
+        await confirmTransaction({ connection, signature });
 
-        if (swapTxResult.value.err) {
-          console.error("[Swap.onSwap] Buy failed:", JSON.stringify(swapTxResult, null, 2));
-          toast("Swap failed. Please, try again");
-          return;
-        }
-
-        await sleep(2000);
-
-        refetchSlerfBalance();
-        refreshAvailableTickets();
         await ChartApiInstance.updatePrice({ address: pool.address, type: "seedPool" }).catch((e) => {
           console.debug(`[OHLCV] Failed updating price for OHLCV`);
           console.error(`Failed updating price for OHLCV, error:`, e);
@@ -221,46 +204,27 @@ export const PresaleCoinSwap = ({
           toast(() => <TransactionSentNotification signature={signature} />);
         }
 
-        setIsSwapping(false);
-
         // Check each part of the swap succeeded
         for (const signature of signatures) {
-          const { blockhash: blockhash, lastValidBlockHeight: lastValidBlockHeight } =
-            await connection.getLatestBlockhash("confirmed");
-
-          const swapTxResult = await connection.confirmTransaction(
-            {
-              signature: signature,
-              blockhash: blockhash,
-              lastValidBlockHeight: lastValidBlockHeight,
-            },
-            "confirmed",
-          );
-
-          if (swapTxResult.value.err) {
-            console.error("[Swap.onSwap] Sell failed:", JSON.stringify(swapTxResult, null, 2));
-            toast("Swap failed. Please, try again");
-            return;
-          }
+          await confirmTransaction({ connection, signature });
         }
 
-        await sleep(2000);
-
-        refetchSlerfBalance();
-        refreshAvailableTickets();
         await ChartApiInstance.updatePrice({ address: pool.address, type: "seedPool" }).catch((e) => {
           console.debug(`[OHLCV] Failed updating price for OHLCV`);
           console.error(`Failed updating price for OHLCV, error:`, e);
         });
+
         toast.success("Swap succeeded");
         return;
       }
     } catch (e) {
       console.error("[Swap.onSwap] Swap error:", e);
-      toast.error("Failed to swap. Please, try again");
+      toast.error("Swap failed. Please, try again");
     } finally {
-      setIsSwapping(false);
+      refreshAvailableTickets();
+      refetchSlerfBalance();
       updateOutputAmount();
+      setIsSwapping(false);
     }
   }, [
     availableTicketsAmount,
@@ -336,7 +300,7 @@ export const PresaleCoinSwap = ({
         )}
         {!slerfToMeme && unavailableTicketsAmount !== "0" && (
           <div className="text-xs !normal-case font-bold text-regular">
-            unavailable {tokenSymbol} tickets to sell (locked):{" "}
+            Unavailable {tokenSymbol} tickets to sell (locked):{" "}
             {formatNumber(Number(unavailableTicketsAmount), MEMECHAN_MEME_TOKEN_DECIMALS)}
           </div>
         )}
