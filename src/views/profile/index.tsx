@@ -7,7 +7,7 @@ type ProfileProps = {
   address: string;
 };
 
-type Token = {
+export type Token = {
   mint: string;
   tokenAmount: number;
   decimals: number;
@@ -83,21 +83,21 @@ export function Profile({ address }: ProfileProps) {
   }, [address]);
 
   return (
-    <div className="w-full flex items-center justify-center">
-      <div className="max-w-3xl w-full">
+    <div className="flex items-center justify-center">
+      <div className="w-full">
         <ThreadBoard title="Profile">
           <div className="flex flex-col gap-3">
             {/* Address */}
-            <div className="flex flex-col gap-1 text-regular">
+            <div className="flex flex-col gap-1 text-regular items-center sm:items-start">
               <h4 className="text-base font-bold">Address</h4>
-              <div className="text-xs cursor-pointer hover:underline">
+              <div className="text-sm cursor-pointer hover:underline font-medium w-min">
                 <a target="_blank" rel="noreferrer" href={`https://solana.fm/address/${address}`}>
                   {address}
                 </a>
               </div>
             </div>
             {/* Coins Held */}
-            <div className="flex flex-col gap-2 mt-2">
+            <div className="flex flex-col gap-2 mt-3 items-center sm:items-start">
               <h4 className="text-base font-bold text-regular">Coins Held</h4>
               {isLoading ? (
                 <div className="text-regular">Loading...</div>
@@ -106,12 +106,9 @@ export function Profile({ address }: ProfileProps) {
               ) : tokens.length === 0 ? (
                 <div className="text-red-500">No coins fetched.</div>
               ) : (
-                <div className="flex flex-col gap-2 max-w-xs text-regular font-medium">
-                  {tokens.map((token, index) => (
-                    <div key={index}>
-                      {token.mint}
-                      <CoinItem image={token.image} name={token.name} marketCap={token.marketCap.toString()} />
-                    </div>
+                <div className="flex flex-wrap gap-6 sm:justify-normal justify-center text-regular font-bold">
+                  {tokens.map((token) => (
+                    <CoinItem key={token.mint} token={token} />
                   ))}
                 </div>
               )}

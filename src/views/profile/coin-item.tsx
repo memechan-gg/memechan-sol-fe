@@ -1,14 +1,24 @@
-type CoinItemProps = { image: string; name: string; marketCap: string };
+import { formatNumber } from "@/utils/formatNumber";
+import Link from "next/link";
+import { Token } from ".";
 
-export const CoinItem = ({ image, name, marketCap }: CoinItemProps) => {
+type CoinItemProps = { token: Token };
+
+export const CoinItem = ({ token: { image, marketCap, mint, name } }: CoinItemProps) => {
   return (
-    <div className="flex flex-row gap-2 items-center">
-      <div className="flex flex-row gap-2 items-center">
-        <img className="w-[75px] border border-regular h-auto rounded-lg" src={image} alt="Coin Image" />
+    <div className="flex flex-col gap-2">
+      <div className="w-[150px]">
+        <h2 className="text-sm font-bold text-regular truncate">{name}</h2>
       </div>
-      <div className="flex flex-col gap-2">
-        <div className="text-xs">Name: {name}</div>
-        <div className="text-xs">Marketcap: {marketCap}</div>
+      <Link href={`/coin/${mint}`} target="_blank">
+        <img
+          className="w-[150px] border border-regular h-[150px] object-cover object-center"
+          src={image}
+          alt="Coin Image"
+        />
+      </Link>
+      <div className="flex flex-col gap-1 text-xs">
+        <div>market cap: ${formatNumber(marketCap, 2)}</div>
       </div>
     </div>
   );
