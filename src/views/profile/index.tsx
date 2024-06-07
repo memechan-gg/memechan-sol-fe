@@ -88,18 +88,19 @@ export function Profile({ address }: ProfileProps) {
         <ThreadBoard title="Profile">
           <div className="flex flex-col gap-3">
             {/* Address */}
-            <div className="flex flex-col gap-1">
-              <h4 className="text-sm font-bold text-regular">Address</h4>
-              <div className="text-xs">{address}</div>
-              <a target="_blank" rel="noreferrer" href={`https://solscan.io/account/${address}`}>
-                <h4 className="text-sm font-bold text-regular">Show on solscan</h4>
-              </a>
+            <div className="flex flex-col gap-1 text-regular">
+              <h4 className="text-base font-bold">Address</h4>
+              <div className="text-xs cursor-pointer hover:underline">
+                <a target="_blank" rel="noreferrer" href={`https://solana.fm/address/${address}`}>
+                  {address}
+                </a>
+              </div>
             </div>
             {/* Coins Held */}
-            <div className="flex flex-col gap-2">
-              <h4 className="text-sm font-bold text-regular">Coins Held</h4>
+            <div className="flex flex-col gap-2 mt-2">
+              <h4 className="text-base font-bold text-regular">Coins Held</h4>
               {isLoading ? (
-                <div className="text-blue-500">Loading...</div>
+                <div className="text-regular">Loading...</div>
               ) : error ? (
                 <div className="text-red-500">{error}</div>
               ) : tokens.length === 0 ? (
