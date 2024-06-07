@@ -1,6 +1,5 @@
 import { SocialApiInstance } from "@/common/solana";
 import { handleAuthentication, uploadImageToIPFS } from "@/views/create-coin/create-coin.utils";
-import { sleep } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
@@ -67,8 +66,6 @@ export function PostReplyDialog({
 
       const stringifiedMessage = JSON.stringify(messageObject);
       await SocialApiInstance.createThread({ message: stringifiedMessage, coinType });
-
-      await sleep(2000);
 
       updateThreads();
 
