@@ -11,6 +11,7 @@ import {
   MAX_NAME_LENGTH,
   MAX_SYMBOL_LENGTH,
   MEMECHAN_QUOTE_TOKEN,
+  MemeTicketClient,
   MemechanClient,
   validateCreateCoinParams,
 } from "@avernikoz/memechan-sol-sdk";
@@ -80,7 +81,7 @@ export async function createMemeCoinAndPool({
             minOutputAmount: "0",
             slippagePercentage: 0,
             user: publicKey,
-            memeTicketNumber: 1,
+            memeTicketNumber: MemeTicketClient.TICKET_NUMBER_START,
           }
         : undefined,
   });

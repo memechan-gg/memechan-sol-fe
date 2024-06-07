@@ -13,6 +13,7 @@ import {
   MEMECHAN_MEME_TOKEN_DECIMALS,
   MEMECHAN_QUOTE_MINT,
   MEMECHAN_QUOTE_TOKEN_DECIMALS,
+  MemeTicketClient,
   sleep,
 } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
@@ -76,7 +77,7 @@ export const PresaleCoinSwap = ({
                 inputAmount,
                 minOutputAmount,
                 slippagePercentage,
-                memeTicketNumber: tickets.length + 1,
+                memeTicketNumber: tickets.length + MemeTicketClient.TICKET_NUMBER_START,
               }),
             }
           : {
