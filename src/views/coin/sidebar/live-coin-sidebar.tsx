@@ -1,3 +1,4 @@
+import { TICKETS_INTERVAL } from "@/config/config";
 import { useTickets } from "@/hooks/useTickets";
 import { LiveCoinSidebarProps } from "../coin.types";
 import { LiveCoinHolders } from "./holders/live-coin-holders";
@@ -13,7 +14,11 @@ export function LiveCoinSidebar({
   uniqueHoldersData,
   stakingPoolFromApi,
 }: LiveCoinSidebarProps) {
-  const ticketsData = useTickets({ poolAddress: seedPoolData.seedPool?.address, poolStatus: "LIVE" });
+  const ticketsData = useTickets({
+    poolAddress: seedPoolData.seedPool?.address,
+    poolStatus: "LIVE",
+    refreshInterval: TICKETS_INTERVAL,
+  });
 
   return (
     <>
