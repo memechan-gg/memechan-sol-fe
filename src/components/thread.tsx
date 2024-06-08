@@ -1,5 +1,6 @@
 import { formatNumber } from "@/utils/formatNumber";
-import { SolanaToken } from "@avernikoz/memechan-sol-sdk";
+import { MEMECHAN_QUOTE_TOKEN_DECIMALS, SolanaToken } from "@avernikoz/memechan-sol-sdk";
+import BigNumber from "bignumber.js";
 import Link from "next/link";
 
 export function NoticeBoard({ title, children }: { title: string; children: React.ReactNode }) {
@@ -42,10 +43,12 @@ export function ThreadBoard({
 }
 
 export function Thread({
-  coinMetadata: { name, address, image, creator, marketcap, symbol, description },
+  coinMetadata: { name, address, image, creator, marketcap, symbol, description, holdersCount, slerfIn },
 }: {
   coinMetadata: SolanaToken;
 }) {
+  const formattedSlerfIn = slerfIn ? new BigNumber(slerfIn).div(10 ** MEMECHAN_QUOTE_TOKEN_DECIMALS).toFixed(2) : null;
+
   return (
     <div className="flex flex-col gap-2">
       <div className="w-[150px]">
@@ -65,11 +68,17 @@ export function Thread({
             <span className="font-bold hover:underline">{creator.slice(0, 5) + "..." + creator.slice(-3)}</span>
           </Link>
         </div>
-        <div className="text-green">market cap: ${formatNumber(marketcap, 2)}</div>
+        <Link href={`/coin/${address}`}>
+          <div className="text-green flex flex-col">
+            <div className="text-green">market cap: ${formatNumber(marketcap, 2)}</div>
+            {formattedSlerfIn && <div className="text-green">slerf in: {formatNumber(+formattedSlerfIn, 2)}</div>}
+          </div>
+        </Link>
         <Link href={`/coin/${address}`}>
           <div className="text-regular flex flex-col flex-wrap">
             <div className="font-bold !normal-case">symbol: {symbol}</div>
-            <div className="max-w-[150px] truncate">{description}</div>
+            {holdersCount !== undefined && <div className="font-bold">holders: {holdersCount}</div>}
+            {/* <div className="max-w-[150px] truncate">{description}</div> */}
           </div>
         </Link>
       </div>
