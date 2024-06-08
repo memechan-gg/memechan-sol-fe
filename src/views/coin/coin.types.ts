@@ -4,9 +4,8 @@ import { usePresaleCoinUniqueHoldersFromBE } from "@/hooks/presale/usePresaleCoi
 import { useSeedPool } from "@/hooks/presale/useSeedPool";
 import { useStakingPoolFromApi } from "@/hooks/staking/useStakingPoolFromApi";
 import { useTickets } from "@/hooks/useTickets";
-import { CoinMetadata } from "@/types/coin";
 import { LivePoolData, SeedPoolData } from "@/types/pool";
-import { ParsedMemeTicket } from "@avernikoz/memechan-sol-sdk";
+import { ParsedMemeTicket, SolanaToken } from "@avernikoz/memechan-sol-sdk";
 
 export type UnavailableTicketsToSellDialogParams = {
   unavailableTickets: ParsedMemeTicket[];
@@ -32,7 +31,7 @@ export type SwapButtonProps = {
 };
 
 export type PresaleCoinSidebarProps = {
-  coinMetadata: CoinMetadata;
+  coinMetadata: SolanaToken;
   pool: SeedPoolData;
   uniqueHoldersData: ReturnType<typeof usePresaleCoinUniqueHoldersFromBE>;
   ticketsData: ReturnType<typeof useTickets>;
@@ -40,7 +39,7 @@ export type PresaleCoinSidebarProps = {
 
 export type LiveCoinSidebarProps = {
   pool: LivePoolData;
-  coinMetadata: CoinMetadata;
+  coinMetadata: SolanaToken;
   uniqueHoldersData: ReturnType<typeof useLiveCoinUniqueHoldersFromBE>;
   seedPoolData: ReturnType<typeof useSeedPool>;
   stakingPoolFromApi: ReturnType<typeof useStakingPoolFromApi>;
@@ -48,22 +47,22 @@ export type LiveCoinSidebarProps = {
 
 export type HoldersProps = {
   poolAddress: string;
-  coinMetadata: CoinMetadata;
+  coinMetadata: SolanaToken;
   uniqueHoldersData: ReturnType<typeof usePresaleCoinUniqueHoldersFromBE>;
 };
 
 export type LiveCoinHoldersProps = {
-  coinMetadata: CoinMetadata;
+  coinMetadata: SolanaToken;
   uniqueHoldersData: ReturnType<typeof useLiveCoinUniqueHoldersFromBE>;
 };
 
 export type LiveCoinInfoProps = {
-  metadata: CoinMetadata;
+  metadata: SolanaToken;
   livePoolAddress: string;
 };
 
 export type PresaleCoinInfoProps = {
-  metadata: CoinMetadata;
+  metadata: SolanaToken;
   boundPool: ReturnType<typeof useBoundPool>;
 };
 

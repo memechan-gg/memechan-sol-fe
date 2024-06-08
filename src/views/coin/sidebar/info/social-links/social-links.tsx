@@ -1,7 +1,7 @@
-import { CoinMetadata } from "@/types/coin";
+import { SolanaToken } from "@avernikoz/memechan-sol-sdk";
 import { SocialLink } from "./social-link";
 
-export const SocialLinks = ({ socialLinks }: { socialLinks: CoinMetadata["socialLinks"] }) => {
+export const SocialLinks = ({ socialLinks }: { socialLinks: SolanaToken["socialLinks"] }) => {
   if (!socialLinks || (!socialLinks.discord && !socialLinks.telegram && !socialLinks.twitter && !socialLinks.website))
     return;
 

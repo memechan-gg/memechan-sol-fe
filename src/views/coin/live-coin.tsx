@@ -5,16 +5,16 @@ import { useLiveCoinUniqueHoldersFromBE } from "@/hooks/live/useLiveCoinUniqueHo
 import { useSeedPool } from "@/hooks/presale/useSeedPool";
 import { useStakingPoolFromApi } from "@/hooks/staking/useStakingPoolFromApi";
 import { useMemePriceFromBE } from "@/hooks/useMemePriceFromBE";
-import { CoinMetadata } from "@/types/coin";
 import { LivePoolData } from "@/types/pool";
 import { formatNumber } from "@/utils/formatNumber";
+import { SolanaToken } from "@avernikoz/memechan-sol-sdk";
 import Link from "next/link";
 import { useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import { CommentsPanel } from "./comments-panel";
 import { LiveCoinSidebar } from "./sidebar/live-coin-sidebar";
 
-export function LiveCoin({ coinMetadata, livePoolData }: { coinMetadata: CoinMetadata; livePoolData: LivePoolData }) {
+export function LiveCoin({ coinMetadata, livePoolData }: { coinMetadata: SolanaToken; livePoolData: LivePoolData }) {
   const price = useMemePriceFromBE({ memeMint: coinMetadata.address, poolType: "livePool" });
   const seedPoolData = useSeedPool(coinMetadata.address);
   const stakingPoolFromApi = useStakingPoolFromApi(coinMetadata.address);
