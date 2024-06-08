@@ -21,6 +21,7 @@ import { LiveCoinSwapProps } from "../../coin.types";
 import { liveSwapParamsAreValid } from "../../coin.utils";
 import { SwapButton } from "./button";
 import { InputAmountTitle } from "./input-amount-title";
+import { OutputAmountRefresher } from "./output-amount-refresher/output-amount-refresher";
 import { handleSlippageInputChange, handleSwapInputChange, validateSlippage } from "./utils";
 
 export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: tokenAddress } }: LiveCoinSwapProps) => {
@@ -79,43 +80,43 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
     [publicKey, tokenAccounts, connection],
   );
 
+  const updateOutputAmount = useCallback(async () => {
+    if (inputAmount === "0" || inputAmount === "") {
+      setOutputData(null);
+      return;
+    }
+
+    try {
+      setIsLoadingOutputAmount(true);
+
+      if (!validateSlippage(slippage)) return;
+
+      const outputData = await getSwapOutputAmount({ inputAmount, slerfToMeme, slippagePercentage: +slippage });
+
+      if (!outputData) {
+        setOutputData(null);
+        return;
+      }
+
+      setOutputData(outputData);
+    } catch (e) {
+      console.error("[LiveCoinSwap.updateOutputAmount] Failed to get the swap output amount:", e);
+      toast.error("Please, try again: cannot calculate output amount for the swap");
+      setOutputData(null);
+    } finally {
+      setIsLoadingOutputAmount(false);
+    }
+  }, [getSwapOutputAmount, inputAmount, slerfToMeme, slippage]);
+
   useEffect(() => {
     setInputAmount("");
     setOutputData(null);
   }, [slerfToMeme]);
 
   useEffect(() => {
-    if (inputAmount === "0" || inputAmount === "") {
-      setOutputData(null);
-      return;
-    }
-
-    const updateOutputAmount = async () => {
-      try {
-        setIsLoadingOutputAmount(true);
-
-        if (!validateSlippage(slippage)) return;
-
-        const outputData = await getSwapOutputAmount({ inputAmount, slerfToMeme, slippagePercentage: +slippage });
-
-        if (!outputData) {
-          setOutputData(null);
-          return;
-        }
-
-        setOutputData(outputData);
-      } catch (e) {
-        console.error("[LiveCoinSwap.updateOutputAmount] Failed to get the swap output amount:", e);
-        toast.error("Please, try again: cannot calculate output amount for the swap");
-        setOutputData(null);
-      } finally {
-        setIsLoadingOutputAmount(false);
-      }
-    };
-
-    const timeoutId = setTimeout(() => updateOutputAmount(), 1000);
+    const timeoutId = setTimeout(updateOutputAmount, 1000);
     return () => clearTimeout(timeoutId);
-  }, [getSwapOutputAmount, inputAmount, slerfToMeme, slippage]);
+  }, [updateOutputAmount]);
 
   const onSwap = useCallback(async () => {
     if (!publicKey || !outputData || !signTransaction || !slerfBalance) return;
@@ -178,6 +179,7 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
       toast.error("Failed to swap. Please, try again");
       return;
     } finally {
+      updateOutputAmount();
       setIsSwapping(false);
     }
   }, [
@@ -193,6 +195,7 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
     refetchTokenAccounts,
     signTransaction,
     connection,
+    updateOutputAmount,
   ]);
 
   const swapButtonIsDiabled = isLoadingOutputAmount || isSwapping || outputData === null;
@@ -250,10 +253,11 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
           </div>
         )}
         {outputData !== null && !isLoadingOutputAmount && (
-          <div className="text-xs font-bold text-regular">
+          <div className="text-xs font-bold text-regular flex gap-2 items-center">
             {slerfToMeme
               ? `${tokenSymbol} to receive: ${Number(outputData.minAmountOut.toExact()).toLocaleString(undefined, { maximumFractionDigits: MEMECHAN_MEME_TOKEN_DECIMALS })}`
               : `SLERF to receive: ${Number(outputData.minAmountOut.toExact()).toLocaleString(undefined, { maximumFractionDigits: MEMECHAN_QUOTE_TOKEN_DECIMALS })}`}
+            <OutputAmountRefresher refreshOutputAmount={updateOutputAmount} />
           </div>
         )}
       </div>

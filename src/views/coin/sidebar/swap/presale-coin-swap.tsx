@@ -23,6 +23,7 @@ import { presaleSwapParamsAreValid } from "../../coin.utils";
 import { SwapButton } from "./button";
 import { UnavailableTicketsToSellDialog } from "./dialog-unavailable-tickets-to-sell";
 import { InputAmountTitle } from "./input-amount-title";
+import { OutputAmountRefresher } from "./output-amount-refresher/output-amount-refresher";
 import { getFreeMemeTicketIndex, handleSlippageInputChange, handleSwapInputChange, validateSlippage } from "./utils";
 
 export const PresaleCoinSwap = ({
@@ -133,7 +134,7 @@ export const PresaleCoinSwap = ({
   }, [slerfToMeme]);
 
   useEffect(() => {
-    const timeoutId = setTimeout(() => updateOutputAmount(), 1000);
+    const timeoutId = setTimeout(updateOutputAmount, 1000);
     return () => clearTimeout(timeoutId);
   }, [updateOutputAmount]);
 
@@ -309,10 +310,11 @@ export const PresaleCoinSwap = ({
           </div>
         )}
         {outputAmount !== null && !isLoadingOutputAmount && (
-          <div className="text-xs font-bold text-regular">
+          <div className="text-xs font-bold text-regular flex gap-2 items-center">
             {slerfToMeme
               ? `${tokenSymbol} tickets to receive: ${formatNumber(Number(outputAmount), MEMECHAN_MEME_TOKEN_DECIMALS)}`
               : `SLERF to receive: ${formatNumber(Number(outputAmount), MEMECHAN_QUOTE_TOKEN_DECIMALS)}`}
+            <OutputAmountRefresher refreshOutputAmount={updateOutputAmount} />
           </div>
         )}
       </div>
