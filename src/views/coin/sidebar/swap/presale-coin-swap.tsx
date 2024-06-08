@@ -134,7 +134,7 @@ export const PresaleCoinSwap = ({
   }, [slerfToMeme]);
 
   useEffect(() => {
-    const timeoutId = setTimeout(updateOutputAmount, 1000);
+    const timeoutId = setTimeout(updateOutputAmount, 1_000);
     return () => clearTimeout(timeoutId);
   }, [updateOutputAmount]);
 
