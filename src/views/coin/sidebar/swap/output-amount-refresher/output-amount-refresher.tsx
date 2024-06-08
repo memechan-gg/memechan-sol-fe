@@ -21,5 +21,5 @@ export const OutputAmountRefresher = ({ refreshOutputAmount }: { refreshOutputAm
 
   useInterval(updateRefresherProgress, 1_000);
 
-  return <RefreshTimeIcon strokeDashoffset={strokeDashoffset} />;
+  return <RefreshTimeIcon strokeDashoffset={strokeDashoffset} onClick={refreshOutputAmount} />;
 };

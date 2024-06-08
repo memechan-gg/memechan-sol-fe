@@ -1,6 +1,6 @@
-export const RefreshTimeIcon = ({ strokeDashoffset }: { strokeDashoffset: number }) => {
+export const RefreshTimeIcon = ({ strokeDashoffset, onClick }: { strokeDashoffset: number; onClick: () => {} }) => {
   return (
-    <svg width="12" height="12" viewBox="0 0 10 10">
+    <svg width="12" height="12" viewBox="0 0 10 10" className="cursor-pointer" onClick={onClick}>
       <circle className="fill-transparent stroke-slate-100" cx="5" cy="5" r="4" strokeWidth="2px"></circle>
       <circle
         className="fill-transparent stroke-red-700"
