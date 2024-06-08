@@ -31,10 +31,21 @@ export function Home() {
 
   useEffect(() => {
     setIsMounted(true);
+
     const confirmed = Cookies.get("isConfirmed");
     if (confirmed === "true") {
       setIsConfirmed(true);
       setIsDialogOpen(false);
+    }
+
+    // Clear local storage if it contains fields from SUI memechan site
+    if (typeof window !== "undefined") {
+      const suiLocalStorageVariable = localStorage.getItem("onboardingDialog");
+
+      if (suiLocalStorageVariable) {
+        localStorage.clear();
+        typeof window.location !== "undefined" && window.location.reload();
+      }
     }
   }, []);
 
