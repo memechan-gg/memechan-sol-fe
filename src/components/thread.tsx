@@ -42,7 +42,7 @@ export function ThreadBoard({
 }
 
 export function Thread({
-  coinMetadata: { name, address, image, creator, marketcap, symbol, description },
+  coinMetadata: { name, address, image, creator, marketcap, symbol, description, status },
 }: {
   coinMetadata: SolanaToken;
 }) {
@@ -65,7 +65,7 @@ export function Thread({
             <span className="font-bold hover:underline">{creator.slice(0, 5) + "..." + creator.slice(-3)}</span>
           </Link>
         </div>
-        <div className="text-green">market cap: ${formatNumber(marketcap, 2)}</div>
+        {status && status === "PRESALE" && <div className="text-green">market cap: ${formatNumber(marketcap, 2)}</div>}
         <Link href={`/coin/${address}`}>
           <div className="text-regular flex flex-col flex-wrap">
             <div className="font-bold !normal-case">symbol: {symbol}</div>
