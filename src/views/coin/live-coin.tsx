@@ -6,7 +6,7 @@ import { useSeedPool } from "@/hooks/presale/useSeedPool";
 import { useStakingPoolFromApi } from "@/hooks/staking/useStakingPoolFromApi";
 import { useMemePriceFromBE } from "@/hooks/useMemePriceFromBE";
 import { LivePoolData } from "@/types/pool";
-import { formatNumber } from "@/utils/formatNumber";
+import { formatNumber, formatPrice } from "@/utils/formatNumber";
 import { SolanaToken } from "@avernikoz/memechan-sol-sdk";
 import Link from "next/link";
 import { useState } from "react";
@@ -42,7 +42,7 @@ export function LiveCoin({ coinMetadata, livePoolData }: { coinMetadata: SolanaT
           <div className="flex flex-col gap-1">
             <div className="text-sm font-bold !normal-case text-regular">USD price</div>
             <div className="text-xs font-bold !normal-case text-regular">
-              {price ? `$${(+price).toFixed(10)}` : <Skeleton />}
+              {price ? `$${formatPrice(+price)}` : <Skeleton />}
             </div>
           </div>
           <div className="flex flex-col gap-1">

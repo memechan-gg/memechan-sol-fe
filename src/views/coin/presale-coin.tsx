@@ -5,7 +5,7 @@ import { usePresaleCoinUniqueHoldersFromBE } from "@/hooks/presale/usePresaleCoi
 import { useMemePriceFromBE } from "@/hooks/useMemePriceFromBE";
 import { useTickets } from "@/hooks/useTickets";
 import { SeedPoolData } from "@/types/pool";
-import { formatNumber } from "@/utils/formatNumber";
+import { formatNumber, formatPrice } from "@/utils/formatNumber";
 import { SolanaToken } from "@avernikoz/memechan-sol-sdk";
 import Link from "next/link";
 import Skeleton from "react-loading-skeleton";
@@ -44,7 +44,7 @@ export function PresaleCoin({ coinMetadata, seedPoolData }: { coinMetadata: Sola
           <div className="flex flex-col gap-1">
             <div className="text-sm font-bold !normal-case text-regular">USD price</div>
             <div className="text-xs font-bold !normal-case text-regular">
-              {price ? `$${(+price).toFixed(10)}` : <Skeleton />}
+              {price ? `$${formatPrice(+price)}` : <Skeleton />}
             </div>
           </div>
           <div className="flex flex-col gap-1">
