@@ -1,5 +1,5 @@
 import { TokenApiInstance } from "@/common/solana";
-import { CoinMetadata } from "@/types/coin";
+import { SolanaToken } from "@avernikoz/memechan-sol-sdk";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useInterval } from "usehooks-ts";
@@ -21,7 +21,7 @@ export function useCoinApi() {
   const [sortBy, setSortBy] = useState<ThreadsSortBy | null>(null);
   const [direction, setDirection] = useState<ThreadsSortDirection | null>(null);
 
-  const [items, setItems] = useState<CoinMetadata[] | null>(null);
+  const [items, setItems] = useState<SolanaToken[] | null>(null);
   const [presaleNextPageToken, setPresaleNextPageToken] = useState<string | null>(null);
   const [liveNextPageToken, setLiveNextPageToken] = useState<string | null>(null);
   const [loadedMore, setLoadedMore] = useState<boolean>(false);
@@ -55,7 +55,7 @@ export function useCoinApi() {
     if (!status || !sortBy || !direction) return;
 
     try {
-      let fetchedItems: CoinMetadata[] = [];
+      let fetchedItems: SolanaToken[] = [];
 
       if (status === "all") {
         const [presaleRes, liveRes] = await Promise.all([

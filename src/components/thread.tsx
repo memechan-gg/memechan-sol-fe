@@ -1,5 +1,5 @@
-import { CoinMetadata } from "@/types/coin";
 import { formatNumber } from "@/utils/formatNumber";
+import { SolanaToken } from "@avernikoz/memechan-sol-sdk";
 import Link from "next/link";
 
 export function NoticeBoard({ title, children }: { title: string; children: React.ReactNode }) {
@@ -44,7 +44,7 @@ export function ThreadBoard({
 export function Thread({
   coinMetadata: { name, address, image, creator, marketcap, symbol, description },
 }: {
-  coinMetadata: CoinMetadata;
+  coinMetadata: SolanaToken;
 }) {
   return (
     <div className="flex flex-col gap-2">
