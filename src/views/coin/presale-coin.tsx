@@ -4,21 +4,15 @@ import { TICKETS_INTERVAL } from "@/config/config";
 import { usePresaleCoinUniqueHoldersFromBE } from "@/hooks/presale/usePresaleCoinUniqueHoldersFromBE";
 import { useMemePriceFromBE } from "@/hooks/useMemePriceFromBE";
 import { useTickets } from "@/hooks/useTickets";
-import { CoinMetadata } from "@/types/coin";
 import { SeedPoolData } from "@/types/pool";
 import { formatNumber } from "@/utils/formatNumber";
+import { SolanaToken } from "@avernikoz/memechan-sol-sdk";
 import Link from "next/link";
 import Skeleton from "react-loading-skeleton";
 import { CommentsPanel } from "./comments-panel";
 import { PresaleCoinSidebar } from "./sidebar/presale-coin-sidebar";
 
-export function PresaleCoin({
-  coinMetadata,
-  seedPoolData,
-}: {
-  coinMetadata: CoinMetadata;
-  seedPoolData: SeedPoolData;
-}) {
+export function PresaleCoin({ coinMetadata, seedPoolData }: { coinMetadata: SolanaToken; seedPoolData: SeedPoolData }) {
   const price = useMemePriceFromBE({ memeMint: coinMetadata.address, poolType: "seedPool" });
   const uniqueHoldersData = usePresaleCoinUniqueHoldersFromBE(coinMetadata.address);
   const ticketsData = useTickets({
