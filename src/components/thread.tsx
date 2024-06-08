@@ -78,7 +78,6 @@ export function Thread({
           <div className="text-regular flex flex-col flex-wrap">
             <div className="font-bold !normal-case">symbol: {symbol}</div>
             {holdersCount !== undefined && <div className="font-bold">holders: {holdersCount}</div>}
-            {/* <div className="max-w-[150px] truncate">{description}</div> */}
           </div>
         </Link>
       </div>
