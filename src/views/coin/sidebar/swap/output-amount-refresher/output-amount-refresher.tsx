@@ -1,11 +1,7 @@
-import BigNumber from "bignumber.js";
+import { MAX_STROKE_DASHOFFSET, PART_TO_DECREASE_PROGRESS } from "@/config/config";
 import { useCallback, useEffect, useState } from "react";
 import { useInterval } from "usehooks-ts";
 import { RefreshTimeIcon } from "./refresh-time-icon";
-
-const MAX_STROKE_DASHOFFSET = 25.1327;
-const SECONDS_TO_REFRESH = 17;
-const PART_TO_DECREASE_PROGRESS = new BigNumber(MAX_STROKE_DASHOFFSET).div(SECONDS_TO_REFRESH).toNumber();
 
 export const OutputAmountRefresher = ({ refreshOutputAmount }: { refreshOutputAmount: () => {} }) => {
   const [strokeDashoffset, setStrokeDashoffset] = useState<number>(MAX_STROKE_DASHOFFSET);
