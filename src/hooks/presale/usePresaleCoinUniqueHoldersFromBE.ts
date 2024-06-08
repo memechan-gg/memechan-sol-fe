@@ -8,7 +8,11 @@ const fetchPresaleCoinUniqueHoldersFromBE = async (memeMint: string) => {
   try {
     const holdersMap = await TokenApiHelper.getBondingPoolHoldersMap(new PublicKey(memeMint));
 
-    const holders = Array.from(holdersMap.values()).filter(({ amount }) => !new BigNumber(amount.toString()).isZero());
+    const holders = Array.from(holdersMap.values()).filter(
+      ({ amount, owner }) =>
+        !new BigNumber(amount.toString()).isZero() &&
+        owner.toString() !== "feeLPZEfzJFwDR11cdMWE3nSa4nr7sPPM4u6tmDTw3Y",
+    );
 
     const slicedHolders = holders.slice(0, MAX_HOLDERS_COUNT);
 
