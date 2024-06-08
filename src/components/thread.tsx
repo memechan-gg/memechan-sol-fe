@@ -48,6 +48,7 @@ export function Thread({
   coinMetadata: SolanaToken;
 }) {
   const formattedSlerfIn = slerfIn ? new BigNumber(slerfIn).div(10 ** MEMECHAN_QUOTE_TOKEN_DECIMALS).toFixed(2) : null;
+  const holdersCountWithoutStakingSigner = holdersCount !== undefined && holdersCount - 1;
 
   return (
     <div className="flex flex-col gap-2">
@@ -77,7 +78,9 @@ export function Thread({
         <Link href={`/coin/${address}`}>
           <div className="text-regular flex flex-col flex-wrap">
             <div className="font-bold !normal-case">symbol: {symbol}</div>
-            {holdersCount !== undefined && <div className="font-bold">holders: {holdersCount}</div>}
+            {holdersCountWithoutStakingSigner && (
+              <div className="font-bold">holders: {holdersCountWithoutStakingSigner}</div>
+            )}
           </div>
         </Link>
       </div>
