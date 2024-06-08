@@ -41,11 +41,11 @@ export const InputAmountTitle = ({
   };
 
   return (
-    <div className="grid grid-cols-2">
+    <div className="flex flex-wrap justify-between">
       <div className="text-xs font-bold text-regular">
         {slerfToMeme ? `SLERF to ${tokenSymbol}` : `${tokenSymbol} to SLERF`}
       </div>
-      <div className="flex items-self-end gap-3 justify-end mr-1">
+      <div className="flex items-self-end gap-3 justify-self-end mr-1">
         <div className="text-regular hover:underline cursor-pointer font-bold" onClick={handleResetClick}>
           reset
         </div>
