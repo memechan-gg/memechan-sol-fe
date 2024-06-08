@@ -11,6 +11,7 @@ const fetchPresaleCoinUniqueHoldersFromBE = async (memeMint: string) => {
     const holders = Array.from(holdersMap.values()).filter(
       ({ amount, owner }) =>
         !new BigNumber(amount.toString()).isZero() &&
+        // Filter out fees wallet from holders
         owner.toString() !== "feeLPZEfzJFwDR11cdMWE3nSa4nr7sPPM4u6tmDTw3Y",
     );
 
