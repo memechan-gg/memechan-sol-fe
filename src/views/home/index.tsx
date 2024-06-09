@@ -74,7 +74,7 @@ export function Home() {
       )}
       {isConfirmed && (
         <>
-          <NoticeBoard title="Create Meme Coin">
+          <NoticeBoard title="Create Memecoin">
             <div className="flex flex-col gap-2">
               <div>Create your own meme coin with a few clicks. No coding or liquidity required.</div>
               <div>

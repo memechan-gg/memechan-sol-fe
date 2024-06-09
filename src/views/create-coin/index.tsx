@@ -307,7 +307,7 @@ export function CreateCoin() {
                 >
                   {
                     {
-                      idle: "Create Meme Coin",
+                      idle: "Create Memecoin",
                       sign: "Signing Message...",
                       ipfs: "Uploading Image...",
                       create_bonding_and_meme: "Creating Bonding Curve Pool and Meme Coin...",
