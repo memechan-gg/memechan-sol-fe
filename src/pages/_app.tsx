@@ -6,6 +6,8 @@ import { Layout } from "@/components/layout";
 import { SolanaProvider } from "@/components/provider/solana";
 import { ConnectionProvider } from "@/context/ConnectionContext";
 import { UserProvider } from "@/context/UserContext";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import NextProgress from "next-progress";
 import type { AppProps } from "next/app";
 import Head from "next/head";
@@ -53,6 +55,8 @@ export default function App({ Component, pageProps }: AppProps) {
           <ConnectionProvider>
             <Layout>
               <Component {...pageProps} />
+              <SpeedInsights />
+              <Analytics />
             </Layout>
           </ConnectionProvider>
           <Toaster position="bottom-right" />
