@@ -192,7 +192,7 @@ export function CreateCoin() {
         <ThreadBoard title="Create Memecoin">
           <form onSubmit={onSubmit} className="flex flex-col gap-4">
             <div className="flex flex-col gap-2">
-              <h4 className="text-sm font-bold text-regular">Meme Coin Details</h4>
+              <h4 className="text-sm font-bold text-regular">Memecoin Details</h4>
               <div className="flex flex-col lg:flex-row gap-4">
                 <div className="flex flex-col gap-1">
                   <label className="text-regular text-xs">Name</label>
