@@ -130,7 +130,7 @@ export function CreateCoin() {
 
           if (txResult.value.err) {
             console.error("[Create Coin Submit] Pool and meme creation failed:", JSON.stringify(txResult, null, 2));
-            toast.error("Failed to create pool and meme coin. Please, try again");
+            toast.error("Failed to create pool and memecoin. Please, try again");
             setState("idle");
             confirmationSucceeded = true;
             return;
@@ -146,7 +146,7 @@ export function CreateCoin() {
 
       if (!confirmationSucceeded) {
         console.error("[Create Coin Submit] Pool and meme creation failed after all the retries.");
-        toast.error("Failed to create pool and meme coin. Please, try again");
+        toast.error("Failed to create pool and memecoin. Please, try again");
         setState("idle");
         return;
       }
@@ -171,7 +171,7 @@ export function CreateCoin() {
       } while (!backendCreationSucceeded && attempt < maxAttempsCount);
 
       if (!backendCreationSucceeded) {
-        toast.error("Failed to create the meme coin. Please, try again");
+        toast.error("Failed to create the memecoin. Please, try again");
         setState("idle");
         return;
       }
@@ -189,10 +189,10 @@ export function CreateCoin() {
   return (
     <div className="w-full flex items-center justify-center">
       <div className="w-full lg:max-w-3xl">
-        <ThreadBoard title="Create Memecoin">
-          <form onSubmit={onSubmit} className="flex flex-col gap-4">
+        <ThreadBoard title="create memecoin">
+          <form onSubmit={onSubmit} className="flex flex-col gap-4 lowercase">
             <div className="flex flex-col gap-2">
-              <h4 className="text-sm font-bold text-regular">Memecoin Details</h4>
+              <h4 className="text-sm font-bold text-regular lowercase">Memecoin Details</h4>
               <div className="flex flex-col lg:flex-row gap-4">
                 <div className="flex flex-col gap-1">
                   <label className="text-regular text-xs">Name</label>
@@ -302,15 +302,15 @@ export function CreateCoin() {
               <div>
                 <button
                   type="submit"
-                  className="bg-regular text-white font-bold p-2 rounded-lg disabled:opacity-50"
+                  className="bg-regular text-white font-bold p-2 rounded-lg disabled:opacity-50 lowercase"
                   disabled={state !== "idle"}
                 >
                   {
                     {
-                      idle: "Create Meme Coin",
+                      idle: "Create memecoin",
                       sign: "Signing Message...",
                       ipfs: "Uploading Image...",
-                      create_bonding_and_meme: "Creating Bonding Curve Pool and Meme Coin...",
+                      create_bonding_and_meme: "Creating Bonding Curve Pool and memecoin...",
                     }[state]
                   }
                 </button>

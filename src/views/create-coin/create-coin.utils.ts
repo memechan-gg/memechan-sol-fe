@@ -37,7 +37,7 @@ export function handleErrors(e: unknown) {
   }
 
   console.error(`[handleErrors] error: `, e);
-  return toast.error("Unrecognized error occurred while creating meme coin. Please try again");
+  return toast.error("Unrecognized error occurred while creating memecoin. Please try again");
 }
 
 export async function createCoinOnBE({ discord, telegram, twitter, website }: ICreateForm, signatures: string[]) {

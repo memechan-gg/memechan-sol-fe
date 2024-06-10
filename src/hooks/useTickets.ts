@@ -19,7 +19,7 @@ export const fetchTickets = async (
   } catch (e) {
     console.error(`[fetchTickets] Cannot fetch tickets for ${poolAddress} pool ${poolAddress}:`, e);
 
-    const ticketsValue = poolStatus === "PRESALE" ? "available tickets" : "staked meme coins";
+    const ticketsValue = poolStatus === "PRESALE" ? "available tickets" : "staked memecoins";
     toast.error(`Failed to get your ${ticketsValue}. Please, try to refresh the page`);
     return { tickets: [], freeIndexes: [], lockedIndexes: [] };
   }
