@@ -250,25 +250,41 @@ export function CreateCoin() {
                 <div className="flex flex-col gap-1">
                   <label className="text-regular text-xs">Twitter (optional)</label>
                   <div>
-                    <input {...register("twitter")} className="border w-[200px] border-regular rounded-lg p-1" />
+                    <input
+                      {...register("twitter")}
+                      className="border w-[200px] border-regular rounded-lg p-1"
+                      placeholder="https://x.com/best_meme"
+                    />
                   </div>
                 </div>
                 <div className="flex flex-col gap-1">
                   <label className="text-regular text-xs">Telegram (optional)</label>
                   <div>
-                    <input {...register("telegram")} className="border w-[200px] border-regular rounded-lg p-1" />
+                    <input
+                      {...register("telegram")}
+                      className="border w-[200px] border-regular rounded-lg p-1"
+                      placeholder="https://t.me/best_meme"
+                    />
                   </div>
                 </div>
                 <div className="flex flex-col gap-1">
                   <label className="text-regular text-xs">Discord (optional)</label>
                   <div>
-                    <input {...register("discord")} className="border w-[200px] border-regular rounded-lg p-1" />
+                    <input
+                      {...register("discord")}
+                      className="border w-[200px] border-regular rounded-lg p-1"
+                      placeholder="https://discord.gg/best_meme"
+                    />
                   </div>
                 </div>
                 <div className="flex flex-col gap-1">
                   <label className="text-regular text-xs">Website (optional)</label>
                   <div>
-                    <input {...register("website")} className="border w-[200px] border-regular rounded-lg p-1" />
+                    <input
+                      {...register("website")}
+                      className="border w-[200px] border-regular rounded-lg p-1"
+                      placeholder="https://best-meme.com"
+                    />
                   </div>
                 </div>
               </div>
