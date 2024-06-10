@@ -5,10 +5,8 @@ import { usePresaleCoinUniqueHoldersFromBE } from "@/hooks/presale/usePresaleCoi
 import { useMemePriceFromBE } from "@/hooks/useMemePriceFromBE";
 import { useTickets } from "@/hooks/useTickets";
 import { SeedPoolData } from "@/types/pool";
-import { formatNumber } from "@/utils/formatNumber";
 import { SolanaToken } from "@avernikoz/memechan-sol-sdk";
-import Link from "next/link";
-import Skeleton from "react-loading-skeleton";
+import { CoinTitleInfo } from "./coin-title-info/coin-title-info";
 import { CommentsPanel } from "./comments-panel";
 import { PresaleCoinSidebar } from "./sidebar/presale-coin-sidebar";
 
@@ -28,39 +26,7 @@ export function PresaleCoin({ coinMetadata, seedPoolData }: { coinMetadata: Sola
   return (
     <ThreadBoard title={coinMetadata.name}>
       <div className="flex flex-col gap-2">
-        <div className="flex flex-wrap flex-row gap-3 gap-x-10">
-          <div className="flex flex-col gap-1">
-            <div className="text-sm font-bold text-regular">Token Name</div>
-            <div className="text-xs font-bold text-regular">{coinMetadata.name}</div>
-          </div>
-          <div className="flex flex-col gap-1">
-            <div className="text-sm font-bold text-regular">Token Ticker</div>
-            <div className="text-xs font-bold text-regular">{coinMetadata.symbol}</div>
-          </div>
-          <div className="flex flex-col gap-1">
-            <div className="text-sm font-bold text-regular">Market Cap</div>
-            <div className="text-xs font-bold text-regular">${formatNumber(coinMetadata.marketcap, 2)}</div>
-          </div>
-          <div className="flex flex-col gap-1">
-            <div className="text-sm font-bold !normal-case text-regular">USD price</div>
-            <div className="text-xs font-bold !normal-case text-regular">
-              {price ? `$${(+price).toFixed(10)}` : <Skeleton />}
-            </div>
-          </div>
-          <div className="flex flex-col gap-1">
-            <div className="text-sm font-bold text-regular">Unique holders</div>
-            <div className="text-xs font-bold text-regular">
-              {uniqueHoldersData ? uniqueHoldersData.fullHolders.length : <Skeleton />}
-            </div>
-          </div>
-          <div className="flex flex-col gap-1">
-            <div className="text-sm font-bold text-link">Created By</div>
-            <Link href={`/profile/${coinMetadata.creator}`} className="text-xs font-bold text-link">
-              {coinMetadata.creator.slice(0, 5)}...
-              {coinMetadata.creator.slice(-3)}
-            </Link>
-          </div>
-        </div>
+        <CoinTitleInfo coinMetadata={coinMetadata} price={price} uniqueHoldersData={uniqueHoldersData} />
         <div className="flex w-full flex-col lg:flex-row gap-6">
           <div className="flex flex-col gap-3 w-full">
             {CHARTS_API_HOSTNAME && (
