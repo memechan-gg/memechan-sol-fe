@@ -124,7 +124,7 @@ export const UnstakePopUp = ({
         <DialogTitle className="text-regular mb-2">Unstake</DialogTitle>
         <DialogDescription className="text-regular">
           <div>
-            Unstake your staked Meme Coins from the staking pool. Once you unstake you cannot earn fees and stake back
+            Unstake your staked memecoins from the staking pool. Once you unstake you cannot earn fees and stake back
             anymore.
           </div>
           <div className="text-xs font-bold text-regular mt-4">Cliff period started at: {cliffStartedTime}</div>
