@@ -22,7 +22,7 @@ export const Header = () => {
               <Logo />
             </Link>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col xxs:flex-row items-center gap-2">
             <Button>
               <img src="/tokens/solana.png" className="w-4 h-4" alt="Solana" />
               Solana
