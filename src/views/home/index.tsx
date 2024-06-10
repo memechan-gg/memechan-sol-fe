@@ -74,18 +74,20 @@ export function Home() {
       )}
       {isConfirmed && (
         <>
-          <NoticeBoard title="Create Meme Coin">
+          <NoticeBoard title="create memecoin">
             <div className="flex flex-col gap-2">
-              <div>Create your own meme coin with a few clicks. No coding or liquidity required.</div>
+              <div className="lowercase">
+                Create your own memecoin with a few clicks. No coding or liquidity required.
+              </div>
               <div>
                 <Link href={"/create"}>
-                  <button className="bg-regular text-white font-bold p-2 rounded-lg">Create Memecoin</button>
+                  <button className="bg-regular text-white font-bold p-2 rounded-lg lowercase">create memecoin</button>
                 </Link>
               </div>
             </div>
           </NoticeBoard>
           <ThreadBoard
-            title="Meme Coins"
+            title="memecoins"
             titleChildren={
               <div className="flex flex-row gap-1 text-xs">
                 {status !== null ? (

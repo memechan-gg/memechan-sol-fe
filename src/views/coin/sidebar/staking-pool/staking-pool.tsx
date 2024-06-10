@@ -8,7 +8,7 @@ export const StakingPool = ({ tokenSymbol, livePoolAddress, ticketsData, staking
       <div className="text-xs font-bold text-regular">Staking Pool</div>
       <div className="text-xs font-medium text-regular text-balance">
         As Pre-Sale investor you are earning fees from trading of the{" "}
-        <span className="!normal-case">{tokenSymbol}</span> token. You can unstake your staked Meme Coins or withdraw
+        <span className="!normal-case">{tokenSymbol}</span> token. You can unstake your staked memecoins or withdraw
         your fees from the staking pool.
       </div>
       <div className="flex flex-col w-full gap-1">
