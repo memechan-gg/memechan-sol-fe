@@ -23,6 +23,7 @@ export const MEMECHAN_CLIENT_CONFIG = {
 // UI Constants
 export const MAX_HOLDERS_COUNT = 20;
 export const LOW_FEES_THRESHOLD = 10 ** -3;
+export const LOW_VESTING_CLAIMABLE_AMOUNT_THRESHOLD = 10 ** -6;
 export const MAX_SLIPPAGE = 50;
 export const MIN_SLIPPAGE = 0;
 
@@ -43,3 +44,5 @@ export const TOKEN_INTERVAL = 5_000;
 export const TOKEN_ACCOUNTS_INTERVAL = 15_000;
 export const HOLDERS_INTERVAL = 15_000;
 export const POOL_PRICE_INTERVAL = 15_000;
+
+export const VESTING_INTERVAL = 15_000;
