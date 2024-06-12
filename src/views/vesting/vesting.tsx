@@ -3,7 +3,7 @@ import { LOW_VESTING_CLAIMABLE_AMOUNT_THRESHOLD } from "@/config/config";
 import { useConnection } from "@/context/ConnectionContext";
 import { useVesting } from "@/hooks/vesting/useVesting";
 import { confirmTransaction } from "@/utils/confirmTransaction";
-import { MEMECHAN_QUOTE_TOKEN_DECIMALS, VestingClient } from "@avernikoz/memechan-sol-sdk";
+import { CHAN_TOKEN_DECIMALS, VestingClient } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import BigNumber from "bignumber.js";
 import { BN } from "bn.js";
@@ -29,7 +29,7 @@ export const Vesting = () => {
 
     const rawAmount = VestingClient.getVestingClaimableAmount({ vesting });
     // TODO: Find out what decimals should be here
-    const formattedAmount = new BigNumber(rawAmount).div(10 ** MEMECHAN_QUOTE_TOKEN_DECIMALS).toString();
+    const formattedAmount = new BigNumber(rawAmount).div(10 ** CHAN_TOKEN_DECIMALS).toString();
 
     setClaimableAmount(
       new BigNumber(formattedAmount).lt(LOW_VESTING_CLAIMABLE_AMOUNT_THRESHOLD) ? "0" : formattedAmount,
@@ -44,7 +44,7 @@ export const Vesting = () => {
     try {
       setIsClaiming(true);
 
-      const rawAmountToClaim = new BigNumber(inputAmount).multipliedBy(10 ** MEMECHAN_QUOTE_TOKEN_DECIMALS).toString();
+      const rawAmountToClaim = new BigNumber(inputAmount).multipliedBy(10 ** CHAN_TOKEN_DECIMALS).toString();
       const vestingId = VestingClient.getVestingPDA({
         vestingNumber: VestingClient.VESTING_NUMBER_START,
         user: publicKey,
@@ -99,7 +99,7 @@ export const Vesting = () => {
   const inputIsDisabled = !isPossibleToClaim || isClaiming;
   // TODO: Find out what decimals should be here
   const outstandingAmount =
-    userIsEligible && new BigNumber(vesting.outstanding.toString()).div(10 ** MEMECHAN_QUOTE_TOKEN_DECIMALS).toString();
+    userIsEligible && new BigNumber(vesting.outstanding.toString()).div(10 ** CHAN_TOKEN_DECIMALS).toString();
 
   return (
     <div className="flex text-regular justify-center items-center">
@@ -143,7 +143,7 @@ export const Vesting = () => {
                 <label htmlFor="amount-to-claim">Amount to claim:</label>
                 {isPossibleToClaim && (
                   <InputAmountButtons
-                    decimals={MEMECHAN_QUOTE_TOKEN_DECIMALS}
+                    decimals={CHAN_TOKEN_DECIMALS}
                     maxAmount={claimableAmount}
                     setInputAmount={setInputAmount}
                   />
@@ -156,7 +156,7 @@ export const Vesting = () => {
                 value={inputAmount}
                 onChange={(e) =>
                   handleSwapInputChange({
-                    decimalPlaces: MEMECHAN_QUOTE_TOKEN_DECIMALS,
+                    decimalPlaces: CHAN_TOKEN_DECIMALS,
                     e,
                     setValue: setInputAmount,
                   })
