@@ -1,4 +1,3 @@
-import { Button } from "@/components/button";
 import { TransactionSentNotification } from "@/components/notifications/transaction-sent-notification";
 import { LOW_VESTING_CLAIMABLE_AMOUNT_THRESHOLD } from "@/config/config";
 import { useConnection } from "@/context/ConnectionContext";
@@ -13,6 +12,7 @@ import toast from "react-hot-toast";
 import Skeleton from "react-loading-skeleton";
 import { InputAmountButtons } from "../coin/sidebar/swap/input-amount-buttons";
 import { handleSwapInputChange } from "../coin/sidebar/swap/utils";
+import { ConfirmVestingClaimDialog } from "./confirm-dialog";
 import { validateVestingClaimInputAmount } from "./utils";
 
 export const Vesting = () => {
@@ -70,6 +70,7 @@ export const Vesting = () => {
       toast.error("Failed to claim. Please, try again");
     } finally {
       setIsClaiming(false);
+      setInputAmount("");
     }
   }, [claimableAmount, connection, publicKey, sendTransaction, vesting, refreshVesting, inputAmount]);
 
@@ -164,13 +165,11 @@ export const Vesting = () => {
                 type="text"
                 autoComplete="off"
               />
-              <Button
-                className="max-xxs:self-center w-20 bg-regular bg-opacity-80 hover:bg-opacity-50 text-xs font-bold text-white mt-4 disabled:opacity-50"
-                disabled={claimButtonIsDisabled}
-                onClick={claim}
-              >
-                {isClaiming ? "Claiming..." : "Claim"}
-              </Button>
+              <ConfirmVestingClaimDialog
+                claim={claim}
+                claimButtonIsDisabled={claimButtonIsDisabled}
+                isClaiming={isClaiming}
+              />
             </div>
           )}
         </div>
