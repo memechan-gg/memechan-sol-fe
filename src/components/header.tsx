@@ -22,7 +22,7 @@ export const Header = () => {
               <Logo />
             </Link>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col xxs:flex-row items-center gap-2">
             <Button>
               <img src="/tokens/solana.png" className="w-4 h-4" alt="Solana" />
               Solana
@@ -48,6 +48,14 @@ export const Header = () => {
                       className="bg-white w-full text-regular text-xs text-left p-2 hover:bg-regular hover:text-white"
                     >
                       Profile
+                    </div>
+                  </Link>
+                  <Link href={`/vesting`}>
+                    <div
+                      role="button"
+                      className="bg-white w-full text-regular text-xs text-left p-2 hover:bg-regular hover:text-white"
+                    >
+                      $CHAN vesting
                     </div>
                   </Link>
                   <RpcConnectionDialog />
