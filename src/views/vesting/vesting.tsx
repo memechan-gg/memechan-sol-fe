@@ -78,16 +78,13 @@ export const Vesting = () => {
     updateClaimableAmount();
   }, [updateClaimableAmount]);
 
-  let cliffStartedTime: JSX.Element | string = <Skeleton width={35} />;
   let startVestingTime: JSX.Element | string = <Skeleton width={35} />;
   let endVestingTime: JSX.Element | string = <Skeleton width={35} />;
 
   if (vesting) {
-    const cliffStartedTimeInMs = new BigNumber(vesting.createdTs.toString()).multipliedBy(1000).toNumber();
     const startVestingTimeInMs = new BigNumber(vesting.startTs.toString()).multipliedBy(1000).toNumber();
     const endVestingTimeInMs = new BigNumber(vesting.endTs.toString()).multipliedBy(1000).toNumber();
 
-    cliffStartedTime = new Date(cliffStartedTimeInMs).toLocaleString();
     startVestingTime = new Date(startVestingTimeInMs).toLocaleString();
     endVestingTime = new Date(endVestingTimeInMs).toLocaleString();
   }
@@ -117,10 +114,6 @@ export const Vesting = () => {
           {userIsEligible && (
             <div className="flex flex-col gap-2 xs:gap-1">
               <div className="mb-5">You are eligible for $CHAN vesting!</div>
-              <p className="flex flex-col xs:flex-row">
-                <span>Cliff period starts at:&nbsp;</span>
-                <span>{cliffStartedTime}</span>
-              </p>
               <p className="flex flex-col xs:flex-row">
                 <span>Vesting period starts at:&nbsp;</span>
                 <span>{startVestingTime}</span>
