@@ -47,10 +47,10 @@ export const ConfirmVestingClaimDialog = ({
             }}
             className="w-full bg-regular bg-opacity-80 hover:bg-opacity-50"
           >
-            <span className="text-xs font-bold text-white">Yes, I&apos;m sure</span>
+            <span className="text-xs font-bold text-white">yes, I&apos;m sure</span>
           </Button>
           <Button onClick={() => setIsOpen(false)} className="w-full bg-regular bg-opacity-80 hover:bg-opacity-50">
-            <span className="text-xs font-bold text-white">No, I&apos;ll keep making profit</span>
+            <span className="text-xs font-bold text-white">no, I&apos;ll keep making profit</span>
           </Button>
         </DialogFooter>
       </DialogContent>
