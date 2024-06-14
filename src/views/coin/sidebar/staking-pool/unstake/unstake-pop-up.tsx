@@ -38,9 +38,8 @@ export const UnstakePopUp = ({
     });
 
     const formattedAmount = new BigNumber(amount).div(10 ** MEMECHAN_MEME_TOKEN_DECIMALS).toString();
-    const amountIsNegative = new BigNumber(formattedAmount).lt(0);
 
-    setAvailableAmountToUnstake(amountIsNegative ? "0" : formattedAmount);
+    setAvailableAmountToUnstake(formattedAmount);
   }, [stakingPool, stakingPoolClient, tickets]);
 
   const unstake = useCallback(async () => {
