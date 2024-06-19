@@ -20,6 +20,8 @@ const config: Config = {
         line: "#5A5A5A",
         quote: "#030080",
         blue: "#0047FF",
+        deepGreen: "#117743",
+        lightRose: "#E0BFB7",
       },
       backgroundColor: {
         "link-quote-hover": "#FF0000",
@@ -32,6 +34,7 @@ const config: Config = {
         quote: "#030080",
         blue: "#0047FF",
         board: "#fca",
+        lightPink: "#F0E0D6",
       },
       borderColor: {
         "link-quote-hover": "#FF0000",
@@ -43,6 +46,7 @@ const config: Config = {
         line: "#5A5A5A",
         quote: "#030080",
         blue: "#0047FF",
+        dustyPink: "#D9BFB7",
       },
     },
     screens: {

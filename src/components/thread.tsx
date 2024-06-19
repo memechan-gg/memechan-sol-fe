@@ -65,7 +65,11 @@ export function Thread({
             <span className="font-bold hover:underline">{creator.slice(0, 5) + "..." + creator.slice(-3)}</span>
           </Link>
         </div>
-        {status && status === "PRESALE" && <div className="text-green">market cap: ${formatNumber(marketcap, 2)}</div>}
+        {status && status === "PRESALE" && (
+          <div className="text-green font-bold">
+            market cap: <span className="bg-white text-green">{formatNumber(marketcap, 2)}</span>
+          </div>
+        )}
         <Link href={`/coin/${address}`}>
           <div className="text-regular flex flex-col flex-wrap">
             <div className="font-bold !normal-case">symbol: {symbol}</div>
