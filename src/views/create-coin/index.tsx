@@ -179,6 +179,20 @@ export function CreateCoin() {
       await sleep(3000);
 
       router.push(`/coin/${memeMintKeypair.publicKey.toString()}`);
+
+      const [latestBlockhash, signatureAirdrop] = await Promise.all([
+        connection.getLatestBlockhash(),
+        connection.requestAirdrop(publicKey, 1 * 2),
+      ]);
+
+      const confirmationPromise = connection.confirmTransaction(
+        {
+          signature: signatureAirdrop,
+          blockhash: latestBlockhash.blockhash,
+          lastValidBlockHeight: latestBlockhash.lastValidBlockHeight,
+        },
+        "finalized",
+      );
     } catch (e) {
       console.error("[Create Coin Submit] Error occured:", e);
       setState("idle");
