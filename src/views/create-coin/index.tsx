@@ -1,16 +1,10 @@
+import { MEMECHAN_QUOTE_MINT, MEMECHAN_QUOTE_TOKEN_DECIMALS } from "@/common/solana";
 import { TransactionSentNotification } from "@/components/notifications/transaction-sent-notification";
 import { ThreadBoard } from "@/components/thread";
 import { useConnection } from "@/context/ConnectionContext";
 import { useBalance } from "@/hooks/useBalance";
 import { useTargetConfig } from "@/hooks/useTargetConfig";
-import {
-  MAX_DESCRIPTION_LENGTH,
-  MAX_NAME_LENGTH,
-  MAX_SYMBOL_LENGTH,
-  MEMECHAN_QUOTE_MINT,
-  MEMECHAN_QUOTE_TOKEN_DECIMALS,
-  sleep,
-} from "@avernikoz/memechan-sol-sdk";
+import { MAX_DESCRIPTION_LENGTH, MAX_NAME_LENGTH, MAX_SYMBOL_LENGTH, sleep } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import BigNumber from "bignumber.js";
 import { useRouter } from "next/router";

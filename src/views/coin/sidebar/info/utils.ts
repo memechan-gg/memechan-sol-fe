@@ -1,4 +1,5 @@
-import { BoundPool, MEMECHAN_QUOTE_TOKEN_DECIMALS } from "@avernikoz/memechan-sol-sdk";
+import { MEMECHAN_QUOTE_TOKEN_DECIMALS } from "@/common/solana";
+import { BoundPool } from "@avernikoz/memechan-sol-sdk";
 import BigNumber from "bignumber.js";
 
 export const getBoundPoolProgress = (boundPool: BoundPool) => {

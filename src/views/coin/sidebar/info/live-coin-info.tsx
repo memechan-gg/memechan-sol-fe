@@ -1,4 +1,4 @@
-import { MEMECHAN_QUOTE_MINT } from "@avernikoz/memechan-sol-sdk";
+import { MEMECHAN_QUOTE_MINT } from "@/common/solana";
 import { LiveCoinInfoProps } from "../../coin.types";
 import { SocialLinks } from "./social-links/social-links";
 

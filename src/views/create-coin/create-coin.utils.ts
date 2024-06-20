@@ -1,4 +1,4 @@
-import { AuthInstance, TokenApiInstance } from "@/common/solana";
+import { AuthInstance, MEMECHAN_QUOTE_TOKEN, TokenApiInstance } from "@/common/solana";
 import {
   ADMIN_PUB_KEY,
   BoundPoolClient,
@@ -10,7 +10,6 @@ import {
   MAX_DESCRIPTION_LENGTH,
   MAX_NAME_LENGTH,
   MAX_SYMBOL_LENGTH,
-  MEMECHAN_QUOTE_TOKEN,
   MemeTicketClient,
   MemechanClient,
   validateCreateCoinParams,

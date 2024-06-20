@@ -1,3 +1,4 @@
+import { MEMECHAN_QUOTE_MINT, MEMECHAN_QUOTE_TOKEN_DECIMALS } from "@/common/solana";
 import { Button } from "@/components/button";
 import { TransactionSentNotification } from "@/components/notifications/transaction-sent-notification";
 import { MAX_SLIPPAGE, MIN_SLIPPAGE } from "@/config/config";
@@ -6,14 +7,7 @@ import { useBalance } from "@/hooks/useBalance";
 import { useTokenAccounts } from "@/hooks/useTokenAccounts";
 import { GetLiveSwapTransactionParams, GetSwapOutputAmountParams } from "@/types/hooks";
 import { formatNumber } from "@/utils/formatNumber";
-import {
-  LivePoolClient,
-  MEMECHAN_MEME_TOKEN_DECIMALS,
-  MEMECHAN_QUOTE_MINT,
-  MEMECHAN_QUOTE_TOKEN_DECIMALS,
-  SwapMemeOutput,
-  buildTxs,
-} from "@avernikoz/memechan-sol-sdk";
+import { LivePoolClient, MEMECHAN_MEME_TOKEN_DECIMALS, SwapMemeOutput, buildTxs } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
