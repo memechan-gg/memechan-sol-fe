@@ -5,6 +5,7 @@ import { MAX_SLIPPAGE, MIN_SLIPPAGE } from "@/config/config";
 import { useConnection } from "@/context/ConnectionContext";
 import { useBoundPoolClient } from "@/hooks/presale/useBoundPoolClient";
 import { useBalance } from "@/hooks/useBalance";
+import { useMainTokenName } from "@/hooks/useMainTokenName";
 import { GetSwapOutputAmountParams, GetSwapTransactionParams } from "@/types/hooks";
 import { confirmTransaction } from "@/utils/confirmTransaction";
 import { formatNumber } from "@/utils/formatNumber";
@@ -13,7 +14,6 @@ import {
   GetSellMemeTransactionOutput,
   MEMECHAN_MEME_TOKEN_DECIMALS,
   MEMECHAN_QUOTE_MINT,
-  MEMECHAN_QUOTE_TOKEN_DECIMALS,
 } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useCallback, useEffect, useState } from "react";
@@ -37,7 +37,7 @@ export const PresaleCoinSwap = ({
     refresh: refreshAvailableTickets,
   },
 }: PresaleCoinSwapProps) => {
-  const [slerfToMeme, setSlerfToMeme] = useState<boolean>(true);
+  const [mainTokenToMeme, setMainTokenToMeme] = useState<boolean>(true);
   const [inputAmount, setInputAmount] = useState<string>("");
   const [outputAmount, setOutputAmount] = useState<string | null>(null);
   const [isLoadingOutputAmount, setIsLoadingOutputAmount] = useState<boolean>(false);
@@ -45,18 +45,19 @@ export const PresaleCoinSwap = ({
   const [isSwapping, setIsSwapping] = useState<boolean>(false);
 
   const { publicKey, sendTransaction } = useWallet();
-  const { connection } = useConnection();
-  const { balance: slerfBalance, refetch: refetchSlerfBalance } = useBalance(
+  const { connection, memechanClient } = useConnection();
+  const { balance: mainTokenBalance, refetch: refetchMainTokenBalance } = useBalance(
     MEMECHAN_QUOTE_MINT.toString(),
-    MEMECHAN_QUOTE_TOKEN_DECIMALS,
+    MEMECHAN_MEME_TOKEN_DECIMALS,
   );
+  const mainTokenName = useMainTokenName();
   const boundPoolClient = useBoundPoolClient(pool.address);
 
   const getSwapOutputAmount = useCallback(
-    async ({ inputAmount, slerfToMeme, slippagePercentage }: GetSwapOutputAmountParams) => {
+    async ({ inputAmount, mainTokenToMeme, slippagePercentage }: GetSwapOutputAmountParams) => {
       if (!boundPoolClient) return;
 
-      return slerfToMeme
+      return mainTokenToMeme
         ? await boundPoolClient.getOutputAmountForBuyMeme({ inputAmount, slippagePercentage })
         : await boundPoolClient.getOutputAmountForSellMeme({ inputAmount, slippagePercentage });
     },
@@ -64,7 +65,7 @@ export const PresaleCoinSwap = ({
   );
 
   const getSwapTransaction = useCallback(
-    async ({ inputAmount, minOutputAmount, slerfToMeme, slippagePercentage }: GetSwapTransactionParams) => {
+    async ({ inputAmount, minOutputAmount, mainTokenToMeme, slippagePercentage }: GetSwapTransactionParams) => {
       if (!publicKey) {
         toast.error("Please, connect your wallet to make swaps");
         return;
@@ -72,7 +73,7 @@ export const PresaleCoinSwap = ({
       if (!boundPoolClient || !freeIndexes) return;
 
       return (
-        slerfToMeme
+        mainTokenToMeme
           ? {
               side: "buy",
               result: await boundPoolClient.getBuyMemeTransaction({
@@ -110,7 +111,7 @@ export const PresaleCoinSwap = ({
 
       if (!validateSlippage(slippage)) return;
 
-      const outputAmount = await getSwapOutputAmount({ inputAmount, slerfToMeme, slippagePercentage: +slippage });
+      const outputAmount = await getSwapOutputAmount({ inputAmount, mainTokenToMeme, slippagePercentage: +slippage });
 
       if (!outputAmount) {
         setOutputAmount(null);
@@ -125,12 +126,12 @@ export const PresaleCoinSwap = ({
     } finally {
       setIsLoadingOutputAmount(false);
     }
-  }, [getSwapOutputAmount, inputAmount, slerfToMeme, slippage]);
+  }, [getSwapOutputAmount, inputAmount, mainTokenToMeme, slippage]);
 
   useEffect(() => {
     setInputAmount("");
     setOutputAmount(null);
-  }, [slerfToMeme]);
+  }, [mainTokenToMeme]);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => updateOutputAmount(), 1000);
@@ -138,14 +139,14 @@ export const PresaleCoinSwap = ({
   }, [updateOutputAmount]);
 
   const onSwap = useCallback(async () => {
-    if (!publicKey || !outputAmount || !slerfBalance) return;
+    if (!publicKey || !outputAmount || !mainTokenBalance) return;
 
     if (
       !presaleSwapParamsAreValid({
         availableTicketsAmount,
         inputAmount,
-        slerfBalance,
-        slerfToMeme,
+        mainTokenBalance,
+        mainTokenToMeme,
         slippagePercentage: +slippage,
       })
     )
@@ -157,7 +158,7 @@ export const PresaleCoinSwap = ({
         inputAmount: inputAmount,
         minOutputAmount: outputAmount,
         slippagePercentage: +slippage,
-        slerfToMeme: slerfToMeme,
+        mainTokenToMeme: mainTokenToMeme,
       });
 
       if (!transactionResult) {
@@ -217,21 +218,21 @@ export const PresaleCoinSwap = ({
       toast.error("Swap failed. Please, try again");
     } finally {
       refreshAvailableTickets();
-      refetchSlerfBalance();
+      refetchMainTokenBalance();
       updateOutputAmount();
       setIsSwapping(false);
     }
   }, [
     availableTicketsAmount,
-    slerfBalance,
+    mainTokenBalance,
     getSwapTransaction,
     inputAmount,
     outputAmount,
     publicKey,
     sendTransaction,
-    slerfToMeme,
+    mainTokenToMeme,
     slippage,
-    refetchSlerfBalance,
+    refetchMainTokenBalance,
     refreshAvailableTickets,
     pool.address,
     connection,
@@ -251,16 +252,16 @@ export const PresaleCoinSwap = ({
         </div>
       )}
       <div className="flex w-full flex-row gap-2">
-        <SwapButton slerfToMeme={slerfToMeme} onClick={() => setSlerfToMeme(true)} label="Buy" />
-        <SwapButton slerfToMeme={!slerfToMeme} onClick={() => setSlerfToMeme(false)} label="Sell" />
+        <SwapButton mainTokenToMeme={mainTokenToMeme} onClick={() => setMainTokenToMeme(true)} label="Buy" />
+        <SwapButton mainTokenToMeme={!mainTokenToMeme} onClick={() => setMainTokenToMeme(false)} label="Sell" />
       </div>
       <div className="flex w-full flex-col gap-1">
         <InputAmountTitle
           memeBalance={availableTicketsAmount}
           setInputAmount={setInputAmount}
           setOutputData={setOutputAmount}
-          slerfBalance={slerfBalance}
-          slerfToMeme={slerfToMeme}
+          mainTokenBalance={mainTokenBalance}
+          mainTokenToMeme={mainTokenToMeme}
           tokenSymbol={tokenSymbol}
         />
         <input
@@ -269,7 +270,7 @@ export const PresaleCoinSwap = ({
           value={inputAmount}
           onChange={(e) =>
             handleSwapInputChange({
-              decimalPlaces: slerfToMeme ? MEMECHAN_QUOTE_TOKEN_DECIMALS : MEMECHAN_MEME_TOKEN_DECIMALS,
+              decimalPlaces: mainTokenToMeme ? MEMECHAN_MEME_TOKEN_DECIMALS : MEMECHAN_MEME_TOKEN_DECIMALS,
               e,
               setValue: setInputAmount,
             })
@@ -277,23 +278,23 @@ export const PresaleCoinSwap = ({
           placeholder="0"
           type="text"
         />
-        {slerfToMeme && (
+        {mainTokenToMeme && (
           <div className="text-xs font-bold text-regular">
-            available SLERF:{" "}
-            {publicKey && slerfBalance
-              ? Number(slerfBalance).toLocaleString(undefined, {
-                  maximumFractionDigits: MEMECHAN_QUOTE_TOKEN_DECIMALS,
+            available {mainTokenName}:{" "}
+            {publicKey && mainTokenBalance
+              ? Number(mainTokenBalance).toLocaleString(undefined, {
+                  maximumFractionDigits: MEMECHAN_MEME_TOKEN_DECIMALS,
                 }) ?? "loading..."
               : "0"}
           </div>
         )}
-        {!slerfToMeme && availableTicketsAmount !== "0" && (
+        {!mainTokenToMeme && availableTicketsAmount !== "0" && (
           <div className="text-xs font-bold text-regular">
             Available {tokenSymbol} tickets to sell:{" "}
             {formatNumber(+availableTicketsAmount, MEMECHAN_MEME_TOKEN_DECIMALS)}
           </div>
         )}
-        {!slerfToMeme && unavailableTicketsAmount !== "0" && (
+        {!mainTokenToMeme && unavailableTicketsAmount !== "0" && (
           <div className="text-xs !normal-case font-bold text-regular">
             Unavailable {tokenSymbol} tickets to sell (locked):{" "}
             {formatNumber(Number(unavailableTicketsAmount), MEMECHAN_MEME_TOKEN_DECIMALS)}
@@ -301,18 +302,18 @@ export const PresaleCoinSwap = ({
         )}
         {isLoadingOutputAmount && (
           <div className="text-xs font-bold text-regular">
-            {slerfToMeme ? (
+            {mainTokenToMeme ? (
               <span>{tokenSymbol} tickets to receive: loading...</span>
             ) : (
-              <span>SLERF to receive: loading...</span>
+              <span>{mainTokenName} to receive: loading...</span>
             )}
           </div>
         )}
         {outputAmount !== null && !isLoadingOutputAmount && (
           <div className="text-xs font-bold text-regular">
-            {slerfToMeme
+            {mainTokenToMeme
               ? `${tokenSymbol} tickets to receive: ${formatNumber(Number(outputAmount), MEMECHAN_MEME_TOKEN_DECIMALS)}`
-              : `SLERF to receive: ${formatNumber(Number(outputAmount), MEMECHAN_QUOTE_TOKEN_DECIMALS)}`}
+              : `${mainTokenName} to receive: ${formatNumber(Number(outputAmount), MEMECHAN_MEME_TOKEN_DECIMALS)}`}
           </div>
         )}
       </div>

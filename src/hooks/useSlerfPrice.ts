@@ -1,4 +1,4 @@
-import { SLERF_PRICE_INTERVAL } from "@/config/config";
+import { MAIN_TOKEN_PRICE_INTERVAL } from "@/config/config";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
 
@@ -12,7 +12,7 @@ export type PriceData = {
 
 const fetchSlerfPrice = async () => {
   try {
-    const response = await fetch("https://price-api-eight.vercel.app/api/slerf");
+    const response = await fetch("https://price-api-eight.vercel.app/api/sol");
     const priceData: PriceData = await response.json();
 
     return priceData;
@@ -24,7 +24,7 @@ const fetchSlerfPrice = async () => {
 export function useSlerfPrice() {
   const [price, setPrice] = useState<number | null>(null);
   const { data: fetchedPrice } = useSWR("slerf-price", fetchSlerfPrice, {
-    refreshInterval: SLERF_PRICE_INTERVAL,
+    refreshInterval: MAIN_TOKEN_PRICE_INTERVAL,
     revalidateIfStale: false,
     revalidateOnFocus: false,
   });

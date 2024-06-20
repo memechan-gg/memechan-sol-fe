@@ -25,7 +25,7 @@ export type LiveCoinSwapProps = {
 };
 
 export type SwapButtonProps = {
-  slerfToMeme: boolean;
+  mainTokenToMeme: boolean;
   onClick: () => void;
   label: string;
 };

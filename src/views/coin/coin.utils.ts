@@ -5,27 +5,27 @@ import toast from "react-hot-toast";
 export function presaleSwapParamsAreValid({
   availableTicketsAmount,
   inputAmount,
-  slerfBalance,
-  slerfToMeme,
+  mainTokenBalance,
+  mainTokenToMeme,
   slippagePercentage,
 }: {
   inputAmount: string;
-  slerfBalance: string;
+  mainTokenBalance: string;
   availableTicketsAmount: string;
   slippagePercentage: number;
-  slerfToMeme: boolean;
+  mainTokenToMeme: boolean;
 }) {
   if (new BigNumber(inputAmount).eq(0)) {
     toast.error("Input amount must be greater than zero");
     return false;
   }
 
-  if (slerfToMeme && new BigNumber(inputAmount).gt(slerfBalance)) {
+  if (mainTokenToMeme && new BigNumber(inputAmount).gt(mainTokenBalance)) {
     toast.error("Insufficient balance");
     return false;
   }
 
-  if (!slerfToMeme && new BigNumber(inputAmount).gt(availableTicketsAmount)) {
+  if (!mainTokenToMeme && new BigNumber(inputAmount).gt(availableTicketsAmount)) {
     toast.error("Insufficient balance");
     return false;
   }
@@ -41,27 +41,27 @@ export function presaleSwapParamsAreValid({
 export function liveSwapParamsAreValid({
   memeBalance,
   inputAmount,
-  slerfBalance,
-  slerfToMeme,
+  mainTokenBalance,
+  mainTokenToMeme,
   slippagePercentage,
 }: {
   inputAmount: string;
-  slerfBalance: string;
+  mainTokenBalance: string;
   memeBalance?: string;
   slippagePercentage: number;
-  slerfToMeme: boolean;
+  mainTokenToMeme: boolean;
 }) {
   if (new BigNumber(inputAmount).eq(0)) {
     toast.error("Input amount must be greater than zero");
     return false;
   }
 
-  if (slerfToMeme && new BigNumber(inputAmount).gt(slerfBalance)) {
+  if (mainTokenToMeme && new BigNumber(inputAmount).gt(mainTokenBalance)) {
     toast.error("Insufficient balance");
     return false;
   }
 
-  if (!slerfToMeme && (!memeBalance || new BigNumber(inputAmount).gt(memeBalance))) {
+  if (!mainTokenToMeme && (!memeBalance || new BigNumber(inputAmount).gt(memeBalance))) {
     toast.error("Insufficient balance");
     return false;
   }

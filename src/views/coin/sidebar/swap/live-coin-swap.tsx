@@ -3,6 +3,7 @@ import { TransactionSentNotification } from "@/components/notifications/transact
 import { MAX_SLIPPAGE, MIN_SLIPPAGE } from "@/config/config";
 import { useConnection } from "@/context/ConnectionContext";
 import { useBalance } from "@/hooks/useBalance";
+import { useMainTokenName } from "@/hooks/useMainTokenName";
 import { useTokenAccounts } from "@/hooks/useTokenAccounts";
 import { GetLiveSwapTransactionParams, GetSwapOutputAmountParams } from "@/types/hooks";
 import { formatNumber } from "@/utils/formatNumber";
@@ -10,7 +11,6 @@ import {
   LivePoolClient,
   MEMECHAN_MEME_TOKEN_DECIMALS,
   MEMECHAN_QUOTE_MINT,
-  MEMECHAN_QUOTE_TOKEN_DECIMALS,
   SwapMemeOutput,
   buildTxs,
 } from "@avernikoz/memechan-sol-sdk";
@@ -24,7 +24,7 @@ import { InputAmountTitle } from "./input-amount-title";
 import { handleSlippageInputChange, handleSwapInputChange, validateSlippage } from "./utils";
 
 export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: tokenAddress } }: LiveCoinSwapProps) => {
-  const [slerfToMeme, setSlerfToMeme] = useState<boolean>(true);
+  const [mainTokenToMeme, setMainTokenToMeme] = useState<boolean>(true);
   const [inputAmount, setInputAmount] = useState<string>("");
   const [outputData, setOutputData] = useState<SwapMemeOutput | null>(null);
   const [isLoadingOutputAmount, setIsLoadingOutputAmount] = useState<boolean>(false);
@@ -33,13 +33,14 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
 
   const { publicKey, sendTransaction, signTransaction } = useWallet();
   const { connection } = useConnection();
-  const { balance: slerfBalance } = useBalance(MEMECHAN_QUOTE_MINT.toString(), MEMECHAN_QUOTE_TOKEN_DECIMALS);
+  const { balance: mainTokenBalance } = useBalance(MEMECHAN_QUOTE_MINT.toString(), MEMECHAN_MEME_TOKEN_DECIMALS);
   const { balance: memeBalance } = useBalance(tokenAddress, MEMECHAN_MEME_TOKEN_DECIMALS);
   const { tokenAccounts, refetch: refetchTokenAccounts } = useTokenAccounts();
+  const mainTokenName = useMainTokenName();
 
   const getSwapOutputAmount = useCallback(
-    async ({ inputAmount, slerfToMeme, slippagePercentage }: GetSwapOutputAmountParams) => {
-      return slerfToMeme
+    async ({ inputAmount, mainTokenToMeme, slippagePercentage }: GetSwapOutputAmountParams) => {
+      return mainTokenToMeme
         ? await LivePoolClient.getBuyMemeOutput({
             poolAddress: address,
             amountIn: inputAmount,
@@ -59,10 +60,10 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
   );
 
   const getSwapTransactions = useCallback(
-    async ({ outputData, slerfToMeme }: GetLiveSwapTransactionParams) => {
+    async ({ outputData, mainTokenToMeme }: GetLiveSwapTransactionParams) => {
       if (!publicKey || !tokenAccounts) return;
 
-      return slerfToMeme
+      return mainTokenToMeme
         ? await LivePoolClient.getBuyMemeTransactionsByOutput({
             ...outputData,
             connection,
@@ -82,7 +83,7 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
   useEffect(() => {
     setInputAmount("");
     setOutputData(null);
-  }, [slerfToMeme]);
+  }, [mainTokenToMeme]);
 
   useEffect(() => {
     if (inputAmount === "0" || inputAmount === "") {
@@ -96,7 +97,7 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
 
         if (!validateSlippage(slippage)) return;
 
-        const outputData = await getSwapOutputAmount({ inputAmount, slerfToMeme, slippagePercentage: +slippage });
+        const outputData = await getSwapOutputAmount({ inputAmount, mainTokenToMeme, slippagePercentage: +slippage });
 
         if (!outputData) {
           setOutputData(null);
@@ -115,17 +116,25 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
 
     const timeoutId = setTimeout(() => updateOutputAmount(), 1000);
     return () => clearTimeout(timeoutId);
-  }, [getSwapOutputAmount, inputAmount, slerfToMeme, slippage]);
+  }, [getSwapOutputAmount, inputAmount, mainTokenToMeme, slippage]);
 
   const onSwap = useCallback(async () => {
-    if (!publicKey || !outputData || !signTransaction || !slerfBalance) return;
+    if (!publicKey || !outputData || !signTransaction || !mainTokenBalance) return;
 
-    if (!liveSwapParamsAreValid({ inputAmount, memeBalance, slerfBalance, slerfToMeme, slippagePercentage: +slippage }))
+    if (
+      !liveSwapParamsAreValid({
+        inputAmount,
+        memeBalance,
+        mainTokenBalance,
+        mainTokenToMeme,
+        slippagePercentage: +slippage,
+      })
+    )
       return;
 
     try {
       setIsSwapping(true);
-      const simpleSwapTransactions = await getSwapTransactions({ slerfToMeme, outputData });
+      const simpleSwapTransactions = await getSwapTransactions({ mainTokenToMeme, outputData });
 
       if (!simpleSwapTransactions) {
         toast.error("Failed to create the swap transaction. Please, try again");
@@ -181,13 +190,13 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
       setIsSwapping(false);
     }
   }, [
-    slerfBalance,
+    mainTokenBalance,
     getSwapTransactions,
     inputAmount,
     outputData,
     publicKey,
     sendTransaction,
-    slerfToMeme,
+    mainTokenToMeme,
     slippage,
     memeBalance,
     refetchTokenAccounts,
@@ -200,16 +209,16 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
   return (
     <>
       <div className="flex w-full flex-row gap-2">
-        <SwapButton slerfToMeme={slerfToMeme} onClick={() => setSlerfToMeme(true)} label="Buy" />
-        <SwapButton slerfToMeme={!slerfToMeme} onClick={() => setSlerfToMeme(false)} label="Sell" />
+        <SwapButton mainTokenToMeme={mainTokenToMeme} onClick={() => setMainTokenToMeme(true)} label="Buy" />
+        <SwapButton mainTokenToMeme={!mainTokenToMeme} onClick={() => setMainTokenToMeme(false)} label="Sell" />
       </div>
       <div className="flex w-full flex-col gap-1">
         <InputAmountTitle
           memeBalance={memeBalance}
           setInputAmount={setInputAmount}
           setOutputData={setOutputData}
-          slerfBalance={slerfBalance}
-          slerfToMeme={slerfToMeme}
+          mainTokenBalance={mainTokenBalance}
+          mainTokenToMeme={mainTokenToMeme}
           tokenSymbol={tokenSymbol}
         />
         <input
@@ -217,7 +226,7 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
           value={inputAmount}
           onChange={(e) =>
             handleSwapInputChange({
-              decimalPlaces: slerfToMeme ? MEMECHAN_QUOTE_TOKEN_DECIMALS : MEMECHAN_MEME_TOKEN_DECIMALS,
+              decimalPlaces: mainTokenToMeme ? MEMECHAN_MEME_TOKEN_DECIMALS : MEMECHAN_MEME_TOKEN_DECIMALS,
               e,
               setValue: setInputAmount,
             })
@@ -225,35 +234,35 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
           placeholder="0"
           type="text"
         />
-        {slerfToMeme && (
+        {mainTokenToMeme && (
           <div className="text-xs font-bold text-regular">
-            available SLERF:{" "}
-            {publicKey && slerfBalance
-              ? Number(slerfBalance).toLocaleString(undefined, {
-                  maximumFractionDigits: MEMECHAN_QUOTE_TOKEN_DECIMALS,
+            available {mainTokenName}:{" "}
+            {publicKey && mainTokenBalance
+              ? Number(mainTokenBalance).toLocaleString(undefined, {
+                  maximumFractionDigits: MEMECHAN_MEME_TOKEN_DECIMALS,
                 }) ?? "loading..."
               : "0"}
           </div>
         )}
-        {!slerfToMeme && memeBalance && (
+        {!mainTokenToMeme && memeBalance && (
           <div className="text-xs !normal-case font-bold text-regular">
             available {tokenSymbol} to sell: {formatNumber(Number(memeBalance), MEMECHAN_MEME_TOKEN_DECIMALS)}
           </div>
         )}
         {isLoadingOutputAmount && (
           <div className="text-xs font-bold text-regular">
-            {slerfToMeme ? (
+            {mainTokenToMeme ? (
               <span>{tokenSymbol} to receive: loading...</span>
             ) : (
-              <span>SLERF to receive: loading...</span>
+              <span>{mainTokenName} to receive: loading...</span>
             )}
           </div>
         )}
         {outputData !== null && !isLoadingOutputAmount && (
           <div className="text-xs font-bold text-regular">
-            {slerfToMeme
+            {mainTokenToMeme
               ? `${tokenSymbol} to receive: ${Number(outputData.minAmountOut.toExact()).toLocaleString(undefined, { maximumFractionDigits: MEMECHAN_MEME_TOKEN_DECIMALS })}`
-              : `SLERF to receive: ${Number(outputData.minAmountOut.toExact()).toLocaleString(undefined, { maximumFractionDigits: MEMECHAN_QUOTE_TOKEN_DECIMALS })}`}
+              : `${mainTokenName} to receive: ${Number(outputData.minAmountOut.toExact()).toLocaleString(undefined, { maximumFractionDigits: MEMECHAN_MEME_TOKEN_DECIMALS })}`}
           </div>
         )}
       </div>

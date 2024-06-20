@@ -5,6 +5,7 @@ import { SocialLinks } from "./social-links/social-links";
 export const LiveCoinInfo = ({ metadata, livePoolAddress }: LiveCoinInfoProps) => {
   const { name, symbol, description, image, socialLinks } = metadata;
 
+  console.log(MEMECHAN_QUOTE_MINT);
   return (
     <div className="flex flex-col gap-2">
       <div className="flex flex-row gap-2">

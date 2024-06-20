@@ -1,6 +1,6 @@
 import { TARGET_CONFIG_INTERVAL } from "@/config/config";
 import { useConnection } from "@/context/ConnectionContext";
-import { MEMECHAN_QUOTE_TOKEN_DECIMALS, MEMECHAN_TARGET_CONFIG, TargetConfigClient } from "@avernikoz/memechan-sol-sdk";
+import { MEMECHAN_MEME_TOKEN_DECIMALS, MEMECHAN_TARGET_CONFIG, TargetConfigClient } from "@avernikoz/memechan-sol-sdk";
 import { Connection } from "@solana/web3.js";
 import BigNumber from "bignumber.js";
 import useSWR from "swr";
@@ -27,9 +27,9 @@ export function useTargetConfig() {
     },
   );
 
-  const slerfThresholdAmount = targetConfig
-    ? new BigNumber(targetConfig.tokenTargetAmount.toString()).div(10 ** MEMECHAN_QUOTE_TOKEN_DECIMALS).toString()
+  const mainTokenThresholdAmount = targetConfig
+    ? new BigNumber(targetConfig.tokenTargetAmount.toString()).div(10 ** MEMECHAN_MEME_TOKEN_DECIMALS).toString()
     : null;
 
-  return { targetConfig, isLoading, slerfThresholdAmount };
+  return { targetConfig, isLoading, mainTokenThresholdAmount };
 }
