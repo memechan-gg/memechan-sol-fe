@@ -155,15 +155,9 @@ export function Home() {
                 )}
                 {isCoinsListExist && (
                   <>
-                    {tokenList.map((item, index) => {
-                      if (index === 10) {
-                        item.image =
-                          "https://lavender-gentle-primate-223.mypinata.cloud/ipfs/QmdZppf2yk8di8AhXJgV4VBRC318X1quE5YW43KasVgLmd?pinataGatewayToken=M45Jh03NicrVqTZJJhQIwDtl7G6fGS90bjJiIQrmyaQXC_xXj4BgRqjjBNyGV7q2";
-                      }
-                      return (
-                        <Thread key={item.address} coinMetadata={item} showNsfw={nsfwStatus === "on"} model={model} />
-                      );
-                    })}
+                    {tokenList.map((item) => (
+                      <Thread key={item.address} coinMetadata={item} showNsfw={nsfwStatus === "on"} model={model} />
+                    ))}
                   </>
                 )}
                 {isCoinsListEmpty && (
