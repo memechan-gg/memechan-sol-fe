@@ -1,6 +1,7 @@
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/dialog";
 import { Dropdown } from "@/components/dropdown";
 import { NoticeBoard, Thread, ThreadBoard } from "@/components/thread";
+import { useNSFWModel } from "@/hooks/useNSFWModel";
 import Cookies from "js-cookie";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -22,12 +23,15 @@ export function Home() {
     loadMore,
   } = useCoinApi();
 
+  const model = useNSFWModel();
+
   const isLoading = tokenList === null;
   const isCoinsListExist = tokenList !== null && tokenList.length > 0;
   const isCoinsListEmpty = tokenList !== null && tokenList.length === 0;
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(true);
   const [isConfirmed, setIsConfirmed] = useState<boolean>(false);
   const [isMounted, setIsMounted] = useState<boolean>(false);
+  const [nsfwStatus, setNsfwStatus] = useState<"on" | "off">("off");
 
   useEffect(() => {
     setIsMounted(true);
@@ -90,6 +94,17 @@ export function Home() {
             title="memecoins"
             titleChildren={
               <div className="flex flex-row gap-1 text-xs">
+                <Dropdown
+                  items={["on", "off"]}
+                  activeItem={nsfwStatus}
+                  title="include nsfw"
+                  onItemChange={(item) => {
+                    if (item === "on" || item === "off") {
+                      setNsfwStatus(item);
+                    }
+                  }}
+                />
+
                 {status !== null ? (
                   <Dropdown
                     items={["all", "pre_sale", "live"]}
@@ -140,9 +155,15 @@ export function Home() {
                 )}
                 {isCoinsListExist && (
                   <>
-                    {tokenList.map((item) => (
-                      <Thread key={item.address} coinMetadata={item} />
-                    ))}
+                    {tokenList.map((item, index) => {
+                      if (index === 10) {
+                        item.image =
+                          "https://lavender-gentle-primate-223.mypinata.cloud/ipfs/QmdZppf2yk8di8AhXJgV4VBRC318X1quE5YW43KasVgLmd?pinataGatewayToken=M45Jh03NicrVqTZJJhQIwDtl7G6fGS90bjJiIQrmyaQXC_xXj4BgRqjjBNyGV7q2";
+                      }
+                      return (
+                        <Thread key={item.address} coinMetadata={item} showNsfw={nsfwStatus === "on"} model={model} />
+                      );
+                    })}
                   </>
                 )}
                 {isCoinsListEmpty && (
