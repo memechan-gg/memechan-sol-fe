@@ -1,4 +1,4 @@
-import { AuthInstance, MEMECHAN_QUOTE_TOKEN, TokenApiInstance } from "@/common/solana";
+import { AuthInstance, TokenApiInstance } from "@/common/solana";
 import {
   ADMIN_PUB_KEY,
   BoundPoolClient,
@@ -12,6 +12,7 @@ import {
   MAX_SYMBOL_LENGTH,
   MemeTicketClient,
   MemechanClient,
+  TOKEN_INFOS,
   validateCreateCoinParams,
 } from "@avernikoz/memechan-sol-sdk";
 import { PublicKey } from "@solana/web3.js";
@@ -71,7 +72,7 @@ export async function createMemeCoinAndPool({
       discord: data.discord ?? "",
       website: data.website ?? "",
     },
-    quoteToken: MEMECHAN_QUOTE_TOKEN,
+    quoteToken: TOKEN_INFOS["WSOL"],
     buyMemeTransactionArgs:
       inputAmount !== undefined
         ? {
