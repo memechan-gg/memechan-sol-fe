@@ -1,4 +1,5 @@
-import { MEMECHAN_MEME_TOKEN_DECIMALS, ParsedMemeTicket } from "@avernikoz/memechan-sol-sdk";
+import { MEMECHAN_MEME_TOKEN_DECIMALS, ParsedMemeTicket, getTokenInfoByMint } from "@avernikoz/memechan-sol-sdk";
+import { PublicKey } from "@solana/web3.js";
 import BigNumber from "bignumber.js";
 
 export const getTicketsData = (data: ParsedMemeTicket[] | undefined) => {
@@ -57,3 +58,5 @@ export const getTicketsData = (data: ParsedMemeTicket[] | undefined) => {
     unavailableTickets,
   };
 };
+
+export const getTokenInfo = (quoteMint: string) => getTokenInfoByMint(new PublicKey(quoteMint));
