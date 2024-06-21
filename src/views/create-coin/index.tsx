@@ -1,9 +1,10 @@
-import { MEMECHAN_QUOTE_MINT, MEMECHAN_QUOTE_TOKEN_DECIMALS } from "@/common/solana";
+import { NATIVE_MINT_STRING } from "@/common/solana";
 import { TransactionSentNotification } from "@/components/notifications/transaction-sent-notification";
 import { ThreadBoard } from "@/components/thread";
 import { useConnection } from "@/context/ConnectionContext";
 import { useBalance } from "@/hooks/useBalance";
 import { useTargetConfig } from "@/hooks/useTargetConfig";
+import { getTokenInfo } from "@/hooks/utils";
 import { MAX_DESCRIPTION_LENGTH, MAX_NAME_LENGTH, MAX_SYMBOL_LENGTH, sleep } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import BigNumber from "bignumber.js";
@@ -34,7 +35,10 @@ export function CreateCoin() {
   const router = useRouter();
   const [inputAmount, setInputAmount] = useState<string>("0");
   const { slerfThresholdAmount } = useTargetConfig();
-  const { balance: slerfBalance } = useBalance(MEMECHAN_QUOTE_MINT.toString(), MEMECHAN_QUOTE_TOKEN_DECIMALS);
+
+  const tokenInfo = getTokenInfo({ quoteMint: NATIVE_MINT_STRING });
+
+  const { balance: slerfBalance } = useBalance(tokenInfo.mint.toString(), tokenInfo.decimals);
   const { connection, memechanClient } = useConnection();
 
   const onSubmit = handleSubmit(async (data) => {
