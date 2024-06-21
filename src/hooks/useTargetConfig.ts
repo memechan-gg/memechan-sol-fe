@@ -32,9 +32,9 @@ export function useTargetConfig() {
     },
   );
 
-  const slerfThresholdAmount = targetConfig
+  const solanaThresholdAmount = targetConfig
     ? new BigNumber(targetConfig.tokenTargetAmount.toString()).div(10 ** tokenInfo.decimals).toString()
     : null;
 
-  return { targetConfig, isLoading, slerfThresholdAmount };
+  return { targetConfig, isLoading, solanaThresholdAmount };
 }

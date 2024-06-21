@@ -2,7 +2,7 @@ import { NATIVE_MINT_STRING } from "@/common/solana";
 import { TransactionSentNotification } from "@/components/notifications/transaction-sent-notification";
 import { ThreadBoard } from "@/components/thread";
 import { useConnection } from "@/context/ConnectionContext";
-import { useBalance } from "@/hooks/useBalance";
+import { useSolanaBalance } from "@/hooks/useSolanaBalance";
 import { useTargetConfig } from "@/hooks/useTargetConfig";
 import { getTokenInfo } from "@/hooks/utils";
 import { MAX_DESCRIPTION_LENGTH, MAX_NAME_LENGTH, MAX_SYMBOL_LENGTH, sleep } from "@avernikoz/memechan-sol-sdk";
@@ -34,11 +34,12 @@ export function CreateCoin() {
   const [state, setState] = useState<CreateCoinState>("idle");
   const router = useRouter();
   const [inputAmount, setInputAmount] = useState<string>("0");
-  const { slerfThresholdAmount } = useTargetConfig();
+  const { solanaThresholdAmount } = useTargetConfig();
+
+  const solanaAmount = useSolanaBalance();
 
   const tokenInfo = getTokenInfo({ quoteMint: NATIVE_MINT_STRING });
 
-  const { balance: slerfBalance } = useBalance(tokenInfo.mint.toString(), tokenInfo.decimals);
   const { connection, memechanClient } = useConnection();
 
   const onSubmit = handleSubmit(async (data) => {
@@ -58,20 +59,22 @@ export function CreateCoin() {
       }
 
       if (inputAmountIsSpecified) {
-        if (!slerfBalance) return toast.error("You need to have SLERF for initial buy");
+        if (!solanaAmount) return toast.error("You need to have SOL for initial buy");
 
         const amountBigNumber = new BigNumber(inputAmount);
-        const thresholdWithFees = slerfThresholdAmount ? new BigNumber(slerfThresholdAmount).multipliedBy(1.01) : null;
+        const thresholdWithFees = solanaThresholdAmount
+          ? new BigNumber(solanaThresholdAmount).multipliedBy(1.01)
+          : null;
 
         if (amountBigNumber.isNaN()) return toast.error("Input amount must be a valid number");
 
         if (amountBigNumber.lt(0)) return toast.error("Input amount must be greater than zero");
 
-        if (amountBigNumber.gt(slerfBalance)) return toast.error("Insufficient balance");
+        if (amountBigNumber.gt(solanaAmount)) return toast.error("Insufficient balance");
 
         if (thresholdWithFees && amountBigNumber.gt(thresholdWithFees))
           return toast.error(
-            `The maximum SLERF amount to invest in bonding pool is ${thresholdWithFees.toPrecision()} SLERF`,
+            `The maximum SOL amount to invest in bonding pool is ${thresholdWithFees.toPrecision()} SOL`,
           );
       }
 
@@ -275,7 +278,7 @@ export function CreateCoin() {
               <h4 className="text-sm font-bold text-regular">Buy your meme first</h4>
               <div className="flex flex-col lg:flex-row gap-4 flex-wrap">
                 <div className="flex flex-col gap-1">
-                  <label className="text-regular text-xs">SLERF amount</label>
+                  <label className="text-regular text-xs">SOL amount</label>
                   <div>
                     <input
                       className="border w-[200px] border-regular rounded-lg p-1"
@@ -288,7 +291,7 @@ export function CreateCoin() {
                     />
                   </div>
                   <span className="text-regular">
-                    SLERF available: {publicKey ? slerfBalance ?? <Skeleton width={40} /> : 0}
+                    SOL available: {publicKey ? solanaAmount ?? <Skeleton width={40} /> : 0}
                   </span>
                 </div>
               </div>
