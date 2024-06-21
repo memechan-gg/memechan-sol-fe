@@ -58,6 +58,7 @@ export type LiveCoinHoldersProps = {
 
 export type LiveCoinInfoProps = {
   metadata: SolanaToken;
+  quoteMint: string;
   livePoolAddress: string;
 };
 
