@@ -1,6 +1,6 @@
 import { useConnection } from "@/context/ConnectionContext";
 import { useWallet } from "@solana/wallet-adapter-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export const useSolanaBalance = () => {
   const { connection } = useConnection();
@@ -8,8 +8,8 @@ export const useSolanaBalance = () => {
 
   const [balance, setBalance] = useState<number>(0);
 
-  useEffect(() => {
-    const fetchBalance = async () => {
+  const fetchBalance = useCallback(
+    () => async () => {
       if (publicKey) {
         try {
           const balance = await connection.getBalance(publicKey);
@@ -18,10 +18,12 @@ export const useSolanaBalance = () => {
           console.error("Failed to fetch balance:", error);
         }
       }
-    };
-
+    },
+    [connection, publicKey],
+  );
+  useEffect(() => {
     fetchBalance();
-  }, [connection, publicKey]);
+  }, [connection, fetchBalance, publicKey]);
 
-  return balance;
+  return { balance, refetch: fetchBalance };
 };

@@ -32,7 +32,8 @@ export const LiveCoinSwap = ({
 
   const { publicKey, sendTransaction, signTransaction } = useWallet();
   const { connection } = useConnection();
-  const { balance: slerfBalance } = useBalance(tokenData.mint.toString(), tokenData.decimals);
+  // TEST:1
+  const { balance: coinBalance } = useBalance(tokenData.mint.toString(), tokenData.decimals);
   const { balance: memeBalance } = useBalance(tokenAddress, MEMECHAN_MEME_TOKEN_DECIMALS);
   const { tokenAccounts, refetch: refetchTokenAccounts } = useTokenAccounts();
 
@@ -117,9 +118,9 @@ export const LiveCoinSwap = ({
   }, [getSwapOutputAmount, inputAmount, slerfToMeme, slippage]);
 
   const onSwap = useCallback(async () => {
-    if (!publicKey || !outputData || !signTransaction || !slerfBalance) return;
+    if (!publicKey || !outputData || !signTransaction || !coinBalance) return;
 
-    if (!liveSwapParamsAreValid({ inputAmount, memeBalance, slerfBalance, slerfToMeme, slippagePercentage: +slippage }))
+    if (!liveSwapParamsAreValid({ inputAmount, memeBalance, coinBalance, slerfToMeme, slippagePercentage: +slippage }))
       return;
 
     try {
@@ -180,7 +181,7 @@ export const LiveCoinSwap = ({
       setIsSwapping(false);
     }
   }, [
-    slerfBalance,
+    coinBalance,
     getSwapTransactions,
     inputAmount,
     outputData,
@@ -207,9 +208,10 @@ export const LiveCoinSwap = ({
           memeBalance={memeBalance}
           setInputAmount={setInputAmount}
           setOutputData={setOutputData}
-          slerfBalance={slerfBalance}
-          slerfToMeme={slerfToMeme}
+          coinBalance={coinBalance}
+          coinToMeme={slerfToMeme}
           tokenSymbol={tokenSymbol}
+          quoteMint={quoteMint}
         />
         <input
           className="w-full bg-white text-xs font-bold text-regular p-2 rounded-lg"
@@ -227,8 +229,8 @@ export const LiveCoinSwap = ({
         {slerfToMeme && (
           <div className="text-xs font-bold text-regular">
             available {tokenData.displayName}:{" "}
-            {publicKey && slerfBalance
-              ? Number(slerfBalance).toLocaleString(undefined, {
+            {publicKey && coinBalance
+              ? Number(coinBalance).toLocaleString(undefined, {
                   maximumFractionDigits: tokenData.decimals,
                 }) ?? "loading..."
               : "0"}

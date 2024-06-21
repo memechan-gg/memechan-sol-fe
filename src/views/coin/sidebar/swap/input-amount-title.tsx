@@ -1,30 +1,33 @@
-import { MEMECHAN_QUOTE_TOKEN_DECIMALS } from "@/common/solana";
+// import { MEMECHAN_QUOTE_TOKEN_DECIMALS } from "@/common/solana";
+import { getTokenInfo } from "@/hooks/utils";
 import { MEMECHAN_MEME_TOKEN_DECIMALS, SwapMemeOutput } from "@avernikoz/memechan-sol-sdk";
 import { Dispatch, SetStateAction } from "react";
 import { InputAmountButtons } from "./input-amount-buttons";
 
 export const InputAmountTitle = ({
-  slerfToMeme,
+  coinToMeme,
   tokenSymbol,
   memeBalance,
-  slerfBalance,
+  coinBalance,
   setInputAmount,
   setOutputData,
+  quoteMint,
 }: {
-  slerfToMeme: boolean;
+  coinToMeme: boolean;
   tokenSymbol: string;
-  slerfBalance: string | undefined;
+  coinBalance: string | undefined;
   memeBalance: string | undefined;
   setInputAmount: Dispatch<SetStateAction<string>>;
   setOutputData: Dispatch<SetStateAction<SwapMemeOutput | null>> | Dispatch<SetStateAction<string | null>>;
+  quoteMint: string;
 }) => {
-  const inputValue = slerfToMeme ? slerfBalance : memeBalance;
-  const inputDecimals = slerfToMeme ? MEMECHAN_QUOTE_TOKEN_DECIMALS : MEMECHAN_MEME_TOKEN_DECIMALS;
-
+  const inputValue = coinToMeme ? coinBalance : memeBalance;
+  const tokenInfo = getTokenInfo({ quoteMint });
+  const inputDecimals = coinToMeme ? tokenInfo.decimals : MEMECHAN_MEME_TOKEN_DECIMALS;
   return (
     <div className="flex flex-wrap justify-between">
       <div className="text-xs font-bold text-regular">
-        {slerfToMeme ? `SLERF to ${tokenSymbol}` : `${tokenSymbol} to SLERF`}
+        {coinToMeme ? `${tokenInfo.displayName} to ${tokenSymbol}` : `${tokenSymbol} to ${tokenInfo.displayName}`}
       </div>
       <InputAmountButtons
         setInputAmount={setInputAmount}

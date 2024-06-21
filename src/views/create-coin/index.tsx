@@ -34,7 +34,7 @@ export function CreateCoin() {
   const [inputAmount, setInputAmount] = useState<string>("0");
   const { solanaThresholdAmount } = useTargetConfig();
 
-  const solanaAmount = useSolanaBalance();
+  const { balance: solanaAmount } = useSolanaBalance();
 
   const { connection, memechanClient } = useConnection();
 
