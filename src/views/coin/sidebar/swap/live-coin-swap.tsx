@@ -1,10 +1,10 @@
-import { MEMECHAN_QUOTE_MINT, MEMECHAN_QUOTE_TOKEN_DECIMALS } from "@/common/solana";
 import { Button } from "@/components/button";
 import { TransactionSentNotification } from "@/components/notifications/transaction-sent-notification";
 import { MAX_SLIPPAGE, MIN_SLIPPAGE } from "@/config/config";
 import { useConnection } from "@/context/ConnectionContext";
 import { useBalance } from "@/hooks/useBalance";
 import { useTokenAccounts } from "@/hooks/useTokenAccounts";
+import { getTokenInfo } from "@/hooks/utils";
 import { GetLiveSwapTransactionParams, GetSwapOutputAmountParams } from "@/types/hooks";
 import { formatNumber } from "@/utils/formatNumber";
 import { LivePoolClient, MEMECHAN_MEME_TOKEN_DECIMALS, SwapMemeOutput, buildTxs } from "@avernikoz/memechan-sol-sdk";
@@ -17,7 +17,10 @@ import { SwapButton } from "./button";
 import { InputAmountTitle } from "./input-amount-title";
 import { handleSlippageInputChange, handleSwapInputChange, validateSlippage } from "./utils";
 
-export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: tokenAddress } }: LiveCoinSwapProps) => {
+export const LiveCoinSwap = ({
+  tokenSymbol,
+  pool: { id: address, baseMint: tokenAddress, quoteMint },
+}: LiveCoinSwapProps) => {
   const [slerfToMeme, setSlerfToMeme] = useState<boolean>(true);
   const [inputAmount, setInputAmount] = useState<string>("");
   const [outputData, setOutputData] = useState<SwapMemeOutput | null>(null);
@@ -25,9 +28,11 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
   const [slippage, setSlippage] = useState<string>("10");
   const [isSwapping, setIsSwapping] = useState<boolean>(false);
 
+  const tokenData = getTokenInfo({ variant: "string", quoteMint });
+
   const { publicKey, sendTransaction, signTransaction } = useWallet();
   const { connection } = useConnection();
-  const { balance: slerfBalance } = useBalance(MEMECHAN_QUOTE_MINT.toString(), MEMECHAN_QUOTE_TOKEN_DECIMALS);
+  const { balance: slerfBalance } = useBalance(tokenData.mint.toString(), tokenData.decimals);
   const { balance: memeBalance } = useBalance(tokenAddress, MEMECHAN_MEME_TOKEN_DECIMALS);
   const { tokenAccounts, refetch: refetchTokenAccounts } = useTokenAccounts();
 
@@ -211,7 +216,7 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
           value={inputAmount}
           onChange={(e) =>
             handleSwapInputChange({
-              decimalPlaces: slerfToMeme ? MEMECHAN_QUOTE_TOKEN_DECIMALS : MEMECHAN_MEME_TOKEN_DECIMALS,
+              decimalPlaces: slerfToMeme ? tokenData.decimals : MEMECHAN_MEME_TOKEN_DECIMALS,
               e,
               setValue: setInputAmount,
             })
@@ -221,10 +226,10 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
         />
         {slerfToMeme && (
           <div className="text-xs font-bold text-regular">
-            available SLERF:{" "}
+            available {tokenData.displayName}:{" "}
             {publicKey && slerfBalance
               ? Number(slerfBalance).toLocaleString(undefined, {
-                  maximumFractionDigits: MEMECHAN_QUOTE_TOKEN_DECIMALS,
+                  maximumFractionDigits: tokenData.decimals,
                 }) ?? "loading..."
               : "0"}
           </div>
@@ -239,7 +244,7 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
             {slerfToMeme ? (
               <span>{tokenSymbol} to receive: loading...</span>
             ) : (
-              <span>SLERF to receive: loading...</span>
+              <span>{tokenData.displayName} to receive: loading...</span>
             )}
           </div>
         )}
@@ -247,7 +252,7 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
           <div className="text-xs font-bold text-regular">
             {slerfToMeme
               ? `${tokenSymbol} to receive: ${Number(outputData.minAmountOut.toExact()).toLocaleString(undefined, { maximumFractionDigits: MEMECHAN_MEME_TOKEN_DECIMALS })}`
-              : `SLERF to receive: ${Number(outputData.minAmountOut.toExact()).toLocaleString(undefined, { maximumFractionDigits: MEMECHAN_QUOTE_TOKEN_DECIMALS })}`}
+              : `${tokenData.displayName} to receive: ${Number(outputData.minAmountOut.toExact()).toLocaleString(undefined, { maximumFractionDigits: tokenData.decimals })}`}
           </div>
         )}
       </div>
