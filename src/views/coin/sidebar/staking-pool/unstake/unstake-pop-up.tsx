@@ -27,7 +27,7 @@ export const UnstakePopUp = ({
   const { publicKey, sendTransaction } = useWallet();
   const { connection } = useConnection();
   const stakingPool = useStakingPool(stakingPoolFromApi?.address);
-  const stakingPoolClient = useStakingPoolClient(stakingPoolFromApi?.address);
+  const { data: stakingPoolClient } = useStakingPoolClient(stakingPoolFromApi?.address);
 
   const updateAvailableAmountToUnstake = useCallback(async () => {
     if (!stakingPoolClient || !stakingPool || !tickets) return;
