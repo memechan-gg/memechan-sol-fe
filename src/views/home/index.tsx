@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import { useCoinApi } from "./hooks/useCoinApi";
-import { isThreadsSortBy, isThreadsSortDirection, isThreadsSortStatus } from "./hooks/utils";
+import { isThreadsNSFW, isThreadsSortBy, isThreadsSortDirection, isThreadsSortStatus } from "./hooks/utils";
 
 export function Home() {
   const {
@@ -17,6 +17,10 @@ export function Home() {
     setSortBy,
     direction,
     setDirection,
+    nsfwStatus,
+    setNsfwStatus,
+    search,
+    setSearch,
     liveNextPageToken,
     presaleNextPageToken,
     loadMore,
@@ -89,45 +93,72 @@ export function Home() {
           <ThreadBoard
             title="memecoins"
             titleChildren={
-              <div className="flex flex-row gap-1 text-xs">
-                {status !== null ? (
-                  <Dropdown
-                    items={["all", "pre_sale", "live"]}
-                    activeItem={status}
-                    title="status"
-                    onItemChange={(item) => {
-                      if (isThreadsSortStatus(item)) setStatus(item);
-                    }}
+              <div className="md:ml-2 flex flex-col md:flex-row md:items-center gap-1 text-xs">
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder={"Search for a token"}
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="w-full md:w-fit bg-regular text-white font-bold py-1 px-2 rounded-lg border border-gray-500 focus:outline-none focus:border-blue-500"
                   />
-                ) : (
-                  <Skeleton width={40} />
-                )}
+                </div>
+                <div className="flex flex-row gap-1 text-xs">
+                  <div className="flex flex-col gap-1 md:flex-row">
+                    {nsfwStatus !== null ? (
+                      <Dropdown
+                        items={["on", "off"]}
+                        activeItem={nsfwStatus}
+                        title="nsfw status"
+                        onItemChange={(item) => {
+                          if (isThreadsNSFW(item)) setNsfwStatus(item);
+                        }}
+                      />
+                    ) : (
+                      <Skeleton width={40} />
+                    )}
 
-                {sortBy !== null ? (
-                  <Dropdown
-                    items={["last_reply", "creation_time", "market_cap"]}
-                    activeItem={sortBy}
-                    title="sort by"
-                    onItemChange={(item) => {
-                      if (isThreadsSortBy(item)) setSortBy(item);
-                    }}
-                  />
-                ) : (
-                  <Skeleton width={40} />
-                )}
+                    {status !== null ? (
+                      <Dropdown
+                        items={["all", "pre_sale", "live"]}
+                        activeItem={status}
+                        title="status"
+                        onItemChange={(item) => {
+                          if (isThreadsSortStatus(item)) setStatus(item);
+                        }}
+                      />
+                    ) : (
+                      <Skeleton width={40} />
+                    )}
+                  </div>
+                  <div className="flex flex-col gap-1 md:flex-row">
+                    {sortBy !== null ? (
+                      <Dropdown
+                        items={["last_reply", "creation_time", "market_cap"]}
+                        activeItem={sortBy}
+                        title="sort by"
+                        onItemChange={(item) => {
+                          if (isThreadsSortBy(item)) setSortBy(item);
+                        }}
+                      />
+                    ) : (
+                      <Skeleton width={40} />
+                    )}
 
-                {direction !== null ? (
-                  <Dropdown
-                    items={["asc", "desc"]}
-                    activeItem={direction}
-                    title="order"
-                    onItemChange={(item) => {
-                      if (isThreadsSortDirection(item)) setDirection(item);
-                    }}
-                  />
-                ) : (
-                  <Skeleton width={40} />
-                )}
+                    {direction !== null ? (
+                      <Dropdown
+                        items={["asc", "desc"]}
+                        activeItem={direction}
+                        title="order"
+                        onItemChange={(item) => {
+                          if (isThreadsSortDirection(item)) setDirection(item);
+                        }}
+                      />
+                    ) : (
+                      <Skeleton width={40} />
+                    )}
+                  </div>
+                </div>
               </div>
             }
           >

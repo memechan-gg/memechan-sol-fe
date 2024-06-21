@@ -3,23 +3,34 @@ import { SolanaToken } from "@avernikoz/memechan-sol-sdk";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useInterval } from "usehooks-ts";
-import { ThreadsSortBy, ThreadsSortDirection, ThreadsSortOptions, ThreadsSortStatus } from "./types";
-import { getSortBy, getStatus, isThreadsSortBy, isThreadsSortDirection, isThreadsSortStatus } from "./utils";
+import { NSFWStatus, ThreadsSortBy, ThreadsSortDirection, ThreadsSortOptions, ThreadsSortStatus } from "./types";
+import {
+  getSortBy,
+  getStatus,
+  isThreadsNSFW,
+  isThreadsSortBy,
+  isThreadsSortDirection,
+  isThreadsSortStatus,
+} from "./utils";
 
 export const DEFAULT_SORT_PARAMS: {
   status: ThreadsSortStatus;
   sortBy: ThreadsSortBy;
   direction: ThreadsSortDirection;
+  nsfwStatus: NSFWStatus;
 } = {
   status: "all",
   sortBy: "creation_time",
   direction: "desc",
+  nsfwStatus: "off",
 };
 
 export function useCoinApi() {
   const [status, setStatus] = useState<ThreadsSortStatus | null>(null);
   const [sortBy, setSortBy] = useState<ThreadsSortBy | null>(null);
   const [direction, setDirection] = useState<ThreadsSortDirection | null>(null);
+  const [nsfwStatus, setNsfwStatus] = useState<NSFWStatus | null>(null);
+  const [search, setSearch] = useState<string>("");
 
   const [items, setItems] = useState<SolanaToken[] | null>(null);
   const [presaleNextPageToken, setPresaleNextPageToken] = useState<string | null>(null);
@@ -32,10 +43,14 @@ export function useCoinApi() {
       const initStatus = localStorage.getItem(ThreadsSortOptions.Status) ?? DEFAULT_SORT_PARAMS.status;
       const initSortBy = localStorage.getItem(ThreadsSortOptions.SortBy) ?? DEFAULT_SORT_PARAMS.sortBy;
       const initDirection = localStorage.getItem(ThreadsSortOptions.Direction) ?? DEFAULT_SORT_PARAMS.direction;
+      const nsfwStatus = localStorage.getItem(ThreadsSortOptions.NSFW) ?? DEFAULT_SORT_PARAMS.nsfwStatus;
+      const searchValue = localStorage.getItem(ThreadsSortOptions.Search) ?? "";
 
       if (isThreadsSortStatus(initStatus)) setStatus(initStatus);
       if (isThreadsSortBy(initSortBy)) setSortBy(initSortBy);
       if (isThreadsSortDirection(initDirection)) setDirection(initDirection);
+      if (isThreadsNSFW(nsfwStatus)) setNsfwStatus(nsfwStatus);
+      setSearch(searchValue);
     }
   }, []);
 
@@ -49,6 +64,12 @@ export function useCoinApi() {
   useEffect(() => {
     if (direction && typeof window !== "undefined") localStorage.setItem(ThreadsSortOptions.Direction, direction);
   }, [direction]);
+  useEffect(() => {
+    if (nsfwStatus && typeof window !== "undefined") localStorage.setItem(ThreadsSortOptions.NSFW, nsfwStatus);
+  }, [nsfwStatus]);
+  useEffect(() => {
+    if (search !== undefined && typeof window !== "undefined") localStorage.setItem(ThreadsSortOptions.Search, search);
+  }, [search]);
 
   // Method for fetching data without pagination. Using pagination `load` methods inside will cause bugs.
   const fetchData = useCallback(async () => {
@@ -187,6 +208,10 @@ export function useCoinApi() {
     setSortBy,
     direction,
     setDirection,
+    nsfwStatus,
+    setNsfwStatus,
+    search,
+    setSearch,
     presaleNextPageToken,
     liveNextPageToken,
     loadMore,

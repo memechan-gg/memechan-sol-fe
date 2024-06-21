@@ -15,8 +15,8 @@ export function Dropdown({
 }) {
   return (
     <Popover>
-      <Popover.Button>
-        <div className="bg-regular flex flex-row gap-1 text-white font-bold py-1 px-2 rounded-lg">
+      <Popover.Button className="w-full">
+        <div className="bg-regular flex flex-row gap-1 text-white font-bold py-1 px-2 rounded-lg justify-between">
           {title}: {activeItem.split("_").join(" ")} <CaretDown className="w-4 h-4" />
         </div>
       </Popover.Button>
