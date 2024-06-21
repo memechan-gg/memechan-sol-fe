@@ -1,10 +1,8 @@
-import { NATIVE_MINT_STRING } from "@/common/solana";
 import { TransactionSentNotification } from "@/components/notifications/transaction-sent-notification";
 import { ThreadBoard } from "@/components/thread";
 import { useConnection } from "@/context/ConnectionContext";
 import { useSolanaBalance } from "@/hooks/useSolanaBalance";
 import { useTargetConfig } from "@/hooks/useTargetConfig";
-import { getTokenInfo } from "@/hooks/utils";
 import { MAX_DESCRIPTION_LENGTH, MAX_NAME_LENGTH, MAX_SYMBOL_LENGTH, sleep } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import BigNumber from "bignumber.js";
@@ -37,8 +35,6 @@ export function CreateCoin() {
   const { solanaThresholdAmount } = useTargetConfig();
 
   const solanaAmount = useSolanaBalance();
-
-  const tokenInfo = getTokenInfo({ quoteMint: NATIVE_MINT_STRING });
 
   const { connection, memechanClient } = useConnection();
 
@@ -291,7 +287,7 @@ export function CreateCoin() {
                     />
                   </div>
                   <span className="text-regular">
-                    SOL available: {publicKey ? solanaAmount ?? <Skeleton width={40} /> : 0}
+                    SOL available: {publicKey ? solanaAmount.toFixed(4) ?? <Skeleton width={40} /> : 0}
                   </span>
                 </div>
               </div>
