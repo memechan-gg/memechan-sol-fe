@@ -1,5 +1,5 @@
-import { Auth, BE_URL_DEV, ChartApi, PoolAPI, SocialAPI, TOKEN_INFOS, TokenAPI } from "@avernikoz/memechan-sol-sdk";
-import { Keypair } from "@solana/web3.js";
+import { Auth, BE_URL_DEV, ChartApi, PoolAPI, SocialAPI, TokenAPI } from "@avernikoz/memechan-sol-sdk";
+import { Keypair, PublicKey } from "@solana/web3.js";
 
 export const SIMULATION_KEYPAIR = Keypair.fromSeed(
   Uint8Array.from(
@@ -21,3 +21,6 @@ export const ChartApiInstance = new ChartApi(BE_URL_DEV);
 // export const MEMECHAN_QUOTE_TOKEN_DECIMALS = TOKEN_INFOS[MEMECHAN_QUOTE_TOKEN].decimals;
 // export const MEMECHAN_TARGET_CONFIG = TOKEN_INFOS[MEMECHAN_QUOTE_TOKEN].targetConfig;
 // export const MEMECHAN_QUOTE_MINT = TOKEN_INFOS[MEMECHAN_QUOTE_TOKEN].mint;
+
+export const NATIVE_MINT = new PublicKey("So11111111111111111111111111111111111111112");
+export const NATIVE_MINT_STRING = "So11111111111111111111111111111111111111112";
