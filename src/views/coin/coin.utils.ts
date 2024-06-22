@@ -73,7 +73,6 @@ export function liveSwapParamsAreValid({
 
   return true;
 }
-
 export function validateAddLiquidityInput(
   memeAmount: string,
   suiAmount: string,
