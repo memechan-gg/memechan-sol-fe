@@ -2,7 +2,7 @@ import { PresaleCoinInfoProps } from "../../coin.types";
 import { SocialLinks } from "./social-links/social-links";
 import { getBoundPoolProgress } from "./utils";
 
-export const PresaleCoinInfo = ({ metadata, boundPool }: PresaleCoinInfoProps) => {
+export const PresaleCoinInfo = ({ metadata, boundPool, tokenInfo }: PresaleCoinInfoProps) => {
   const { name, symbol, description, image, socialLinks } = metadata;
   const { progress, slerfIn, limit } = boundPool
     ? getBoundPoolProgress(boundPool)
@@ -47,12 +47,13 @@ export const PresaleCoinInfo = ({ metadata, boundPool }: PresaleCoinInfoProps) =
           <div className="text-regular mt-2">
             <div className="flex flex-col gap-2">
               <div>
-                When the pool reaches {Number(limit).toLocaleString()} <span className="!normal-case">SLERF</span>,
-                liquidity from the bonding curve will flow exclusively to Raydium Liquidity Pool and be held securely
-                for generating fees.
+                When the pool reaches {Number(limit).toLocaleString()}{" "}
+                <span className="!normal-case">{tokenInfo.displayName}</span>, liquidity from the bonding curve will
+                flow exclusively to Raydium Liquidity Pool and be held securely for generating fees.
               </div>
               <div>
-                Presently, there is {Number(slerfIn).toLocaleString()} <span className="!normal-case">SLERF</span>.
+                Presently, there is {Number(slerfIn).toLocaleString()}{" "}
+                <span className="!normal-case">{tokenInfo.displayName}</span>.
               </div>
               <div>Happy trading :)</div>
             </div>
