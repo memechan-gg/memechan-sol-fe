@@ -6,26 +6,26 @@ export function presaleSwapParamsAreValid({
   availableTicketsAmount,
   inputAmount,
   coinBalance,
-  slerfToMeme,
+  coinToMeme,
   slippagePercentage,
 }: {
   inputAmount: string;
   coinBalance: string;
   availableTicketsAmount: string;
   slippagePercentage: number;
-  slerfToMeme: boolean;
+  coinToMeme: boolean;
 }) {
   if (new BigNumber(inputAmount).eq(0)) {
     toast.error("Input amount must be greater than zero");
     return false;
   }
 
-  if (slerfToMeme && new BigNumber(inputAmount).gt(coinBalance)) {
+  if (coinToMeme && new BigNumber(inputAmount).gt(coinBalance)) {
     toast.error("Insufficient balance");
     return false;
   }
 
-  if (!slerfToMeme && new BigNumber(inputAmount).gt(availableTicketsAmount)) {
+  if (!coinToMeme && new BigNumber(inputAmount).gt(availableTicketsAmount)) {
     toast.error("Insufficient balance");
     return false;
   }
@@ -42,26 +42,26 @@ export function liveSwapParamsAreValid({
   memeBalance,
   inputAmount,
   coinBalance,
-  slerfToMeme,
+  coinToMeme,
   slippagePercentage,
 }: {
   inputAmount: string;
   coinBalance: string;
   memeBalance?: string;
   slippagePercentage: number;
-  slerfToMeme: boolean;
+  coinToMeme: boolean;
 }) {
   if (new BigNumber(inputAmount).eq(0)) {
     toast.error("Input amount must be greater than zero");
     return false;
   }
 
-  if (slerfToMeme && new BigNumber(inputAmount).gt(coinBalance)) {
+  if (coinToMeme && new BigNumber(inputAmount).gt(coinBalance)) {
     toast.error("Insufficient balance");
     return false;
   }
 
-  if (!slerfToMeme && (!memeBalance || new BigNumber(inputAmount).gt(memeBalance))) {
+  if (!coinToMeme && (!memeBalance || new BigNumber(inputAmount).gt(memeBalance))) {
     toast.error("Insufficient balance");
     return false;
   }
