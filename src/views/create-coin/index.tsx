@@ -1,9 +1,15 @@
 import { TransactionSentNotification } from "@/components/notifications/transaction-sent-notification";
 import { ThreadBoard } from "@/components/thread";
 import { useConnection } from "@/context/ConnectionContext";
-import { useSolanaBalance } from "@/hooks/useSolanaBalance";
+import { useBalance } from "@/hooks/useBalance";
 import { useTargetConfig } from "@/hooks/useTargetConfig";
-import { MAX_DESCRIPTION_LENGTH, MAX_NAME_LENGTH, MAX_SYMBOL_LENGTH, sleep } from "@avernikoz/memechan-sol-sdk";
+import {
+  MAX_DESCRIPTION_LENGTH,
+  MAX_NAME_LENGTH,
+  MAX_SYMBOL_LENGTH,
+  TOKEN_INFOS,
+  sleep,
+} from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import BigNumber from "bignumber.js";
 import { useRouter } from "next/router";
@@ -34,7 +40,7 @@ export function CreateCoin() {
   const [inputAmount, setInputAmount] = useState<string>("0");
   const { solanaThresholdAmount } = useTargetConfig();
 
-  const { balance: solanaAmount } = useSolanaBalance();
+  const { balance: solanaAmount } = useBalance(TOKEN_INFOS["WSOL"].mint.toString(), TOKEN_INFOS["WSOL"].decimals);
 
   const { connection, memechanClient } = useConnection();
 
@@ -287,7 +293,8 @@ export function CreateCoin() {
                     />
                   </div>
                   <span className="text-regular">
-                    SOL available: {publicKey ? solanaAmount.toFixed(4) ?? <Skeleton width={40} /> : 0}
+                    SOL available:{" "}
+                    {publicKey ? (solanaAmount && (+solanaAmount).toFixed(4)) ?? <Skeleton width={40} /> : 0}
                   </span>
                 </div>
               </div>
