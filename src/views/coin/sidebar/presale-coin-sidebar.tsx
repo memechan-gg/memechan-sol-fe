@@ -1,5 +1,4 @@
 import { useBoundPool } from "@/hooks/presale/useBoundPool";
-import { useBoundPoolClient } from "@/hooks/presale/useBoundPoolClient";
 import { PresaleCoinSidebarProps } from "../coin.types";
 import { PresaleCoinHolders } from "./holders/presale-coin-holders";
 import { PresaleCoinInfo } from "./info/presale-coin-info";
@@ -8,11 +7,7 @@ import { PresaleCoinSwap } from "./swap/presale-coin-swap";
 
 export function PresaleCoinSidebar({ pool, coinMetadata, uniqueHoldersData, ticketsData }: PresaleCoinSidebarProps) {
   const boundPool = useBoundPool(pool.address);
-  const boundPoolClient = useBoundPoolClient(pool.address);
 
-  if (!boundPool) {
-    return <>Loading...</>;
-  }
   return (
     <>
       <SidebarItem>
