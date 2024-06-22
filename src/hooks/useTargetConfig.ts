@@ -1,25 +1,30 @@
+import { NATIVE_MINT_STRING } from "@/common/solana";
 import { TARGET_CONFIG_INTERVAL } from "@/config/config";
 import { useConnection } from "@/context/ConnectionContext";
-import { MEMECHAN_QUOTE_TOKEN_DECIMALS, MEMECHAN_TARGET_CONFIG, TargetConfigClient } from "@avernikoz/memechan-sol-sdk";
+import { TargetConfigClient, TokenInfo } from "@avernikoz/memechan-sol-sdk";
 import { Connection } from "@solana/web3.js";
 import BigNumber from "bignumber.js";
 import useSWR from "swr";
+import { getTokenInfo } from "./utils";
 
-const fetchTargetConfig = async (connection: Connection) => {
+const fetchTargetConfig = async (connection: Connection, tokenInfo: TokenInfo) => {
   try {
-    const targetConfig = await TargetConfigClient.fetch(connection, MEMECHAN_TARGET_CONFIG);
+    const targetConfig = await TargetConfigClient.fetch(connection, tokenInfo.targetConfig);
 
     return targetConfig;
   } catch (e) {
-    console.error(`[fetchTargetConfig] Failed to fetch target config ${MEMECHAN_TARGET_CONFIG.toString()}:`, e);
+    console.error(`[fetchTargetConfig] Failed to fetch target config ${tokenInfo.targetConfig.toString()}:`, e);
   }
 };
 
 export function useTargetConfig() {
   const { connection } = useConnection();
+
+  const tokenInfo = getTokenInfo({ quoteMint: NATIVE_MINT_STRING });
+
   const { data: targetConfig, isLoading } = useSWR(
     [`target-config`, connection],
-    ([url, connection]) => fetchTargetConfig(connection),
+    ([url, connection]) => fetchTargetConfig(connection, tokenInfo),
     {
       refreshInterval: TARGET_CONFIG_INTERVAL,
       revalidateIfStale: false,
@@ -27,9 +32,9 @@ export function useTargetConfig() {
     },
   );
 
-  const slerfThresholdAmount = targetConfig
-    ? new BigNumber(targetConfig.tokenTargetAmount.toString()).div(10 ** MEMECHAN_QUOTE_TOKEN_DECIMALS).toString()
+  const solanaThresholdAmount = targetConfig
+    ? new BigNumber(targetConfig.tokenTargetAmount.toString()).div(10 ** tokenInfo.decimals).toString()
     : null;
 
-  return { targetConfig, isLoading, slerfThresholdAmount };
+  return { targetConfig, isLoading, solanaThresholdAmount };
 }

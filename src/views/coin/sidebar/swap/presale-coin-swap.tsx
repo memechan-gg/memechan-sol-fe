@@ -5,6 +5,7 @@ import { MAX_SLIPPAGE, MIN_SLIPPAGE } from "@/config/config";
 import { useConnection } from "@/context/ConnectionContext";
 import { useBoundPoolClient } from "@/hooks/presale/useBoundPoolClient";
 import { useBalance } from "@/hooks/useBalance";
+import { getTokenInfo } from "@/hooks/utils";
 import { GetSwapOutputAmountParams, GetSwapTransactionParams } from "@/types/hooks";
 import { confirmTransaction } from "@/utils/confirmTransaction";
 import { formatNumber } from "@/utils/formatNumber";
@@ -12,8 +13,6 @@ import {
   GetBuyMemeTransactionOutput,
   GetSellMemeTransactionOutput,
   MEMECHAN_MEME_TOKEN_DECIMALS,
-  MEMECHAN_QUOTE_MINT,
-  MEMECHAN_QUOTE_TOKEN_DECIMALS,
 } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useCallback, useEffect, useState } from "react";
@@ -46,11 +45,19 @@ export const PresaleCoinSwap = ({
 
   const { publicKey, sendTransaction } = useWallet();
   const { connection } = useConnection();
-  const { balance: slerfBalance, refetch: refetchSlerfBalance } = useBalance(
-    MEMECHAN_QUOTE_MINT.toString(),
-    MEMECHAN_QUOTE_TOKEN_DECIMALS,
-  );
   const boundPoolClient = useBoundPoolClient(pool.address);
+
+  const tokenInfo = boundPoolClient?.quoteTokenMint
+    ? getTokenInfo({ quoteMint: boundPoolClient.quoteTokenMint, variant: "publicKey" })
+    : null;
+
+  const memeChanQuoteMint = tokenInfo?.mint || "";
+  const memeChanQuoteTokenDecimals = tokenInfo?.decimals || 6;
+
+  const { balance: slerfBalance, refetch: refetchSlerfBalance } = useBalance(
+    memeChanQuoteMint.toString(),
+    memeChanQuoteTokenDecimals,
+  );
 
   const getSwapOutputAmount = useCallback(
     async ({ inputAmount, slerfToMeme, slippagePercentage }: GetSwapOutputAmountParams) => {
@@ -144,7 +151,7 @@ export const PresaleCoinSwap = ({
       !presaleSwapParamsAreValid({
         availableTicketsAmount,
         inputAmount,
-        slerfBalance,
+        coinBalance: slerfBalance,
         slerfToMeme,
         slippagePercentage: +slippage,
       })
@@ -255,21 +262,24 @@ export const PresaleCoinSwap = ({
         <SwapButton slerfToMeme={!slerfToMeme} onClick={() => setSlerfToMeme(false)} label="Sell" />
       </div>
       <div className="flex w-full flex-col gap-1">
-        <InputAmountTitle
-          memeBalance={availableTicketsAmount}
-          setInputAmount={setInputAmount}
-          setOutputData={setOutputAmount}
-          slerfBalance={slerfBalance}
-          slerfToMeme={slerfToMeme}
-          tokenSymbol={tokenSymbol}
-        />
+        {tokenInfo?.mint && (
+          <InputAmountTitle
+            memeBalance={availableTicketsAmount}
+            setInputAmount={setInputAmount}
+            setOutputData={setOutputAmount}
+            coinBalance={slerfBalance}
+            coinToMeme={slerfToMeme}
+            tokenSymbol={tokenSymbol}
+            quoteMint={tokenInfo.mint.toString()}
+          />
+        )}
         <input
           disabled={poolIsMigratingToLive}
           className="w-full bg-white text-xs font-bold text-regular p-2 rounded-lg"
           value={inputAmount}
           onChange={(e) =>
             handleSwapInputChange({
-              decimalPlaces: slerfToMeme ? MEMECHAN_QUOTE_TOKEN_DECIMALS : MEMECHAN_MEME_TOKEN_DECIMALS,
+              decimalPlaces: slerfToMeme ? memeChanQuoteTokenDecimals : MEMECHAN_MEME_TOKEN_DECIMALS,
               e,
               setValue: setInputAmount,
             })
@@ -282,7 +292,7 @@ export const PresaleCoinSwap = ({
             available SLERF:{" "}
             {publicKey && slerfBalance
               ? Number(slerfBalance).toLocaleString(undefined, {
-                  maximumFractionDigits: MEMECHAN_QUOTE_TOKEN_DECIMALS,
+                  maximumFractionDigits: memeChanQuoteTokenDecimals,
                 }) ?? "loading..."
               : "0"}
           </div>
@@ -312,7 +322,7 @@ export const PresaleCoinSwap = ({
           <div className="text-xs font-bold text-regular">
             {slerfToMeme
               ? `${tokenSymbol} tickets to receive: ${formatNumber(Number(outputAmount), MEMECHAN_MEME_TOKEN_DECIMALS)}`
-              : `SLERF to receive: ${formatNumber(Number(outputAmount), MEMECHAN_QUOTE_TOKEN_DECIMALS)}`}
+              : `SLERF to receive: ${formatNumber(Number(outputAmount), memeChanQuoteTokenDecimals)}`}
           </div>
         )}
       </div>

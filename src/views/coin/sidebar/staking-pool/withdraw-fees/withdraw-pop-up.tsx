@@ -6,9 +6,10 @@ import { useConnection } from "@/context/ConnectionContext";
 import { useStakingPoolClient } from "@/hooks/staking/useStakingPoolClient";
 import { confirmTransaction } from "@/utils/confirmTransaction";
 import { WithdrawFeesDialogProps } from "@/views/coin/coin.types";
-import { MEMECHAN_MEME_TOKEN_DECIMALS, MEMECHAN_QUOTE_TOKEN_DECIMALS, sleep } from "@avernikoz/memechan-sol-sdk";
+import { MEMECHAN_MEME_TOKEN_DECIMALS, sleep } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
+import { useQuery } from "@tanstack/react-query";
 import BigNumber from "bignumber.js";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -26,17 +27,23 @@ export const WithdrawFeesPopUp = ({
 
   const { publicKey, sendTransaction } = useWallet();
   const { connection } = useConnection();
-  const stakingPoolClient = useStakingPoolClient(stakingPoolFromApi?.address);
+  const { data: stakingPoolClient } = useStakingPoolClient(stakingPoolFromApi?.address);
+
+  const { data: tokenInfo } = useQuery({
+    queryKey: ["staking-pool", stakingPoolFromApi?.address],
+    queryFn: stakingPoolClient?.getTokenInfo,
+    enabled: !!stakingPoolClient?.getTokenInfo,
+  });
 
   const updateAvailableFeesToWithdraw = useCallback(async () => {
-    if (!stakingPoolClient) return;
+    if (!stakingPoolClient || !tokenInfo) return;
 
     const ticketFields = tickets.map((ticket) => ticket.fields);
 
     const { memeFees, slerfFees } = await stakingPoolClient.getAvailableWithdrawFeesAmount({ tickets: ticketFields });
 
-    const formattedMemeFees = new BigNumber(memeFees).div(10 ** MEMECHAN_MEME_TOKEN_DECIMALS);
-    const formattedSlerfFees = new BigNumber(slerfFees).div(10 ** MEMECHAN_QUOTE_TOKEN_DECIMALS);
+    const formattedMemeFees = new BigNumber(memeFees).div(10 ** tokenInfo.decimals);
+    const formattedSlerfFees = new BigNumber(slerfFees).div(10 ** tokenInfo.decimals);
 
     if (formattedMemeFees.lt(LOW_FEES_THRESHOLD) || formattedSlerfFees.lt(LOW_FEES_THRESHOLD)) {
       setMemeAmount("0");
@@ -45,7 +52,7 @@ export const WithdrawFeesPopUp = ({
       setMemeAmount(formattedMemeFees.toString());
       setSlerfAmount(formattedSlerfFees.toString());
     }
-  }, [stakingPoolClient, tickets]);
+  }, [stakingPoolClient, tickets, tokenInfo]);
 
   // TODO: This executes more than should
   useEffect(() => {
@@ -177,9 +184,9 @@ export const WithdrawFeesPopUp = ({
             disabled
             className="w-full bg-white !normal-case text-xs font-bold text-regular p-2 rounded-lg"
             value={
-              slerfAmount
+              slerfAmount && tokenInfo
                 ? Number(slerfAmount).toLocaleString(undefined, {
-                    maximumFractionDigits: MEMECHAN_QUOTE_TOKEN_DECIMALS,
+                    maximumFractionDigits: tokenInfo.decimals,
                   }) + " SLERF"
                 : "loading..."
             }

@@ -5,12 +5,12 @@ import toast from "react-hot-toast";
 export function presaleSwapParamsAreValid({
   availableTicketsAmount,
   inputAmount,
-  slerfBalance,
+  coinBalance,
   slerfToMeme,
   slippagePercentage,
 }: {
   inputAmount: string;
-  slerfBalance: string;
+  coinBalance: string;
   availableTicketsAmount: string;
   slippagePercentage: number;
   slerfToMeme: boolean;
@@ -20,7 +20,7 @@ export function presaleSwapParamsAreValid({
     return false;
   }
 
-  if (slerfToMeme && new BigNumber(inputAmount).gt(slerfBalance)) {
+  if (slerfToMeme && new BigNumber(inputAmount).gt(coinBalance)) {
     toast.error("Insufficient balance");
     return false;
   }
@@ -41,12 +41,12 @@ export function presaleSwapParamsAreValid({
 export function liveSwapParamsAreValid({
   memeBalance,
   inputAmount,
-  slerfBalance,
+  coinBalance,
   slerfToMeme,
   slippagePercentage,
 }: {
   inputAmount: string;
-  slerfBalance: string;
+  coinBalance: string;
   memeBalance?: string;
   slippagePercentage: number;
   slerfToMeme: boolean;
@@ -56,7 +56,7 @@ export function liveSwapParamsAreValid({
     return false;
   }
 
-  if (slerfToMeme && new BigNumber(inputAmount).gt(slerfBalance)) {
+  if (slerfToMeme && new BigNumber(inputAmount).gt(coinBalance)) {
     toast.error("Insufficient balance");
     return false;
   }
@@ -73,7 +73,6 @@ export function liveSwapParamsAreValid({
 
   return true;
 }
-
 export function validateAddLiquidityInput(
   memeAmount: string,
   suiAmount: string,

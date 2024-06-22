@@ -10,9 +10,9 @@ import {
   MAX_DESCRIPTION_LENGTH,
   MAX_NAME_LENGTH,
   MAX_SYMBOL_LENGTH,
-  MEMECHAN_QUOTE_TOKEN,
   MemeTicketClient,
   MemechanClient,
+  TOKEN_INFOS,
   validateCreateCoinParams,
 } from "@avernikoz/memechan-sol-sdk";
 import { PublicKey } from "@solana/web3.js";
@@ -72,7 +72,7 @@ export async function createMemeCoinAndPool({
       discord: data.discord ?? "",
       website: data.website ?? "",
     },
-    quoteToken: MEMECHAN_QUOTE_TOKEN,
+    quoteToken: TOKEN_INFOS["WSOL"],
     buyMemeTransactionArgs:
       inputAmount !== undefined
         ? {

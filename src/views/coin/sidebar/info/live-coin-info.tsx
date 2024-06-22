@@ -1,8 +1,7 @@
-import { MEMECHAN_QUOTE_MINT } from "@avernikoz/memechan-sol-sdk";
 import { LiveCoinInfoProps } from "../../coin.types";
 import { SocialLinks } from "./social-links/social-links";
 
-export const LiveCoinInfo = ({ metadata, livePoolAddress }: LiveCoinInfoProps) => {
+export const LiveCoinInfo = ({ metadata, livePoolAddress, quoteMint }: LiveCoinInfoProps) => {
   const { name, symbol, description, image, socialLinks } = metadata;
 
   return (
@@ -26,10 +25,8 @@ export const LiveCoinInfo = ({ metadata, livePoolAddress }: LiveCoinInfoProps) =
         <span>Trade on:</span>
         <div className="flex flex-col gap-1">
           <div className="text-xs font-normal text-regular truncate hover:underline">
-            <a
-              href={`https://raydium.io/swap/?inputMint=${MEMECHAN_QUOTE_MINT}&outputMint=${metadata.address}`}
-              target="_blank"
-            >
+            {/* TEST:2 */}
+            <a href={`https://raydium.io/swap/?inputMint=${quoteMint}&outputMint=${metadata.address}`} target="_blank">
               Raydium.io
             </a>
           </div>
