@@ -30,7 +30,7 @@ export function ThreadBoard({
     <div className="flex flex-col border border-solid border-black w-full">
       {/* Title part of the board */}
       <div className="bg-board text-regular flex items-center p-2 sm:pb-2 pb-3 font-bold justify-between sm:flex-row flex-col">
-        <h2 className="sm:text-sm text-xl sm:mb-0 mb-4">{title}</h2>
+        <h2 className="text-sm sm:mb-0 mb-4 ">{title}</h2>
         {titleChildren}
       </div>
       {/* Body part of the board */}
