@@ -1,12 +1,14 @@
 import { ChartIframe } from "@/components/chart-iframe";
 import { ThreadBoard } from "@/components/thread";
 import { TICKETS_INTERVAL } from "@/config/config";
+import { useBoundPool } from "@/hooks/presale/useBoundPool";
 import { usePresaleCoinUniqueHoldersFromBE } from "@/hooks/presale/usePresaleCoinUniqueHoldersFromBE";
 import { useMemePriceFromBE } from "@/hooks/useMemePriceFromBE";
 import { useTickets } from "@/hooks/useTickets";
+import { getTokenInfo } from "@/hooks/utils";
 import { SeedPoolData } from "@/types/pool";
 import { formatNumber } from "@/utils/formatNumber";
-import { SolanaToken } from "@avernikoz/memechan-sol-sdk";
+import { BE_URL_DEV, SolanaToken } from "@avernikoz/memechan-sol-sdk";
 import Link from "next/link";
 import Skeleton from "react-loading-skeleton";
 import { CommentsPanel } from "./comments-panel";
@@ -21,9 +23,15 @@ export function PresaleCoin({ coinMetadata, seedPoolData }: { coinMetadata: Sola
     refreshInterval: TICKETS_INTERVAL,
   });
 
-  const CHARTS_API_HOSTNAME = process.env.NEXT_PUBLIC_CHARTS_API_HOSTNAME;
+  const boundPool = useBoundPool(seedPoolData.address);
 
-  const CHART_QUOTE_SYMBOL: "SLERF" | "USD" = "SLERF";
+  const tokenData = boundPool?.quoteReserve
+    ? getTokenInfo({ variant: "publicKey", quoteMint: boundPool?.quoteReserve.mint })
+    : undefined;
+  console.log(tokenData);
+
+  // const CHARTS_API_HOSTNAME = process.env.NEXT_PUBLIC_CHARTS_API_HOSTNAME;
+  const CHARTS_API_HOSTNAME = BE_URL_DEV;
 
   return (
     <ThreadBoard title={coinMetadata.name}>
@@ -63,9 +71,9 @@ export function PresaleCoin({ coinMetadata, seedPoolData }: { coinMetadata: Sola
         </div>
         <div className="flex w-full flex-col lg:flex-row gap-6">
           <div className="flex flex-col gap-3 w-full">
-            {CHARTS_API_HOSTNAME && (
+            {CHARTS_API_HOSTNAME && tokenData && (
               <ChartIframe
-                src={`https://${CHARTS_API_HOSTNAME}/?address=${seedPoolData.address}&symbol=${CHART_QUOTE_SYMBOL}&contract=${coinMetadata.symbol.toUpperCase()}/${CHART_QUOTE_SYMBOL}`}
+                src={`${CHARTS_API_HOSTNAME}/?address=${seedPoolData.address}&symbol=${tokenData.displayName}&contract=${coinMetadata.symbol.toUpperCase()}/${tokenData.displayName}`}
               />
             )}
             <div className="flex flex-col gap-3 lg:hidden">

@@ -50,7 +50,6 @@ export const PresaleCoinSwap = ({
   const tokenInfo = boundPoolClient?.quoteTokenMint
     ? getTokenInfo({ quoteMint: boundPoolClient.quoteTokenMint, variant: "publicKey" })
     : null;
-  console.log(tokenInfo);
   const memeChanQuoteMint = tokenInfo?.mint || "";
   const memeChanQuoteTokenDecimals = tokenInfo?.decimals || 6;
 
