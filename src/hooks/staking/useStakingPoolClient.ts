@@ -19,11 +19,9 @@ const fetchStakingPoolClient = async (poolAddress: string, client: MemechanClien
 export function useStakingPoolClient(poolAddress?: string) {
   const { memechanClient } = useConnection();
 
-  const { data } = useSWR(
+  return useSWR(
     poolAddress ? [`staking-pool-client-${poolAddress}`, poolAddress, memechanClient] : null,
     ([url, pool, client]) => fetchStakingPoolClient(pool, client),
     { revalidateIfStale: false, revalidateOnFocus: false },
   );
-
-  return data;
 }

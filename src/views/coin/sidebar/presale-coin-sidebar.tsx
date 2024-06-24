@@ -1,4 +1,5 @@
 import { useBoundPool } from "@/hooks/presale/useBoundPool";
+import { getTokenInfo } from "@/hooks/utils";
 import { PresaleCoinSidebarProps } from "../coin.types";
 import { PresaleCoinHolders } from "./holders/presale-coin-holders";
 import { PresaleCoinInfo } from "./info/presale-coin-info";
@@ -7,7 +8,9 @@ import { PresaleCoinSwap } from "./swap/presale-coin-swap";
 
 export function PresaleCoinSidebar({ pool, coinMetadata, uniqueHoldersData, ticketsData }: PresaleCoinSidebarProps) {
   const boundPool = useBoundPool(pool.address);
-
+  const tokenInfo = boundPool?.quoteReserve.mint
+    ? getTokenInfo({ quoteMint: boundPool?.quoteReserve.mint.toString() })
+    : undefined;
   return (
     <>
       <SidebarItem>
@@ -18,9 +21,11 @@ export function PresaleCoinSidebar({ pool, coinMetadata, uniqueHoldersData, tick
           ticketsData={ticketsData}
         />
       </SidebarItem>
-      <SidebarItem>
-        <PresaleCoinInfo metadata={coinMetadata} boundPool={boundPool} />
-      </SidebarItem>
+      {tokenInfo && (
+        <SidebarItem>
+          <PresaleCoinInfo metadata={coinMetadata} boundPool={boundPool} tokenInfo={tokenInfo} />
+        </SidebarItem>
+      )}
       <SidebarItem>
         <PresaleCoinHolders
           poolAddress={pool.address}
