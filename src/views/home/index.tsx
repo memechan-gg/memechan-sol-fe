@@ -94,18 +94,20 @@ export function Home() {
             title="memecoins"
             titleChildren={
               <div className="md:ml-2 flex flex-col md:flex-row md:items-center gap-1 text-xs">
-                <div className="relative">
-                  <input
-                    type="text"
-                    placeholder={"Search for a token"}
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    className="w-full md:w-fit bg-regular text-white font-bold py-1 px-2 rounded-lg border border-gray-500 focus:outline-none focus:border-blue-500"
-                  />
-                </div>
+                {nsfwStatus !== null && (
+                  <div className="relative">
+                    <input
+                      type="text"
+                      placeholder={"Search for a token"}
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
+                      className="w-full md:w-fit bg-regular text-white font-bold py-1 px-2 rounded-lg border border-gray-500 focus:outline-none focus:border-blue-500"
+                    />
+                  </div>
+                )}
                 <div className="flex flex-row gap-1 text-xs">
                   <div className="flex flex-col gap-1 md:flex-row">
-                    {nsfwStatus !== null ? (
+                    {nsfwStatus !== null && (
                       <Dropdown
                         items={["on", "off"]}
                         activeItem={nsfwStatus}
@@ -114,8 +116,6 @@ export function Home() {
                           if (isThreadsNSFW(item)) setNsfwStatus(item);
                         }}
                       />
-                    ) : (
-                      <Skeleton width={40} />
                     )}
 
                     {status !== null ? (

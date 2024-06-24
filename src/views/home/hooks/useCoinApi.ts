@@ -43,7 +43,7 @@ export function useCoinApi() {
       const initStatus = localStorage.getItem(ThreadsSortOptions.Status) ?? DEFAULT_SORT_PARAMS.status;
       const initSortBy = localStorage.getItem(ThreadsSortOptions.SortBy) ?? DEFAULT_SORT_PARAMS.sortBy;
       const initDirection = localStorage.getItem(ThreadsSortOptions.Direction) ?? DEFAULT_SORT_PARAMS.direction;
-      const nsfwStatus = localStorage.getItem(ThreadsSortOptions.NSFW) ?? DEFAULT_SORT_PARAMS.nsfwStatus;
+      const nsfwStatus = localStorage.getItem(ThreadsSortOptions.NSFW) ?? null;
       const searchValue = localStorage.getItem(ThreadsSortOptions.Search) ?? "";
 
       if (isThreadsSortStatus(initStatus)) setStatus(initStatus);
