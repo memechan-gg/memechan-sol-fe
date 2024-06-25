@@ -53,7 +53,7 @@ export function Thread({
       </div>
       <Link href={`/coin/${address}`}>
         <img
-          className="w-[150px] border border-regular h-[150px] object-cover object-center"
+          className="w-[150px] border border-regular h-[150px] object-cover object-center hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-2"
           src={image}
           alt="Coin Image"
         />
