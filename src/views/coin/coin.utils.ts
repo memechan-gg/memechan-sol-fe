@@ -5,27 +5,27 @@ import toast from "react-hot-toast";
 export function presaleSwapParamsAreValid({
   availableTicketsAmount,
   inputAmount,
-  slerfBalance,
-  slerfToMeme,
+  coinBalance,
+  coinToMeme,
   slippagePercentage,
 }: {
   inputAmount: string;
-  slerfBalance: string;
+  coinBalance: string;
   availableTicketsAmount: string;
   slippagePercentage: number;
-  slerfToMeme: boolean;
+  coinToMeme: boolean;
 }) {
   if (new BigNumber(inputAmount).eq(0)) {
     toast.error("Input amount must be greater than zero");
     return false;
   }
 
-  if (slerfToMeme && new BigNumber(inputAmount).gt(slerfBalance)) {
+  if (coinToMeme && new BigNumber(inputAmount).gt(coinBalance)) {
     toast.error("Insufficient balance");
     return false;
   }
 
-  if (!slerfToMeme && new BigNumber(inputAmount).gt(availableTicketsAmount)) {
+  if (!coinToMeme && new BigNumber(inputAmount).gt(availableTicketsAmount)) {
     toast.error("Insufficient balance");
     return false;
   }
@@ -41,27 +41,27 @@ export function presaleSwapParamsAreValid({
 export function liveSwapParamsAreValid({
   memeBalance,
   inputAmount,
-  slerfBalance,
-  slerfToMeme,
+  coinBalance,
+  coinToMeme,
   slippagePercentage,
 }: {
   inputAmount: string;
-  slerfBalance: string;
+  coinBalance: string;
   memeBalance?: string;
   slippagePercentage: number;
-  slerfToMeme: boolean;
+  coinToMeme: boolean;
 }) {
   if (new BigNumber(inputAmount).eq(0)) {
     toast.error("Input amount must be greater than zero");
     return false;
   }
 
-  if (slerfToMeme && new BigNumber(inputAmount).gt(slerfBalance)) {
+  if (coinToMeme && new BigNumber(inputAmount).gt(coinBalance)) {
     toast.error("Insufficient balance");
     return false;
   }
 
-  if (!slerfToMeme && (!memeBalance || new BigNumber(inputAmount).gt(memeBalance))) {
+  if (!coinToMeme && (!memeBalance || new BigNumber(inputAmount).gt(memeBalance))) {
     toast.error("Insufficient balance");
     return false;
   }
@@ -73,7 +73,6 @@ export function liveSwapParamsAreValid({
 
   return true;
 }
-
 export function validateAddLiquidityInput(
   memeAmount: string,
   suiAmount: string,

@@ -5,7 +5,7 @@ import { useSeedPool } from "@/hooks/presale/useSeedPool";
 import { useStakingPoolFromApi } from "@/hooks/staking/useStakingPoolFromApi";
 import { useTickets } from "@/hooks/useTickets";
 import { LivePoolData, SeedPoolData } from "@/types/pool";
-import { ParsedMemeTicket, SolanaToken } from "@avernikoz/memechan-sol-sdk";
+import { ParsedMemeTicket, SolanaToken, TokenInfo } from "@avernikoz/memechan-sol-sdk";
 
 export type UnavailableTicketsToSellDialogParams = {
   unavailableTickets: ParsedMemeTicket[];
@@ -25,7 +25,7 @@ export type LiveCoinSwapProps = {
 };
 
 export type SwapButtonProps = {
-  slerfToMeme: boolean;
+  coinToMeme: boolean;
   onClick: () => void;
   label: string;
 };
@@ -58,12 +58,14 @@ export type LiveCoinHoldersProps = {
 
 export type LiveCoinInfoProps = {
   metadata: SolanaToken;
+  quoteMint: string;
   livePoolAddress: string;
 };
 
 export type PresaleCoinInfoProps = {
   metadata: SolanaToken;
   boundPool: ReturnType<typeof useBoundPool>;
+  tokenInfo: TokenInfo;
 };
 
 export type UnstakeDialogProps = Omit<StakingPoolProps, "memeMint"> & {

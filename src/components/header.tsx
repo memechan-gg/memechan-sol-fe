@@ -16,13 +16,21 @@ export const Header = () => {
   return (
     <header className="lg:relative fixed top-0 w-full lg:bg-transparent bg-board z-10">
       <div className="container mx-auto px-4 py-2 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-16 gap-2">
           <div className="flex items-center w-full">
             <Link href="/" className="font-bold text-lg">
               <Logo />
             </Link>
           </div>
           <div className="flex flex-col xxs:flex-row items-center gap-2">
+            <Link
+              href="https://docs.memechan.gg/"
+              className="bg-title bg-opacity-15 items-center text-xs justify-center flex flex-row gap-2 font-bold text-regular px-4 py-2 rounded-lg transition-all duration-300 hover:bg-opacity-25"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Docs
+            </Link>
             <Button>
               <img src="/tokens/solana.png" className="w-4 h-4" alt="Solana" />
               Solana

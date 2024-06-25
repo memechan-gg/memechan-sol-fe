@@ -6,9 +6,10 @@ import useSWR from "swr";
 const fetchStakingPool = async (poolAddress: string, connection: Connection) => {
   try {
     const stakingPool = await StakingPool.fetch(connection, new PublicKey(poolAddress));
-
+    console.log(stakingPool);
     return stakingPool;
   } catch (e) {
+    console.log(e);
     console.error(`[fetchStakingPool] Failed to fetch staking pool ${poolAddress}:`, e);
   }
 };
