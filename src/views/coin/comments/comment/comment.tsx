@@ -1,4 +1,5 @@
 import { SocialApiInstance } from "@/common/solana";
+import CustomDate from "@/components/custom-date";
 import { handleAuthentication } from "@/views/create-coin/create-coin.utils";
 import { useWallet } from "@solana/wallet-adapter-react";
 import Link from "next/link";
@@ -10,6 +11,14 @@ import { getSlicedAddress } from "../../sidebar/holders/utils";
 import { EmptyLikeIconSvgComponent } from "../likes/empty-like-icon";
 import { FullLikeIconSvgComponent } from "../likes/full-like-icon";
 import classes from "./comment.module.css";
+
+interface CommentProps {
+  thread: CoinThreadWithParsedMessage;
+  updateThreads: () => void;
+  coinCreator: string;
+  isLiked: boolean;
+  refetchLikedThreads: () => {};
+}
 
 export function Comment({
   thread: {
@@ -24,13 +33,7 @@ export function Comment({
   coinCreator,
   isLiked,
   refetchLikedThreads,
-}: {
-  thread: CoinThreadWithParsedMessage;
-  updateThreads: () => void;
-  coinCreator: string;
-  isLiked: boolean;
-  refetchLikedThreads: () => {};
-}) {
+}: CommentProps) {
   const [liked, setLiked] = useState(isLiked);
   const [likesCount, setLikesCount] = useState(likeCounter);
   const [isPostReplyDialogOpen, setIsPostReplyDialogOpen] = useState(false);
@@ -82,15 +85,20 @@ export function Comment({
   const slicedAddress = getSlicedAddress(creator);
 
   return (
-    <>
-      <div id={id} className="flex flex-col gap-3">
-        <div className="bg-title flex flex-row gap-4 bg-opacity-30 p-4 rounded-xl">
+    <div className="flex flex-row gap-1">
+      <span className="text-lightRose">{">>"}</span>
+      <div id={id} className="flex flex-col gap-3 w-[fit-content]">
+        <div className="bg-title flex flex-row gap-4 bg-opacity-20 p-2 border-solid border-[1px] border border-t-0 border-l-0 border-dustyPink">
           <div className="flex flex-col gap-2">
             <div className="text-xs flex flex-row gap-1.5 font-bold text-regular">
-              <Link className="hover:underline" href={`/profile/${creator}`}>
-                {slicedAddress} {isUsersComment ? "(me)" : ""} {devsComment ? "(dev)" : ""}
+              <Link className="hover:underline text-customGreen" href={`/profile/${creator}`}>
+                <span className="text-deepGreen">
+                  {slicedAddress} {isUsersComment ? "(me)" : ""} {devsComment ? "(dev)" : ""}
+                </span>
               </Link>
-              <div className="text-xs font-medium text-regular">{new Date(creationDate).toLocaleString()}</div>
+              <div className="text-xs font-medium text-regular">
+                <CustomDate creationDate={new Date(creationDate)} />
+              </div>
               <div className="text-xs font-medium flex flex-row gap-1 cursor-pointer" onClick={handleLikeEvent}>
                 {liked ? <FullLikeIconSvgComponent /> : <EmptyLikeIconSvgComponent />} {likesCount}
               </div>
@@ -129,6 +137,6 @@ export function Comment({
           updateThreads={updateThreads}
         />
       )}
-    </>
+    </div>
   );
 }
