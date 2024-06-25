@@ -15,7 +15,7 @@ export function Coin({ coin }: CoinProps) {
     token?.status === "PRESALE" ? token?.address : undefined,
   );
   const { livePool, isLoading: livePoolIsLoading } = useLivePool(token?.status === "LIVE" ? token.address : undefined);
-  
+
   if (tokenIsLoading || seedPoolIsLoading || livePoolIsLoading) return <div className="text-regular">Loading...</div>;
   if (!token) return <CoinNotFound />;
 
