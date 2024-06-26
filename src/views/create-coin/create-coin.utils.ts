@@ -1,7 +1,7 @@
 import { AuthInstance, TokenApiInstance } from "@/common/solana";
 import {
   ADMIN_PUB_KEY,
-  BoundPoolClient,
+  BoundPoolClientV2,
   CoinDescriptionTooLargeError,
   InvalidCoinDescriptionError,
   InvalidCoinImageError,
@@ -11,7 +11,7 @@ import {
   MAX_NAME_LENGTH,
   MAX_SYMBOL_LENGTH,
   MemeTicketClient,
-  MemechanClient,
+  MemechanClientV2,
   TOKEN_INFOS,
   validateCreateCoinParams,
 } from "@avernikoz/memechan-sol-sdk";
@@ -58,9 +58,9 @@ export async function createMemeCoinAndPool({
   publicKey: PublicKey;
   ipfsUrl: string;
   inputAmount?: string;
-  client: MemechanClient;
+  client: MemechanClientV2;
 }) {
-  return await BoundPoolClient.getCreateNewBondingPoolAndBuyAndTokenWithBuyMemeTransaction({
+  return await BoundPoolClientV2.getCreateNewBondingPoolAndBuyAndTokenWithBuyMemeTransaction({
     admin: ADMIN_PUB_KEY,
     client,
     payer: publicKey,

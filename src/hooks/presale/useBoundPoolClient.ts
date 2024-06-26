@@ -5,8 +5,8 @@ import useSWR from "swr";
 
 const fetchBoundPoolClient = async (poolAddress: string, client: MemechanClient, clientV2: MemechanClientV2) => {
   try {
-    const boundPool = await getBoundPoolClientFromId(new PublicKey(poolAddress), client, clientV2);
-    return boundPool;
+    const boundPoolClient = await getBoundPoolClientFromId(new PublicKey(poolAddress), client, clientV2);
+    return boundPoolClient;
   } catch (e) {
     console.error(`[fetchBoundPoolClient] Failed to get bound pool client ${poolAddress}:`, e);
   }

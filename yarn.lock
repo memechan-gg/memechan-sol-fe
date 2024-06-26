@@ -20,10 +20,10 @@
     "@jridgewell/gen-mapping" "^0.3.5"
     "@jridgewell/trace-mapping" "^0.3.24"
 
-"@avernikoz/memechan-sol-sdk@2.1.4":
-  version "2.1.4"
-  resolved "https://registry.yarnpkg.com/@avernikoz/memechan-sol-sdk/-/memechan-sol-sdk-2.1.4.tgz#5e9203e5539b4ad3236b5e8a847850f5c3b90e1f"
-  integrity sha512-RlZUcok2e/aOIRzNiHa33m7xBulSVJpB5fck7GTzV5LLHa0MJJjHdVYU/LPORIFD1Fr+fwVD7NaTDX+kD0A61Q==
+"@avernikoz/memechan-sol-sdk@2.1.5":
+  version "2.1.5"
+  resolved "https://registry.yarnpkg.com/@avernikoz/memechan-sol-sdk/-/memechan-sol-sdk-2.1.5.tgz#c41832d3c5cf92da3ce20bf2862eec14697cde69"
+  integrity sha512-n6tE22LihyAUmbGkjVgoyOMukL7b9kR0unsNDWZHfL9uFaGTiNej0dVUW9h2BWK2YdpenOVlQgvOtDF4+iAu/g==
   dependencies:
     "@aws-crypto/sha256-browser" "^5.2.0"
     "@aws-sdk/types" "^3.577.0"
@@ -35,6 +35,7 @@
     "@smithy/signature-v4" "^3.0.0"
     "@solana/spl-token" "^0.4.6"
     "@solana/web3.js" "^1.91.8"
+    bigint-buffer "^1.1.5"
     bignumber.js "^9.1.2"
     bn.js "^5.2.1"
     bs58 "^5.0.0"

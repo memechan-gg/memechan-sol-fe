@@ -42,7 +42,7 @@ export function CreateCoin() {
 
   const { balance: solanaAmount } = useBalance(TOKEN_INFOS["WSOL"].mint.toString(), TOKEN_INFOS["WSOL"].decimals);
 
-  const { connection, memechanClient } = useConnection();
+  const { connection, memechanClientV2 } = useConnection();
 
   const onSubmit = handleSubmit(async (data) => {
     try {
@@ -97,7 +97,7 @@ export function CreateCoin() {
         ipfsUrl,
         publicKey,
         inputAmount: inputAmountIsSpecified ? inputAmount : undefined,
-        client: memechanClient,
+        client: memechanClientV2,
       });
 
       setState("create_bonding_and_meme");
