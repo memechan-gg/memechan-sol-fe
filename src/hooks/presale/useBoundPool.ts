@@ -23,8 +23,8 @@ export function useBoundPool(poolAddress: string) {
   const { memechanClient, memechanClientV2 } = useConnection();
 
   const { data } = useSWR(
-    [`bound-pool-${poolAddress}`, poolAddress],
-    ([url, pool]) => fetchBoundPool(pool, memechanClient, memechanClientV2),
+    [`bound-pool-${poolAddress}`, poolAddress, memechanClient, memechanClientV2],
+    ([_, pool, memechanClient, memechanClientV2]) => fetchBoundPool(pool, memechanClient, memechanClientV2),
     {
       refreshInterval: BOUND_POOL_DATA_INTERVAL,
       revalidateIfStale: false,
