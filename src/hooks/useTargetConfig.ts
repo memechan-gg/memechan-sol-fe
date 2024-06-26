@@ -17,6 +17,7 @@ const fetchTargetConfig = async (connection: Connection, tokenInfo: TokenInfo) =
   }
 };
 
+
 export function useTargetConfig() {
   const { connection } = useConnection();
 
