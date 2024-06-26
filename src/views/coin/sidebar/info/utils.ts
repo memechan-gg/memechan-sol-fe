@@ -1,8 +1,10 @@
 import { getTokenInfo } from "@/hooks/utils";
-import { BoundPool } from "@avernikoz/memechan-sol-sdk";
+import { BoundPoolClient, BoundPoolClientV2 } from "@avernikoz/memechan-sol-sdk";
 import BigNumber from "bignumber.js";
 
-export const getBoundPoolProgress = (boundPool: BoundPool) => {
+export const getBoundPoolProgress = (
+  boundPool: BoundPoolClient["poolObjectData"] | BoundPoolClientV2["poolObjectData"],
+) => {
   const rawSlerfIn = boundPool.quoteReserve.toJSON().tokens;
 
   const formattedSlerfIn = new BigNumber(rawSlerfIn)
