@@ -1,16 +1,18 @@
 import { LIVE_POOL_HOLDERS_INTERVAL, MAX_HOLDERS_COUNT } from "@/config/config";
 import { useConnection } from "@/context/ConnectionContext";
-import { MemechanClient, StakingPoolClient } from "@avernikoz/memechan-sol-sdk";
+import { MemechanClient, MemechanClientV2, getStakingPoolClientFromId } from "@avernikoz/memechan-sol-sdk";
 import { PublicKey } from "@solana/web3.js";
 import useSWR from "swr";
 
-const fetchLiveUniqueHolders = async (mint: string, boundPoolId: string, client: MemechanClient) => {
+const fetchLiveUniqueHolders = async (
+  mint: string,
+  boundPoolId: string,
+  client: MemechanClient,
+  clientV2: MemechanClientV2,
+) => {
   try {
-    const [holders, stakingData] = await StakingPoolClient.getHoldersList(
-      new PublicKey(boundPoolId),
-      new PublicKey(mint),
-      client,
-    );
+    const stakingPool = await getStakingPoolClientFromId(new PublicKey(boundPoolId), client, clientV2);
+    const [holders, stakingData] = await stakingPool.getHoldersList();
 
     const fullHolders = holders.slice();
 
@@ -30,11 +32,11 @@ const fetchLiveUniqueHolders = async (mint: string, boundPoolId: string, client:
 };
 
 export function useLiveCoinUniqueHolders(mint: string, boundPoolId?: string) {
-  const { memechanClient } = useConnection();
+  const { memechanClient, memechanClientV2 } = useConnection();
 
   const { data } = useSWR(
-    boundPoolId ? [`unique-holders-${boundPoolId}-${mint}`, mint, boundPoolId, memechanClient] : null,
-    ([url, meme, pool, client]) => fetchLiveUniqueHolders(meme, pool, client),
+    boundPoolId ? [`unique-holders-${boundPoolId}-${mint}`, mint, boundPoolId, memechanClient, memechanClientV2] : null,
+    ([_, meme, pool, client, clientV2]) => fetchLiveUniqueHolders(meme, pool, client, clientV2),
     { refreshInterval: LIVE_POOL_HOLDERS_INTERVAL, revalidateIfStale: false, revalidateOnFocus: false },
   );
 
