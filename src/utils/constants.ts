@@ -1,2 +1,55 @@
 export const NSFW_CLASSES = ["Porn", "Hentai", "Sexy"];
 export const NSFW_THRESHOLD = 0.5;
+
+export const tokenItemsMocked = [
+  {
+    name: "Cryptogen",
+    address: "5b0d0a12-f60d-4022-8bb7-f590600108e2",
+    image: "https://dummyimage.com/600x400/000/fff&text=TWV",
+    creator: "401159e5-fcde-4dd5-91bf-55d0f3e02f49",
+    marketcap: 276226.972941071,
+    symbol: "TWV",
+    description: "Revolutionizing finance.",
+    status: "SOLD OUT",
+  },
+  {
+    name: "TokenWave",
+    address: "b7d99e06-1ea3-46e0-a702-716ae3c45436",
+    image: "https://dummyimage.com/600x400/000/fff&text=BQT",
+    creator: "9d7feb61-f91b-48ad-89ce-7378d66072e8",
+    marketcap: 585472.0297546615,
+    symbol: "BQT",
+    description: "A leading decentralized platform.",
+    status: "PRESALE",
+  },
+  {
+    name: "Cryptogen",
+    address: "f496e46f-d0f6-43f4-98ee-59b002f781de",
+    image: "https://dummyimage.com/600x400/000/fff&text=TWV",
+    creator: "2c8815fe-104e-43a4-bd2a-e4c2cb92832b",
+    marketcap: 794238.3537860799,
+    symbol: "TWV",
+    description: "A new era of crypto.",
+    status: "ACTIVE",
+  },
+  {
+    name: "TokenWave",
+    address: "207f0aa1-74f3-4095-acd9-3c08e50fb6cf",
+    image: "https://dummyimage.com/600x400/000/fff&text=BQT",
+    creator: "c86aaa5d-efcf-4161-86bf-db66ef7bdfb6",
+    marketcap: 335516.1267570825,
+    symbol: "BQT",
+    description: "A leading decentralized platform.",
+    status: "PRESALE",
+  },
+  {
+    name: "Ethereal",
+    address: "1f74ef4b-c463-46b1-b590-b31857023ba8",
+    image: "https://dummyimage.com/600x400/000/fff&text=BLM",
+    creator: "e9b3a9ee-7b35-49de-8250-23fcc9f0daee",
+    marketcap: 582033.8346384434,
+    symbol: "BLM",
+    description: "Revolutionizing finance.",
+    status: "ACTIVE",
+  },
+];

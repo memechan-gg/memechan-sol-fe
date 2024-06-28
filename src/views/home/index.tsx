@@ -1,11 +1,12 @@
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/dialog";
 import { Dropdown } from "@/components/dropdown";
 import { NoticeBoard, Thread, ThreadBoard } from "@/components/thread";
-import { useNSFWModel } from "@/hooks/useNSFWModel";
 import Cookies from "js-cookie";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
+import { useResizeDetector } from "react-resize-detector";
+import { FixedSizeGrid as Grid } from "react-window";
 import { useCoinApi } from "./hooks/useCoinApi";
 import { isThreadsSortBy, isThreadsSortDirection, isThreadsSortStatus } from "./hooks/utils";
 
@@ -23,15 +24,12 @@ export function Home() {
     loadMore,
   } = useCoinApi();
 
-  const model = useNSFWModel();
-
   const isLoading = tokenList === null;
   const isCoinsListExist = tokenList !== null && tokenList.length > 0;
   const isCoinsListEmpty = tokenList !== null && tokenList.length === 0;
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(true);
   const [isConfirmed, setIsConfirmed] = useState<boolean>(false);
   const [isMounted, setIsMounted] = useState<boolean>(false);
-  const [nsfwStatus, setNsfwStatus] = useState<"on" | "off">("off");
 
   useEffect(() => {
     setIsMounted(true);
@@ -47,6 +45,12 @@ export function Home() {
     setIsDialogOpen(false);
     Cookies.set("isConfirmed", "true", { expires: 365 });
   };
+
+  const { width, height, ref } = useResizeDetector();
+
+  const itemSize = 258;
+  const columnCount = width ? Math.max(1, Math.floor(width / (itemSize - 90))) : 1;
+  const rowCount = Math.ceil((tokenList?.length ?? 0) / columnCount);
 
   if (!isMounted) {
     return <div>Loading...</div>;
@@ -94,17 +98,6 @@ export function Home() {
             title="memecoins"
             titleChildren={
               <div className="flex flex-row gap-1 text-xs">
-                <Dropdown
-                  items={["on", "off"]}
-                  activeItem={nsfwStatus}
-                  title="include nsfw"
-                  onItemChange={(item) => {
-                    if (item === "on" || item === "off") {
-                      setNsfwStatus(item);
-                    }
-                  }}
-                />
-
                 {status !== null ? (
                   <Dropdown
                     items={["all", "pre_sale", "live"]}
@@ -147,18 +140,37 @@ export function Home() {
             }
           >
             <div className="flex flex-col items-center">
-              <div className="flex flex-wrap gap-6 sm:justify-normal justify-center self-start">
+              <div
+                ref={ref}
+                className="h-[73vh] w-full flex flex-wrap gap-6 sm:justify-normal justify-center self-start pl-12 md:pl-0"
+              >
                 {isLoading && (
                   <>
                     <div className="text-regular">Loading...</div>
                   </>
                 )}
-                {isCoinsListExist && (
-                  <>
-                    {tokenList.map((item) => (
-                      <Thread key={item.address} coinMetadata={item} showNsfw={nsfwStatus === "on"} model={model} />
-                    ))}
-                  </>
+                {isCoinsListExist && width && height && (
+                  <Grid
+                    columnCount={columnCount}
+                    columnWidth={itemSize - 90}
+                    rowCount={rowCount}
+                    rowHeight={itemSize}
+                    width={width}
+                    height={height}
+                    itemData={tokenList}
+                    className="outline-none"
+                  >
+                    {({ columnIndex, rowIndex, style, data }) => {
+                      const index = rowIndex * columnCount + columnIndex;
+                      const item = data[index];
+                      if (!item) return <div style={style} />;
+                      return (
+                        <div style={{ ...style }}>
+                          <Thread key={item.address} coinMetadata={item} />
+                        </div>
+                      );
+                    }}
+                  </Grid>
                 )}
                 {isCoinsListEmpty && (
                   <>
