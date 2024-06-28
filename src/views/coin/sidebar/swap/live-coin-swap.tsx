@@ -28,31 +28,31 @@ export const LiveCoinSwap = ({
   const [slippage, setSlippage] = useState<string>("10");
   const [isSwapping, setIsSwapping] = useState<boolean>(false);
 
-  const tokenData = getTokenInfo({ variant: "string", quoteMint });
+  const tokenData = getTokenInfo({ variant: "string", quoteMint: quoteMint ?? "" });
 
   const { publicKey, sendTransaction, signTransaction } = useWallet();
   const { connection } = useConnection();
   // TEST:1
   const { balance: coinBalance } = useBalance(tokenData.mint.toString(), tokenData.decimals);
-  const { balance: memeBalance } = useBalance(tokenAddress, MEMECHAN_MEME_TOKEN_DECIMALS);
+  const { balance: memeBalance } = useBalance(tokenAddress ?? "", MEMECHAN_MEME_TOKEN_DECIMALS);
   const { tokenAccounts, refetch: refetchTokenAccounts } = useTokenAccounts();
 
   const getSwapOutputAmount = useCallback(
     async ({ inputAmount, coinToMeme, slippagePercentage }: GetSwapOutputAmountParams) => {
       return coinToMeme
         ? await LivePoolClient.getBuyMemeOutput({
-            poolAddress: address,
+            poolAddress: address ?? "",
             amountIn: inputAmount,
             slippagePercentage,
             connection,
-            memeCoinMint: tokenAddress,
+            memeCoinMint: tokenAddress ?? "",
           })
         : await LivePoolClient.getSellMemeOutput({
-            poolAddress: address,
+            poolAddress: address ?? "",
             amountIn: inputAmount,
             slippagePercentage,
             connection,
-            memeCoinMint: tokenAddress,
+            memeCoinMint: tokenAddress ?? "",
           });
     },
     [address, tokenAddress, connection],
@@ -211,7 +211,7 @@ export const LiveCoinSwap = ({
           coinBalance={coinBalance}
           coinToMeme={coinToMeme}
           tokenSymbol={tokenSymbol}
-          quoteMint={quoteMint}
+          quoteMint={quoteMint ?? ""}
         />
         <input
           className="w-full bg-white text-xs font-bold text-regular p-2 rounded-lg"

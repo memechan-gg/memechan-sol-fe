@@ -45,7 +45,7 @@ export const PresaleCoinSwap = ({
 
   const { publicKey, sendTransaction } = useWallet();
   const { connection } = useConnection();
-  const boundPoolClient = useBoundPoolClient(pool.address);
+  const boundPoolClient = useBoundPoolClient(pool.address ?? '');
 
   const tokenInfo = boundPoolClient?.quoteTokenMint
     ? getTokenInfo({ quoteMint: boundPoolClient.quoteTokenMint, variant: "publicKey" })

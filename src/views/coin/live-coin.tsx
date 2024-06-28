@@ -14,14 +14,22 @@ import { CommentsPanel } from "./comments-panel";
 import { LiveCoinSidebar } from "./sidebar/live-coin-sidebar";
 
 export function LiveCoin({ coinMetadata, livePoolData }: { coinMetadata: SolanaToken; livePoolData: LivePoolData }) {
-  const price = useMemePriceFromBE({ memeMint: coinMetadata.address, poolType: "livePool" });
+  const price = useMemePriceFromBE({ memeMint: coinMetadata.address as any, poolType: "livePool" });
   const seedPoolData = useSeedPool(coinMetadata.address);
-  const stakingPoolFromApi = useStakingPoolFromApi(coinMetadata.address);
+  const stakingPoolFromApi = useStakingPoolFromApi(coinMetadata.address as any);
   const uniqueHoldersData = useLiveCoinUniqueHoldersFromBE(coinMetadata.address, stakingPoolFromApi?.address);
 
   // Initialize state with 'birdeye' as the default
   const [selectedChart, setSelectedChart] = useState<"birdeye" | "dexscreener">("birdeye");
-
+  if (
+    !coinMetadata?.marketcap ||
+    !coinMetadata?.creator ||
+    !coinMetadata?.address ||
+    !coinMetadata.name ||
+    !coinMetadata.symbol
+  ) {
+    return <></>;
+  }
   return (
     <>
       <div className="flex justify-center">
@@ -69,10 +77,12 @@ export function LiveCoin({ coinMetadata, livePoolData }: { coinMetadata: SolanaT
             </div>
             <div className="flex flex-col gap-1">
               <div className="text-sm font-bold text-link">Created By</div>
-              <Link href={`/profile/${coinMetadata.creator}`} className="text-xs font-bold text-link">
-                {coinMetadata.creator.slice(0, 5)}...
-                {coinMetadata.creator.slice(-3)}
-              </Link>
+              {coinMetadata?.creator && (
+                <Link href={`/profile/${coinMetadata.creator}`} className="text-xs font-bold text-link">
+                  {coinMetadata.creator.slice(0, 5)}...
+                  {coinMetadata.creator.slice(-3)}
+                </Link>
+              )}
             </div>
           </div>
           <div className="flex w-full flex-col lg:flex-row gap-6">

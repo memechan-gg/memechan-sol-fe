@@ -46,6 +46,7 @@ export function Thread({
 }: {
   coinMetadata: SolanaToken;
 }) {
+  if (!creator || !marketcap) return <></>;
   return (
     <div className="flex flex-col gap-2">
       <div className="w-[150px]">

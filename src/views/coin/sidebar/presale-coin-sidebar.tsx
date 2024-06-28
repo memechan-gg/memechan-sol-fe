@@ -7,10 +7,20 @@ import { SidebarItem } from "./sidebar-item";
 import { PresaleCoinSwap } from "./swap/presale-coin-swap";
 
 export function PresaleCoinSidebar({ pool, coinMetadata, uniqueHoldersData, ticketsData }: PresaleCoinSidebarProps) {
-  const boundPool = useBoundPool(pool.address);
+  const boundPool = useBoundPool(pool.address ?? "");
   const tokenInfo = boundPool?.quoteReserve.mint
     ? getTokenInfo({ quoteMint: boundPool?.quoteReserve.mint.toString() })
     : undefined;
+  if (
+    !coinMetadata?.marketcap ||
+    !coinMetadata?.creator ||
+    !coinMetadata?.address ||
+    !coinMetadata.name ||
+    !coinMetadata.symbol ||
+    !pool.address
+  ) {
+    return <></>;
+  }
   return (
     <>
       <SidebarItem>

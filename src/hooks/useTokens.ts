@@ -3,7 +3,7 @@ import useSWR from "swr";
 
 const fetchAllTokens = async () => {
   try {
-    const allPresaleTokens = (
+    const allPresaleTokens: any = (
       await TokenApiInstance.queryTokens({
         status: "PRESALE",
         sortBy: "creationTime",
@@ -11,7 +11,7 @@ const fetchAllTokens = async () => {
       })
     ).result;
 
-    const allLiveTokens = (
+    const allLiveTokens: any = (
       await TokenApiInstance.queryTokens({
         status: "LIVE",
         sortBy: "creationTime",

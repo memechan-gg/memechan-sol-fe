@@ -15,7 +15,7 @@ import { CommentsPanel } from "./comments-panel";
 import { PresaleCoinSidebar } from "./sidebar/presale-coin-sidebar";
 
 export function PresaleCoin({ coinMetadata, seedPoolData }: { coinMetadata: SolanaToken; seedPoolData: SeedPoolData }) {
-  const price = useMemePriceFromBE({ memeMint: coinMetadata.address, poolType: "seedPool" });
+  const price = useMemePriceFromBE({ memeMint: coinMetadata.address as any, poolType: "seedPool" });
   const uniqueHoldersData = usePresaleCoinUniqueHoldersFromBE(coinMetadata.address);
   const ticketsData = useTickets({
     poolAddress: seedPoolData.address,
@@ -23,7 +23,7 @@ export function PresaleCoin({ coinMetadata, seedPoolData }: { coinMetadata: Sola
     refreshInterval: TICKETS_INTERVAL,
   });
 
-  const boundPool = useBoundPool(seedPoolData.address);
+  const boundPool = useBoundPool(seedPoolData.address as any);
 
   const tokenData = boundPool?.quoteReserve
     ? getTokenInfo({ variant: "publicKey", quoteMint: boundPool?.quoteReserve.mint })
@@ -31,6 +31,15 @@ export function PresaleCoin({ coinMetadata, seedPoolData }: { coinMetadata: Sola
 
   const CHARTS_API_HOSTNAME = process.env.NEXT_PUBLIC_CHARTS_API_HOSTNAME;
 
+  if (
+    !coinMetadata?.marketcap ||
+    !coinMetadata?.creator ||
+    !coinMetadata?.address ||
+    !coinMetadata.name ||
+    !coinMetadata.symbol
+  ) {
+    return <></>;
+  }
   return (
     <>
       <div className="flex justify-center">

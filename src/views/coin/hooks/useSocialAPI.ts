@@ -18,7 +18,7 @@ export function useSocialAPI({ coinType }: { coinType: string }) {
         sortBy: "creationTime",
       });
 
-      const filtredThreads = filterThreads(result);
+      const filtredThreads = filterThreads(result as any);
 
       setNextPageToken(paginationToken ?? null);
       setThreads(filtredThreads);
@@ -39,10 +39,10 @@ export function useSocialAPI({ coinType }: { coinType: string }) {
         coinType,
         direction: "asc",
         sortBy: "creationTime",
-        paginationToken: nextPageToken,
+        paginationToken: nextPageToken as any,
       });
 
-      const filtredThreads = filterThreads(result);
+      const filtredThreads = filterThreads(result as any);
 
       setNextPageToken(paginationToken ?? null);
       setThreads((prevThreads) => (prevThreads ? [...prevThreads, ...filtredThreads] : filtredThreads));

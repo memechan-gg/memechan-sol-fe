@@ -12,8 +12,11 @@
   "browser": {
     "child_process": false
   },
+  "resolutions": {
+    "rpc-websockets": "7.11.0"
+  },
   "dependencies": {
-    "@avernikoz/memechan-sol-sdk": "2.1.8",
+    "@avernikoz/memechan-sol-sdk": "99.1.11",
     "@headlessui/react": "^1.7.19",
     "@phosphor-icons/react": "^2.1.5",
     "@radix-ui/react-dialog": "^1.0.5",

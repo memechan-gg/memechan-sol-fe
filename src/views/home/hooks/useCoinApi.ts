@@ -91,7 +91,7 @@ export function useCoinApi() {
         setPresaleNextPageToken(presaleRes.paginationToken ?? null);
         setLiveNextPageToken(liveRes.paginationToken ?? null);
 
-        fetchedItems = [...liveRes.result, ...presaleRes.result];
+        fetchedItems = [...(liveRes as any).result, ...(presaleRes as any).result];
       } else {
         const formattedStatus = getStatus(status);
 
@@ -105,7 +105,7 @@ export function useCoinApi() {
           ? setLiveNextPageToken(res.paginationToken ?? null)
           : setPresaleNextPageToken(res.paginationToken ?? null);
 
-        fetchedItems = res.result;
+        fetchedItems = res.result as any;
       }
 
       setItems(fetchedItems);
@@ -122,12 +122,12 @@ export function useCoinApi() {
       sortBy: getSortBy(sortBy),
       direction,
       status: "LIVE",
-      paginationToken: liveNextPageToken,
+      paginationToken: liveNextPageToken as any,
     });
 
     setLiveNextPageToken(paginationToken ?? null);
 
-    setItems((prevItems) => (prevItems ? [...prevItems, ...result] : result));
+    setItems((prevItems: any) => (prevItems ? [...(prevItems as any), ...(result as any)] : (result as any)));
   }, [sortBy, direction, liveNextPageToken]);
 
   const loadMorePresaleTokens = useCallback(async () => {
@@ -137,12 +137,12 @@ export function useCoinApi() {
       sortBy: getSortBy(sortBy),
       direction,
       status: "PRESALE",
-      paginationToken: presaleNextPageToken,
+      paginationToken: presaleNextPageToken as any,
     });
 
     setPresaleNextPageToken(paginationToken ?? null);
 
-    setItems((prevItems) => (prevItems ? [...prevItems, ...result] : result));
+    setItems((prevItems: any) => (prevItems ? [...(prevItems as any), ...(result as any)] : (result as any)));
   }, [sortBy, direction, presaleNextPageToken]);
 
   const loadMoreTokens = useCallback(async () => {

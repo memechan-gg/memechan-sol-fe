@@ -19,6 +19,17 @@ export function LiveCoinSidebar({
     poolStatus: "LIVE",
     refreshInterval: TICKETS_INTERVAL,
   });
+  if (
+    !coinMetadata?.marketcap ||
+    !coinMetadata?.creator ||
+    !coinMetadata?.address ||
+    !coinMetadata.name ||
+    !coinMetadata.symbol ||
+    !pool.id ||
+    !pool.quoteMint
+  ) {
+    return <></>;
+  }
 
   return (
     <>
