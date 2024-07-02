@@ -1,3 +1,4 @@
+"use client";
 import { SocialApiInstance } from "@/common/solana";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -18,7 +19,7 @@ export function useSocialAPI({ coinType }: { coinType: string }) {
         sortBy: "creationTime",
       });
 
-      const filtredThreads = filterThreads(result);
+      const filtredThreads = filterThreads(result as any);
 
       setNextPageToken(paginationToken ?? null);
       setThreads(filtredThreads);
@@ -42,7 +43,7 @@ export function useSocialAPI({ coinType }: { coinType: string }) {
         paginationToken: nextPageToken,
       });
 
-      const filtredThreads = filterThreads(result);
+      const filtredThreads = filterThreads(result as any);
 
       setNextPageToken(paginationToken ?? null);
       setThreads((prevThreads) => (prevThreads ? [...prevThreads, ...filtredThreads] : filtredThreads));

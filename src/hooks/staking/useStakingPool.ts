@@ -1,3 +1,4 @@
+"use client";
 import { useConnection } from "@/context/ConnectionContext";
 import { MemechanClient, MemechanClientV2, getStakingPoolClientFromId } from "@avernikoz/memechan-sol-sdk";
 import { PublicKey } from "@solana/web3.js";
@@ -7,7 +8,7 @@ const fetchStakingPool = async (poolAddress: string, client: MemechanClient, cli
   try {
     const stakingPool = await getStakingPoolClientFromId(new PublicKey(poolAddress), client, clientV2);
 
-    return stakingPool.pooolObjectData;
+    return stakingPool.poolObjectData;
   } catch (e) {
     console.log(e);
     console.error(`[fetchStakingPool] Failed to fetch staking pool ${poolAddress}:`, e);
