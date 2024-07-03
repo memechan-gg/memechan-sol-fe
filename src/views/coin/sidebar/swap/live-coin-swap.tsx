@@ -7,7 +7,7 @@ import { useTokenAccounts } from "@/hooks/useTokenAccounts";
 import { getTokenInfo } from "@/hooks/utils";
 import { GetLiveSwapTransactionParams, GetSwapOutputAmountParams } from "@/types/hooks";
 import { formatNumber } from "@/utils/formatNumber";
-import { LivePoolClient, MEMECHAN_MEME_TOKEN_DECIMALS, SwapMemeOutput, buildTxs } from "@avernikoz/memechan-sol-sdk";
+import { MEMECHAN_MEME_TOKEN_DECIMALS, SwapMemeOutput, buildTxs } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -16,6 +16,8 @@ import { liveSwapParamsAreValid } from "../../coin.utils";
 import { SwapButton } from "./button";
 import { InputAmountTitle } from "./input-amount-title";
 import { handleSlippageInputChange, handleSwapInputChange, validateSlippage } from "./utils";
+import { useLivePoolClient } from "@/hooks/live/useLivePoolClient";
+import { PublicKey } from "@solana/web3.js";
 
 export const LiveCoinSwap = ({
   tokenSymbol,
@@ -32,22 +34,24 @@ export const LiveCoinSwap = ({
 
   const { publicKey, sendTransaction, signTransaction } = useWallet();
   const { connection } = useConnection();
-  // TEST:1
+  const livePoolClient = useLivePoolClient(address);
+
   const { balance: coinBalance } = useBalance(tokenData.mint.toString(), tokenData.decimals);
   const { balance: memeBalance } = useBalance(tokenAddress, MEMECHAN_MEME_TOKEN_DECIMALS);
   const { tokenAccounts, refetch: refetchTokenAccounts } = useTokenAccounts();
 
   const getSwapOutputAmount = useCallback(
     async ({ inputAmount, coinToMeme, slippagePercentage }: GetSwapOutputAmountParams) => {
+      if(!livePoolClient) return
       return coinToMeme
-        ? await LivePoolClient.getBuyMemeOutput({
+        ? await livePoolClient.livePool.getBuyMemeOutput({
             poolAddress: address,
             amountIn: inputAmount,
             slippagePercentage,
             connection,
             memeCoinMint: tokenAddress,
           })
-        : await LivePoolClient.getSellMemeOutput({
+        : await livePoolClient.livePool.getSellMemeOutput({
             poolAddress: address,
             amountIn: inputAmount,
             slippagePercentage,
@@ -55,28 +59,55 @@ export const LiveCoinSwap = ({
             memeCoinMint: tokenAddress,
           });
     },
-    [address, tokenAddress, connection],
+    [address, tokenAddress, connection, livePoolClient],
   );
+
+  // livePoolClient.livePool.getBuyMemeTransactionsByOutput({
+    
+  // })
 
   const getSwapTransactions = useCallback(
     async ({ outputData, coinToMeme }: GetLiveSwapTransactionParams) => {
-      if (!publicKey || !tokenAccounts) return;
+      if (!publicKey || !tokenAccounts || !livePoolClient) return;
 
-      return coinToMeme
-        ? await LivePoolClient.getBuyMemeTransactionsByOutput({
+      if(coinToMeme) {
+        if(livePoolClient.version === 'V1'){
+          await livePoolClient.livePool.getBuyMemeTransactionsByOutput({
             ...outputData,
             connection,
             payer: publicKey,
+            
             walletTokenAccounts: tokenAccounts,
           })
-        : await LivePoolClient.getSellMemeTransactionsByOutput({
+        }else {
+          await livePoolClient.livePool.getBuyMemeTransactionsByOutput({
+            // ...outputData,
+            // connection,
+            // payer: publicKey,
+            // walletTokenAccounts: tokenAccounts,
+            // TODO:TOKEN:HARUN
+            inTokenMint: new PublicKey(tokenAddress),
+            payer: publicKey,
+            minAmountOut: outputData.minAmountOut,
+            wrappedAmountIn: outputData.wrappedAmountIn,
+          
+
+          })
+        }
+      }else {
+        if(livePoolClient.version === 'V1'){
+          await livePoolClient.livePool.getSellMemeTransactionsByOutput({
             ...outputData,
             connection,
             payer: publicKey,
             walletTokenAccounts: tokenAccounts,
           });
+        }else {
+
+        }
+      }
     },
-    [publicKey, tokenAccounts, connection],
+    [publicKey, tokenAccounts, connection, livePoolClient],
   );
 
   useEffect(() => {
