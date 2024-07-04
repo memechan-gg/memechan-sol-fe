@@ -30,7 +30,7 @@ export const LiveCoinSwap = ({
   const [slippage, setSlippage] = useState<string>("10");
   const [isSwapping, setIsSwapping] = useState<boolean>(false);
 
-  const tokenData = getTokenInfo({ variant: "string", quoteMint });
+  const tokenData = getTokenInfo({ variant: "string", tokenAddress: quoteMint });
 
   const { publicKey, sendTransaction, signTransaction } = useWallet();
   const { connection } = useConnection();

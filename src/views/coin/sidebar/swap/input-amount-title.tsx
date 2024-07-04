@@ -22,7 +22,7 @@ export const InputAmountTitle = ({
   quoteMint: string;
 }) => {
   const inputValue = coinToMeme ? coinBalance : memeBalance;
-  const tokenInfo = getTokenInfo({ quoteMint });
+  const tokenInfo = getTokenInfo({ tokenAddress: quoteMint });
   const inputDecimals = coinToMeme ? tokenInfo.decimals : MEMECHAN_MEME_TOKEN_DECIMALS;
   return (
     <div className="flex flex-wrap justify-between">
