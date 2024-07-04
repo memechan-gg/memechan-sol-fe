@@ -40,9 +40,10 @@ export const LiveCoinSwap = ({
   const { balance: memeBalance } = useBalance(tokenAddress, MEMECHAN_MEME_TOKEN_DECIMALS);
   const { tokenAccounts, refetch: refetchTokenAccounts } = useTokenAccounts();
 
+  // TODO:TS
   const getSwapOutputAmount = useCallback(
-    async ({ inputAmount, coinToMeme, slippagePercentage }: GetSwapOutputAmountParams) => {
-      if(!livePoolClient) return
+    async ({ inputAmount, coinToMeme, slippagePercentage }: GetSwapOutputAmountParams): Promise<SwapMemeOutput | undefined> => {
+      if(!livePoolClient) { return undefined }
       return coinToMeme
         ? await livePoolClient.livePool.getBuyMemeOutput({
             poolAddress: address,
@@ -50,64 +51,60 @@ export const LiveCoinSwap = ({
             slippagePercentage,
             connection,
             memeCoinMint: tokenAddress,
-          })
+          }) as SwapMemeOutput
         : await livePoolClient.livePool.getSellMemeOutput({
             poolAddress: address,
             amountIn: inputAmount,
             slippagePercentage,
             connection,
             memeCoinMint: tokenAddress,
-          });
+          }) as SwapMemeOutput;
     },
     [address, tokenAddress, connection, livePoolClient],
   );
-
-  // livePoolClient.livePool.getBuyMemeTransactionsByOutput({
-    
-  // })
-
+  
+  // TODO:TYPESCRIPT
   const getSwapTransactions = useCallback(
-    async ({ outputData, coinToMeme }: GetLiveSwapTransactionParams) => {
+    async ({ outputData, coinToMeme }: GetLiveSwapTransactionParams): Promise<any> => {
       if (!publicKey || !tokenAccounts || !livePoolClient) return;
 
       if(coinToMeme) {
         if(livePoolClient.version === 'V1'){
-          await livePoolClient.livePool.getBuyMemeTransactionsByOutput({
+          return await livePoolClient.livePool.getBuyMemeTransactionsByOutput({
             ...outputData,
             connection,
             payer: publicKey,
-            
             walletTokenAccounts: tokenAccounts,
           })
         }else {
-          await livePoolClient.livePool.getBuyMemeTransactionsByOutput({
-            // ...outputData,
-            // connection,
-            // payer: publicKey,
-            // walletTokenAccounts: tokenAccounts,
-            // TODO:TOKEN:HARUN
+          return await livePoolClient.livePool.getBuyMemeTransactionsByOutput({
+            ...outputData,
             inTokenMint: new PublicKey(tokenAddress),
             payer: publicKey,
-            minAmountOut: outputData.minAmountOut,
-            wrappedAmountIn: outputData.wrappedAmountIn,
-          
-
+            minAmountOut: outputData.minAmountOut as any,
+            wrappedAmountIn: outputData.wrappedAmountIn as any
           })
         }
       }else {
         if(livePoolClient.version === 'V1'){
-          await livePoolClient.livePool.getSellMemeTransactionsByOutput({
+          return await livePoolClient.livePool.getSellMemeTransactionsByOutput({
             ...outputData,
             connection,
             payer: publicKey,
             walletTokenAccounts: tokenAccounts,
           });
         }else {
-
+          return await livePoolClient.livePool.getSellMemeTransactionsByOutput({
+            ...outputData,
+            inTokenMint: new PublicKey(tokenAddress),
+            payer: publicKey,
+            minAmountOut: outputData.minAmountOut as any,
+            wrappedAmountIn: outputData.wrappedAmountIn as any
+          });
         }
       }
     },
-    [publicKey, tokenAccounts, connection, livePoolClient],
+    [publicKey, tokenAccounts, livePoolClient, connection, tokenAddress],
   );
 
   useEffect(() => {
