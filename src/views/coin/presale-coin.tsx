@@ -26,7 +26,7 @@ export function PresaleCoin({ coinMetadata, seedPoolData }: { coinMetadata: Sola
   const boundPool = useBoundPool(seedPoolData.address);
 
   const tokenData = boundPool?.quoteReserve
-    ? getTokenInfo({ variant: "publicKey", quoteMint: boundPool?.quoteReserve.mint })
+    ? getTokenInfo({ variant: "publicKey", tokenAddress: boundPool?.quoteReserve.mint })
     : undefined;
 
   const CHARTS_API_HOSTNAME = process.env.NEXT_PUBLIC_CHARTS_API_HOSTNAME;

@@ -9,7 +9,7 @@ import { PresaleCoinSwap } from "./swap/presale-coin-swap";
 export function PresaleCoinSidebar({ pool, coinMetadata, uniqueHoldersData, ticketsData }: PresaleCoinSidebarProps) {
   const boundPool = useBoundPool(pool.address);
   const tokenInfo = boundPool?.quoteReserve.mint
-    ? getTokenInfo({ quoteMint: boundPool?.quoteReserve.mint.toString() })
+    ? getTokenInfo({ tokenAddress: boundPool?.quoteReserve.mint.toString() })
     : undefined;
   return (
     <>

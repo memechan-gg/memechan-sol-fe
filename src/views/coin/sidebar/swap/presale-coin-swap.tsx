@@ -48,7 +48,7 @@ export const PresaleCoinSwap = ({
   const boundPoolClient = useBoundPoolClient(pool.address);
 
   const tokenInfo = boundPoolClient?.boundPoolInstance.quoteTokenMint
-    ? getTokenInfo({ quoteMint: boundPoolClient.boundPoolInstance.quoteTokenMint, variant: "publicKey" })
+    ? getTokenInfo({ tokenAddress: boundPoolClient.boundPoolInstance.quoteTokenMint, variant: "publicKey" })
     : null;
   const memeChanQuoteMint = tokenInfo?.mint || "";
   const memeChanQuoteTokenDecimals = tokenInfo?.decimals || 6;
