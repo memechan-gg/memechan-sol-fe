@@ -5,7 +5,7 @@ import useSWR from "swr";
 
 const fetchBoundPoolClient = async (poolAddress: string, client: MemechanClient, clientV2: MemechanClientV2) => {
   try {
-    const { boundPoolInstance: boundPoolClient } = await getBoundPoolClientFromId(
+    const boundPoolClient = await getBoundPoolClientFromId(
       new PublicKey(poolAddress),
       client,
       clientV2,
