@@ -12,7 +12,9 @@ export const fetchPresaleCoinUniqueHolders = async (
   clientV2: MemechanClientV2,
 ) => {
   try {
-    const map = await (await getBoundPoolClientFromId(new PublicKey(poolAddress), client, clientV2)).getHoldersMap();
+    const map = await (
+      await getBoundPoolClientFromId(new PublicKey(poolAddress), client, clientV2)
+    ).boundPoolInstance.getHoldersMap();
 
     const holders: { address: string; tokenAmountInPercentage: BigNumber }[] = [];
 
