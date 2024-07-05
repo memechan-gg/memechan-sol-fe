@@ -33,12 +33,12 @@ export function ThreadBoard({
   return (
     <div className="flex flex-col border border-solid border-black w-full">
       {/* Title part of the board */}
-      <div className="bg-board text-regular flex items-center p-2 sm:pb-2 pb-3 font-bold justify-between sm:flex-row flex-col">
+      <div className="relative bg-board text-regular flex items-center p-2 sm:pb-2 pb-3 font-bold justify-between sm:flex-row flex-col">
         <h2 className="text-sm sm:mb-0 mb-4 ">{title}</h2>
         {showNavigateBtn && (
           <Link
             href={navigateUrl || "/"}
-            className="bg-title bg-opacity-15 items-center text-xs justify-center font-bold text-regular px-2 py-[2px] rounded-lg hover:bg-opacity-25"
+            className="hidden md:block absolute right-0 mr-2 bg-title bg-opacity-15 items-center text-xs justify-center font-bold text-regular px-2 py-[2px] rounded-lg hover:bg-opacity-25"
           >
             Back
           </Link>
