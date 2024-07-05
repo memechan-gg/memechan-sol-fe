@@ -30,7 +30,7 @@ export function LiveCoin({ coinMetadata, livePoolData }: { coinMetadata: SolanaT
             <div className="font-bold text-regular">{coinMetadata.name}</div>
             <div>
               <Link
-                href={`/profile/${coinMetadata.creator}`}
+                href={`/profile/${coinMetadata.address}/${coinMetadata.creator}`}
                 className="text-[11px] md:text-xs text-link hover:underline text-ellipsis"
               >
                 {coinMetadata.creator}
@@ -39,7 +39,7 @@ export function LiveCoin({ coinMetadata, livePoolData }: { coinMetadata: SolanaT
           </div>
         </div>
       </div>
-      <ThreadBoard title={coinMetadata.name}>
+      <ThreadBoard title={coinMetadata.name} showNavigateBtn>
         <div className="flex flex-col gap-2">
           <div className="flex flex-wrap flex-row gap-3 gap-x-10">
             <div className="flex flex-col gap-1">

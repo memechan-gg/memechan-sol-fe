@@ -193,7 +193,7 @@ export function CreateCoin() {
   return (
     <div className="w-full flex items-center justify-center">
       <div className="w-full lg:max-w-3xl">
-        <ThreadBoard title="create memecoin">
+        <ThreadBoard title="create memecoin" showNavigateBtn>
           <form onSubmit={onSubmit} className="flex flex-col gap-4 lowercase">
             <div className="flex flex-col gap-2">
               <h4 className="text-sm font-bold text-regular lowercase">Memecoin Details</h4>

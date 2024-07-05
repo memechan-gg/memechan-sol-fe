@@ -5,6 +5,8 @@ import Cookies from "js-cookie";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
+import { useResizeDetector } from "react-resize-detector";
+import { FixedSizeGrid as Grid } from "react-window";
 import { useCoinApi } from "./hooks/useCoinApi";
 import { isThreadsSortBy, isThreadsSortDirection, isThreadsSortStatus } from "./hooks/utils";
 
@@ -43,6 +45,12 @@ export function Home() {
     setIsDialogOpen(false);
     Cookies.set("isConfirmed", "true", { expires: 365 });
   };
+
+  const { width, height, ref } = useResizeDetector();
+
+  const itemSize = 258;
+  const columnCount = width ? Math.max(1, Math.floor(width / (itemSize - 90))) : 1;
+  const rowCount = Math.ceil((tokenList?.length ?? 0) / columnCount);
 
   if (!isMounted) {
     return <div>Loading...</div>;
@@ -132,19 +140,39 @@ export function Home() {
             }
           >
             <div className="flex flex-col items-center">
-              <div className="flex flex-wrap gap-6 sm:justify-normal justify-center self-start">
+              <div
+                ref={ref}
+                className="h-[70vh] w-full flex flex-wrap gap-6 sm:justify-normal justify-center self-start"
+              >
                 {isLoading && (
                   <>
                     <div className="text-regular">Loading...</div>
                   </>
                 )}
-                {isCoinsListExist && (
-                  <>
-                    {tokenList.map((item) => (
-                      <Thread key={item.address} coinMetadata={item} />
-                    ))}
-                  </>
+                {isCoinsListExist && width && height && (
+                  <Grid
+                    columnCount={columnCount}
+                    columnWidth={itemSize - 90}
+                    rowCount={rowCount}
+                    rowHeight={itemSize + 20}
+                    width={width}
+                    height={height}
+                    itemData={tokenList}
+                    className="outline-none !w-auto md:!w-full"
+                  >
+                    {({ columnIndex, rowIndex, style, data }) => {
+                      const index = rowIndex * columnCount + columnIndex;
+                      const item = data[index];
+                      if (!item) return <div style={style} />;
+                      return (
+                        <div style={{ ...style }} className="pl-2">
+                          <Thread key={item.address} coinMetadata={item} />
+                        </div>
+                      );
+                    }}
+                  </Grid>
                 )}
+
                 {isCoinsListEmpty && (
                   <>
                     <div className="text-regular">No memecoins yet</div>
