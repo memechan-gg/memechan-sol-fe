@@ -77,8 +77,7 @@ export const PresaleCoinSwap = ({
       }
       if (!boundPoolClient?.boundPoolInstance || !freeIndexes) return;
 
-
-      if(coinToMeme) {
+      if (coinToMeme) {
         return {
           side: "buy",
           result: await boundPoolClient.boundPoolInstance.getBuyMemeTransaction({
@@ -88,9 +87,9 @@ export const PresaleCoinSwap = ({
             slippagePercentage,
             memeTicketNumber: getFreeMemeTicketIndex(freeIndexes, boundPoolClient.version as "V1" | "V2"),
           }),
-        } as { side: "buy"; result: GetBuyMemeTransactionOutput }
+        } as { side: "buy"; result: GetBuyMemeTransactionOutput };
       }
-      
+
       return {
         side: "sell",
         result: await boundPoolClient.boundPoolInstance.getSellMemeTransaction({

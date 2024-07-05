@@ -22,8 +22,12 @@ export const fetchTickets = async (
 ) => {
   try {
     const boundPool = await getBoundPoolClientFromId(new PublicKey(poolAddress), client, clientV2);
-    
-    const ticketsData = await (boundPool.version === 'V1' ? MemeTicketClient : MemeTicketClientV2).fetchTicketsByUser2(new PublicKey(poolAddress), (boundPool.version === 'V1' ? client : clientV2) as any, user);
+
+    const ticketsData = await (boundPool.version === "V1" ? MemeTicketClient : MemeTicketClientV2).fetchTicketsByUser2(
+      new PublicKey(poolAddress),
+      (boundPool.version === "V1" ? client : clientV2) as any,
+      user,
+    );
     return ticketsData;
   } catch (e) {
     console.error(`[fetchTickets] Cannot fetch tickets for ${poolAddress} pool ${poolAddress}:`, e);
