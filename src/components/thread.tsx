@@ -6,11 +6,11 @@ export function NoticeBoard({ title, children }: { title: string; children: Reac
   return (
     <div className="flex flex-col border border-solid border-black w-full sm:text-start text-center">
       {/* Title part of the board */}
-      <div className="bg-regular text-white pl-2 py-1 font-bold">
+      <div className="bg-regular text-white pl-2 py-1 font-bold dark:bg-gray-800 dark:text-gray-200">
         <h2 className="text-sm">{title}</h2>
       </div>
       {/* Body part of the board */}
-      <div className="p-2 bg-white text-xs">
+      <div className="p-2 bg-white text-xs dark:bg-gray-700 dark:text-gray-300">
         <div>{children}</div>
       </div>
     </div>
@@ -33,7 +33,7 @@ export function ThreadBoard({
   return (
     <div className="flex flex-col border border-solid border-black w-full">
       {/* Title part of the board */}
-      <div className="relative bg-board text-regular flex items-center p-2 sm:pb-2 pb-3 font-bold justify-between sm:flex-row flex-col">
+      <div className="relative bg-board text-regular flex items-center p-2 sm:pb-2 pb-3 font-bold justify-between sm:flex-row flex-col dark:bg-gray-800 dark:text-gray-300">
         <h2 className="text-sm sm:mb-0 mb-4 ">{title}</h2>
         {showNavigateBtn && (
           <Link
@@ -46,7 +46,7 @@ export function ThreadBoard({
         {titleChildren}
       </div>
       {/* Body part of the board */}
-      <div className="p-2 bg-white text-xs flex w-full">
+      <div className="p-2 bg-white text-xs flex w-full dark:bg-gray-700 dark:text-gray-400">
         <div className="w-full">{children}</div>
       </div>
     </div>
@@ -78,7 +78,7 @@ export function Thread({
           </Link>
         </div>
         <div className="text-green font-bold">
-          market cap: <span className="bg-white text-green">{formatNumber(marketcap, 2)}</span>
+          market cap: <span className="text-green">{formatNumber(marketcap, 2)}</span>
         </div>
         <Link href={`/coin/${address}`}>
           <div className="text-regular flex flex-col flex-wrap">

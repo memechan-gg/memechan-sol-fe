@@ -9,6 +9,7 @@ import { UserProvider } from "@/context/UserContext";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import NextProgress from "next-progress";
+import { ThemeProvider } from "next-themes";
 import type { AppProps } from "next/app";
 import Head from "next/head";
 import { Toaster } from "react-hot-toast";
@@ -53,11 +54,13 @@ export default function App({ Component, pageProps }: AppProps) {
       <SolanaProvider>
         <UserProvider>
           <ConnectionProvider>
-            <Layout>
-              <Component {...pageProps} />
-              <SpeedInsights />
-              <Analytics />
-            </Layout>
+            <ThemeProvider attribute="class" defaultTheme="light">
+              <Layout>
+                <Component {...pageProps} />
+                <SpeedInsights />
+                <Analytics />
+              </Layout>
+            </ThemeProvider>
           </ConnectionProvider>
           <Toaster position="bottom-right" />
         </UserProvider>

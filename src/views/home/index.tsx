@@ -142,7 +142,7 @@ export function Home() {
             <div className="flex flex-col items-center">
               <div
                 ref={ref}
-                className="h-[70vh] w-full flex flex-wrap gap-6 sm:justify-normal justify-center self-start"
+                className="h-[50vh] md:h-[70vh] w-full flex flex-wrap gap-6 sm:justify-normal justify-center self-start"
               >
                 {isLoading && (
                   <>

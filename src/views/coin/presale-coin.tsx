@@ -1,4 +1,3 @@
-import { ChartIframe } from "@/components/chart-iframe";
 import { ThreadBoard } from "@/components/thread";
 import { TICKETS_INTERVAL } from "@/config/config";
 import { useBoundPool } from "@/hooks/presale/useBoundPool";
@@ -77,7 +76,10 @@ export function PresaleCoin({ coinMetadata, seedPoolData }: { coinMetadata: Sola
             </div>
             <div className="flex flex-col gap-1">
               <div className="text-sm font-bold text-link">Created By</div>
-              <Link href={`/profile/${coinMetadata.creator}`} className="text-xs font-bold text-link">
+              <Link
+                href={`/profile/${coinMetadata.address}/${coinMetadata.creator}`}
+                className="text-xs font-bold text-link"
+              >
                 {coinMetadata.creator.slice(0, 5)}...
                 {coinMetadata.creator.slice(-3)}
               </Link>
