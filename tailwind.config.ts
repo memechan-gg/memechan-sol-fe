@@ -37,6 +37,7 @@ const config: Config = {
         blue: "#0047FF",
         board: "#fca",
         lightPink: "#F0E0D6",
+        dark: "#121212",
       },
       borderColor: {
         "link-quote-hover": "#FF0000",

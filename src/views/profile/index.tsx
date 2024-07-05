@@ -5,6 +5,7 @@ import { CoinItem } from "./coin-item";
 
 type ProfileProps = {
   address: string;
+  coin: string;
 };
 
 type Token = {
@@ -16,7 +17,7 @@ type Token = {
   marketCap: number;
 };
 
-export function Profile({ address }: ProfileProps) {
+export function Profile({ address, coin }: ProfileProps) {
   const [tokens, setTokens] = useState<Token[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -88,7 +89,7 @@ export function Profile({ address }: ProfileProps) {
   return (
     <div className="w-full flex items-center justify-center">
       <div className="max-w-3xl w-full">
-        <ThreadBoard title="Profile">
+        <ThreadBoard title="Profile" showNavigateBtn navigateUrl={`/coin/${coin}`}>
           <div className="flex flex-col gap-3">
             {/* Address */}
             <div className="flex flex-col gap-1 text-regular">

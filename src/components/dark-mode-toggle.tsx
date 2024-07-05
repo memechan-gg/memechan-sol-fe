@@ -20,12 +20,14 @@ const DarkModeToggle = () => {
 
   if (!mounted) return null;
   return (
-    <button
-      className="absolute top-0 left-0 p-2 text-black hover:text-gray-800 dark:text-white dark:hover:text-gray-300 z-50"
-      onClick={toggleTheme}
-    >
-      {theme === "dark" ? "Light" : "Dark"} Mode
-    </button>
+    <div className="flex justify-center lg:bg-transparent bg-board dark:bg-dark">
+      <button
+        className="text-black text-sm hover:text-gray-800 dark:text-white dark:hover:text-gray-300 z-50"
+        onClick={toggleTheme}
+      >
+        {theme === "dark" ? "Light" : "Dark"} Mode
+      </button>
+    </div>
   );
 };
 

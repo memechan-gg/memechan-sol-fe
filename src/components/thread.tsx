@@ -21,16 +21,28 @@ export function ThreadBoard({
   title,
   titleChildren,
   children,
+  showNavigateBtn,
+  navigateUrl,
 }: {
   title: string;
   titleChildren?: React.ReactNode;
   children: React.ReactNode;
+  showNavigateBtn?: boolean;
+  navigateUrl?: string;
 }) {
   return (
     <div className="flex flex-col border border-solid border-black w-full">
       {/* Title part of the board */}
-      <div className="bg-board text-regular flex items-center p-2 sm:pb-2 pb-3 font-bold justify-between sm:flex-row flex-col dark:bg-gray-800 dark:text-gray-300">
-        <h2 className="text-sm sm:mb-0 mb-4">{title}</h2>
+      <div className="relative bg-board text-regular flex items-center p-2 sm:pb-2 pb-3 font-bold justify-between sm:flex-row flex-col dark:bg-gray-800 dark:text-gray-300">
+        <h2 className="text-sm sm:mb-0 mb-4 ">{title}</h2>
+        {showNavigateBtn && (
+          <Link
+            href={navigateUrl || "/"}
+            className="hidden md:block absolute right-0 mr-2 bg-title bg-opacity-15 items-center text-xs justify-center font-bold text-regular px-2 py-[2px] rounded-lg hover:bg-opacity-25"
+          >
+            Back
+          </Link>
+        )}
         {titleChildren}
       </div>
       {/* Body part of the board */}
@@ -65,11 +77,9 @@ export function Thread({
             <span className="font-bold hover:underline">{creator.slice(0, 5) + "..." + creator.slice(-3)}</span>
           </Link>
         </div>
-        {status && status === "PRESALE" && (
-          <div className="text-green font-bold">
-            market cap: <span className="text-green">{formatNumber(marketcap, 2)}</span>
-          </div>
-        )}
+        <div className="text-green font-bold">
+          market cap: <span className="bg-white text-green">{formatNumber(marketcap, 2)}</span>
+        </div>
         <Link href={`/coin/${address}`}>
           <div className="text-regular flex flex-col flex-wrap">
             <div className="font-bold !normal-case">symbol: {symbol}</div>
