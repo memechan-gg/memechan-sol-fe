@@ -78,7 +78,7 @@ export function Thread({
           </Link>
         </div>
         <div className="text-green font-bold">
-          market cap: <span className="bg-white text-green">{formatNumber(marketcap, 2)}</span>
+          market cap: <span className="text-green">{formatNumber(marketcap, 2)}</span>
         </div>
         <Link href={`/coin/${address}`}>
           <div className="text-regular flex flex-col flex-wrap">
