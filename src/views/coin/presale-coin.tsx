@@ -26,7 +26,7 @@ export function PresaleCoin({ coinMetadata, seedPoolData }: { coinMetadata: Sola
   const boundPool = useBoundPool(seedPoolData.address);
 
   const tokenData = boundPool?.quoteReserve
-    ? getTokenInfo({ variant: "publicKey", quoteMint: boundPool?.quoteReserve.mint })
+    ? getTokenInfo({ variant: "publicKey", tokenAddress: boundPool?.quoteReserve.mint })
     : undefined;
 
   const CHARTS_API_HOSTNAME = process.env.NEXT_PUBLIC_CHARTS_API_HOSTNAME;
@@ -85,11 +85,11 @@ export function PresaleCoin({ coinMetadata, seedPoolData }: { coinMetadata: Sola
           </div>
           <div className="flex w-full flex-col lg:flex-row gap-6">
             <div className="flex flex-col gap-3 w-full">
-              {CHARTS_API_HOSTNAME && tokenData && (
+              {/* {CHARTS_API_HOSTNAME && tokenData && (
                 <ChartIframe
                   src={`https://${CHARTS_API_HOSTNAME}/?address=${seedPoolData.address}&symbol=${tokenData.displayName}&contract=${coinMetadata.symbol.toUpperCase()}/${tokenData.displayName}`}
                 />
-              )}
+              )} */}
               <div className="flex flex-col gap-3 lg:hidden">
                 <PresaleCoinSidebar
                   coinMetadata={coinMetadata}

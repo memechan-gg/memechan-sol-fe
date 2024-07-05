@@ -20,10 +20,10 @@
     "@jridgewell/gen-mapping" "^0.3.5"
     "@jridgewell/trace-mapping" "^0.3.24"
 
-"@avernikoz/memechan-sol-sdk@2.1.24":
-  version "2.1.24"
-  resolved "https://registry.yarnpkg.com/@avernikoz/memechan-sol-sdk/-/memechan-sol-sdk-2.1.24.tgz#b73e5c95a6f6d8945983bccad95b8b70766abb65"
-  integrity sha512-71zzrrei3pxRfPJNOeAbkNkdsLsITsu4DC9K+veK/4AOhwYJvus2op6LQQ1vpQio7n3yqeiDaFgQFSiaEXpFOQ==
+"@avernikoz/memechan-sol-sdk@2.1.40":
+  version "2.1.40"
+  resolved "https://registry.yarnpkg.com/@avernikoz/memechan-sol-sdk/-/memechan-sol-sdk-2.1.40.tgz#8116fde9caeb5b506e955e6cba2f3ffc1c8f6d93"
+  integrity sha512-YcorGp2vI8cDd3c2StQeA9j8dt/CrtHh8zMCHE1t0lPhmoW/Nib1Leia8JJqTPGme8uvrFd7IswwlLItJTurWw==
   dependencies:
     "@aws-crypto/sha256-browser" "^5.2.0"
     "@aws-sdk/types" "^3.577.0"
@@ -2911,7 +2911,7 @@
 
 "@solana/spl-token@0.3.9":
   version "0.3.9"
-  resolved "https://registry.yarnpkg.com/@solana/spl-token/-/spl-token-0.3.9.tgz#477e703c3638ffb17dd29b82a203c21c3e465851"
+  resolved "https://registry.npmjs.org/@solana/spl-token/-/spl-token-0.3.9.tgz"
   integrity sha512-1EXHxKICMnab35MvvY/5DBc/K/uQAOJCYnDZXw83McCAYUAfi+rwq6qfd6MmITmSTEhcfBcl/zYxmW/OSN0RmA==
   dependencies:
     "@solana/buffer-layout" "^4.0.0"

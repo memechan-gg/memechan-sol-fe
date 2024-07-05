@@ -1,6 +1,12 @@
 import { useConnection } from "@/context/ConnectionContext";
 import { PoolStatus } from "@/types/pool";
-import { MemeTicketClient, MemechanClient } from "@avernikoz/memechan-sol-sdk";
+import {
+  MemeTicketClient,
+  MemeTicketClientV2,
+  MemechanClient,
+  MemechanClientV2,
+  getBoundPoolClientFromId,
+} from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import toast from "react-hot-toast";
@@ -11,10 +17,13 @@ export const fetchTickets = async (
   poolAddress: string,
   user: PublicKey,
   client: MemechanClient,
+  clientV2: MemechanClientV2,
   poolStatus: PoolStatus,
 ) => {
   try {
-    const ticketsData = await MemeTicketClient.fetchTicketsByUser2(new PublicKey(poolAddress), client, user);
+    const boundPool = await getBoundPoolClientFromId(new PublicKey(poolAddress), client, clientV2);
+    
+    const ticketsData = await (boundPool.version === 'V1' ? MemeTicketClient : MemeTicketClientV2).fetchTicketsByUser2(new PublicKey(poolAddress), (boundPool.version === 'V1' ? client : clientV2) as any, user);
     return ticketsData;
   } catch (e) {
     console.error(`[fetchTickets] Cannot fetch tickets for ${poolAddress} pool ${poolAddress}:`, e);
@@ -35,11 +44,13 @@ export function useTickets({
   poolStatus: PoolStatus;
 }) {
   const { publicKey } = useWallet();
-  const { memechanClient } = useConnection();
+  const { memechanClient, memechanClientV2 } = useConnection();
 
   const { data, mutate } = useSWR(
-    publicKey && poolAddress ? [`tickets-${poolAddress}`, poolAddress, publicKey, memechanClient, poolStatus] : null,
-    ([url, pool, user, client, status]) => fetchTickets(pool, user, client, status),
+    publicKey && poolAddress
+      ? [`tickets-${poolAddress}`, poolAddress, publicKey, memechanClient, memechanClientV2, poolStatus]
+      : null,
+    ([url, pool, user, client, clientV2, status]) => fetchTickets(pool, user, client, clientV2, status),
     {
       refreshInterval,
       revalidateIfStale: false,

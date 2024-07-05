@@ -45,6 +45,7 @@ export function CreateCoin() {
   const { connection, memechanClientV2 } = useConnection();
 
   const onSubmit = handleSubmit(async (data) => {
+    
     try {
       if (!connected || !publicKey || !signMessage) {
         return toast.error("Please connect your wallet");

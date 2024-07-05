@@ -47,8 +47,8 @@ export const PresaleCoinSwap = ({
   const { connection } = useConnection();
   const boundPoolClient = useBoundPoolClient(pool.address);
 
-  const tokenInfo = boundPoolClient?.quoteTokenMint
-    ? getTokenInfo({ quoteMint: boundPoolClient.quoteTokenMint, variant: "publicKey" })
+  const tokenInfo = boundPoolClient?.boundPoolInstance.quoteTokenMint
+    ? getTokenInfo({ tokenAddress: boundPoolClient.boundPoolInstance.quoteTokenMint, variant: "publicKey" })
     : null;
   const memeChanQuoteMint = tokenInfo?.mint || "";
   const memeChanQuoteTokenDecimals = tokenInfo?.decimals || 6;
@@ -60,11 +60,11 @@ export const PresaleCoinSwap = ({
 
   const getSwapOutputAmount = useCallback(
     async ({ inputAmount, coinToMeme, slippagePercentage }: GetSwapOutputAmountParams) => {
-      if (!boundPoolClient) return;
+      if (!boundPoolClient?.boundPoolInstance) return;
 
       return coinToMeme
-        ? await boundPoolClient.getOutputAmountForBuyMeme({ inputAmount, slippagePercentage })
-        : await boundPoolClient.getOutputAmountForSellMeme({ inputAmount, slippagePercentage });
+        ? await boundPoolClient.boundPoolInstance.getOutputAmountForBuyMeme({ inputAmount, slippagePercentage })
+        : await boundPoolClient.boundPoolInstance.getOutputAmountForSellMeme({ inputAmount, slippagePercentage });
     },
     [boundPoolClient],
   );
@@ -75,34 +75,33 @@ export const PresaleCoinSwap = ({
         toast.error("Please, connect your wallet to make swaps");
         return;
       }
-      if (!boundPoolClient || !freeIndexes) return;
+      if (!boundPoolClient?.boundPoolInstance || !freeIndexes) return;
 
-      return (
-        coinToMeme
-          ? {
-              side: "buy",
-              result: await boundPoolClient.getBuyMemeTransaction({
-                user: publicKey,
-                inputAmount,
-                minOutputAmount,
-                slippagePercentage,
-                memeTicketNumber: getFreeMemeTicketIndex(freeIndexes),
-              }),
-            }
-          : {
-              side: "sell",
-              result: await boundPoolClient.getSellMemeTransaction({
-                user: publicKey,
-                inputAmount,
-                minOutputAmount,
-                slippagePercentage,
-              }),
-            }
-      ) as
-        | { side: "buy"; result: GetBuyMemeTransactionOutput }
-        | { side: "sell"; result: GetSellMemeTransactionOutput };
+
+      if(coinToMeme) {
+        return {
+          side: "buy",
+          result: await boundPoolClient.boundPoolInstance.getBuyMemeTransaction({
+            user: publicKey,
+            inputAmount,
+            minOutputAmount,
+            slippagePercentage,
+            memeTicketNumber: getFreeMemeTicketIndex(freeIndexes, boundPoolClient.version as "V1" | "V2"),
+          }),
+        } as { side: "buy"; result: GetBuyMemeTransactionOutput }
+      }
+      
+      return {
+        side: "sell",
+        result: await boundPoolClient.boundPoolInstance.getSellMemeTransaction({
+          user: publicKey,
+          inputAmount,
+          minOutputAmount,
+          slippagePercentage,
+        }),
+      } as { side: "sell"; result: GetSellMemeTransactionOutput };
     },
-    [boundPoolClient, publicKey, freeIndexes],
+    [publicKey, boundPoolClient, freeIndexes],
   );
 
   const updateOutputAmount = useCallback(async () => {

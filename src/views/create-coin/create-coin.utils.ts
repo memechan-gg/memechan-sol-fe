@@ -10,7 +10,7 @@ import {
   MAX_DESCRIPTION_LENGTH,
   MAX_NAME_LENGTH,
   MAX_SYMBOL_LENGTH,
-  MemeTicketClient,
+  MemeTicketClientV2,
   MemechanClientV2,
   TOKEN_INFOS,
   validateCreateCoinParams,
@@ -81,7 +81,7 @@ export async function createMemeCoinAndPool({
             minOutputAmount: "0",
             slippagePercentage: 0,
             user: publicKey,
-            memeTicketNumber: MemeTicketClient.TICKET_NUMBER_START,
+            memeTicketNumber: MemeTicketClientV2.TICKET_NUMBER_START,
           }
         : undefined,
   });

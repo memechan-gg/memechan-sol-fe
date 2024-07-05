@@ -20,7 +20,7 @@ const fetchTargetConfig = async (connection: Connection, tokenInfo: TokenInfo) =
 export function useTargetConfig() {
   const { connection } = useConnection();
 
-  const tokenInfo = getTokenInfo({ quoteMint: NATIVE_MINT_STRING });
+  const tokenInfo = getTokenInfo({ tokenAddress: NATIVE_MINT_STRING });
 
   const { data: targetConfig, isLoading } = useSWR(
     [`target-config`, connection],

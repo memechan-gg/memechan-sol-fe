@@ -60,15 +60,15 @@ export const getTicketsData = (data: ParsedMemeTicket[] | undefined) => {
 };
 
 type TokenInfoVariant =
-  | { variant: "string"; quoteMint: string }
-  | { variant: "publicKey"; quoteMint: PublicKey }
-  | { variant?: undefined; quoteMint: string };
+  | { variant: "string"; tokenAddress: string }
+  | { variant: "publicKey"; tokenAddress: PublicKey }
+  | { variant?: undefined; tokenAddress: string };
 
-export const getTokenInfo = ({ variant, quoteMint }: TokenInfoVariant) => {
-  if (variant === "publicKey" && quoteMint instanceof PublicKey) {
-    return getTokenInfoByMint(quoteMint);
+export const getTokenInfo = ({ variant, tokenAddress }: TokenInfoVariant) => {
+  if (variant === "publicKey" && tokenAddress instanceof PublicKey) {
+    return getTokenInfoByMint(tokenAddress);
   } else if (variant === "string" || !variant) {
-    return getTokenInfoByMint(new PublicKey(quoteMint));
+    return getTokenInfoByMint(new PublicKey(tokenAddress));
   }
   throw new Error("Invalid variant or quoteMint type");
 };
