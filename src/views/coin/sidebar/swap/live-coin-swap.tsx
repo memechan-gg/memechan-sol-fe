@@ -281,8 +281,8 @@ export const LiveCoinSwap = ({
         {outputData !== null && !isLoadingOutputAmount && (
           <div className="text-xs font-bold text-regular">
             {coinToMeme
-              ? `${tokenSymbol} to receive: ${Number(outputData.minAmountOut.toExact()).toLocaleString(undefined, { maximumFractionDigits: MEMECHAN_MEME_TOKEN_DECIMALS })}`
-              : `${tokenData.displayName} to receive: ${Number(outputData.minAmountOut.toExact()).toLocaleString(undefined, { maximumFractionDigits: tokenData.decimals })}`}
+              ? `${tokenSymbol} to receive: ${Number(outputData.minAmountOut.toString()).toLocaleString(undefined, { maximumFractionDigits: MEMECHAN_MEME_TOKEN_DECIMALS })}`
+              : `${tokenData.displayName} to receive: ${Number(outputData.minAmountOut.toString()).toLocaleString(undefined, { maximumFractionDigits: tokenData.decimals })}`}
           </div>
         )}
       </div>
