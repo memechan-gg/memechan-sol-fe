@@ -26,7 +26,7 @@ export const fetchTickets = async (
     const ticketsData = await (boundPool.version === 'V1' ? MemeTicketClient : MemeTicketClientV2).fetchTicketsByUser2(new PublicKey(poolAddress), (boundPool.version === 'V1' ? client : clientV2) as any, user);
     return ticketsData;
   } catch (e) {
-    console.error(`[fetchTickets] Cannot fetch tickets for ${poolAddress} pool ${poolAddress}:`, e);
+    console.error(`[fetchTickets] Cannot fetch tickets for ${user} pool ${poolAddress}:`, e);
 
     const ticketsValue = poolStatus === "PRESALE" ? "available tickets" : "staked memecoins";
     toast.error(`Failed to get your ${ticketsValue}. Please, try to refresh the page`);
