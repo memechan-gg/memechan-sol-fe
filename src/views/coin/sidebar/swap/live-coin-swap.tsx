@@ -73,8 +73,12 @@ export const LiveCoinSwap = ({
   const getSwapTransactions = useCallback(
     async ({ outputData, coinToMeme }: GetLiveSwapTransactionParams): Promise<any> => {
       if (!publicKey || !tokenAccounts || !livePoolClient) return;
+      console.log("outputData");
+      console.log(outputData);
 
       if (coinToMeme) {
+        console.log(outputData);
+        console.log(livePoolClient.version);
         if (livePoolClient.version === "V1") {
           return await livePoolClient.livePool.getBuyMemeTransactionsByOutput({
             ...outputData,
@@ -83,7 +87,7 @@ export const LiveCoinSwap = ({
             walletTokenAccounts: tokenAccounts,
           });
         } else {
-          // TODO:FIX:SWAPa
+          // TODO:FIX:SWAP
           return await livePoolClient.livePool.getBuyMemeTransactionsByOutput({
             ...outputData,
             inTokenMint: new PublicKey(tokenAddress),
@@ -93,6 +97,7 @@ export const LiveCoinSwap = ({
           });
         }
       } else {
+        // console.log(outputData);
         if (livePoolClient.version === "V1") {
           return await livePoolClient.livePool.getSellMemeTransactionsByOutput({
             ...outputData,
@@ -134,7 +139,7 @@ export const LiveCoinSwap = ({
         if (!validateSlippage(slippage)) return;
 
         const outputData = await getSwapOutputAmount({ inputAmount, coinToMeme, slippagePercentage: +slippage });
-
+        console.log(outputData);
         if (!outputData) {
           setOutputData(null);
           return;
