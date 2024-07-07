@@ -15,6 +15,11 @@ const nextConfig = {
     }
     return config;
   },
+  modularizeImports: {
+    "@phosphor-icons/react": {
+      transform: "@phosphor-icons/react/{{member}}",
+    },
+  },
 };
 
 export default withSentryConfig(nextConfig, {

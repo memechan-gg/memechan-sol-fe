@@ -2,7 +2,7 @@ import { useUser } from "@/context/UserContext";
 import { cn } from "@/utils/cn";
 import { RpcConnectionDialog } from "@/views/rpc-connection/rpc-connection-dialog";
 import { Popover } from "@headlessui/react";
-import { CaretDown } from "@phosphor-icons/react";
+import { CaretDown } from "@phosphor-icons/react/CaretDown";
 import { useWallet } from "@solana/wallet-adapter-react";
 import Link from "next/link";
 import { Button } from "./button";

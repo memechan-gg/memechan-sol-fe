@@ -1,5 +1,5 @@
 import { Popover } from "@headlessui/react";
-import { CaretDown } from "@phosphor-icons/react";
+import { CaretDown } from "@phosphor-icons/react/CaretDown";
 import { Fragment } from "react";
 
 export function Dropdown({
