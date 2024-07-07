@@ -8,6 +8,7 @@ import Link from "next/link";
 import { Button } from "./button";
 import { ConnectWallet } from "./connect-wallet";
 import { Logo } from "./logo";
+import DarkModeToggle from "./dark-mode-toggle";
 
 export const Header = () => {
   const account = useUser();
@@ -36,6 +37,7 @@ export const Header = () => {
               Solana
               <CaretDown className="w-4 h-4" />
             </Button>
+            <DarkModeToggle />
             {account.address ? (
               <Popover>
                 <Popover.Button>

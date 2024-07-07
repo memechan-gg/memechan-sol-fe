@@ -5,7 +5,6 @@ import { Header } from "./header";
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex flex-col min-h-screen w-full">
-      <DarkModeToggle />
       <Header />
       <main className="flex flex-grow flex-col items-center lg:mt-0">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">

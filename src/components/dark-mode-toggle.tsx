@@ -1,5 +1,6 @@
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
+import { SunIcon, MoonIcon } from "@radix-ui/react-icons";
 
 const DarkModeToggle = () => {
   const { systemTheme, theme, setTheme } = useTheme();
@@ -22,10 +23,10 @@ const DarkModeToggle = () => {
   return (
     <div className="flex justify-center lg:bg-transparent bg-board dark:bg-dark">
       <button
-        className="text-black text-sm hover:text-gray-800 dark:text-white dark:hover:text-gray-300 z-50"
+        className="bg-title bg-opacity-15 items-center text-xs justify-center flex flex-row gap-2 font-bold text-regular px-4 py-2 rounded-lg transition-all duration-300 hover:bg-opacity-25"
         onClick={toggleTheme}
       >
-        {theme === "dark" ? "Light" : "Dark"} Mode
+        {theme === "dark" ? <SunIcon /> : <MoonIcon/>}
       </button>
     </div>
   );
