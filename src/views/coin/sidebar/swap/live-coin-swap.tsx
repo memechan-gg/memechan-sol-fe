@@ -2,6 +2,7 @@ import { Button } from "@/components/button";
 import { TransactionSentNotification } from "@/components/notifications/transaction-sent-notification";
 import { MAX_SLIPPAGE, MIN_SLIPPAGE } from "@/config/config";
 import { useConnection } from "@/context/ConnectionContext";
+import { useLivePoolClient } from "@/hooks/live/useLivePoolClient";
 import { useBalance } from "@/hooks/useBalance";
 import { useTokenAccounts } from "@/hooks/useTokenAccounts";
 import { getTokenInfo } from "@/hooks/utils";
@@ -9,6 +10,7 @@ import { GetLiveSwapTransactionParams, GetSwapOutputAmountParams } from "@/types
 import { formatNumber } from "@/utils/formatNumber";
 import { MEMECHAN_MEME_TOKEN_DECIMALS, SwapMemeOutput, buildTxs } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
+import { PublicKey } from "@solana/web3.js";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { LiveCoinSwapProps } from "../../coin.types";
@@ -16,8 +18,6 @@ import { liveSwapParamsAreValid } from "../../coin.utils";
 import { SwapButton } from "./button";
 import { InputAmountTitle } from "./input-amount-title";
 import { handleSlippageInputChange, handleSwapInputChange, validateSlippage } from "./utils";
-import { useLivePoolClient } from "@/hooks/live/useLivePoolClient";
-import { PublicKey } from "@solana/web3.js";
 
 export const LiveCoinSwap = ({
   tokenSymbol,
@@ -40,66 +40,75 @@ export const LiveCoinSwap = ({
   const { balance: memeBalance } = useBalance(tokenAddress, MEMECHAN_MEME_TOKEN_DECIMALS);
   const { tokenAccounts, refetch: refetchTokenAccounts } = useTokenAccounts();
 
-  // TODO:TS
   const getSwapOutputAmount = useCallback(
-    async ({ inputAmount, coinToMeme, slippagePercentage }: GetSwapOutputAmountParams): Promise<SwapMemeOutput | undefined> => {
-      if(!livePoolClient) { return undefined }
+    async ({
+      inputAmount,
+      coinToMeme,
+      slippagePercentage,
+    }: GetSwapOutputAmountParams): Promise<SwapMemeOutput | undefined> => {
+      if (!livePoolClient) {
+        return undefined;
+      }
+
       return coinToMeme
-        ? await livePoolClient.livePool.getBuyMemeOutput({
+        ? ((await livePoolClient.livePool.getBuyMemeOutput({
             poolAddress: address,
             amountIn: inputAmount,
             slippagePercentage,
             connection,
             memeCoinMint: tokenAddress,
-          }) as SwapMemeOutput
-        : await livePoolClient.livePool.getSellMemeOutput({
+          })) as SwapMemeOutput)
+        : ((await livePoolClient.livePool.getSellMemeOutput({
             poolAddress: address,
             amountIn: inputAmount,
             slippagePercentage,
             connection,
             memeCoinMint: tokenAddress,
-          }) as SwapMemeOutput;
+          })) as SwapMemeOutput);
     },
     [address, tokenAddress, connection, livePoolClient],
   );
-  
+
   // TODO:TYPESCRIPT
   const getSwapTransactions = useCallback(
     async ({ outputData, coinToMeme }: GetLiveSwapTransactionParams): Promise<any> => {
       if (!publicKey || !tokenAccounts || !livePoolClient) return;
 
-      if(coinToMeme) {
-        if(livePoolClient.version === 'V1'){
+      if (coinToMeme) {
+        if (livePoolClient.version === "V1") {
           return await livePoolClient.livePool.getBuyMemeTransactionsByOutput({
             ...outputData,
             connection,
             payer: publicKey,
             walletTokenAccounts: tokenAccounts,
-          })
-        }else {
+          });
+        } else {
+          // TODO:FIX:SWAPa
           return await livePoolClient.livePool.getBuyMemeTransactionsByOutput({
             ...outputData,
             inTokenMint: new PublicKey(tokenAddress),
             payer: publicKey,
             minAmountOut: outputData.minAmountOut as any,
-            wrappedAmountIn: outputData.wrappedAmountIn as any
-          })
+            wrappedAmountIn: outputData.wrappedAmountIn as any,
+          });
         }
-      }else {
-        if(livePoolClient.version === 'V1'){
+      } else {
+        if (livePoolClient.version === "V1") {
           return await livePoolClient.livePool.getSellMemeTransactionsByOutput({
             ...outputData,
             connection,
             payer: publicKey,
             walletTokenAccounts: tokenAccounts,
           });
-        }else {
+        } else {
+          console.log({ ...outputData, connection, payer: publicKey, walletTokenAccounts: tokenAccounts });
+          // TODO:FIX:SWAPa
           return await livePoolClient.livePool.getSellMemeTransactionsByOutput({
             ...outputData,
             inTokenMint: new PublicKey(tokenAddress),
             payer: publicKey,
             minAmountOut: outputData.minAmountOut as any,
-            wrappedAmountIn: outputData.wrappedAmountIn as any
+            wrappedAmountIn: outputData.wrappedAmountIn as any,
           });
         }
       }
