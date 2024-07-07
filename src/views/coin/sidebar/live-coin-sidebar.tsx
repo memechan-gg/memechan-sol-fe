@@ -10,12 +10,12 @@ import { LiveCoinSwap } from "./swap/live-coin-swap";
 export function LiveCoinSidebar({
   coinMetadata,
   pool,
-  seedPoolData,
+  // seedPoolData,
   uniqueHoldersData,
   stakingPoolFromApi,
 }: LiveCoinSidebarProps) {
   const ticketsData = useTickets({
-    poolAddress: seedPoolData.seedPool?.address,
+    poolAddress: pool.id,
     poolStatus: "LIVE",
     refreshInterval: TICKETS_INTERVAL,
   });

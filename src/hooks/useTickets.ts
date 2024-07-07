@@ -6,6 +6,7 @@ import {
   MemechanClient,
   MemechanClientV2,
   getBoundPoolClientFromId,
+  getLivePoolClientFromId,
 } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
@@ -21,9 +22,16 @@ export const fetchTickets = async (
   poolStatus: PoolStatus,
 ) => {
   try {
-    const boundPool = await getBoundPoolClientFromId(new PublicKey(poolAddress), client, clientV2);
-    
-    const ticketsData = await (boundPool.version === 'V1' ? MemeTicketClient : MemeTicketClientV2).fetchTicketsByUser2(new PublicKey(poolAddress), (boundPool.version === 'V1' ? client : clientV2) as any, user);
+    const pool =
+      poolStatus === "PRESALE"
+        ? await getBoundPoolClientFromId(new PublicKey(poolAddress), client, clientV2)
+        : await getLivePoolClientFromId(new PublicKey(poolAddress), client, clientV2);
+
+    const ticketsData = await (pool.version === "V1" ? MemeTicketClient : MemeTicketClientV2).fetchTicketsByUser2(
+      new PublicKey(poolAddress),
+      (pool.version === "V1" ? client : clientV2) as any,
+      user,
+    );
     return ticketsData;
   } catch (e) {
     console.error(`[fetchTickets] Cannot fetch tickets for ${user} pool ${poolAddress}:`, e);
@@ -47,10 +55,9 @@ export function useTickets({
   const { memechanClient, memechanClientV2 } = useConnection();
 
   const { data, mutate } = useSWR(
-    publicKey && poolAddress
-      ? [`tickets-${poolAddress}`, poolAddress, publicKey, memechanClient, memechanClientV2, poolStatus]
-      : null,
-    ([url, pool, user, client, clientV2, status]) => fetchTickets(pool, user, client, clientV2, status),
+    [`tickets-${poolAddress}`, poolAddress, publicKey, memechanClient, memechanClientV2, poolStatus],
+    ([_, pool, user, client, clientV2, status]) =>
+      !pool || !user ? undefined : fetchTickets(pool, user, client, clientV2, status),
     {
       refreshInterval,
       revalidateIfStale: false,
