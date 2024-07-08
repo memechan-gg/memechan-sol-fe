@@ -1,7 +1,6 @@
 import { Button } from "@/components/button";
 import { DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/dialog";
 import { TransactionSentNotification } from "@/components/notifications/transaction-sent-notification";
-import { LOW_FEES_THRESHOLD } from "@/config/config";
 import { useConnection } from "@/context/ConnectionContext";
 import { useStakingPoolClient } from "@/hooks/staking/useStakingPoolClient";
 import { confirmTransaction } from "@/utils/confirmTransaction";
@@ -28,10 +27,10 @@ export const WithdrawFeesPopUp = ({
   const { publicKey, sendTransaction } = useWallet();
   const { connection } = useConnection();
   const { data: stakingPoolClient } = useStakingPoolClient(stakingPoolFromApi?.address);
-
+  // console.log(tickets);
   const { data: tokenInfo } = useQuery({
-    queryKey: ["staking-pool", stakingPoolFromApi?.address],
-    queryFn: stakingPoolClient?.getTokenInfo,
+    queryKey: ["staking-pool", stakingPoolFromApi?.address, !!stakingPoolClient?.getTokenInfo],
+    queryFn: () => stakingPoolClient?.getTokenInfo(),
     enabled: !!stakingPoolClient?.getTokenInfo,
   });
 
@@ -40,18 +39,26 @@ export const WithdrawFeesPopUp = ({
 
     const ticketFields = tickets.map((ticket) => ticket.fields);
 
+    // console.log("before", ticketFields);
+
     const { memeFees, slerfFees } = await stakingPoolClient.getAvailableWithdrawFeesAmount({ tickets: ticketFields });
+
+    // console.log("after", memeFees, slerfFees);
 
     const formattedMemeFees = new BigNumber(memeFees).div(10 ** tokenInfo.decimals);
     const formattedSlerfFees = new BigNumber(slerfFees).div(10 ** tokenInfo.decimals);
 
-    if (formattedMemeFees.lt(LOW_FEES_THRESHOLD) || formattedSlerfFees.lt(LOW_FEES_THRESHOLD)) {
-      setMemeAmount("0");
-      setSlerfAmount("0");
-    } else {
-      setMemeAmount(formattedMemeFees.toString());
-      setSlerfAmount(formattedSlerfFees.toString());
-    }
+    setMemeAmount(formattedMemeFees.toString());
+    setSlerfAmount(formattedSlerfFees.toString());
+
+    // if (formattedMemeFees.lt(LOW_FEES_THRESHOLD) || formattedSlerfFees.lt(LOW_FEES_THRESHOLD)) {
+    //   console.log("ASIFJDASIOFJSAIOFJSAIOJFAIOS");
+    //   setMemeAmount("0");
+    //   setSlerfAmount("0");
+    // } else {
+    //   setMemeAmount(formattedMemeFees.toString());
+    //   setSlerfAmount(formattedSlerfFees.toString());
+    // }
   }, [stakingPoolClient, tickets, tokenInfo]);
 
   // TODO: This executes more than should

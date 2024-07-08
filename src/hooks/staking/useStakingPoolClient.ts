@@ -18,7 +18,7 @@ export function useStakingPoolClient(poolAddress?: string) {
 
   return useSWR(
     poolAddress ? [`staking-pool-client-${poolAddress}`, poolAddress, memechanClient, memechanClientV2] : null,
-    ([url, pool, client, clinetV2]) => fetchStakingPoolClient(pool, client, clinetV2),
+    ([_, pool, client, clientV2]) => fetchStakingPoolClient(pool, client, clientV2),
     { revalidateIfStale: false, revalidateOnFocus: false },
   );
 }
