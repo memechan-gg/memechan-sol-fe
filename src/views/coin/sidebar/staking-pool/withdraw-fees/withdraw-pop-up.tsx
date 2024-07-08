@@ -5,7 +5,7 @@ import { useConnection } from "@/context/ConnectionContext";
 import { useStakingPoolClient } from "@/hooks/staking/useStakingPoolClient";
 import { confirmTransaction } from "@/utils/confirmTransaction";
 import { WithdrawFeesDialogProps } from "@/views/coin/coin.types";
-import { MEMECHAN_MEME_TOKEN_DECIMALS, sleep } from "@avernikoz/memechan-sol-sdk";
+import { MEMECHAN_MEME_TOKEN_DECIMALS } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import { useQuery } from "@tanstack/react-query";
@@ -20,6 +20,7 @@ export const WithdrawFeesPopUp = ({
   stakingPoolFromApi,
 }: WithdrawFeesDialogProps) => {
   const [memeAmount, setMemeAmount] = useState<string | null>(null);
+  const [chanAmount, setChanAmount] = useState<string | null>(null);
   const [slerfAmount, setSlerfAmount] = useState<string | null>(null);
   const [isWithdrawLoading, setIsWithdrawLoading] = useState<boolean>(false);
   const [isUpdateLoading, setIsUpdateLoading] = useState<boolean>(false);
@@ -41,15 +42,17 @@ export const WithdrawFeesPopUp = ({
 
     // console.log("before", ticketFields);
 
-    const { memeFees, slerfFees } = await stakingPoolClient.getAvailableWithdrawFeesAmount({ tickets: ticketFields });
-
-    // console.log("after", memeFees, slerfFees);
+    const { memeFees, quoteFees, chanFees } = (await stakingPoolClient.getAvailableWithdrawFeesAmount({
+      tickets: ticketFields as any,
+    })) as any;
 
     const formattedMemeFees = new BigNumber(memeFees).div(10 ** tokenInfo.decimals);
-    const formattedSlerfFees = new BigNumber(slerfFees).div(10 ** tokenInfo.decimals);
+    const formattedSlerfFees = new BigNumber(quoteFees).div(10 ** tokenInfo.decimals);
+    const formattedChanFees = new BigNumber(chanFees).div(10 ** tokenInfo.decimals);
 
     setMemeAmount(formattedMemeFees.toString());
     setSlerfAmount(formattedSlerfFees.toString());
+    setChanAmount(formattedChanFees.toString());
 
     // if (formattedMemeFees.lt(LOW_FEES_THRESHOLD) || formattedSlerfFees.lt(LOW_FEES_THRESHOLD)) {
     //   console.log("ASIFJDASIOFJSAIOFJSAIOJFAIOS");
@@ -107,63 +110,65 @@ export const WithdrawFeesPopUp = ({
     }
   }, [sendTransaction, publicKey, stakingPoolClient, tickets, livePoolAddress, connection, refreshTickets]);
 
-  const updateFees = useCallback(async () => {
-    if (!stakingPoolClient || !publicKey) return;
+  // const updateFees = useCallback(async () => {
+  //   if (!stakingPoolClient || !publicKey) return;
 
-    try {
-      setIsUpdateLoading(true);
+  //   try {
+  //     setIsUpdateLoading(true);
 
-      const addFeesTransaction = await stakingPoolClient.getAddFeesTransaction({
-        ammPoolId: new PublicKey(livePoolAddress),
-        payer: publicKey,
-      });
+  //     const addFeesTransaction = await stakingPoolClient.getAddFeesTransaction({
+  //       ammPoolId: new PublicKey(livePoolAddress),
+  //       payer: publicKey,
+  //     });
 
-      const signature = await sendTransaction(addFeesTransaction, connection, {
-        maxRetries: 3,
-        skipPreflight: true,
-      });
+  //     const signature = await sendTransaction(addFeesTransaction, connection, {
+  //       maxRetries: 3,
+  //       skipPreflight: true,
+  //     });
 
-      toast(() => <TransactionSentNotification signature={signature} />);
+  //     toast(() => <TransactionSentNotification signature={signature} />);
 
-      // Check that an add fees succeeded
-      const { blockhash: blockhash, lastValidBlockHeight: lastValidBlockHeight } =
-        await connection.getLatestBlockhash("confirmed");
-      const txResult = await connection.confirmTransaction(
-        {
-          signature,
-          blockhash,
-          lastValidBlockHeight,
-        },
-        "confirmed",
-      );
+  //     // Check that an add fees succeeded
+  //     const { blockhash: blockhash, lastValidBlockHeight: lastValidBlockHeight } =
+  //       await connection.getLatestBlockhash("confirmed");
+  //     const txResult = await connection.confirmTransaction(
+  //       {
+  //         signature,
+  //         blockhash,
+  //         lastValidBlockHeight,
+  //       },
+  //       "confirmed",
+  //     );
 
-      if (txResult.value.err) {
-        console.error("[WithdrawFeesDialog.updateFees] Failed to add fees:", JSON.stringify(txResult, null, 2));
-        toast.error("Failed to update the available fees. Please, try again");
-        return;
-      }
+  //     if (txResult.value.err) {
+  //       console.error("[WithdrawFeesDialog.updateFees] Failed to add fees:", JSON.stringify(txResult, null, 2));
+  //       toast.error("Failed to update the available fees. Please, try again");
+  //       return;
+  //     }
 
-      toast("Almost there...");
-      await sleep(3000);
-      updateAvailableFeesToWithdraw();
+  //     toast("Almost there...");
+  //     await sleep(3000);
+  //     updateAvailableFeesToWithdraw();
 
-      toast.success("The available fees are successfully updated");
-    } catch (e) {
-      console.error("[WithdrawFeesDialog.updateFees] Failed to add fees:", e);
-      toast.error("Failed to update the available fees. Please, try again");
-      return;
-    } finally {
-      setIsUpdateLoading(false);
-    }
-  }, [stakingPoolClient, publicKey, livePoolAddress, sendTransaction, updateAvailableFeesToWithdraw, connection]);
+  //     toast.success("The available fees are successfully updated");
+  //   } catch (e) {
+  //     console.error("[WithdrawFeesDialog.updateFees] Failed to add fees:", e);
+  //     toast.error("Failed to update the available fees. Please, try again");
+  //     return;
+  //   } finally {
+  //     setIsUpdateLoading(false);
+  //   }
+  // }, [stakingPoolClient, publicKey, livePoolAddress, sendTransaction, updateAvailableFeesToWithdraw, connection]);
 
   const withdrawFeesButtonIsDisabled =
     memeAmount === null ||
+    chanAmount === null ||
     slerfAmount === null ||
     isWithdrawLoading ||
-    (new BigNumber(memeAmount).isZero() && new BigNumber(slerfAmount).isZero());
+    (new BigNumber(memeAmount).isZero() && new BigNumber(slerfAmount).isZero() && new BigNumber(chanAmount).isZero());
 
-  const updateFeesButtonIsDisabled = memeAmount === null || slerfAmount === null || isUpdateLoading;
+  const updateFeesButtonIsDisabled =
+    memeAmount === null || slerfAmount === null || chanAmount === null || isUpdateLoading;
 
   return (
     <DialogContent>
@@ -197,6 +202,17 @@ export const WithdrawFeesPopUp = ({
                   }) +
                   " " +
                   tokenInfo.displayName
+                : "loading..."
+            }
+          />
+          <input
+            disabled
+            className="w-full bg-white !normal-case text-xs font-bold text-regular p-2 rounded-lg"
+            value={
+              chanAmount && tokenInfo
+                ? Number(chanAmount).toLocaleString(undefined, {
+                    maximumFractionDigits: tokenInfo.decimals,
+                  }) + " Chan"
                 : "loading..."
             }
           />
