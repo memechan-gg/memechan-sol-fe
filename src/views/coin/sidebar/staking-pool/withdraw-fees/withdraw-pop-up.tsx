@@ -194,7 +194,9 @@ export const WithdrawFeesPopUp = ({
               slerfAmount && tokenInfo
                 ? Number(slerfAmount).toLocaleString(undefined, {
                     maximumFractionDigits: tokenInfo.decimals,
-                  }) + " SLERF"
+                  }) +
+                  " " +
+                  tokenInfo.displayName
                 : "loading..."
             }
           />
@@ -208,13 +210,13 @@ export const WithdrawFeesPopUp = ({
         >
           <div className="text-xs font-bold text-white">{isWithdrawLoading ? "Loading..." : "Withdraw Fees"}</div>
         </Button>
-        <Button
+        {/* <Button
           disabled={updateFeesButtonIsDisabled || isWithdrawLoading}
           onClick={updateFees}
           className="w-full bg-regular bg-opacity-80 hover:bg-opacity-50 disabled:bg-opacity-50 disabled:cursor-not-allowed"
         >
           <div className="text-xs font-bold text-white">{isUpdateLoading ? "Loading..." : "Update Available Fees"}</div>
-        </Button>
+        </Button> */}
       </DialogFooter>
     </DialogContent>
   );
