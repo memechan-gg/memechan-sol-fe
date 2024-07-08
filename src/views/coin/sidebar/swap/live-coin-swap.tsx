@@ -33,7 +33,7 @@ export const LiveCoinSwap = ({
   const tokenData = getTokenInfo({ variant: "string", tokenAddress: quoteMint });
 
   const { publicKey, sendTransaction, signTransaction } = useWallet();
-  const { connection, memechanClientV2 } = useConnection();
+  const { connection } = useConnection();
   const livePoolClient = useLivePoolClient(address);
 
   const { balance: coinBalance } = useBalance(tokenData.mint.toString(), tokenData.decimals);
@@ -89,7 +89,7 @@ export const LiveCoinSwap = ({
             payer: publicKey,
             minAmountOut: outputData.minAmountOut as any,
             wrappedAmountIn: outputData.wrappedAmountIn as any,
-          });
+          } as any);
         }
       } else {
         if (livePoolClient.version === "V1") {
