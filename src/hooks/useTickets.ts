@@ -57,15 +57,20 @@ export function useTickets({
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     const run = async () => {
-      if (!poolAddress || !(!livePoolAddress && poolStatus === "PRESALE")) return;
+      if (
+        (poolStatus === "PRESALE" && !!livePoolAddress && !poolAddress) ||
+        (poolStatus === "LIVE" && !livePoolAddress && !poolAddress)
+      )
+        return;
+
       setLoading(true);
       let pool = undefined;
       try {
         pool =
           poolStatus === "PRESALE"
-            ? await getBoundPoolClientFromId(new PublicKey(poolAddress), memechanClient, memechanClientV2)
+            ? await getBoundPoolClientFromId(new PublicKey(poolAddress || ""), memechanClient, memechanClientV2)
             : await getLivePoolClientFromId(
-                new PublicKey(livePoolAddress || poolAddress),
+                new PublicKey(livePoolAddress || poolAddress || ""),
                 memechanClient,
                 memechanClientV2,
               );
