@@ -6,10 +6,10 @@ import { getBoundPoolProgress } from "./utils";
 export const PresaleCoinInfo = ({ metadata, boundPool, tokenInfo }: PresaleCoinInfoProps) => {
   const { name, symbol, description, image, socialLinks } = metadata;
 
-  const quoteTokenInfo = getTokenInfo({ tokenAddress: tokenInfo.mint.toString() })
+  const quoteTokenInfo = getTokenInfo({ tokenAddress: tokenInfo.mint.toString() });
 
-  const isV2 = quoteTokenInfo.symbol === "SOL"
-  
+  const isV2 = quoteTokenInfo.symbol === "SOL";
+
   const poolIsMigratingToLive = boundPool?.locked || boundPool === null;
 
   const { progress, slerfIn, limit } = boundPool
@@ -55,7 +55,8 @@ export const PresaleCoinInfo = ({ metadata, boundPool, tokenInfo }: PresaleCoinI
               <div>
                 When the pool reaches {Number(limit).toLocaleString()}{" "}
                 <span className="!normal-case">{tokenInfo.displayName}</span>, liquidity from the bonding curve will
-                flow exclusively to {isV2 ? 'Meteora' :'Raydium'} Liquidity Pool and be held securely for generating fees.
+                flow exclusively to {isV2 ? "Meteora" : "Raydium"} Liquidity Pool and be held securely for generating
+                fees.
               </div>
               <div>
                 Presently, there is {Number(slerfIn).toLocaleString()}{" "}

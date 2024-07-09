@@ -8,5 +8,5 @@ export enum ThreadsSortOptions {
   SortBy = "threads-show-sort-by",
   Direction = "threads-show-direction",
   NSFW = "threads-show-nsfw",
-  Search = "threads-search"
+  Search = "threads-search",
 }

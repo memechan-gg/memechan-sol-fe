@@ -1,15 +1,15 @@
-  /* src/styles/skeleton-chart-custom.css */
-  @keyframes shimmer {
-    0% {
-      background-position: -1000px 0;
-    }
-    100% {
-      background-position: 1000px 0;
-    }
+/* src/styles/skeleton-chart-custom.css */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
   }
+  100% {
+    background-position: 1000px 0;
+  }
+}
 
-  .skeleton-custom {
-    animation: shimmer 2s infinite linear;
-    background: linear-gradient(to right, #f0f0f0 8%, #e0e0e0 18%, #f0f0f0 33%);
-    background-size: 1000px 100%;
-  }
+.skeleton-custom {
+  animation: shimmer 2s infinite linear;
+  background: linear-gradient(to right, #f0f0f0 8%, #e0e0e0 18%, #f0f0f0 33%);
+  background-size: 1000px 100%;
+}

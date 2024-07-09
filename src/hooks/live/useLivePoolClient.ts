@@ -6,7 +6,7 @@ import useSWR from "swr";
 const fetchLivePoolClient = async (poolAddress: string, client: MemechanClient, clientV2: MemechanClientV2) => {
   try {
     const livePoolClient = await getLivePoolClientFromId(new PublicKey(poolAddress), client, clientV2);
-    return livePoolClient
+    return livePoolClient;
   } catch (e) {
     console.error(`[fetchLivePoolClient] Failed to get live pool client ${poolAddress}:`, e);
   }

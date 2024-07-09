@@ -80,7 +80,7 @@ export const PresaleCoinSwap = ({
 
       if (!boundPoolClient?.boundPoolInstance || !freeIndexes) return;
       console.log("Starting swap");
-      if  (coinToMeme) {
+      if (coinToMeme) {
         let result = undefined;
         try {
           result = await boundPoolClient.boundPoolInstance.getBuyMemeTransaction({
@@ -315,14 +315,12 @@ export const PresaleCoinSwap = ({
         )}
         {!coinToMeme && availableTicketsAmount !== "0" && (
           <div className="text-xs font-bold text-regular">
-            Available {tokenSymbol} tickets to sell:{" "}
-            {parseChainValue(+availableTicketsAmount, 0, 6)}
+            Available {tokenSymbol} tickets to sell: {parseChainValue(+availableTicketsAmount, 0, 6)}
           </div>
         )}
         {!coinToMeme && unavailableTicketsAmount !== "0" && (
           <div className="text-xs !normal-case font-bold text-regular">
-            Unavailable {tokenSymbol} tickets to sell (locked):{" "}
-            {parseChainValue(+unavailableTicketsAmount, 0, 6)}
+            Unavailable {tokenSymbol} tickets to sell (locked): {parseChainValue(+unavailableTicketsAmount, 0, 6)}
           </div>
         )}
         {isLoadingOutputAmount && (

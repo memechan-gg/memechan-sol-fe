@@ -7,8 +7,8 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import Link from "next/link";
 import { Button } from "./button";
 import { ConnectWallet } from "./connect-wallet";
-import { Logo } from "./logo";
 import DarkModeToggle from "./dark-mode-toggle";
+import { Logo } from "./logo";
 
 export const Header = () => {
   const account = useUser();

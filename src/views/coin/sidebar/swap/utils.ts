@@ -74,6 +74,6 @@ export const handleSlippageInputChange = ({
   }
 };
 
-export const getFreeMemeTicketIndex = (freeIndexes: number[], version: 'V1' | 'V2') => {
-  return freeIndexes[0] + (version === 'V1' ? MemeTicketClient : MemeTicketClientV2).TICKET_NUMBER_START;
+export const getFreeMemeTicketIndex = (freeIndexes: number[], version: "V1" | "V2") => {
+  return freeIndexes[0] + (version === "V1" ? MemeTicketClient : MemeTicketClientV2).TICKET_NUMBER_START;
 };
