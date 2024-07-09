@@ -58,9 +58,9 @@ const fetchVersion = async (
 
   try {
     pool =
-    poolStatus === "PRESALE"
-      ? await getBoundPoolClientFromId(new PublicKey(poolAddressKey), memechanClient, memechanClientV2)
-      : await getLivePoolClientFromId(new PublicKey(poolAddressKey), memechanClient, memechanClientV2);
+      poolStatus === "PRESALE"
+        ? await getBoundPoolClientFromId(new PublicKey(poolAddressKey), memechanClient, memechanClientV2)
+        : await getLivePoolClientFromId(new PublicKey(poolAddressKey), memechanClient, memechanClientV2);
   } catch (e) {
     console.error(`Cannot fetch version. poolStatus: ${poolStatus},  poolAddress: ${poolAddressKey}`, e);
   }
