@@ -5,9 +5,9 @@ import useSWR from "swr";
 
 const fetchStakingPoolClient = async (poolAddress: string, client: MemechanClient, clientV2: MemechanClientV2) => {
   try {
-    const stakingPool = await getStakingPoolClientFromId(new PublicKey(poolAddress), client, clientV2);
+    const { stakingPoolClient } = await getStakingPoolClientFromId(new PublicKey(poolAddress), client, clientV2);
 
-    return stakingPool;
+    return stakingPoolClient;
   } catch (e) {
     console.error(`[fetchStakingPoolClient] Failed to fetch staking pool client ${poolAddress}:`, e);
   }
