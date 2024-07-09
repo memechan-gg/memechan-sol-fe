@@ -23,7 +23,7 @@ const fetchTickets = async (
   livePoolAddress?: string | null,
 ) => {
   try {
-    if (!poolAddress || !user) return;
+    if (!poolAddress || !user || !poolStatus) return;
 
     const version = await fetchVersion(poolAddress, poolStatus, client, clientV2, livePoolAddress);
 
@@ -51,16 +51,19 @@ const fetchVersion = async (
   memechanClientV2: MemechanClientV2,
   livePoolAddress?: string | null,
 ): Promise<"V1" | "V2" | undefined> => {
-  const poolAdressKey = poolStatus === "PRESALE" ? poolAddress : livePoolAddress || poolAddress;
+  const poolAddressKey = poolStatus === "PRESALE" ? poolAddress : livePoolAddress || poolAddress;
 
-  if (!poolAdressKey) return;
+  if (!poolAddressKey) return;
+  let pool = undefined;
 
-  console.count("fetch version");
-
-  const pool =
+  try {
+    pool =
     poolStatus === "PRESALE"
-      ? await getBoundPoolClientFromId(new PublicKey(poolAddress), memechanClient, memechanClientV2)
-      : await getLivePoolClientFromId(new PublicKey(poolAddress), memechanClient, memechanClientV2);
+      ? await getBoundPoolClientFromId(new PublicKey(poolAddressKey), memechanClient, memechanClientV2)
+      : await getLivePoolClientFromId(new PublicKey(poolAddressKey), memechanClient, memechanClientV2);
+  } catch (e) {
+    console.error(`Cannot fetch version. poolStatus: ${poolStatus},  poolAddress: ${poolAddressKey}`, e);
+  }
 
   return pool?.version as "V1" | "V2";
 };
