@@ -1,6 +1,7 @@
 import { SocialApiInstance } from "@/common/solana";
 import { handleAuthentication, uploadImageToIPFS } from "@/views/create-coin/create-coin.utils";
 import { useWallet } from "@solana/wallet-adapter-react";
+import { track } from "@vercel/analytics";
 import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { CoinThreadParsedMessage } from "../coin.types";
@@ -42,10 +43,13 @@ export function PostReplyDialog({
       setIsLoading(true);
 
       const trimmedReplyText = replyText.trim();
+      const trackObj = { file: !!file, text: !!trimmedReplyText };
 
       if (trimmedReplyText === "") {
         return toast.error("Message is clean");
       }
+
+      track("Reply", trackObj);
 
       if (!publicKey || !signMessage) {
         return toast.error("Please connect your wallet");
@@ -66,6 +70,8 @@ export function PostReplyDialog({
 
       const stringifiedMessage = JSON.stringify(messageObject);
       await SocialApiInstance.createThread({ message: stringifiedMessage, coinType });
+
+      track("Reply_Sent", trackObj);
 
       updateThreads();
 

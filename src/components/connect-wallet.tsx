@@ -1,6 +1,7 @@
 import { cn } from "@/utils";
 import { Popover } from "@headlessui/react";
 import { useWallet } from "@solana/wallet-adapter-react";
+import { track } from "@vercel/analytics";
 
 export const ConnectWallet = () => {
   const { disconnect, select, wallets, connect } = useWallet();
@@ -10,6 +11,7 @@ export const ConnectWallet = () => {
     if (wallet) {
       try {
         select(wallet.adapter.name);
+        track("ConnectWallet", { wallet: wallet.adapter.name });
       } catch (error) {
         console.error("Error connecting to wallet:", error);
       }

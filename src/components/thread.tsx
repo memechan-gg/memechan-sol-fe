@@ -1,5 +1,6 @@
 import { parseChainValue } from "@/utils/parseChainValue";
 import { SolanaToken } from "@avernikoz/memechan-sol-sdk";
+import { track } from "@vercel/analytics";
 import Link from "next/link";
 
 export function NoticeBoard({ title, children }: { title: string; children: React.ReactNode }) {
@@ -58,12 +59,18 @@ export function Thread({
 }: {
   coinMetadata: SolanaToken;
 }) {
+  const onImageClick = () => {
+    track("List_CoinImageClick", { coin: address });
+  };
+  const onContentClick = () => {
+    track("List_CoinContentClick", { coin: address });
+  };
   return (
     <div className="flex flex-col gap-2">
       <div className="w-[150px]">
         <h2 className="text-sm font-bold text-regular truncate">{name}</h2>
       </div>
-      <Link href={`/coin/${address}`}>
+      <Link href={`/coin/${address}`} onClick={onImageClick}>
         <img
           className="w-[150px] border border-regular h-[150px] object-cover object-center hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-2"
           src={image}
@@ -82,7 +89,7 @@ export function Thread({
             market cap: <span className="text-green">{parseChainValue(marketcap, 0, 2)}</span>
           </div>
         )}
-        <Link href={`/coin/${address}`}>
+        <Link href={`/coin/${address}`} onClick={onContentClick}>
           <div className="text-regular flex flex-col flex-wrap">
             <div className="font-bold !normal-case">symbol: {symbol}</div>
             <div className="max-w-[150px] truncate">{description}</div>

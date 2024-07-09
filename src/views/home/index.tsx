@@ -1,6 +1,7 @@
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/dialog";
 import { Dropdown } from "@/components/dropdown";
 import { NoticeBoard, Thread, ThreadBoard } from "@/components/thread";
+import { track } from "@vercel/analytics";
 import Cookies from "js-cookie";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -39,6 +40,10 @@ export function Home() {
       setIsDialogOpen(false);
     }
   }, []);
+
+  const onCreateMemecoinClick = () => {
+    track("CreateMemecoin", { placement: "NoticeBoardMainPage" });
+  };
 
   const handleConfirm = () => {
     setIsConfirmed(true);
@@ -88,7 +93,7 @@ export function Home() {
                 Create your own memecoin with a few clicks. No coding or liquidity required.
               </div>
               <div>
-                <Link href={"/create"}>
+                <Link href={"/create"} onClick={onCreateMemecoinClick}>
                   <button className="bg-regular text-white font-bold p-2 rounded-lg lowercase">create memecoin</button>
                 </Link>
               </div>
@@ -104,7 +109,10 @@ export function Home() {
                     activeItem={status}
                     title="status"
                     onItemChange={(item) => {
-                      if (isThreadsSortStatus(item)) setStatus(item);
+                      if (isThreadsSortStatus(item)) {
+                        track("List_SetStatus", { status: item });
+                        setStatus(item);
+                      }
                     }}
                   />
                 ) : (
@@ -117,7 +125,10 @@ export function Home() {
                     activeItem={sortBy}
                     title="sort by"
                     onItemChange={(item) => {
-                      if (isThreadsSortBy(item)) setSortBy(item);
+                      if (isThreadsSortBy(item)) {
+                        track("List_SetSortBy", { sortBy: item });
+                        setSortBy(item);
+                      }
                     }}
                   />
                 ) : (
@@ -130,7 +141,10 @@ export function Home() {
                     activeItem={direction}
                     title="order"
                     onItemChange={(item) => {
-                      if (isThreadsSortDirection(item)) setDirection(item);
+                      if (isThreadsSortDirection(item)) {
+                        track("List_SortDirection", { sortDirection: item });
+                        setDirection(item);
+                      }
                     }}
                   />
                 ) : (
