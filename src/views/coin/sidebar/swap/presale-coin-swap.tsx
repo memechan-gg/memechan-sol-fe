@@ -8,7 +8,7 @@ import { useBalance } from "@/hooks/useBalance";
 import { getTokenInfo } from "@/hooks/utils";
 import { GetSwapOutputAmountParams, GetSwapTransactionParams } from "@/types/hooks";
 import { confirmTransaction } from "@/utils/confirmTransaction";
-import { formatNumber } from "@/utils/formatNumber";
+import { parseChainValue } from "@/utils/parseChainValue";
 import {
   GetBuyMemeTransactionOutput,
   GetSellMemeTransactionOutput,
@@ -76,19 +76,27 @@ export const PresaleCoinSwap = ({
         toast.error("Please, connect your wallet to make swaps");
         return;
       }
-      if (!boundPoolClient?.boundPoolInstance || !freeIndexes) return;
+      console.log("Starting swap");
 
-      if (coinToMeme) {
-        return {
-          side: "buy",
-          result: await boundPoolClient.boundPoolInstance.getBuyMemeTransaction({
+      if (!boundPoolClient?.boundPoolInstance || !freeIndexes) return;
+      console.log("Starting swap");
+      if  (coinToMeme) {
+        let result = undefined;
+        try {
+          result = await boundPoolClient.boundPoolInstance.getBuyMemeTransaction({
             user: publicKey,
             inputAmount,
             minOutputAmount,
             slippagePercentage,
             memeTicketNumber: getFreeMemeTicketIndex(freeIndexes, boundPoolClient.version as "V1" | "V2"),
-          }),
-        } as { side: "buy"; result: GetBuyMemeTransactionOutput };
+          });
+        } catch (e) {
+          console.log(e);
+        }
+        return {
+          side: "buy",
+          result: result,
+        } as { side: "buy"; result: GetBuyMemeTransactionOutput };;
       }
 
       return {
@@ -160,6 +168,7 @@ export const PresaleCoinSwap = ({
     )
       return;
 
+    console.log("swapping");
     try {
       setIsSwapping(true);
       const transactionResult = await getSwapTransaction({
@@ -168,6 +177,7 @@ export const PresaleCoinSwap = ({
         slippagePercentage: +slippage,
         coinToMeme,
       });
+      console.log("transactionResult", transactionResult);
 
       if (!transactionResult) {
         toast.error("Failed to create the swap transaction. Please, try again");
@@ -306,13 +316,13 @@ export const PresaleCoinSwap = ({
         {!coinToMeme && availableTicketsAmount !== "0" && (
           <div className="text-xs font-bold text-regular">
             Available {tokenSymbol} tickets to sell:{" "}
-            {formatNumber(+availableTicketsAmount, MEMECHAN_MEME_TOKEN_DECIMALS)}
+            {parseChainValue(+availableTicketsAmount, 0, 6)}
           </div>
         )}
         {!coinToMeme && unavailableTicketsAmount !== "0" && (
           <div className="text-xs !normal-case font-bold text-regular">
             Unavailable {tokenSymbol} tickets to sell (locked):{" "}
-            {formatNumber(Number(unavailableTicketsAmount), MEMECHAN_MEME_TOKEN_DECIMALS)}
+            {parseChainValue(+unavailableTicketsAmount, 0, 6)}
           </div>
         )}
         {isLoadingOutputAmount && (
@@ -327,8 +337,8 @@ export const PresaleCoinSwap = ({
         {outputAmount !== null && !isLoadingOutputAmount && (
           <div className="text-xs font-bold text-regular">
             {coinToMeme
-              ? `${tokenSymbol} tickets to receive: ${formatNumber(Number(outputAmount), MEMECHAN_MEME_TOKEN_DECIMALS)}`
-              : `${tokenInfo?.displayName} to receive: ${formatNumber(Number(outputAmount), memeChanQuoteTokenDecimals)}`}
+              ? `${tokenSymbol} tickets to receive: ${parseChainValue(Number(outputAmount), 0, 6)}`
+              : `${tokenInfo?.displayName} to receive: ${parseChainValue(Number(outputAmount), 0, 12)}`}
           </div>
         )}
       </div>
