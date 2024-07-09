@@ -54,6 +54,7 @@ export type HoldersProps = {
 export type LiveCoinHoldersProps = {
   coinMetadata: SolanaToken;
   uniqueHoldersData: ReturnType<typeof useLiveCoinUniqueHoldersFromBE>;
+  livePool: LivePoolData;
 };
 
 export type LiveCoinInfoProps = {

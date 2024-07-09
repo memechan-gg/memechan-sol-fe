@@ -8,7 +8,7 @@ const fetchStakingPoolClient = async (poolAddress: string, client: MemechanClien
     const stakingPool = await getStakingPoolClientFromId(new PublicKey(poolAddress), client, clientV2);
 
     return stakingPool;
-  } catch (e) {
+  } catch (e) {g
     console.error(`[fetchStakingPoolClient] Failed to fetch staking pool client ${poolAddress}:`, e);
   }
 };
