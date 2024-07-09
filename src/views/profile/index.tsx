@@ -1,4 +1,5 @@
 import { ThreadBoard } from "@/components/thread";
+import { fetchMemePriceFromBE } from "@/hooks/useMemePriceFromBE";
 import { BE_URL_DEV } from "@avernikoz/memechan-sol-sdk";
 import { useEffect, useState } from "react";
 import { CoinItem } from "./coin-item";
@@ -15,6 +16,7 @@ type Token = {
   image: string;
   name: string;
   marketCap: number;
+  usdValue: number;
 };
 
 export function Profile({ address, coin }: ProfileProps) {
@@ -26,7 +28,6 @@ export function Profile({ address, coin }: ProfileProps) {
     const fetchTokens = async () => {
       setIsLoading(true);
       try {
-        // TODO: Use SDK methods instead of direct fetch
         const response = await fetch(
           `${BE_URL_DEV}/sol/holders?walletAddress=${address}&sortBy=tokenAmountInPercentage&direction=asc`,
         );
@@ -38,16 +39,16 @@ export function Profile({ address, coin }: ProfileProps) {
         if (data && data.result) {
           const tokenPromises = data.result.map(async (token: any) => {
             try {
-              // TODO: Use SDK methods instead of direct fetch
               let presaleResponse = await fetch(`${BE_URL_DEV}/sol/presale/token?tokenAddress=${token.tokenAddress}`);
               let presaleData = await presaleResponse.json();
 
-              // Check if presaleData is an empty object
               if (Object.keys(presaleData).length === 0) {
-                // TODO: Use SDK methods instead of direct fetch
                 presaleResponse = await fetch(`${BE_URL_DEV}/sol/live/token?tokenAddress=${token.tokenAddress}`);
                 presaleData = await presaleResponse.json();
               }
+
+              const price = await fetchMemePriceFromBE(token.tokenAddress, "seedPool");
+              const usdValue = Number(price) * token.tokenAmount;
 
               return {
                 mint: token.tokenAddress,
@@ -56,9 +57,10 @@ export function Profile({ address, coin }: ProfileProps) {
                 image: presaleData.image || "",
                 name: presaleData.name || "",
                 marketCap: presaleData.marketcap || 0,
+                usdValue: usdValue,
               };
-            } catch (presaleError) {
-              console.error("Error fetching presale data for token:", token.tokenAddress, presaleError);
+            } catch (error) {
+              console.error("Error fetching token data:", error);
               return {
                 mint: token.tokenAddress,
                 tokenAmount: token.tokenAmount,
@@ -66,6 +68,7 @@ export function Profile({ address, coin }: ProfileProps) {
                 image: "",
                 name: "",
                 marketCap: 0,
+                usdValue: 0,
               };
             }
           });
@@ -114,7 +117,13 @@ export function Profile({ address, coin }: ProfileProps) {
                   {tokens.map((token, index) => (
                     <div key={index}>
                       {token.mint}
-                      <CoinItem image={token.image} name={token.name} marketCap={token.marketCap.toString()} />
+                      <CoinItem
+                        image={token.image}
+                        name={token.name}
+                        marketCap={token.marketCap.toString()}
+                        tokenAmount={token.tokenAmount}
+                        usdValue={token.usdValue}
+                      />
                     </div>
                   ))}
                 </div>

@@ -2,7 +2,7 @@ import { ChartApiInstance } from "@/common/solana";
 import { POOL_PRICE_INTERVAL } from "@/config/config";
 import useSWR from "swr";
 
-const fetchMemePriceFromBE = async (memeMint: string, poolType: "seedPool" | "livePool") => {
+export const fetchMemePriceFromBE = async (memeMint: string, poolType: "seedPool" | "livePool") => {
   try {
     const priceData = await ChartApiInstance.getPrice({ symbol: "USD", type: poolType, address: memeMint });
 
