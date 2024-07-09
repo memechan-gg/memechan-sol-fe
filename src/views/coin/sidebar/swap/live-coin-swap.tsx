@@ -11,6 +11,7 @@ import { formatNumber } from "@/utils/formatNumber";
 import { MEMECHAN_MEME_TOKEN_DECIMALS, SwapMemeOutput, buildTxs } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
+import { track } from "@vercel/analytics";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { LiveCoinSwapProps } from "../../coin.types";
@@ -153,6 +154,18 @@ export const LiveCoinSwap = ({
   const onSwap = useCallback(async () => {
     if (!publicKey || !outputData || !signTransaction || !coinBalance) return;
 
+    const swapTrackObj = {
+      inputAmount,
+      memeBalance: +(memeBalance?.toString() ?? 0),
+      outputAmount: +outputData.minAmountOut.toString(),
+      slippage,
+      coinBalance,
+      coinToMeme,
+      type: "live",
+    };
+
+    track("Swap", swapTrackObj);
+
     if (!liveSwapParamsAreValid({ inputAmount, memeBalance, coinBalance, coinToMeme, slippagePercentage: +slippage }))
       return;
 
@@ -225,6 +238,8 @@ export const LiveCoinSwap = ({
           }
         }
       }
+
+      track("Swap_Success", swapTrackObj);
 
       setIsSwapping(false);
 

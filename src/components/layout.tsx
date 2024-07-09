@@ -1,4 +1,3 @@
-import DarkModeToggle from "./dark-mode-toggle";
 import { Footer } from "./footer";
 import { Header } from "./header";
 

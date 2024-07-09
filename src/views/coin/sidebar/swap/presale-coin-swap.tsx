@@ -15,6 +15,7 @@ import {
   MEMECHAN_MEME_TOKEN_DECIMALS,
 } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
+import { track } from "@vercel/analytics";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { PresaleCoinSwapProps } from "../../coin.types";
@@ -77,8 +78,7 @@ export const PresaleCoinSwap = ({
       }
       if (!boundPoolClient?.boundPoolInstance || !freeIndexes) return;
 
-
-      if(coinToMeme) {
+      if (coinToMeme) {
         return {
           side: "buy",
           result: await boundPoolClient.boundPoolInstance.getBuyMemeTransaction({
@@ -88,9 +88,9 @@ export const PresaleCoinSwap = ({
             slippagePercentage,
             memeTicketNumber: getFreeMemeTicketIndex(freeIndexes, boundPoolClient.version as "V1" | "V2"),
           }),
-        } as { side: "buy"; result: GetBuyMemeTransactionOutput }
+        } as { side: "buy"; result: GetBuyMemeTransactionOutput };
       }
-      
+
       return {
         side: "sell",
         result: await boundPoolClient.boundPoolInstance.getSellMemeTransaction({
@@ -145,6 +145,10 @@ export const PresaleCoinSwap = ({
   const onSwap = useCallback(async () => {
     if (!publicKey || !outputAmount || !coinBalance) return;
 
+    const swapTrackObj = { inputAmount, outputAmount, slippage, coinBalance, coinToMeme, type: "presale" };
+
+    track("Swap", swapTrackObj);
+
     if (
       !presaleSwapParamsAreValid({
         availableTicketsAmount,
@@ -186,6 +190,8 @@ export const PresaleCoinSwap = ({
         const swapSucceeded = await confirmTransaction({ connection, signature });
         if (!swapSucceeded) return;
 
+        track("Swap_Success", swapTrackObj);
+
         await ChartApiInstance.updatePrice({ address: pool.address, type: "seedPool" }).catch((e) => {
           console.debug(`[OHLCV] Failed updating price for OHLCV`);
           console.error(`Failed updating price for OHLCV, error:`, e);
@@ -208,6 +214,8 @@ export const PresaleCoinSwap = ({
           const swapSucceeded = await confirmTransaction({ connection, signature });
           if (!swapSucceeded) return;
         }
+
+        track("Swap_Success", swapTrackObj);
 
         await ChartApiInstance.updatePrice({ address: pool.address, type: "seedPool" }).catch((e) => {
           console.debug(`[OHLCV] Failed updating price for OHLCV`);

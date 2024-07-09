@@ -3,6 +3,7 @@ import { DialogContent, DialogHeader, DialogTitle } from "@/components/dialog";
 import { RadioButton } from "@/components/radio-button";
 import { MEMECHAN_RPC_ENDPOINT } from "@/config/config";
 import { useConnection } from "@/context/ConnectionContext";
+import { track } from "@vercel/analytics";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -39,9 +40,12 @@ export const RpcConnectionPopUp = () => {
         return;
       }
 
+      track("SetRPC", { rpc: customRpcUrl });
+
       setRpcEndpoint(customRpcUrl);
       toast.success(`Your RPC is currently set to ${customRpcUrl}`);
     } else {
+      track("SetRPC", { rpc: MEMECHAN_RPC_ENDPOINT });
       setRpcEndpoint(MEMECHAN_RPC_ENDPOINT);
       setCustomRpcUrl("");
       toast.success("Your RPC is currently set to Memechan RPC Pool");

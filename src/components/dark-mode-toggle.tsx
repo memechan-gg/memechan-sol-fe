@@ -1,4 +1,5 @@
 import { MoonIcon, SunIcon } from "@radix-ui/react-icons";
+import { track } from "@vercel/analytics";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 
@@ -12,7 +13,11 @@ const DarkModeToggle = () => {
   }, []);
 
   const toggleTheme = () => {
-    setTheme(theme === "dark" ? "light" : "dark");
+    const newTheme = theme === "dark" ? "light" : "dark";
+
+    track("ThemeChange", { theme: newTheme });
+
+    setTheme(newTheme);
   };
 
   if (!mounted) return null;
