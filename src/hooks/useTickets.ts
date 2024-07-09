@@ -10,21 +10,25 @@ import {
 } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
-import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import useSWR from "swr";
 import { getTicketsData } from "./utils";
 
-export const fetchTickets = async (
+const fetchTickets = async (
   poolAddress: string | null,
   user: PublicKey | null,
   client: MemechanClient,
   clientV2: MemechanClientV2,
   poolStatus: PoolStatus,
-  version?: "V1" | "V2",
+  livePoolAddress?: string | null,
 ) => {
   try {
-    if (!poolAddress || !user || !version) return;
+    if (!poolAddress || !user) return;
+
+    const version = await fetchVersion(poolAddress, poolStatus, client, clientV2, livePoolAddress);
+
+    if (!version) return;
+
     if (version === "V2") {
       const ticketsData = await MemeTicketClientV2.fetchTicketsByUser2(new PublicKey(poolAddress), clientV2, user);
       return ticketsData;
@@ -40,6 +44,27 @@ export const fetchTickets = async (
   }
 };
 
+const fetchVersion = async (
+  poolAddress: string,
+  poolStatus: PoolStatus,
+  memechanClient: MemechanClient,
+  memechanClientV2: MemechanClientV2,
+  livePoolAddress?: string | null,
+): Promise<"V1" | "V2" | undefined> => {
+  const poolAdressKey = poolStatus === "PRESALE" ? poolAddress : livePoolAddress || poolAddress;
+
+  if (!poolAdressKey) return;
+
+  console.count("fetch version");
+
+  const pool =
+    poolStatus === "PRESALE"
+      ? await getBoundPoolClientFromId(new PublicKey(poolAddress), memechanClient, memechanClientV2)
+      : await getLivePoolClientFromId(new PublicKey(poolAddress), memechanClient, memechanClientV2);
+
+  return pool?.version as "V1" | "V2";
+};
+
 export function useTickets({
   poolAddress,
   refreshInterval,
@@ -53,41 +78,11 @@ export function useTickets({
 }) {
   const { publicKey } = useWallet();
   const { memechanClient, memechanClientV2 } = useConnection();
-  const [version, setVersion] = useState<"V1" | "V2" | undefined>(undefined);
-  const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    const run = async () => {
-      if (
-        (poolStatus === "PRESALE" && !!livePoolAddress && !poolAddress) ||
-        (poolStatus === "LIVE" && !livePoolAddress && !poolAddress)
-      )
-        return;
-
-      setLoading(true);
-      let pool = undefined;
-      try {
-        pool =
-          poolStatus === "PRESALE"
-            ? await getBoundPoolClientFromId(new PublicKey(poolAddress || ""), memechanClient, memechanClientV2)
-            : await getLivePoolClientFromId(
-                new PublicKey(livePoolAddress || poolAddress || ""),
-                memechanClient,
-                memechanClientV2,
-              );
-      } catch (e) {
-        console.log(e);
-      }
-
-      setLoading(false);
-      setVersion(pool?.version as "V1" | "V2");
-    };
-    run();
-  }, [livePoolAddress, memechanClient, memechanClientV2, poolAddress, poolStatus]);
 
   const { data, mutate, isLoading } = useSWR(
-    [`tickets-${poolAddress}`, poolAddress, publicKey, memechanClient, memechanClientV2, poolStatus, version],
-    ([_, pool, user, client, clientV2, status, version]) =>
-      fetchTickets(pool || null, user || null, client, clientV2, status, version),
+    [`tickets-${poolAddress}`, poolAddress, publicKey, memechanClient, memechanClientV2, poolStatus, livePoolAddress],
+    ([_, pool, user, client, clientV2, status, livePoolAddress]) =>
+      fetchTickets(pool || null, user || null, client, clientV2, status, livePoolAddress),
     {
       refreshInterval,
       revalidateIfStale: false,
@@ -99,7 +94,7 @@ export function useTickets({
 
   return {
     ...ticketsData,
-    isLoading: loading || isLoading,
+    isLoading: isLoading,
     freeIndexes: data?.freeIndexes,
     lockedIndexes: data?.lockedIndexes,
     refresh: mutate,
