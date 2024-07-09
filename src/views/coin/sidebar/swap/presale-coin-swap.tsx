@@ -96,7 +96,7 @@ export const PresaleCoinSwap = ({
         return {
           side: "buy",
           result: result,
-        } as { side: "buy"; result: GetBuyMemeTransactionOutput };;
+        } as { side: "buy"; result: GetBuyMemeTransactionOutput };
       }
 
       return {
