@@ -1,6 +1,7 @@
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/dialog";
 import { Dropdown } from "@/components/dropdown";
 import { NoticeBoard, Thread, ThreadBoard } from "@/components/thread";
+import { getTokenInfo } from "@/hooks/utils";
 import Cookies from "js-cookie";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -164,9 +165,12 @@ export function Home() {
                       const index = rowIndex * columnCount + columnIndex;
                       const item = data[index];
                       if (!item) return <div style={style} />;
+                      const tokenInfo = getTokenInfo({ variant: "string", tokenAddress: item.address });
+                      console.log(tokenInfo);
+                      const isV2 = tokenInfo.symbol === "SOL";
                       return (
                         <div style={{ ...style }} className="pl-2">
-                          <Thread key={item.address} coinMetadata={item} />
+                          <Thread key={item.address} coinMetadata={item} isV2={isV2} />
                         </div>
                       );
                     }}
