@@ -164,6 +164,7 @@ export function Home() {
                       const index = rowIndex * columnCount + columnIndex;
                       const item = data[index];
                       if (!item) return <div style={style} />;
+
                       return (
                         <div style={{ ...style }} className="pl-2">
                           <Thread key={item.address} coinMetadata={item} />

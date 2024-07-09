@@ -5,7 +5,7 @@ import { SocialLinks } from "./social-links/social-links";
 export const LiveCoinInfo = ({ metadata, livePoolAddress, quoteMint }: LiveCoinInfoProps) => {
   const { name, symbol, description, image, socialLinks } = metadata;
 
-  const quoteTokenInfo = getTokenInfo({tokenAddress: quoteMint})
+  const quoteTokenInfo = getTokenInfo({tokenAddress: quoteMint})  
   
   const isV2 = quoteTokenInfo.symbol === 'SOL';
   

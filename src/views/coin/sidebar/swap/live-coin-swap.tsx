@@ -1,6 +1,7 @@
 import { Button } from "@/components/button";
 import { TransactionSentNotification } from "@/components/notifications/transaction-sent-notification";
 import { MAX_SLIPPAGE, MIN_SLIPPAGE } from "@/config/config";
+import { QUOTE_TOKEN_DECIMALS } from "@/constants/constants";
 import { useConnection } from "@/context/ConnectionContext";
 import { useLivePoolClient } from "@/hooks/live/useLivePoolClient";
 import { useBalance } from "@/hooks/useBalance";
@@ -8,6 +9,7 @@ import { useTokenAccounts } from "@/hooks/useTokenAccounts";
 import { getTokenInfo } from "@/hooks/utils";
 import { GetLiveSwapTransactionParams, GetSwapOutputAmountParams } from "@/types/hooks";
 import { formatNumber } from "@/utils/formatNumber";
+import { parseChainValue } from "@/utils/parseChainValue";
 import { MEMECHAN_MEME_TOKEN_DECIMALS, SwapMemeOutput, buildTxs } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
@@ -312,8 +314,8 @@ export const LiveCoinSwap = ({
         {outputData !== null && !isLoadingOutputAmount && (
           <div className="text-xs font-bold text-regular">
             {coinToMeme
-              ? `${tokenSymbol} to receive: ${Number(tokenSymbol === "SOL" ? (+outputData.minAmountOut.toString() / 1_000_000_000).toString() : outputData.minAmountOut.toString()).toLocaleString(undefined, { maximumFractionDigits: MEMECHAN_MEME_TOKEN_DECIMALS })}`
-              : `${tokenData.displayName} to receive: ${Number(tokenData.displayName === "SOL" ? (+outputData.minAmountOut.toString() / 1_000_000_000).toString() : outputData.minAmountOut.toString()).toLocaleString(undefined, { maximumFractionDigits: tokenData.decimals })}`}
+              ? `${tokenSymbol} to receive: ${tokenData.symbol === "SOL" ? parseChainValue(Number(outputData.minAmountOut.toString()), MEMECHAN_MEME_TOKEN_DECIMALS, 6) : parseChainValue(Number(outputData.minAmountOut.toString()), 0, 2)}`
+              : `${tokenData.displayName} to receive: ${parseChainValue(Number(outputData.minAmountOut.toString()), QUOTE_TOKEN_DECIMALS, 12)}`}
           </div>
         )}
       </div>

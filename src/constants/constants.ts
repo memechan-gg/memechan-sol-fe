@@ -1,1 +1,2 @@
-export const DIVIDE_V2 = 1_000_000_000;
+export const QUOTE_TOKEN_DECIMALS = 9;
+export const MEMECOIN_DECIMALS = 6;
