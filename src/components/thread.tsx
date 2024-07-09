@@ -1,5 +1,4 @@
-import { DIVIDE_V2 } from "@/constants/constants";
-import { formatNumber } from "@/utils/formatNumber";
+import { parseChainValue } from "@/utils/parseChainValue";
 import { SolanaToken } from "@avernikoz/memechan-sol-sdk";
 import Link from "next/link";
 
@@ -56,10 +55,8 @@ export function ThreadBoard({
 
 export function Thread({
   coinMetadata: { name, address, image, creator, marketcap, symbol, description, status },
-  isV2,
 }: {
   coinMetadata: SolanaToken;
-  isV2: boolean;
 }) {
   return (
     <div className="flex flex-col gap-2">
@@ -80,12 +77,11 @@ export function Thread({
             <span className="font-bold hover:underline">{creator.slice(0, 5) + "..." + creator.slice(-3)}</span>
           </Link>
         </div>
-        <div className="text-green font-bold">
-          market cap:{" "}
-          <span className="text-green">
-            {isV2 ? formatNumber(marketcap / DIVIDE_V2, 2) : formatNumber(marketcap, 2)}
-          </span>
-        </div>
+        {status === "PRESALE" && (
+          <div className="text-green font-bold">
+            market cap: <span className="text-green">{parseChainValue(marketcap, 0, 2)}</span>
+          </div>
+        )}
         <Link href={`/coin/${address}`}>
           <div className="text-regular flex flex-col flex-wrap">
             <div className="font-bold !normal-case">symbol: {symbol}</div>
