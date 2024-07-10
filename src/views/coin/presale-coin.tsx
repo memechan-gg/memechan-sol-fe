@@ -1,7 +1,7 @@
 import { ChartIframe } from "@/components/chart-iframe";
 import { ThreadBoard } from "@/components/thread";
 import { TICKETS_INTERVAL } from "@/config/config";
-import { useBoundPool } from "@/hooks/presale/useBoundPool";
+import { useBoundPoolClient } from "@/hooks/presale/useBoundPoolClient";
 import { usePresaleCoinUniqueHoldersFromBE } from "@/hooks/presale/usePresaleCoinUniqueHoldersFromBE";
 import { useMemePriceFromBE } from "@/hooks/useMemePriceFromBE";
 import { useTickets } from "@/hooks/useTickets";
@@ -23,7 +23,9 @@ export function PresaleCoin({ coinMetadata, seedPoolData }: { coinMetadata: Sola
     refreshInterval: TICKETS_INTERVAL,
   });
 
-  const boundPool = useBoundPool(seedPoolData.address);
+  const boundPoolClient = useBoundPoolClient(seedPoolData.address);
+
+  const boundPool = boundPoolClient?.boundPoolInstance.poolObjectData;
 
   const tokenData = boundPool?.quoteReserve
     ? getTokenInfo({ variant: "publicKey", tokenAddress: boundPool?.quoteReserve.mint })

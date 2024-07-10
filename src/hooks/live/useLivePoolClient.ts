@@ -12,11 +12,11 @@ const fetchLivePoolClient = async (poolAddress: string, client: MemechanClient, 
   }
 };
 
-export function useLivePoolClient(poolAddress: string) {
+export function useLivePoolClient(poolAddress?: string | null) {
   const { memechanClient, memechanClientV2 } = useConnection();
 
   const { data } = useSWR(
-    [`live-pool-client-${poolAddress}`, poolAddress, memechanClient, memechanClientV2],
+    poolAddress ? [`live-pool-client-${poolAddress}`, poolAddress, memechanClient, memechanClientV2] : null,
     ([_, pool, memechanClient, memechanClientV2]) => fetchLivePoolClient(pool, memechanClient, memechanClientV2),
     { revalidateIfStale: false, revalidateOnFocus: false },
   );
