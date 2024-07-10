@@ -4,6 +4,7 @@ import { NoticeBoard, Thread, ThreadBoard } from "@/components/thread";
 import { track } from "@vercel/analytics";
 import Cookies from "js-cookie";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import { useResizeDetector } from "react-resize-detector";
@@ -31,6 +32,8 @@ export function Home() {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(true);
   const [isConfirmed, setIsConfirmed] = useState<boolean>(false);
   const [isMounted, setIsMounted] = useState<boolean>(false);
+  const [clickedToken, setClickedToken] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     setIsMounted(true);
@@ -56,6 +59,13 @@ export function Home() {
   const itemSize = 258;
   const columnCount = width ? Math.max(1, Math.floor(width / (itemSize - 90))) : 1;
   const rowCount = Math.ceil((tokenList?.length ?? 0) / columnCount);
+
+  const handleTokenClick = (event: React.MouseEvent<HTMLDivElement>, address: string) => {
+    if (event.target === event.currentTarget) {
+      setClickedToken(address);
+      router.push(`/coin/${address}`);
+    }
+  };
 
   if (!isMounted) {
     return <div>Loading...</div>;
@@ -180,8 +190,12 @@ export function Home() {
                       if (!item) return <div style={style} />;
 
                       return (
-                        <div style={{ ...style }} className="pl-2">
-                          <Thread key={item.address} coinMetadata={item} />
+                        <div
+                          style={{ ...style }}
+                          className={`p-2 flex flex-col gap-2 ${clickedToken === item.address ? "border-2 shadow-[0px_0px_60px_2px]" : "border-transparent"} hover:border-blue-500 hover:shadow-lg cursor-pointer`}
+                          onClick={(event) => handleTokenClick(event, item.address)}
+                        >
+                          <Thread key={item.address} coinMetadata={item} setClickedToken={setClickedToken} />
                         </div>
                       );
                     }}
