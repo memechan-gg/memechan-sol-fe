@@ -48,7 +48,7 @@ export function useTickets({
   const { publicKey } = useWallet();
   const { memechanClient, memechanClientV2 } = useConnection();
   const version = usePoolVersion(poolStatus, poolAddress, livePoolAddress);
-  const shouldFetch = !poolAddress || !publicKey || !poolStatus || !version;
+  const shouldFetch = poolAddress && publicKey && poolStatus && version;
 
   const { data, mutate, isLoading } = useSWR(
     shouldFetch
