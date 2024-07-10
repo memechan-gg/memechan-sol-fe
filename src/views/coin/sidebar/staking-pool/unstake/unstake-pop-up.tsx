@@ -82,7 +82,7 @@ export const UnstakePopUp = ({
 
       const ticketIds = tickets.map((ticket) => ticket.id);
 
-      const rawAmountToUnstake = new BigNumber(+availableAmountToUnstake - 0.00001)
+      const rawAmountToUnstake = new BigNumber(availableAmountToUnstake)
         .multipliedBy(10 ** MEMECHAN_MEME_TOKEN_DECIMALS)
         .toFixed(0);
 
