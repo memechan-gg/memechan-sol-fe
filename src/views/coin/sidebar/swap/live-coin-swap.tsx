@@ -1,14 +1,19 @@
 import { Button } from "@/components/button";
 import { TransactionSentNotification } from "@/components/notifications/transaction-sent-notification";
 import { MAX_SLIPPAGE, MIN_SLIPPAGE } from "@/config/config";
+import { QUOTE_TOKEN_DECIMALS } from "@/constants/constants";
 import { useConnection } from "@/context/ConnectionContext";
+import { useLivePoolClient } from "@/hooks/live/useLivePoolClient";
 import { useBalance } from "@/hooks/useBalance";
 import { useTokenAccounts } from "@/hooks/useTokenAccounts";
 import { getTokenInfo } from "@/hooks/utils";
 import { GetLiveSwapTransactionParams, GetSwapOutputAmountParams } from "@/types/hooks";
 import { formatNumber } from "@/utils/formatNumber";
-import { LivePoolClient, MEMECHAN_MEME_TOKEN_DECIMALS, SwapMemeOutput, buildTxs } from "@avernikoz/memechan-sol-sdk";
+import { parseChainValue } from "@/utils/parseChainValue";
+import { MEMECHAN_MEME_TOKEN_DECIMALS, SwapMemeOutput, buildTxs } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
+import { PublicKey } from "@solana/web3.js";
+import { track } from "@vercel/analytics";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { LiveCoinSwapProps } from "../../coin.types";
@@ -28,55 +33,87 @@ export const LiveCoinSwap = ({
   const [slippage, setSlippage] = useState<string>("10");
   const [isSwapping, setIsSwapping] = useState<boolean>(false);
 
-  const tokenData = getTokenInfo({ variant: "string", quoteMint });
+  const tokenData = getTokenInfo({ variant: "string", tokenAddress: quoteMint });
 
   const { publicKey, sendTransaction, signTransaction } = useWallet();
   const { connection } = useConnection();
-  // TEST:1
+  const livePoolClient = useLivePoolClient(address);
+
   const { balance: coinBalance } = useBalance(tokenData.mint.toString(), tokenData.decimals);
   const { balance: memeBalance } = useBalance(tokenAddress, MEMECHAN_MEME_TOKEN_DECIMALS);
   const { tokenAccounts, refetch: refetchTokenAccounts } = useTokenAccounts();
 
   const getSwapOutputAmount = useCallback(
-    async ({ inputAmount, coinToMeme, slippagePercentage }: GetSwapOutputAmountParams) => {
+    async ({
+      inputAmount,
+      coinToMeme,
+      slippagePercentage,
+    }: GetSwapOutputAmountParams): Promise<SwapMemeOutput | undefined> => {
+      if (!livePoolClient) {
+        return undefined;
+      }
+
       return coinToMeme
-        ? await LivePoolClient.getBuyMemeOutput({
+        ? ((await livePoolClient.livePool.getBuyMemeOutput({
             poolAddress: address,
             amountIn: inputAmount,
             slippagePercentage,
             connection,
             memeCoinMint: tokenAddress,
-          })
-        : await LivePoolClient.getSellMemeOutput({
+          })) as SwapMemeOutput)
+        : ((await livePoolClient.livePool.getSellMemeOutput({
             poolAddress: address,
             amountIn: inputAmount,
             slippagePercentage,
             connection,
             memeCoinMint: tokenAddress,
-          });
+          })) as SwapMemeOutput);
     },
-    [address, tokenAddress, connection],
+    [address, tokenAddress, connection, livePoolClient],
   );
 
+  // TODO:TYPESCRIPT
   const getSwapTransactions = useCallback(
-    async ({ outputData, coinToMeme }: GetLiveSwapTransactionParams) => {
-      if (!publicKey || !tokenAccounts) return;
+    async ({ outputData, coinToMeme }: GetLiveSwapTransactionParams): Promise<any> => {
+      if (!publicKey || !tokenAccounts || !livePoolClient) return;
 
-      return coinToMeme
-        ? await LivePoolClient.getBuyMemeTransactionsByOutput({
-            ...outputData,
-            connection,
-            payer: publicKey,
-            walletTokenAccounts: tokenAccounts,
-          })
-        : await LivePoolClient.getSellMemeTransactionsByOutput({
+      if (coinToMeme) {
+        if (livePoolClient.version === "V1") {
+          return await livePoolClient.livePool.getBuyMemeTransactionsByOutput({
             ...outputData,
             connection,
             payer: publicKey,
             walletTokenAccounts: tokenAccounts,
           });
+        } else {
+          return await livePoolClient.livePool.getBuyMemeTransactionsByOutput({
+            ...outputData,
+            inTokenMint: new PublicKey("So11111111111111111111111111111111111111112"),
+            payer: publicKey,
+            minAmountOut: outputData.minAmountOut as any,
+            wrappedAmountIn: outputData.wrappedAmountIn as any,
+          } as any);
+        }
+      } else {
+        if (livePoolClient.version === "V1") {
+          return await livePoolClient.livePool.getSellMemeTransactionsByOutput({
+            ...outputData,
+            connection,
+            payer: publicKey,
+            walletTokenAccounts: tokenAccounts,
+          });
+        } else {
+          return await livePoolClient.livePool.getSellMemeTransactionsByOutput({
+            ...outputData,
+            inTokenMint: new PublicKey(tokenAddress),
+            payer: publicKey,
+            minAmountOut: outputData.minAmountOut as any,
+            wrappedAmountIn: outputData.wrappedAmountIn as any,
+          });
+        }
+      }
     },
-    [publicKey, tokenAccounts, connection],
+    [publicKey, tokenAccounts, livePoolClient, connection, tokenAddress],
   );
 
   useEffect(() => {
@@ -97,7 +134,6 @@ export const LiveCoinSwap = ({
         if (!validateSlippage(slippage)) return;
 
         const outputData = await getSwapOutputAmount({ inputAmount, coinToMeme, slippagePercentage: +slippage });
-
         if (!outputData) {
           setOutputData(null);
           return;
@@ -120,55 +156,94 @@ export const LiveCoinSwap = ({
   const onSwap = useCallback(async () => {
     if (!publicKey || !outputData || !signTransaction || !coinBalance) return;
 
+    const swapTrackObj = {
+      inputAmount,
+      memeBalance: +(memeBalance?.toString() ?? 0),
+      outputAmount: +outputData.minAmountOut.toString(),
+      slippage,
+      coinBalance,
+      coinToMeme,
+      type: "live",
+    };
+
+    track("Swap", swapTrackObj);
+
     if (!liveSwapParamsAreValid({ inputAmount, memeBalance, coinBalance, coinToMeme, slippagePercentage: +slippage }))
       return;
 
     try {
       setIsSwapping(true);
       const simpleSwapTransactions = await getSwapTransactions({ coinToMeme, outputData });
-
       if (!simpleSwapTransactions) {
         toast.error("Failed to create the swap transaction. Please, try again");
         return;
       }
 
-      const swapTransactions = await buildTxs(connection, publicKey, simpleSwapTransactions);
-
-      const signatures: string[] = [];
-
-      for (const tx of swapTransactions) {
-        const signature = await sendTransaction(tx, connection, {
-          skipPreflight: true,
+      if (livePoolClient?.version === "V2") {
+        const signature = await sendTransaction(simpleSwapTransactions, connection, {
           maxRetries: 3,
+          skipPreflight: true,
         });
 
-        signatures.push(signature);
+        const signatures: string[] = [signature];
 
-        toast(() => <TransactionSentNotification signature={signature} />);
-      }
+        for (const signature of signatures) {
+          const { blockhash: blockhash, lastValidBlockHeight: lastValidBlockHeight } =
+            await connection.getLatestBlockhash("confirmed");
 
-      setIsSwapping(false);
+          const swapTxResult = await connection.confirmTransaction(
+            {
+              signature: signature,
+              blockhash: blockhash,
+              lastValidBlockHeight: lastValidBlockHeight,
+            },
+            "confirmed",
+          );
 
-      // Check each part of the swap succeeded
-      for (const signature of signatures) {
-        const { blockhash: blockhash, lastValidBlockHeight: lastValidBlockHeight } =
-          await connection.getLatestBlockhash("confirmed");
+          if (swapTxResult.value.err) {
+            console.error("[LiveCoinSwap.onSwap] Sell failed:", JSON.stringify(swapTxResult, null, 2));
+            toast("Swap failed. Please, try again");
+            return;
+          }
+        }
+      } else {
+        const swapTransactions = await buildTxs(connection, publicKey, simpleSwapTransactions);
+        const signatures: string[] = [];
+        for (const tx of swapTransactions) {
+          const signature = await sendTransaction(tx, connection, {
+            skipPreflight: true,
+            maxRetries: 3,
+          });
 
-        const swapTxResult = await connection.confirmTransaction(
-          {
-            signature: signature,
-            blockhash: blockhash,
-            lastValidBlockHeight: lastValidBlockHeight,
-          },
-          "confirmed",
-        );
+          signatures.push(signature);
 
-        if (swapTxResult.value.err) {
-          console.error("[LiveCoinSwap.onSwap] Sell failed:", JSON.stringify(swapTxResult, null, 2));
-          toast("Swap failed. Please, try again");
-          return;
+          toast(() => <TransactionSentNotification signature={signature} />);
+        }
+
+        for (const signature of signatures) {
+          const { blockhash: blockhash, lastValidBlockHeight: lastValidBlockHeight } =
+            await connection.getLatestBlockhash("confirmed");
+
+          const swapTxResult = await connection.confirmTransaction(
+            {
+              signature: signature,
+              blockhash: blockhash,
+              lastValidBlockHeight: lastValidBlockHeight,
+            },
+            "confirmed",
+          );
+
+          if (swapTxResult.value.err) {
+            console.error("[LiveCoinSwap.onSwap] Sell failed:", JSON.stringify(swapTxResult, null, 2));
+            toast("Swap failed. Please, try again");
+            return;
+          }
         }
       }
+
+      track("Swap_Success", swapTrackObj);
+
+      setIsSwapping(false);
 
       toast.success("Swap succeeded");
       refetchTokenAccounts();
@@ -181,17 +256,18 @@ export const LiveCoinSwap = ({
       setIsSwapping(false);
     }
   }, [
-    coinBalance,
-    getSwapTransactions,
-    inputAmount,
-    outputData,
     publicKey,
-    sendTransaction,
+    outputData,
+    signTransaction,
+    coinBalance,
+    inputAmount,
+    memeBalance,
     coinToMeme,
     slippage,
-    memeBalance,
+    getSwapTransactions,
+    livePoolClient?.version,
     refetchTokenAccounts,
-    signTransaction,
+    sendTransaction,
     connection,
   ]);
 
@@ -253,8 +329,8 @@ export const LiveCoinSwap = ({
         {outputData !== null && !isLoadingOutputAmount && (
           <div className="text-xs font-bold text-regular">
             {coinToMeme
-              ? `${tokenSymbol} to receive: ${Number(outputData.minAmountOut.toExact()).toLocaleString(undefined, { maximumFractionDigits: MEMECHAN_MEME_TOKEN_DECIMALS })}`
-              : `${tokenData.displayName} to receive: ${Number(outputData.minAmountOut.toExact()).toLocaleString(undefined, { maximumFractionDigits: tokenData.decimals })}`}
+              ? `${tokenSymbol} to receive: ${tokenData.symbol === "SOL" ? parseChainValue(Number(outputData.minAmountOut.toString()), MEMECHAN_MEME_TOKEN_DECIMALS, 6) : parseChainValue(Number(outputData.minAmountOut.toString()), 0, 2)}`
+              : `${tokenData.displayName} to receive: ${parseChainValue(Number(outputData.minAmountOut.toString()), QUOTE_TOKEN_DECIMALS, 12)}`}
           </div>
         )}
       </div>

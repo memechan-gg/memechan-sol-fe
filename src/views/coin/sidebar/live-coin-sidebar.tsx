@@ -18,6 +18,7 @@ export function LiveCoinSidebar({
     poolAddress: seedPoolData.seedPool?.address,
     poolStatus: "LIVE",
     refreshInterval: TICKETS_INTERVAL,
+    livePoolAddress: pool.id,
   });
 
   return (
@@ -25,21 +26,26 @@ export function LiveCoinSidebar({
       <SidebarItem>
         <LiveCoinSwap pool={pool} tokenSymbol={coinMetadata.symbol} />
       </SidebarItem>
-      {ticketsData.tickets.length > 0 && (
-        <SidebarItem>
-          <StakingPool
-            tokenSymbol={coinMetadata.symbol}
-            livePoolAddress={pool.id}
-            ticketsData={ticketsData}
-            stakingPoolFromApi={stakingPoolFromApi}
-          />
-        </SidebarItem>
-      )}
+      {ticketsData.isLoading
+        ? "Loading..."
+        : ticketsData.tickets.length > 0 &&
+          (ticketsData.stakedAmount !== "0" || ticketsData.unavailableTicketsAmount != "0") && (
+            <SidebarItem>
+              {
+                <StakingPool
+                  tokenSymbol={coinMetadata.symbol}
+                  livePoolAddress={pool.id}
+                  ticketsData={ticketsData}
+                  stakingPoolFromApi={stakingPoolFromApi}
+                />
+              }
+            </SidebarItem>
+          )}
       <SidebarItem>
         <LiveCoinInfo metadata={coinMetadata} livePoolAddress={pool.id} quoteMint={pool.quoteMint} />
       </SidebarItem>
       <SidebarItem>
-        <LiveCoinHolders coinMetadata={coinMetadata} uniqueHoldersData={uniqueHoldersData} />
+        <LiveCoinHolders coinMetadata={coinMetadata} uniqueHoldersData={uniqueHoldersData} livePool={pool} />
       </SidebarItem>
     </>
   );

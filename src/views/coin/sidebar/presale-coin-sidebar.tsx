@@ -1,4 +1,4 @@
-import { useBoundPool } from "@/hooks/presale/useBoundPool";
+import { useBoundPoolClient } from "@/hooks/presale/useBoundPoolClient";
 import { getTokenInfo } from "@/hooks/utils";
 import { PresaleCoinSidebarProps } from "../coin.types";
 import { PresaleCoinHolders } from "./holders/presale-coin-holders";
@@ -7,9 +7,12 @@ import { SidebarItem } from "./sidebar-item";
 import { PresaleCoinSwap } from "./swap/presale-coin-swap";
 
 export function PresaleCoinSidebar({ pool, coinMetadata, uniqueHoldersData, ticketsData }: PresaleCoinSidebarProps) {
-  const boundPool = useBoundPool(pool.address);
+  const boundPoolClient = useBoundPoolClient(pool.address);
+
+  const boundPool = boundPoolClient?.boundPoolInstance.poolObjectData;
+
   const tokenInfo = boundPool?.quoteReserve.mint
-    ? getTokenInfo({ quoteMint: boundPool?.quoteReserve.mint.toString() })
+    ? getTokenInfo({ tokenAddress: boundPool?.quoteReserve.mint.toString() })
     : undefined;
   return (
     <>

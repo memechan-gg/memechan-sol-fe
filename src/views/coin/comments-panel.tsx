@@ -1,3 +1,4 @@
+import { track } from "@vercel/analytics";
 import { useCallback, useState } from "react";
 import { Comments } from "./comments";
 import { useSocialAPI } from "./hooks/useSocialAPI";
@@ -9,6 +10,7 @@ export function CommentsPanel({ coinType, coinCreator }: { coinType: string; coi
   const { threads, updateThreads, loadMore, nextPageToken } = useSocialAPI({ coinType });
 
   const openPostReplyDialog = useCallback(() => {
+    track("OpenReplyDialog", { coinType });
     setIsPostReplyDialogOpen(true);
   }, []);
 

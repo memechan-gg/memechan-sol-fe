@@ -1,6 +1,7 @@
 import { cn } from "@/utils";
 import { Popover } from "@headlessui/react";
 import { useWallet } from "@solana/wallet-adapter-react";
+import { track } from "@vercel/analytics";
 
 export const ConnectWallet = () => {
   const { disconnect, select, wallets, connect } = useWallet();
@@ -10,6 +11,7 @@ export const ConnectWallet = () => {
     if (wallet) {
       try {
         select(wallet.adapter.name);
+        track("ConnectWallet", { wallet: wallet.adapter.name });
       } catch (error) {
         console.error("Error connecting to wallet:", error);
       }
@@ -30,7 +32,7 @@ export const ConnectWallet = () => {
         </div>
       </Popover.Button>
       <Popover.Panel className="absolute z-10 flex flex-col">
-        <div className="bg-white gap-1 text-xs flex flex-col font-bold text-regular px-2 py-2">
+        <div className="bg-white dark:bg-gray-800 gap-1 text-xs flex flex-col font-bold text-regular px-2 py-2">
           {wallets.map((w) => (
             <button
               key={w.adapter.name}

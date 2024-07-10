@@ -13,8 +13,16 @@ body {
   min-height: 100vh;
 }
 
+.dark body {
+  background: #121212;
+}
+
 .gradient-bg {
   background: linear-gradient(180deg, #fdd8b2 0%, #fff9f2 50.52%, #fdf1e6 100%);
+}
+
+.dark .gradient-bg {
+  background: linear-gradient(180deg, #222 0%, #444 50.52%, #666 100%);
 }
 
 body,
@@ -40,8 +48,8 @@ a {
 }
 
 /* Track on hover */
-::-webkit-scrollbar-track:hover {
-  background: #fff1;
+.dark ::-webkit-scrollbar-track:hover {
+  background: #444;
 }
 
 /* Handle */
@@ -49,4 +57,16 @@ a {
   background: #888;
   border-radius: 0.5rem;
   border: 5px solid transparent;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #bbb;
+}
+
+:root {
+  --color-text-regular: #800000;
+}
+
+.dark {
+  --color-text-regular: #d1d5db;
 }

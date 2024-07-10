@@ -1,7 +1,7 @@
 import { Chart } from "@/components/Chart";
 import { ThreadBoard } from "@/components/thread";
 import { TICKETS_INTERVAL } from "@/config/config";
-import { useBoundPool } from "@/hooks/presale/useBoundPool";
+import { useBoundPoolClient } from "@/hooks/presale/useBoundPoolClient";
 import { usePresaleCoinUniqueHoldersFromBE } from "@/hooks/presale/usePresaleCoinUniqueHoldersFromBE";
 import { useMemePriceFromBE } from "@/hooks/useMemePriceFromBE";
 import { useTickets } from "@/hooks/useTickets";
@@ -23,10 +23,12 @@ export function PresaleCoin({ coinMetadata, seedPoolData }: { coinMetadata: Sola
     refreshInterval: TICKETS_INTERVAL,
   });
 
-  const boundPool = useBoundPool(seedPoolData.address);
+  const boundPoolClient = useBoundPoolClient(seedPoolData.address);
+
+  const boundPool = boundPoolClient?.boundPoolInstance.poolObjectData;
 
   const tokenData = boundPool?.quoteReserve
-    ? getTokenInfo({ variant: "publicKey", quoteMint: boundPool?.quoteReserve.mint })
+    ? getTokenInfo({ variant: "publicKey", tokenAddress: boundPool?.quoteReserve.mint })
     : undefined;
 
   const CHARTS_API_HOSTNAME = process.env.NEXT_PUBLIC_CHARTS_API_HOSTNAME;
@@ -39,7 +41,7 @@ export function PresaleCoin({ coinMetadata, seedPoolData }: { coinMetadata: Sola
             <div className="font-bold text-regular">{coinMetadata.name}</div>
             <div>
               <Link
-                href={`/profile/${coinMetadata.creator}`}
+                href={`/profile/${coinMetadata.address}/${coinMetadata.creator}`}
                 className="text-[11px] md:text-xs text-link hover:underline text-ellipsis"
               >
                 {coinMetadata.creator}
@@ -48,7 +50,7 @@ export function PresaleCoin({ coinMetadata, seedPoolData }: { coinMetadata: Sola
           </div>
         </div>
       </div>
-      <ThreadBoard title={coinMetadata.name}>
+      <ThreadBoard title={coinMetadata.name} showNavigateBtn>
         <div className="flex flex-col gap-2">
           <div className="flex flex-wrap flex-row gap-3 gap-x-10">
             <div className="flex flex-col gap-1">
@@ -77,7 +79,10 @@ export function PresaleCoin({ coinMetadata, seedPoolData }: { coinMetadata: Sola
             </div>
             <div className="flex flex-col gap-1">
               <div className="text-sm font-bold text-link">Created By</div>
-              <Link href={`/profile/${coinMetadata.creator}`} className="text-xs font-bold text-link">
+              <Link
+                href={`/profile/${coinMetadata.address}/${coinMetadata.creator}`}
+                className="text-xs font-bold text-link"
+              >
                 {coinMetadata.creator.slice(0, 5)}...
                 {coinMetadata.creator.slice(-3)}
               </Link>

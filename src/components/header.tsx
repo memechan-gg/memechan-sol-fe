@@ -2,11 +2,12 @@ import { useUser } from "@/context/UserContext";
 import { cn } from "@/utils/cn";
 import { RpcConnectionDialog } from "@/views/rpc-connection/rpc-connection-dialog";
 import { Popover } from "@headlessui/react";
-import { CaretDown } from "@phosphor-icons/react";
+import { CaretDown } from "@phosphor-icons/react/CaretDown";
 import { useWallet } from "@solana/wallet-adapter-react";
 import Link from "next/link";
 import { Button } from "./button";
 import { ConnectWallet } from "./connect-wallet";
+import DarkModeToggle from "./dark-mode-toggle";
 import { Logo } from "./logo";
 
 export const Header = () => {
@@ -14,7 +15,7 @@ export const Header = () => {
   const { disconnect } = useWallet();
 
   return (
-    <header className="lg:relative fixed top-0 w-full lg:bg-transparent bg-board z-10">
+    <header className="relative fixed top-0 w-full lg:bg-transparent bg-board dark:bg-dark z-10">
       <div className="container mx-auto px-4 py-2 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 gap-2">
           <div className="flex items-center w-full">
@@ -36,6 +37,7 @@ export const Header = () => {
               Solana
               <CaretDown className="w-4 h-4" />
             </Button>
+            <DarkModeToggle />
             {account.address ? (
               <Popover>
                 <Popover.Button>

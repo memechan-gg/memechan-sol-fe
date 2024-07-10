@@ -11,8 +11,8 @@ const fetchLiveUniqueHolders = async (
   clientV2: MemechanClientV2,
 ) => {
   try {
-    const stakingPool = await getStakingPoolClientFromId(new PublicKey(boundPoolId), client, clientV2);
-    const [holders, stakingData] = await stakingPool.getHoldersList();
+    const { stakingPoolClient } = await getStakingPoolClientFromId(new PublicKey(boundPoolId), client, clientV2);
+    const [holders, stakingData] = await stakingPoolClient.getHoldersList();
 
     const fullHolders = holders.slice();
 

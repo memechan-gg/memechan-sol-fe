@@ -1,8 +1,13 @@
+import { getTokenInfo } from "@/hooks/utils";
 import { LiveCoinInfoProps } from "../../coin.types";
 import { SocialLinks } from "./social-links/social-links";
 
 export const LiveCoinInfo = ({ metadata, livePoolAddress, quoteMint }: LiveCoinInfoProps) => {
   const { name, symbol, description, image, socialLinks } = metadata;
+
+  const quoteTokenInfo = getTokenInfo({ tokenAddress: quoteMint });
+
+  const isV2 = quoteTokenInfo.symbol === "SOL";
 
   return (
     <div className="flex flex-col gap-2">
@@ -26,8 +31,8 @@ export const LiveCoinInfo = ({ metadata, livePoolAddress, quoteMint }: LiveCoinI
         <div className="flex flex-col gap-1">
           <div className="text-xs font-normal text-regular truncate hover:underline">
             {/* TEST:2 */}
-            <a href={`https://raydium.io/swap/?inputMint=${quoteMint}&outputMint=${metadata.address}`} target="_blank">
-              Raydium.io
+            <a href={`https://app.meteora.ag/pools/${livePoolAddress}`} target="_blank">
+              Meteora.ag
             </a>
           </div>
         </div>
@@ -48,7 +53,7 @@ export const LiveCoinInfo = ({ metadata, livePoolAddress, quoteMint }: LiveCoinI
       </div>
       <div className="flex w-full flex-col gap-1">
         <div className="text-regular mt-2">
-          Pool is now live on the Raydium! You can now swap tokens! Happy trading :)
+          Pool is now live on the {isV2 ? "Meteora" : "Raydium"}! You can now swap tokens! Happy trading :)
         </div>
       </div>
     </div>
