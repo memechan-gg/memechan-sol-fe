@@ -57,6 +57,7 @@
     "@types/react-window": "^1.8.8",
     "eslint": "^8",
     "eslint-config-next": "14.2.2",
+    "eslint-plugin-jsdoc": "^48.7.0",
     "postcss": "^8",
     "prettier": "^3.2.5",
     "prettier-plugin-organize-imports": "^3.2.4",
