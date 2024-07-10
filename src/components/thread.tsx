@@ -92,7 +92,7 @@ export function Thread({
             market cap: <span className="text-green">${parseChainValue(marketcap, 0, 2)}</span>
           </div>
         )}
-        <Link href={`/coin/${address}`}>
+        <Link href={`/coin/${address}`} onClick={onContentClick}>
           <div className="text-regular flex flex-col flex-wrap" onClick={() => setClickedToken(address)}>
             <div className="font-bold !normal-case">symbol: {symbol}</div>
             <div className="max-w-[150px] truncate">{description}</div>
