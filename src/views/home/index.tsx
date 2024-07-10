@@ -7,8 +7,6 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
-import { useResizeDetector } from "react-resize-detector";
-import { FixedSizeGrid as Grid } from "react-window";
 import { useCoinApi } from "./hooks/useCoinApi";
 import { isThreadsSortBy, isThreadsSortDirection, isThreadsSortStatus } from "./hooks/utils";
 
@@ -53,12 +51,6 @@ export function Home() {
     setIsDialogOpen(false);
     Cookies.set("isConfirmed", "true", { expires: 365 });
   };
-
-  const { width, height, ref } = useResizeDetector();
-
-  const itemSize = 258;
-  const columnCount = width ? Math.max(1, Math.floor(width / (itemSize - 90))) : 1;
-  const rowCount = Math.ceil((tokenList?.length ?? 0) / columnCount);
 
   const handleTokenClick = (event: React.MouseEvent<HTMLDivElement>, address: string) => {
     if (event.target === event.currentTarget) {
@@ -164,44 +156,19 @@ export function Home() {
             }
           >
             <div className="flex flex-col items-center">
-              <div
-                ref={ref}
-                className="h-[50vh] md:h-[70vh] w-full flex flex-wrap gap-6 sm:justify-normal justify-center self-start"
-              >
+              <div className="flex flex-wrap gap-6 sm:justify-normal justify-center self-start">
                 {isLoading && (
                   <>
                     <div className="text-regular">Loading...</div>
                   </>
                 )}
-                {isCoinsListExist && width && height && (
-                  <Grid
-                    columnCount={columnCount}
-                    columnWidth={itemSize - 90}
-                    rowCount={rowCount}
-                    rowHeight={itemSize + 20}
-                    width={width}
-                    height={height}
-                    itemData={tokenList}
-                    className="outline-none !w-auto md:!w-full"
-                  >
-                    {({ columnIndex, rowIndex, style, data }) => {
-                      const index = rowIndex * columnCount + columnIndex;
-                      const item = data[index];
-                      if (!item) return <div style={style} />;
-
-                      return (
-                        <div
-                          style={{ ...style }}
-                          className={`p-2 flex flex-col gap-2 ${clickedToken === item.address ? "border-2 shadow-[0px_0px_60px_2px]" : "border-transparent"} hover:border-blue-500 hover:shadow-lg cursor-pointer`}
-                          onClick={(event) => handleTokenClick(event, item.address)}
-                        >
-                          <Thread key={item.address} coinMetadata={item} setClickedToken={setClickedToken} />
-                        </div>
-                      );
-                    }}
-                  </Grid>
+                {isCoinsListExist && (
+                  <>
+                    {tokenList.map((item) => (
+                      <Thread key={item.address} coinMetadata={item} />
+                    ))}
+                  </>
                 )}
-
                 {isCoinsListEmpty && (
                   <>
                     <div className="text-regular">No memecoins yet</div>
