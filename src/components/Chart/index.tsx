@@ -4,26 +4,21 @@ import { ApiClient } from "./api-client";
 import { createWidgetOptions } from "./chart";
 import { ChartFeed } from "./chart-feed";
 import { widget as ChartWidget, ResolutionString } from "./libs/charting_library";
-import { Settings } from "./settings";
+import { EnvSettings, PropsSettings } from "./settings";
 
-const settings: Settings = {
-  historicalPricesEndpoint: "https://api.memechan.gg/chart",
-  currentPriceEndpoint: "https://api.memechan.gg/price",
-  address: "",
-  realtimeReloadInterval: 3000,
-  symbol: "USD",
-  contractName: "USD",
-  priceDigitsAfterComma: 10,
+export const settings: EnvSettings = {
+  historicalPricesEndpoint: process.env.NEXT_PUBLIC_CHART_HISTORICAL_PRICES_ENDPOINT || "",
+  currentPriceEndpoint: process.env.NEXT_PUBLIC_CHART_CURRENT_PRICE_ENDPOINT || "",
+  realtimeReloadInterval: Number(process.env.NEXT_PUBLIC_CHART_REALTIME_RELOAD_INTERVAL) || 3000,
+  priceDigitsAfterComma: Number(process.env.NEXT_PUBLIC_CHART_PRICE_DIGITS_AFTER_COMMA) || 6,
 };
 
-export const Chart = (settingsProps: Partial<Settings>) => {
+export const Chart = (settingsProps: PropsSettings) => {
   const mergedSettings = {
     ...settings,
     ...settingsProps,
   };
-
   const [isLoaded, setIsLoaded] = useState(false);
-
   useEffect(() => {
     console.log("initialising trading view with app settings", mergedSettings);
     setIsLoaded(false);
@@ -44,6 +39,7 @@ export const Chart = (settingsProps: Partial<Settings>) => {
       chartWidget.unsubscribe("chart_loaded", handleLoad);
       chartWidget.remove();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [...Object.values(settingsProps)]);
 
   return (

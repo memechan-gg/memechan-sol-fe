@@ -31,8 +31,6 @@ export function PresaleCoin({ coinMetadata, seedPoolData }: { coinMetadata: Sola
     ? getTokenInfo({ variant: "publicKey", tokenAddress: boundPool?.quoteReserve.mint })
     : undefined;
 
-  const CHARTS_API_HOSTNAME = process.env.NEXT_PUBLIC_CHARTS_API_HOSTNAME;
-
   return (
     <>
       <div className="flex justify-center">
