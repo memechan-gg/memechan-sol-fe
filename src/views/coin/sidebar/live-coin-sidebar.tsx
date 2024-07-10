@@ -44,7 +44,7 @@ export function LiveCoinSidebar({
         <LiveCoinInfo metadata={coinMetadata} livePoolAddress={pool.id} quoteMint={pool.quoteMint} />
       </SidebarItem>
       <SidebarItem>
-        <LiveCoinHolders coinMetadata={coinMetadata} uniqueHoldersData={uniqueHoldersData} />
+        <LiveCoinHolders coinMetadata={coinMetadata} uniqueHoldersData={uniqueHoldersData} livePool={pool} />
       </SidebarItem>
     </>
   );
