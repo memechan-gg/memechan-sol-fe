@@ -56,10 +56,8 @@ export function ThreadBoard({
 
 export function Thread({
   coinMetadata: { name, address, image, creator, marketcap, symbol, description, status },
-  setClickedToken,
 }: {
   coinMetadata: SolanaToken;
-  setClickedToken?: any;
 }) {
   const onImageClick = () => {
     track("List_CoinImageClick", { coin: address });
@@ -77,13 +75,12 @@ export function Thread({
           className="w-[150px] border border-regular h-[150px] object-cover object-center hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-2"
           src={image}
           alt="Coin Image"
-          onClick={() => setClickedToken(address)}
         />
       </Link>
       <div className="flex flex-col gap-1 text-xs">
         <div className="text-link cursor-text">
           Created by:{" "}
-          <Link href={`/profile/${creator}`} onClick={() => setClickedToken(address)}>
+          <Link href={`/profile/${creator}`}>
             <span className="font-bold hover:underline">{creator.slice(0, 5) + "..." + creator.slice(-3)}</span>
           </Link>
         </div>
@@ -93,7 +90,7 @@ export function Thread({
           </div>
         )}
         <Link href={`/coin/${address}`} onClick={onContentClick}>
-          <div className="text-regular flex flex-col flex-wrap" onClick={() => setClickedToken(address)}>
+          <div className="text-regular flex flex-col flex-wrap">
             <div className="font-bold !normal-case">symbol: {symbol}</div>
             <div className="max-w-[150px] truncate">{description}</div>
           </div>

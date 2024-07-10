@@ -30,7 +30,6 @@ export function Home() {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(true);
   const [isConfirmed, setIsConfirmed] = useState<boolean>(false);
   const [isMounted, setIsMounted] = useState<boolean>(false);
-  const [clickedToken, setClickedToken] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -50,13 +49,6 @@ export function Home() {
     setIsConfirmed(true);
     setIsDialogOpen(false);
     Cookies.set("isConfirmed", "true", { expires: 365 });
-  };
-
-  const handleTokenClick = (event: React.MouseEvent<HTMLDivElement>, address: string) => {
-    if (event.target === event.currentTarget) {
-      setClickedToken(address);
-      router.push(`/coin/${address}`);
-    }
   };
 
   if (!isMounted) {
