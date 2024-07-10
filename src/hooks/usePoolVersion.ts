@@ -2,14 +2,14 @@ import { PoolStatus } from "@/types/pool";
 import { useLivePoolClient } from "./live/useLivePoolClient";
 import { useBoundPoolClient } from "./presale/useBoundPoolClient";
 
-export type Version = "V1" | "V2";
+export type PoolVersion = "V1" | "V2";
 
-export function useVersion(poolStatus: PoolStatus, poolAddress?: string, livePoolAddress?: string): Version {
+export function usePoolVersion(poolStatus: PoolStatus, poolAddress?: string, livePoolAddress?: string): PoolVersion {
   const livePoolAddressKey = poolStatus === "LIVE" ? livePoolAddress || poolAddress : null;
   const boundPoolAddressKey = poolStatus === "PRESALE" ? poolAddress : null;
 
   const livePoolClient = useLivePoolClient(livePoolAddressKey);
   const boundPoolClient = useBoundPoolClient(boundPoolAddressKey);
 
-  return (livePoolClient || boundPoolClient)?.version as Version;
+  return (livePoolClient || boundPoolClient)?.version as PoolVersion;
 }

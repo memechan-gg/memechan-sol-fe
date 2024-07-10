@@ -5,7 +5,7 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import toast from "react-hot-toast";
 import useSWR from "swr";
-import { useVersion, Version } from "./useVersion";
+import { usePoolVersion, PoolVersion } from "./usePoolVersion";
 import { getTicketsData } from "./utils";
 
 const fetchTickets = async (
@@ -14,7 +14,7 @@ const fetchTickets = async (
   client: MemechanClient,
   clientV2: MemechanClientV2,
   poolStatus: PoolStatus,
-  version: Version,
+  version: PoolVersion,
 ) => {
   try {
     if (!poolAddress || !user || !poolStatus || !version) return;
@@ -47,7 +47,7 @@ export function useTickets({
 }) {
   const { publicKey } = useWallet();
   const { memechanClient, memechanClientV2 } = useConnection();
-  const version = useVersion(poolStatus, poolAddress, livePoolAddress);
+  const version = usePoolVersion(poolStatus, poolAddress, livePoolAddress);
   const shouldFetch = !poolAddress || !publicKey || !poolStatus || !version;
 
   const { data, mutate, isLoading } = useSWR(
