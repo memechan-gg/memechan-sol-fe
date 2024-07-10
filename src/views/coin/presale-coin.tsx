@@ -1,4 +1,4 @@
-import { ChartIframe } from "@/components/chart-iframe";
+import { Chart } from "@/components/Chart";
 import { ThreadBoard } from "@/components/thread";
 import { TICKETS_INTERVAL } from "@/config/config";
 import { useBoundPoolClient } from "@/hooks/presale/useBoundPoolClient";
@@ -30,8 +30,6 @@ export function PresaleCoin({ coinMetadata, seedPoolData }: { coinMetadata: Sola
   const tokenData = boundPool?.quoteReserve
     ? getTokenInfo({ variant: "publicKey", tokenAddress: boundPool?.quoteReserve.mint })
     : undefined;
-
-  const CHARTS_API_HOSTNAME = process.env.NEXT_PUBLIC_CHARTS_API_HOSTNAME;
 
   return (
     <>
@@ -90,11 +88,13 @@ export function PresaleCoin({ coinMetadata, seedPoolData }: { coinMetadata: Sola
           </div>
           <div className="flex w-full flex-col lg:flex-row gap-6">
             <div className="flex flex-col gap-3 w-full">
-              {CHARTS_API_HOSTNAME && tokenData && (
-                <ChartIframe
-                  src={`https://${CHARTS_API_HOSTNAME}/?address=${seedPoolData.address}&symbol=${tokenData.displayName}&contract=${coinMetadata.symbol.toUpperCase()}/${tokenData.displayName}`}
+              {tokenData ? (
+                <Chart
+                  address={seedPoolData.address}
+                  symbol={tokenData.displayName}
+                  contractName={`${coinMetadata.symbol.toUpperCase()}/${tokenData.displayName}`}
                 />
-              )}
+              ) : null}
               <div className="flex flex-col gap-3 lg:hidden">
                 <PresaleCoinSidebar
                   coinMetadata={coinMetadata}

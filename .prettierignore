@@ -1,0 +1,5 @@
+# Ignore the .next folder (used by Next.js for build output)
+.next
+
+# Ignore the public folder (contains static assets)
+public
