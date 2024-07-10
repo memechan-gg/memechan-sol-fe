@@ -5,7 +5,7 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import toast from "react-hot-toast";
 import useSWR from "swr";
-import { usePoolVersion, PoolVersion } from "./usePoolVersion";
+import { PoolVersion, usePoolVersion } from "./usePoolVersion";
 import { getTicketsData } from "./utils";
 
 const fetchTickets = async (

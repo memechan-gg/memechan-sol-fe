@@ -9,6 +9,7 @@ import { UnstakeDialogProps } from "@/views/coin/coin.types";
 import { MEMECHAN_MEME_TOKEN_DECIMALS } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
+import { track } from "@vercel/analytics";
 import BigNumber from "bignumber.js";
 import BN from "bn.js";
 import { useCallback, useEffect, useState } from "react";
@@ -29,6 +30,22 @@ export const UnstakePopUp = ({
   const stakingPool = useStakingPool(stakingPoolFromApi?.address);
   const { data: stakingPoolClient } = useStakingPoolClient(stakingPoolFromApi?.address);
 
+  let cliffStartedTime: JSX.Element | string = <Skeleton width={35} />;
+  let startVestingTime: JSX.Element | string = <Skeleton width={35} />;
+  let endVestingTime: JSX.Element | string = <Skeleton width={35} />;
+  let cliffStartedTimeInMs: number = 0;
+  let startVestingTimeInMs: number = 0;
+  let endVestingTimeInMs: number = 0;
+
+  if (stakingPool) {
+    cliffStartedTimeInMs = new BigNumber(stakingPool.vestingConfig.startTs.toString()).multipliedBy(1000).toNumber();
+    startVestingTimeInMs = new BigNumber(stakingPool.vestingConfig.cliffTs.toString()).multipliedBy(1000).toNumber();
+    endVestingTimeInMs = new BigNumber(stakingPool.vestingConfig.endTs.toString()).multipliedBy(1000).toNumber();
+
+    cliffStartedTime = new Date(cliffStartedTimeInMs).toLocaleString();
+    startVestingTime = new Date(startVestingTimeInMs).toLocaleString();
+    endVestingTime = new Date(endVestingTimeInMs).toLocaleString();
+  }
 
   const updateAvailableAmountToUnstake = useCallback(async () => {
     if (!stakingPoolClient || !stakingPool || !tickets) return;
@@ -38,7 +55,11 @@ export const UnstakePopUp = ({
       stakingPoolVestingConfig: stakingPool.vestingConfig,
     });
 
-    const formattedAmount = new BigNumber(amount).div(10 ** MEMECHAN_MEME_TOKEN_DECIMALS).toString();
+    //TODO: remove -1 after fix SDK
+    const formattedAmount = new BigNumber(amount)
+      .minus(1)
+      .div(10 ** MEMECHAN_MEME_TOKEN_DECIMALS)
+      .toString();
 
     setAvailableAmountToUnstake(formattedAmount);
   }, [stakingPool, stakingPoolClient, tickets]);
@@ -46,12 +67,22 @@ export const UnstakePopUp = ({
   const unstake = useCallback(async () => {
     if (!publicKey || !availableAmountToUnstake || !stakingPoolClient) return;
 
+    const sinceVestingStartedInMin = (Date.now() - startVestingTimeInMs) / 60000;
+
+    const unstakeTrackObj = {
+      availableAmountToUnstake,
+      tokenSymbol,
+      sinceVestingStartedInMin,
+    };
+
+    track("Unstake", unstakeTrackObj);
+
     try {
       setIsLoading(true);
 
       const ticketIds = tickets.map((ticket) => ticket.id);
 
-      const rawAmountToUnstake = new BigNumber(availableAmountToUnstake)
+      const rawAmountToUnstake = new BigNumber(+availableAmountToUnstake - 0.00001)
         .multipliedBy(10 ** MEMECHAN_MEME_TOKEN_DECIMALS)
         .toFixed(0);
 
@@ -77,6 +108,7 @@ export const UnstakePopUp = ({
 
       refetchTickets();
       toast.success("Successfully unstaked");
+      track("Unstake_Success", unstakeTrackObj);
     } catch (e) {
       console.error("[UnstakeDialog.unstake] Failed to unstake:", e);
       toast.error("Failed to unstake. Please, try again");
@@ -97,24 +129,6 @@ export const UnstakePopUp = ({
   useEffect(() => {
     updateAvailableAmountToUnstake();
   }, [updateAvailableAmountToUnstake]);
-
-  let cliffStartedTime: JSX.Element | string = <Skeleton width={35} />;
-  let startVestingTime: JSX.Element | string = <Skeleton width={35} />;
-  let endVestingTime: JSX.Element | string = <Skeleton width={35} />;
-
-  if (stakingPool) {
-    const cliffStartedTimeInMs = new BigNumber(stakingPool.vestingConfig.startTs.toString())
-      .multipliedBy(1000)
-      .toNumber();
-    const startVestingTimeInMs = new BigNumber(stakingPool.vestingConfig.cliffTs.toString())
-      .multipliedBy(1000)
-      .toNumber();
-    const endVestingTimeInMs = new BigNumber(stakingPool.vestingConfig.endTs.toString()).multipliedBy(1000).toNumber();
-
-    cliffStartedTime = new Date(cliffStartedTimeInMs).toLocaleString();
-    startVestingTime = new Date(startVestingTimeInMs).toLocaleString();
-    endVestingTime = new Date(endVestingTimeInMs).toLocaleString();
-  }
 
   const unstakeButtonIsDisabled =
     availableAmountToUnstake === null || isLoading || new BigNumber(availableAmountToUnstake).isZero();

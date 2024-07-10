@@ -6,7 +6,7 @@ import { useTickets } from "@/hooks/useTickets";
 import { LivePoolData, SeedPoolData } from "@/types/pool";
 import { ParsedMemeTicket, SolanaToken, TokenInfo, getBoundPoolClientFromId } from "@avernikoz/memechan-sol-sdk";
 
-type BoundPool = Awaited<ReturnType<typeof getBoundPoolClientFromId>>['boundPoolInstance']['poolObjectData'] | null;
+type BoundPool = Awaited<ReturnType<typeof getBoundPoolClientFromId>>["boundPoolInstance"]["poolObjectData"] | null;
 
 export type UnavailableTicketsToSellDialogParams = {
   unavailableTickets: ParsedMemeTicket[];

@@ -9,6 +9,7 @@ import { MEMECHAN_MEME_TOKEN_DECIMALS } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import { useQuery } from "@tanstack/react-query";
+import { track } from "@vercel/analytics";
 import BigNumber from "bignumber.js";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -75,6 +76,15 @@ export const WithdrawFeesPopUp = ({
     try {
       setIsWithdrawLoading(true);
 
+      const withdrawFeesTrackObj = {
+        memeAmount,
+        chanAmount,
+        solAmount: slerfAmount,
+        tokenSymbol,
+      };
+
+      track("WithdrawFees", withdrawFeesTrackObj);
+
       const ticketIds = tickets.map((ticket) => ticket.id);
 
       const transactions = await stakingPoolClient.getPreparedWithdrawFeesTransactions({
@@ -100,6 +110,8 @@ export const WithdrawFeesPopUp = ({
       setSlerfAmount("0");
 
       refreshTickets();
+
+      track("WithdrawFees_Success", withdrawFeesTrackObj);
 
       toast.success("Fees are successfully withdrawn");
     } catch (e) {
