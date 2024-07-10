@@ -34,11 +34,6 @@ export const Chart = (settingsProps: PropsSettings) => {
     };
 
     chartWidget.subscribe("chart_loaded", handleLoad);
-
-    return () => {
-      chartWidget.unsubscribe("chart_loaded", handleLoad);
-      chartWidget.remove();
-    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [...Object.values(settingsProps)]);
 
