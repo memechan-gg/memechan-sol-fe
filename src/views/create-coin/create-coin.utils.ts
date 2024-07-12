@@ -88,16 +88,34 @@ export async function createMemeCoinAndPool({
 }
 
 export async function handleAuthentication(address: string, sign: (message: Uint8Array) => Promise<Uint8Array>) {
+  const existingSession = localStorage.getItem("session");
+
+  if (existingSession) {
+    const session = JSON.parse(existingSession);
+    if (session.walletAddress === address && session.signedMessage) {
+      await AuthInstance.refreshSession({
+        signedMessage: session.signedMessage,
+        walletAddress: address,
+      });
+      return;
+    }
+  }
+
   const messageToSign = await AuthInstance.requestMessageToSign(address);
   const encodedMessage = new TextEncoder().encode(messageToSign);
 
   const signatureUint8Array = await sign(encodedMessage);
   const signatureHex = Buffer.from(signatureUint8Array).toString("hex");
-
   await AuthInstance.refreshSession({
     signedMessage: signatureHex,
     walletAddress: address,
   });
+  const newSession = {
+    signedMessage: signatureHex,
+    walletAddress: address,
+  };
+
+  localStorage.setItem("session", JSON.stringify(newSession));
 }
 
 export async function uploadImageToIPFS(file: File) {

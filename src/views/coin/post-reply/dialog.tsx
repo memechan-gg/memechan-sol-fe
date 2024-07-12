@@ -60,9 +60,11 @@ export function PostReplyDialog({
       if (replyThreadId) {
         messageObject.replyTo = replyThreadId;
       }
-
       await handleAuthentication(publicKey.toString(), signMessage);
-
+      const session = localStorage.getItem("session");
+      if (!session) {
+        throw new Error("No active session found");
+      }
       if (file) {
         const ipfsUrl = await uploadImageToIPFS(file);
         messageObject.image = ipfsUrl;

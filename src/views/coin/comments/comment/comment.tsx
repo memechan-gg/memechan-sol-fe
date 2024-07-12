@@ -37,7 +37,6 @@ export function Comment({
   const [liked, setLiked] = useState(isLiked);
   const [likesCount, setLikesCount] = useState(likeCounter);
   const [isPostReplyDialogOpen, setIsPostReplyDialogOpen] = useState(false);
-
   const { publicKey, signMessage } = useWallet();
 
   useEffect(() => {
@@ -60,6 +59,11 @@ export function Comment({
     try {
       await handleAuthentication(publicKey.toString(), signMessage);
 
+      const session = localStorage.getItem("session");
+      if (!session) {
+        throw new Error("No active session found");
+      }
+
       if (liked) {
         setLiked(false);
         setLikesCount((curCount) => curCount - 1);
@@ -72,7 +76,8 @@ export function Comment({
 
       refetchLikedThreads();
     } catch (error) {
-      console.error(error);
+      console.error("Error in handleLikeEvent:", error);
+      toast.error("An error occurred while liking the comment");
     }
   }, [publicKey, liked, signMessage, coinType, id, refetchLikedThreads]);
 
