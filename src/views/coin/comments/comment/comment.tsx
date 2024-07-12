@@ -61,7 +61,7 @@ export function Comment({
 
       const session = localStorage.getItem("session");
       if (!session) {
-        throw new Error("No active session found");
+        return toast.error("No active session found");
       }
 
       if (liked) {
@@ -76,7 +76,6 @@ export function Comment({
 
       refetchLikedThreads();
     } catch (error) {
-      console.error("Error in handleLikeEvent:", error);
       toast.error("An error occurred while liking the comment");
     }
   }, [publicKey, liked, signMessage, coinType, id, refetchLikedThreads]);
