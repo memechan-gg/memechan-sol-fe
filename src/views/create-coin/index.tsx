@@ -27,6 +27,7 @@ import {
   validateCoinParamsWithImage,
   validateCoinParamsWithoutImage,
 } from "./create-coin.utils";
+import { track } from "@vercel/analytics";
 
 export function CreateCoin() {
   const {
@@ -82,6 +83,14 @@ export function CreateCoin() {
 
       console.log("inputAmountIsSpecified:", inputAmountIsSpecified);
       console.log("inputAmount:", inputAmount);
+
+      const { image, ...dataWOImage } = data;
+      const trackData = {
+        inputAmount,
+        ...dataWOImage,
+      };
+
+      track('CreateMemecoin_Start', trackData);
 
       setState("sign");
       const walletAddress = publicKey.toBase58();
@@ -179,6 +188,8 @@ export function CreateCoin() {
       }
 
       await sleep(3000);
+
+      track('CreateMemecoin_Success', trackData);
 
       router.push(`/coin/${memeMint}`);
     } catch (e) {
