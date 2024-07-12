@@ -92,7 +92,7 @@ export function CreateCoin() {
       let ipfsUrl = await uploadImageToIPFS(data.image[0]);
       validateCoinParamsWithImage(data, ipfsUrl);
 
-      const { createPoolTransaction: transaction, memeMintKeypair } = await createMemeCoinAndPool({
+      const {createPoolTransaction, memeMint} = await createMemeCoinAndPool({
         data,
         ipfsUrl,
         publicKey,
@@ -102,8 +102,7 @@ export function CreateCoin() {
 
       setState("create_bonding_and_meme");
       // Pool and meme creation
-      const signature = await sendTransaction(transaction, connection, {
-        signers: [memeMintKeypair],
+      const signature = await sendTransaction(createPoolTransaction, connection, {
         maxRetries: 3,
         skipPreflight: true,
       });
@@ -181,7 +180,7 @@ export function CreateCoin() {
 
       await sleep(3000);
 
-      router.push(`/coin/${memeMintKeypair.publicKey.toString()}`);
+      router.push(`/coin/${memeMint}`);
     } catch (e) {
       console.error("[Create Coin Submit] Error occured:", e);
       setState("idle");

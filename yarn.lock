@@ -15,10 +15,10 @@
     "@jridgewell/gen-mapping" "^0.3.5"
     "@jridgewell/trace-mapping" "^0.3.24"
 
-"@avernikoz/memechan-sol-sdk@2.1.81":
-  version "2.1.81"
-  resolved "https://registry.yarnpkg.com/@avernikoz/memechan-sol-sdk/-/memechan-sol-sdk-2.1.81.tgz#e336e13459cecc84db3cb50d4740e12dc107c426"
-  integrity sha512-AZ02u9EL8woEl7m6Rf09wae58CvbpUE6JEtu2LsFrqCw5jXc1WZ8XA2/uhMSUIrDereItQcKXJQP3VgEX3s1VA==
+"@avernikoz/memechan-sol-sdk@2.1.87":
+  version "2.1.87"
+  resolved "https://registry.yarnpkg.com/@avernikoz/memechan-sol-sdk/-/memechan-sol-sdk-2.1.87.tgz#8f4bb8e8527e325db9169919784695cbcf901ba0"
+  integrity sha512-8eobk4dAwQ1RW0UxMhxz3zC8eyF8382t/F/dmX1q6UAOk2qunRLm1OXTqrWvlZTMbGJnqIrsoJnWWi/aW+zSCw==
   dependencies:
     "@aws-crypto/sha256-browser" "^5.2.0"
     "@aws-sdk/types" "^3.577.0"
@@ -36,6 +36,7 @@
     bignumber.js "^9.1.2"
     bn.js "^5.2.1"
     bs58 "^5.0.0"
+    date-fns "^3.6.0"
     dotenv "^16.4.5"
     tweetnacl "^1.0.3"
     tweetnacl-util "^0.15.1"
@@ -5630,6 +5631,11 @@ data-view-byte-offset@^1.0.0:
     call-bind "^1.0.6"
     es-errors "^1.3.0"
     is-data-view "^1.0.1"
+
+date-fns@^3.6.0:
+  version "3.6.0"
+  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-3.6.0.tgz#f20ca4fe94f8b754951b24240676e8618c0206bf"
+  integrity sha512-fRHTG8g/Gif+kSh50gaGEdToemgfj74aRX3swtiouboip5JDLAyDE9F11nHMIcvOaXeOC6D7SpNhi7uFyB7Uww==
 
 debug@4, debug@^4.1.0, debug@^4.1.1, debug@^4.3.1, debug@^4.3.2, debug@^4.3.3, debug@^4.3.4, debug@^4.3.5, debug@~4.3.1, debug@~4.3.2:
   version "4.3.5"
