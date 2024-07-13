@@ -13,7 +13,7 @@
     "child_process": false
   },
   "dependencies": {
-    "@avernikoz/memechan-sol-sdk": "2.1.92",
+    "@avernikoz/memechan-sol-sdk": "2.1.94",
     "@headlessui/react": "^1.7.19",
     "@phosphor-icons/react": "^2.1.5",
     "@radix-ui/react-dialog": "^1.0.5",
