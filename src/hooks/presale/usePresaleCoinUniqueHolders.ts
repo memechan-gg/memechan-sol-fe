@@ -12,14 +12,15 @@ export const fetchPresaleCoinUniqueHolders = async (
   clientV2: MemechanClientV2,
 ) => {
   try {
-    const map = await (
-      await getBoundPoolClientFromId(new PublicKey(poolAddress), client, clientV2)
-    ).boundPoolInstance.getHoldersMap();
+    const boundPoolInstance = (await getBoundPoolClientFromId(new PublicKey(poolAddress), client, clientV2))
+      .boundPoolInstance;
+    const map = await boundPoolInstance.getHoldersMap();
+    const maxTicketTokens = boundPoolInstance.getMaxTicketTokens();
 
     const holders: { address: string; tokenAmountInPercentage: BigNumber }[] = [];
 
     Array.from(map.entries()).forEach(([holder, tickets]) => {
-      const percentage = getBoundPoolHolderPercentage(tickets);
+      const percentage = getBoundPoolHolderPercentage(tickets, maxTicketTokens);
       holders.push({ address: holder, tokenAmountInPercentage: new BigNumber(percentage) });
     });
 
