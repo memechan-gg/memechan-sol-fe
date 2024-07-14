@@ -10,6 +10,7 @@ import { SeedPoolData } from "@/types/pool";
 import { formatNumber } from "@/utils/formatNumber";
 import { SolanaToken } from "@avernikoz/memechan-sol-sdk";
 import Link from "next/link";
+import { useEffect } from "react";
 import Skeleton from "react-loading-skeleton";
 import { CommentsPanel } from "./comments-panel";
 import { PresaleCoinSidebar } from "./sidebar/presale-coin-sidebar";
@@ -23,13 +24,41 @@ export function PresaleCoin({ coinMetadata, seedPoolData }: { coinMetadata: Sola
     refreshInterval: TICKETS_INTERVAL,
   });
 
-  const boundPoolClient = useBoundPoolClient(seedPoolData.address);
+  const { data: boundPoolClient } = useBoundPoolClient(seedPoolData.address);
 
   const boundPool = boundPoolClient?.boundPoolInstance.poolObjectData;
 
   const tokenData = boundPool?.quoteReserve
     ? getTokenInfo({ variant: "publicKey", tokenAddress: boundPool?.quoteReserve.mint })
     : undefined;
+
+  useEffect(() => {
+    let intervalId: number | undefined;
+
+    if (boundPoolClient === null) {
+      // Set an interval to reload the page every 10 seconds
+      intervalId = window.setInterval(() => {
+        window.location.reload();
+      }, 10000);
+    }
+
+    // Cleanup function to clear the interval when the component unmounts or boundPoolClient changes
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
+  }, [boundPoolClient]);
+
+  if (boundPoolClient === null) {
+    return (
+      <div className="absolute rounded-xl top-0 left-0 w-full h-full bg-regular bg-opacity-70 flex items-center justify-center">
+        <div className="text-white text-center text-balance font-bold text-lg tracking-wide">
+          Pool is currently migrating to the Live Phase. Please wait.
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
