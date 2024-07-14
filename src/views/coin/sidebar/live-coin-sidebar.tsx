@@ -29,7 +29,7 @@ export function LiveCoinSidebar({
       {ticketsData.isLoading
         ? "Loading..."
         : ticketsData.tickets.length > 0 &&
-          (ticketsData.stakedAmount !== "0" || ticketsData.unavailableTicketsAmount != "0") && (
+          (ticketsData.stakedAmount !== "0" || ticketsData.unavailableTicketsAmount !== "0") && (
             <SidebarItem>
               {
                 <StakingPool
