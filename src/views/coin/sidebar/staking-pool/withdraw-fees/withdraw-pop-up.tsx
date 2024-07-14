@@ -5,7 +5,7 @@ import { useConnection } from "@/context/ConnectionContext";
 import { useStakingPoolClient } from "@/hooks/staking/useStakingPoolClient";
 import { confirmTransaction } from "@/utils/confirmTransaction";
 import { WithdrawFeesDialogProps } from "@/views/coin/coin.types";
-import { MEMECHAN_MEME_TOKEN_DECIMALS } from "@avernikoz/memechan-sol-sdk";
+import { CHAN_TOKEN_DECIMALS, MEMECHAN_MEME_TOKEN_DECIMALS } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import { useQuery } from "@tanstack/react-query";
@@ -47,9 +47,9 @@ export const WithdrawFeesPopUp = ({
       tickets: ticketFields as any,
     })) as any;
 
-    const formattedMemeFees = new BigNumber(memeFees).div(10 ** tokenInfo.decimals);
+    const formattedMemeFees = new BigNumber(memeFees).div(10 ** MEMECHAN_MEME_TOKEN_DECIMALS);
     const formattedSlerfFees = new BigNumber(quoteFees).div(10 ** tokenInfo.decimals);
-    const formattedChanFees = new BigNumber(chanFees).div(10 ** tokenInfo.decimals);
+    const formattedChanFees = new BigNumber(chanFees).div(10 ** CHAN_TOKEN_DECIMALS);
 
     setMemeAmount(formattedMemeFees.toString());
     setSlerfAmount(formattedSlerfFees.toString());
@@ -120,7 +120,19 @@ export const WithdrawFeesPopUp = ({
     } finally {
       setIsWithdrawLoading(false);
     }
-  }, [sendTransaction, publicKey, stakingPoolClient, tickets, livePoolAddress, connection, refreshTickets]);
+  }, [
+    publicKey,
+    stakingPoolClient,
+    memeAmount,
+    chanAmount,
+    slerfAmount,
+    tokenSymbol,
+    tickets,
+    livePoolAddress,
+    refreshTickets,
+    sendTransaction,
+    connection,
+  ]);
 
   // const updateFees = useCallback(async () => {
   //   if (!stakingPoolClient || !publicKey) return;
@@ -223,7 +235,7 @@ export const WithdrawFeesPopUp = ({
             value={
               chanAmount && tokenInfo
                 ? Number(chanAmount).toLocaleString(undefined, {
-                    maximumFractionDigits: tokenInfo.decimals,
+                    maximumFractionDigits: CHAN_TOKEN_DECIMALS,
                   }) + " Chan"
                 : "loading..."
             }

@@ -1,7 +1,6 @@
 import { AuthInstance, TokenApiInstance } from "@/common/solana";
 import {
   ADMIN_PUB_KEY,
-  BoundPoolClientV2,
   CoinDescriptionTooLargeError,
   InvalidCoinDescriptionError,
   InvalidCoinImageError,
@@ -15,7 +14,7 @@ import {
   TOKEN_INFOS,
   validateCreateCoinParams,
 } from "@avernikoz/memechan-sol-sdk";
-import { PublicKey } from "@solana/web3.js";
+import { PublicKey, VersionedTransaction } from "@solana/web3.js";
 import toast from "react-hot-toast";
 import { ICreateForm } from "./create-coin.types";
 
@@ -52,7 +51,6 @@ export async function createMemeCoinAndPool({
   ipfsUrl,
   publicKey,
   inputAmount,
-  client,
 }: {
   data: ICreateForm;
   publicKey: PublicKey;
@@ -60,10 +58,9 @@ export async function createMemeCoinAndPool({
   inputAmount?: string;
   client: MemechanClientV2;
 }) {
-  return await BoundPoolClientV2.getCreateNewBondingPoolAndBuyAndTokenWithBuyMemeTransaction({
-    admin: ADMIN_PUB_KEY,
-    client,
-    payer: publicKey,
+  const result = await TokenApiInstance.createBoundPoolTransaction({
+    admin: ADMIN_PUB_KEY.toBase58(),
+    payer: publicKey.toBase58(),
     tokenMetadata: {
       ...data,
       image: ipfsUrl,
@@ -80,11 +77,17 @@ export async function createMemeCoinAndPool({
             // TODO: Implement output amount printing to user
             minOutputAmount: "0",
             slippagePercentage: 0,
-            user: publicKey,
+            user: publicKey.toBase58(),
             memeTicketNumber: MemeTicketClientV2.TICKET_NUMBER_START,
           }
         : undefined,
   });
+
+  const buffer = Buffer.from(result.serializedTransactionBase64, "base64");
+  const createPoolTransaction = VersionedTransaction.deserialize(buffer);
+
+  console.log("createPoolTransaction:", createPoolTransaction);
+  return { createPoolTransaction, memeMint: result.memeMint };
 }
 
 export async function handleAuthentication(address: string, sign: (message: Uint8Array) => Promise<Uint8Array>) {

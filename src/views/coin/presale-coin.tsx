@@ -89,11 +89,7 @@ export function PresaleCoin({ coinMetadata, seedPoolData }: { coinMetadata: Sola
           <div className="flex w-full flex-col lg:flex-row gap-6">
             <div className="flex flex-col gap-3 w-full">
               {tokenData ? (
-                <Chart
-                  address={seedPoolData.address}
-                  symbol={tokenData.displayName}
-                  contractName={`${coinMetadata.symbol.toUpperCase()}/${tokenData.displayName}`}
-                />
+                <Chart address={seedPoolData.address} tokenName={coinMetadata.symbol.toUpperCase()} />
               ) : null}
               <div className="flex flex-col gap-3 lg:hidden">
                 <PresaleCoinSidebar

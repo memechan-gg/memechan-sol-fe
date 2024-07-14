@@ -11,6 +11,7 @@ import {
   sleep,
 } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
+import { track } from "@vercel/analytics";
 import BigNumber from "bignumber.js";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -83,6 +84,14 @@ export function CreateCoin() {
       console.log("inputAmountIsSpecified:", inputAmountIsSpecified);
       console.log("inputAmount:", inputAmount);
 
+      const { image, ...dataWOImage } = data;
+      const trackData = {
+        inputAmount,
+        ...dataWOImage,
+      };
+
+      track("CreateMemecoin_Start", trackData);
+
       setState("sign");
       const walletAddress = publicKey.toBase58();
       // If all the params except of the image are fine, then ask the user to sign a message to upload the image to IPFS.
@@ -92,7 +101,7 @@ export function CreateCoin() {
       let ipfsUrl = await uploadImageToIPFS(data.image[0]);
       validateCoinParamsWithImage(data, ipfsUrl);
 
-      const { createPoolTransaction: transaction, memeMintKeypair } = await createMemeCoinAndPool({
+      const { createPoolTransaction, memeMint } = await createMemeCoinAndPool({
         data,
         ipfsUrl,
         publicKey,
@@ -102,8 +111,7 @@ export function CreateCoin() {
 
       setState("create_bonding_and_meme");
       // Pool and meme creation
-      const signature = await sendTransaction(transaction, connection, {
-        signers: [memeMintKeypair],
+      const signature = await sendTransaction(createPoolTransaction, connection, {
         maxRetries: 3,
         skipPreflight: true,
       });
@@ -181,7 +189,9 @@ export function CreateCoin() {
 
       await sleep(3000);
 
-      router.push(`/coin/${memeMintKeypair.publicKey.toString()}`);
+      track("CreateMemecoin_Success", trackData);
+
+      router.push(`/coin/${memeMint}`);
     } catch (e) {
       console.error("[Create Coin Submit] Error occured:", e);
       setState("idle");

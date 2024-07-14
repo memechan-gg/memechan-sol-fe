@@ -13,10 +13,11 @@ export interface EnvSettings {
   readonly currentPriceEndpoint: string;
   readonly realtimeReloadInterval: number;
   readonly priceDigitsAfterComma: number;
+  readonly symbol: string;
 }
 
 export interface PropsSettings {
   readonly address: string;
-  readonly symbol: string;
-  readonly contractName: string;
+  tokenName: string;
+  symbol?: string;
 }

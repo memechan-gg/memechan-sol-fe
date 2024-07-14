@@ -29,7 +29,6 @@ export function createWidgetOptions(
     library_path: LIB_PATH,
     locale,
     disabled_features: [
-      "timezone_menu",
       "chart_property_page_timezone_sessions",
       "go_to_date",
       isMobile || isCompact ? "left_toolbar" : null,
@@ -51,6 +50,7 @@ export function createWidgetOptions(
     auto_save_delay: 2,
     theme: "dark",
     debug: false,
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone as any,
     // custom_css_url: '/assets/tradingview-override.css?2',
     loading_screen: { backgroundColor: "transparent" },
   };

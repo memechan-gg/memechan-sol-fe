@@ -1,5 +1,6 @@
 import { ThreadBoard } from "@/components/thread";
 import { BE_URL_DEV } from "@avernikoz/memechan-sol-sdk";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { CoinItem } from "./coin-item";
 
@@ -113,8 +114,10 @@ export function Profile({ address, coin }: ProfileProps) {
                 <div className="flex flex-col gap-2 max-w-xs text-regular font-medium">
                   {tokens.map((token, index) => (
                     <div key={index}>
-                      {token.mint}
-                      <CoinItem image={token.image} name={token.name} marketCap={token.marketCap.toString()} />
+                      <Link href={`/coin/${token.mint}`}>
+                        {token.mint}
+                        <CoinItem image={token.image} name={token.name} marketCap={token.marketCap} />
+                      </Link>
                     </div>
                   ))}
                 </div>
