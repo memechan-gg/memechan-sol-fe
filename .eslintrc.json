@@ -3,7 +3,6 @@
   "extends": ["next/core-web-vitals", "plugin:jsdoc/recommended"],
   "rules": {
     "@next/next/no-img-element": "off",
-    "jsdoc/require-jsdoc": "warn"
   },
   "settings": {
     "jsdoc": {

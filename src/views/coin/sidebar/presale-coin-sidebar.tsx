@@ -7,7 +7,7 @@ import { SidebarItem } from "./sidebar-item";
 import { PresaleCoinSwap } from "./swap/presale-coin-swap";
 
 export function PresaleCoinSidebar({ pool, coinMetadata, uniqueHoldersData, ticketsData }: PresaleCoinSidebarProps) {
-  const boundPoolClient = useBoundPoolClient(pool.address);
+  const { data: boundPoolClient } = useBoundPoolClient(pool.address);
 
   const boundPool = boundPoolClient?.boundPoolInstance.poolObjectData;
 

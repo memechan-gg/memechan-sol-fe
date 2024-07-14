@@ -14,18 +14,17 @@ const fetchBoundPoolClient = async (poolAddress: string, client: MemechanClient,
     return boundPoolClient;
   } catch (e) {
     if (e instanceof NoBoundPoolExist) return null;
-    console.error(`[fetchBoundPoolClient] Failed to get bound pool client ${poolAddress}:`, e);
+    return null;
+    // console.error(`[fetchBoundPoolClient] Failed to get bound pool client ${poolAddress}:`, e);
   }
 };
 
 export function useBoundPoolClient(poolAddress?: string | null) {
   const { memechanClient, memechanClientV2 } = useConnection();
 
-  const { data } = useSWR(
+  return useSWR(
     poolAddress ? [`bound-pool-client-${poolAddress}`, poolAddress, memechanClient, memechanClientV2] : null,
     ([_, pool, memechanClient, memechanClientV2]) => fetchBoundPoolClient(pool, memechanClient, memechanClientV2),
     { revalidateIfStale: false, revalidateOnFocus: false },
   );
-
-  return data;
 }
