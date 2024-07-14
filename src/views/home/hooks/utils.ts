@@ -1,5 +1,5 @@
 import { PoolStatus } from "@/types/pool";
-import { ThreadsSortBy, ThreadsSortDirection, ThreadsSortStatus } from "./types";
+import { NSFWStatus, ThreadsSortBy, ThreadsSortDirection, ThreadsSortStatus } from "./types";
 
 export const getSortBy = (sortBy: string) => {
   switch (sortBy) {
@@ -35,4 +35,8 @@ export function isThreadsSortBy(data: unknown): data is ThreadsSortBy {
 
 export function isThreadsSortDirection(data: unknown): data is ThreadsSortDirection {
   return typeof data === "string" && (data === "asc" || data === "desc");
+}
+
+export function isThreadsNSFW(data: unknown): data is NSFWStatus {
+  return typeof data === "string" && (data === "on" || data === "off");
 }

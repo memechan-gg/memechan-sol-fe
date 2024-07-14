@@ -1,10 +1,21 @@
-import { BoundPool, MEMECHAN_QUOTE_TOKEN_DECIMALS } from "@avernikoz/memechan-sol-sdk";
+import { QUOTE_TOKEN_DECIMALS } from "@/constants/constants";
+import { getTokenInfo } from "@/hooks/utils";
+import { BoundPoolClient, BoundPoolClientV2 } from "@avernikoz/memechan-sol-sdk";
 import BigNumber from "bignumber.js";
 
-export const getBoundPoolProgress = (boundPool: BoundPool) => {
+export const getBoundPoolProgress = (
+  boundPool: BoundPoolClient["poolObjectData"] | BoundPoolClientV2["poolObjectData"],
+  isV2?: boolean,
+) => {
   const rawSlerfIn = boundPool.quoteReserve.toJSON().tokens;
-  const formattedSlerfIn = new BigNumber(rawSlerfIn).div(10 ** MEMECHAN_QUOTE_TOKEN_DECIMALS).toString();
-  const slerfLimit = boundPool.config.toJSON().gammaS;
+
+  const formattedSlerfIn = new BigNumber(rawSlerfIn)
+    .div(10 ** getTokenInfo({ tokenAddress: boundPool.quoteReserve.mint, variant: "publicKey" }).decimals)
+    .toString();
+  let slerfLimit = boundPool.config.toJSON().gammaS;
+  if (isV2) {
+    slerfLimit = (+slerfLimit / 10 ** QUOTE_TOKEN_DECIMALS).toString();
+  }
   const progressInPercents = new BigNumber(formattedSlerfIn).div(slerfLimit).multipliedBy(100).toFixed(2);
 
   return { progress: progressInPercents, slerfIn: formattedSlerfIn, limit: slerfLimit };

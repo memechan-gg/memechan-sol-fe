@@ -1,20 +1,19 @@
 import { Button } from "@/components/button";
 import { TransactionSentNotification } from "@/components/notifications/transaction-sent-notification";
 import { MAX_SLIPPAGE, MIN_SLIPPAGE } from "@/config/config";
+import { QUOTE_TOKEN_DECIMALS } from "@/constants/constants";
 import { useConnection } from "@/context/ConnectionContext";
+import { useLivePoolClient } from "@/hooks/live/useLivePoolClient";
 import { useBalance } from "@/hooks/useBalance";
 import { useTokenAccounts } from "@/hooks/useTokenAccounts";
+import { getTokenInfo } from "@/hooks/utils";
 import { GetLiveSwapTransactionParams, GetSwapOutputAmountParams } from "@/types/hooks";
 import { formatNumber } from "@/utils/formatNumber";
-import {
-  LivePoolClient,
-  MEMECHAN_MEME_TOKEN_DECIMALS,
-  MEMECHAN_QUOTE_MINT,
-  MEMECHAN_QUOTE_TOKEN_DECIMALS,
-  SwapMemeOutput,
-  buildTxs,
-} from "@avernikoz/memechan-sol-sdk";
+import { parseChainValue } from "@/utils/parseChainValue";
+import { MEMECHAN_MEME_TOKEN_DECIMALS, SwapMemeOutput, buildTxs } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
+import { PublicKey } from "@solana/web3.js";
+import { track } from "@vercel/analytics";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { LiveCoinSwapProps } from "../../coin.types";
@@ -23,66 +22,104 @@ import { SwapButton } from "./button";
 import { InputAmountTitle } from "./input-amount-title";
 import { handleSlippageInputChange, handleSwapInputChange, validateSlippage } from "./utils";
 
-export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: tokenAddress } }: LiveCoinSwapProps) => {
-  const [slerfToMeme, setSlerfToMeme] = useState<boolean>(true);
+export const LiveCoinSwap = ({
+  tokenSymbol,
+  pool: { id: address, baseMint: tokenAddress, quoteMint },
+}: LiveCoinSwapProps) => {
+  const [coinToMeme, setCoinToMeme] = useState<boolean>(true);
   const [inputAmount, setInputAmount] = useState<string>("");
   const [outputData, setOutputData] = useState<SwapMemeOutput | null>(null);
   const [isLoadingOutputAmount, setIsLoadingOutputAmount] = useState<boolean>(false);
   const [slippage, setSlippage] = useState<string>("10");
   const [isSwapping, setIsSwapping] = useState<boolean>(false);
 
+  const tokenData = getTokenInfo({ variant: "string", tokenAddress: quoteMint });
+
   const { publicKey, sendTransaction, signTransaction } = useWallet();
   const { connection } = useConnection();
-  const { balance: slerfBalance } = useBalance(MEMECHAN_QUOTE_MINT.toString(), MEMECHAN_QUOTE_TOKEN_DECIMALS);
+  const livePoolClient = useLivePoolClient(address);
+
+  const { balance: coinBalance } = useBalance(tokenData.mint.toString(), tokenData.decimals);
   const { balance: memeBalance } = useBalance(tokenAddress, MEMECHAN_MEME_TOKEN_DECIMALS);
   const { tokenAccounts, refetch: refetchTokenAccounts } = useTokenAccounts();
 
   const getSwapOutputAmount = useCallback(
-    async ({ inputAmount, slerfToMeme, slippagePercentage }: GetSwapOutputAmountParams) => {
-      return slerfToMeme
-        ? await LivePoolClient.getBuyMemeOutput({
+    async ({
+      inputAmount,
+      coinToMeme,
+      slippagePercentage,
+    }: GetSwapOutputAmountParams): Promise<SwapMemeOutput | undefined> => {
+      if (!livePoolClient) {
+        return undefined;
+      }
+
+      return coinToMeme
+        ? ((await livePoolClient.livePool.getBuyMemeOutput({
             poolAddress: address,
             amountIn: inputAmount,
             slippagePercentage,
             connection,
             memeCoinMint: tokenAddress,
-          })
-        : await LivePoolClient.getSellMemeOutput({
+          })) as SwapMemeOutput)
+        : ((await livePoolClient.livePool.getSellMemeOutput({
             poolAddress: address,
             amountIn: inputAmount,
             slippagePercentage,
             connection,
             memeCoinMint: tokenAddress,
-          });
+          })) as SwapMemeOutput);
     },
-    [address, tokenAddress, connection],
+    [address, tokenAddress, connection, livePoolClient],
   );
 
+  // TODO:TYPESCRIPT
   const getSwapTransactions = useCallback(
-    async ({ outputData, slerfToMeme }: GetLiveSwapTransactionParams) => {
-      if (!publicKey || !tokenAccounts) return;
+    async ({ outputData, coinToMeme }: GetLiveSwapTransactionParams): Promise<any> => {
+      if (!publicKey || !tokenAccounts || !livePoolClient) return;
 
-      return slerfToMeme
-        ? await LivePoolClient.getBuyMemeTransactionsByOutput({
-            ...outputData,
-            connection,
-            payer: publicKey,
-            walletTokenAccounts: tokenAccounts,
-          })
-        : await LivePoolClient.getSellMemeTransactionsByOutput({
+      if (coinToMeme) {
+        if (livePoolClient.version === "V1") {
+          return await livePoolClient.livePool.getBuyMemeTransactionsByOutput({
             ...outputData,
             connection,
             payer: publicKey,
             walletTokenAccounts: tokenAccounts,
           });
+        } else {
+          return await livePoolClient.livePool.getBuyMemeTransactionsByOutput({
+            ...outputData,
+            inTokenMint: new PublicKey("So11111111111111111111111111111111111111112"),
+            payer: publicKey,
+            minAmountOut: outputData.minAmountOut as any,
+            wrappedAmountIn: outputData.wrappedAmountIn as any,
+          } as any);
+        }
+      } else {
+        if (livePoolClient.version === "V1") {
+          return await livePoolClient.livePool.getSellMemeTransactionsByOutput({
+            ...outputData,
+            connection,
+            payer: publicKey,
+            walletTokenAccounts: tokenAccounts,
+          });
+        } else {
+          return await livePoolClient.livePool.getSellMemeTransactionsByOutput({
+            ...outputData,
+            inTokenMint: new PublicKey(tokenAddress),
+            payer: publicKey,
+            minAmountOut: outputData.minAmountOut as any,
+            wrappedAmountIn: outputData.wrappedAmountIn as any,
+          });
+        }
+      }
     },
-    [publicKey, tokenAccounts, connection],
+    [publicKey, tokenAccounts, livePoolClient, connection, tokenAddress],
   );
 
   useEffect(() => {
     setInputAmount("");
     setOutputData(null);
-  }, [slerfToMeme]);
+  }, [coinToMeme]);
 
   useEffect(() => {
     if (inputAmount === "0" || inputAmount === "") {
@@ -96,8 +133,7 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
 
         if (!validateSlippage(slippage)) return;
 
-        const outputData = await getSwapOutputAmount({ inputAmount, slerfToMeme, slippagePercentage: +slippage });
-
+        const outputData = await getSwapOutputAmount({ inputAmount, coinToMeme, slippagePercentage: +slippage });
         if (!outputData) {
           setOutputData(null);
           return;
@@ -115,60 +151,99 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
 
     const timeoutId = setTimeout(() => updateOutputAmount(), 1000);
     return () => clearTimeout(timeoutId);
-  }, [getSwapOutputAmount, inputAmount, slerfToMeme, slippage]);
+  }, [getSwapOutputAmount, inputAmount, coinToMeme, slippage]);
 
   const onSwap = useCallback(async () => {
-    if (!publicKey || !outputData || !signTransaction || !slerfBalance) return;
+    if (!publicKey || !outputData || !signTransaction || !coinBalance) return;
 
-    if (!liveSwapParamsAreValid({ inputAmount, memeBalance, slerfBalance, slerfToMeme, slippagePercentage: +slippage }))
+    const swapTrackObj = {
+      inputAmount,
+      memeBalance: +(memeBalance?.toString() ?? 0),
+      outputAmount: +outputData.minAmountOut.toString(),
+      slippage,
+      coinBalance,
+      coinToMeme,
+      type: "live",
+    };
+
+    track("Swap", swapTrackObj);
+
+    if (!liveSwapParamsAreValid({ inputAmount, memeBalance, coinBalance, coinToMeme, slippagePercentage: +slippage }))
       return;
 
     try {
       setIsSwapping(true);
-      const simpleSwapTransactions = await getSwapTransactions({ slerfToMeme, outputData });
-
+      const simpleSwapTransactions = await getSwapTransactions({ coinToMeme, outputData });
       if (!simpleSwapTransactions) {
         toast.error("Failed to create the swap transaction. Please, try again");
         return;
       }
 
-      const swapTransactions = await buildTxs(connection, publicKey, simpleSwapTransactions);
-
-      const signatures: string[] = [];
-
-      for (const tx of swapTransactions) {
-        const signature = await sendTransaction(tx, connection, {
-          skipPreflight: true,
+      if (livePoolClient?.version === "V2") {
+        const signature = await sendTransaction(simpleSwapTransactions, connection, {
           maxRetries: 3,
+          skipPreflight: true,
         });
 
-        signatures.push(signature);
+        const signatures: string[] = [signature];
 
-        toast(() => <TransactionSentNotification signature={signature} />);
-      }
+        for (const signature of signatures) {
+          const { blockhash: blockhash, lastValidBlockHeight: lastValidBlockHeight } =
+            await connection.getLatestBlockhash("confirmed");
 
-      setIsSwapping(false);
+          const swapTxResult = await connection.confirmTransaction(
+            {
+              signature: signature,
+              blockhash: blockhash,
+              lastValidBlockHeight: lastValidBlockHeight,
+            },
+            "confirmed",
+          );
 
-      // Check each part of the swap succeeded
-      for (const signature of signatures) {
-        const { blockhash: blockhash, lastValidBlockHeight: lastValidBlockHeight } =
-          await connection.getLatestBlockhash("confirmed");
+          if (swapTxResult.value.err) {
+            console.error("[LiveCoinSwap.onSwap] Sell failed:", JSON.stringify(swapTxResult, null, 2));
+            toast("Swap failed. Please, try again");
+            return;
+          }
+        }
+      } else {
+        const swapTransactions = await buildTxs(connection, publicKey, simpleSwapTransactions);
+        const signatures: string[] = [];
+        for (const tx of swapTransactions) {
+          const signature = await sendTransaction(tx, connection, {
+            skipPreflight: true,
+            maxRetries: 3,
+          });
 
-        const swapTxResult = await connection.confirmTransaction(
-          {
-            signature: signature,
-            blockhash: blockhash,
-            lastValidBlockHeight: lastValidBlockHeight,
-          },
-          "confirmed",
-        );
+          signatures.push(signature);
 
-        if (swapTxResult.value.err) {
-          console.error("[LiveCoinSwap.onSwap] Sell failed:", JSON.stringify(swapTxResult, null, 2));
-          toast("Swap failed. Please, try again");
-          return;
+          toast(() => <TransactionSentNotification signature={signature} />);
+        }
+
+        for (const signature of signatures) {
+          const { blockhash: blockhash, lastValidBlockHeight: lastValidBlockHeight } =
+            await connection.getLatestBlockhash("confirmed");
+
+          const swapTxResult = await connection.confirmTransaction(
+            {
+              signature: signature,
+              blockhash: blockhash,
+              lastValidBlockHeight: lastValidBlockHeight,
+            },
+            "confirmed",
+          );
+
+          if (swapTxResult.value.err) {
+            console.error("[LiveCoinSwap.onSwap] Sell failed:", JSON.stringify(swapTxResult, null, 2));
+            toast("Swap failed. Please, try again");
+            return;
+          }
         }
       }
+
+      track("Swap_Success", swapTrackObj);
+
+      setIsSwapping(false);
 
       toast.success("Swap succeeded");
       refetchTokenAccounts();
@@ -181,17 +256,18 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
       setIsSwapping(false);
     }
   }, [
-    slerfBalance,
-    getSwapTransactions,
-    inputAmount,
-    outputData,
     publicKey,
-    sendTransaction,
-    slerfToMeme,
-    slippage,
-    memeBalance,
-    refetchTokenAccounts,
+    outputData,
     signTransaction,
+    coinBalance,
+    inputAmount,
+    memeBalance,
+    coinToMeme,
+    slippage,
+    getSwapTransactions,
+    livePoolClient?.version,
+    refetchTokenAccounts,
+    sendTransaction,
     connection,
   ]);
 
@@ -200,24 +276,25 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
   return (
     <>
       <div className="flex w-full flex-row gap-2">
-        <SwapButton slerfToMeme={slerfToMeme} onClick={() => setSlerfToMeme(true)} label="Buy" />
-        <SwapButton slerfToMeme={!slerfToMeme} onClick={() => setSlerfToMeme(false)} label="Sell" />
+        <SwapButton coinToMeme={coinToMeme} onClick={() => setCoinToMeme(true)} label="Buy" />
+        <SwapButton coinToMeme={!coinToMeme} onClick={() => setCoinToMeme(false)} label="Sell" />
       </div>
       <div className="flex w-full flex-col gap-1">
         <InputAmountTitle
           memeBalance={memeBalance}
           setInputAmount={setInputAmount}
           setOutputData={setOutputData}
-          slerfBalance={slerfBalance}
-          slerfToMeme={slerfToMeme}
+          coinBalance={coinBalance}
+          coinToMeme={coinToMeme}
           tokenSymbol={tokenSymbol}
+          quoteMint={quoteMint}
         />
         <input
           className="w-full bg-white text-xs font-bold text-regular p-2 rounded-lg"
           value={inputAmount}
           onChange={(e) =>
             handleSwapInputChange({
-              decimalPlaces: slerfToMeme ? MEMECHAN_QUOTE_TOKEN_DECIMALS : MEMECHAN_MEME_TOKEN_DECIMALS,
+              decimalPlaces: coinToMeme ? tokenData.decimals : MEMECHAN_MEME_TOKEN_DECIMALS,
               e,
               setValue: setInputAmount,
             })
@@ -225,35 +302,35 @@ export const LiveCoinSwap = ({ tokenSymbol, pool: { id: address, baseMint: token
           placeholder="0"
           type="text"
         />
-        {slerfToMeme && (
+        {coinToMeme && (
           <div className="text-xs font-bold text-regular">
-            available SLERF:{" "}
-            {publicKey && slerfBalance
-              ? Number(slerfBalance).toLocaleString(undefined, {
-                  maximumFractionDigits: MEMECHAN_QUOTE_TOKEN_DECIMALS,
+            available {tokenData.displayName}:{" "}
+            {publicKey && coinBalance
+              ? Number(coinBalance).toLocaleString(undefined, {
+                  maximumFractionDigits: tokenData.decimals,
                 }) ?? "loading..."
               : "0"}
           </div>
         )}
-        {!slerfToMeme && memeBalance && (
+        {!coinToMeme && memeBalance && (
           <div className="text-xs !normal-case font-bold text-regular">
             available {tokenSymbol} to sell: {formatNumber(Number(memeBalance), MEMECHAN_MEME_TOKEN_DECIMALS)}
           </div>
         )}
         {isLoadingOutputAmount && (
           <div className="text-xs font-bold text-regular">
-            {slerfToMeme ? (
+            {coinToMeme ? (
               <span>{tokenSymbol} to receive: loading...</span>
             ) : (
-              <span>SLERF to receive: loading...</span>
+              <span>{tokenData.displayName} to receive: loading...</span>
             )}
           </div>
         )}
         {outputData !== null && !isLoadingOutputAmount && (
           <div className="text-xs font-bold text-regular">
-            {slerfToMeme
-              ? `${tokenSymbol} to receive: ${Number(outputData.minAmountOut.toExact()).toLocaleString(undefined, { maximumFractionDigits: MEMECHAN_MEME_TOKEN_DECIMALS })}`
-              : `SLERF to receive: ${Number(outputData.minAmountOut.toExact()).toLocaleString(undefined, { maximumFractionDigits: MEMECHAN_QUOTE_TOKEN_DECIMALS })}`}
+            {coinToMeme
+              ? `${tokenSymbol} to receive: ${tokenData.symbol === "SOL" ? parseChainValue(Number(outputData.minAmountOut.toString()), MEMECHAN_MEME_TOKEN_DECIMALS, 6) : parseChainValue(Number(outputData.minAmountOut.toString()), 0, 2)}`
+              : `${tokenData.displayName} to receive: ${parseChainValue(Number(outputData.minAmountOut.toString()), QUOTE_TOKEN_DECIMALS, 12)}`}
           </div>
         )}
       </div>

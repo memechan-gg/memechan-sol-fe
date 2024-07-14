@@ -2,6 +2,7 @@ import type { Config } from "tailwindcss";
 import defaultTheme from "tailwindcss/defaultTheme";
 
 const config: Config = {
+  darkMode: "class",
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -13,13 +14,16 @@ const config: Config = {
       colors: {
         "link-quote-hover": "#FF0000",
         title: "#CF1105",
-        regular: "#800000",
+        regular: "var(--color-text-regular)",
         link: "#0D00EE",
         pink: "#FF28FB",
         green: "#789922",
         line: "#5A5A5A",
         quote: "#030080",
         blue: "#0047FF",
+        deepGreen: "#117743",
+        lightRose: "#E0BFB7",
+        lightGray: "#D1D5DB",
       },
       backgroundColor: {
         "link-quote-hover": "#FF0000",
@@ -32,6 +36,8 @@ const config: Config = {
         quote: "#030080",
         blue: "#0047FF",
         board: "#fca",
+        lightPink: "#F0E0D6",
+        dark: "#121212",
       },
       borderColor: {
         "link-quote-hover": "#FF0000",
@@ -43,6 +49,7 @@ const config: Config = {
         line: "#5A5A5A",
         quote: "#030080",
         blue: "#0047FF",
+        dustyPink: "#D9BFB7",
       },
     },
     screens: {

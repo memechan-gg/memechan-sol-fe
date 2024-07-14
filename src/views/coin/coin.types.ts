@@ -1,11 +1,12 @@
 import { useLiveCoinUniqueHoldersFromBE } from "@/hooks/live/useLiveCoinUniqueHoldersFromBE";
-import { useBoundPool } from "@/hooks/presale/useBoundPool";
 import { usePresaleCoinUniqueHoldersFromBE } from "@/hooks/presale/usePresaleCoinUniqueHoldersFromBE";
 import { useSeedPool } from "@/hooks/presale/useSeedPool";
 import { useStakingPoolFromApi } from "@/hooks/staking/useStakingPoolFromApi";
 import { useTickets } from "@/hooks/useTickets";
 import { LivePoolData, SeedPoolData } from "@/types/pool";
-import { ParsedMemeTicket, SolanaToken } from "@avernikoz/memechan-sol-sdk";
+import { ParsedMemeTicket, SolanaToken, TokenInfo, getBoundPoolClientFromId } from "@avernikoz/memechan-sol-sdk";
+
+type BoundPool = Awaited<ReturnType<typeof getBoundPoolClientFromId>>["boundPoolInstance"]["poolObjectData"] | null;
 
 export type UnavailableTicketsToSellDialogParams = {
   unavailableTickets: ParsedMemeTicket[];
@@ -15,7 +16,7 @@ export type UnavailableTicketsToSellDialogParams = {
 export type PresaleCoinSwapProps = {
   tokenSymbol: string;
   pool: SeedPoolData;
-  boundPool: ReturnType<typeof useBoundPool>;
+  boundPool?: BoundPool;
   ticketsData: ReturnType<typeof useTickets>;
 };
 
@@ -25,7 +26,7 @@ export type LiveCoinSwapProps = {
 };
 
 export type SwapButtonProps = {
-  slerfToMeme: boolean;
+  coinToMeme: boolean;
   onClick: () => void;
   label: string;
 };
@@ -54,16 +55,19 @@ export type HoldersProps = {
 export type LiveCoinHoldersProps = {
   coinMetadata: SolanaToken;
   uniqueHoldersData: ReturnType<typeof useLiveCoinUniqueHoldersFromBE>;
+  livePool: LivePoolData;
 };
 
 export type LiveCoinInfoProps = {
   metadata: SolanaToken;
+  quoteMint: string;
   livePoolAddress: string;
 };
 
 export type PresaleCoinInfoProps = {
   metadata: SolanaToken;
-  boundPool: ReturnType<typeof useBoundPool>;
+  boundPool?: BoundPool;
+  tokenInfo: TokenInfo;
 };
 
 export type UnstakeDialogProps = Omit<StakingPoolProps, "memeMint"> & {

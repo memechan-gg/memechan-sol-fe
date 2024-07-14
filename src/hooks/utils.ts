@@ -1,4 +1,5 @@
-import { MEMECHAN_MEME_TOKEN_DECIMALS, ParsedMemeTicket } from "@avernikoz/memechan-sol-sdk";
+import { MEMECHAN_MEME_TOKEN_DECIMALS, ParsedMemeTicket, getTokenInfoByMint } from "@avernikoz/memechan-sol-sdk";
+import { PublicKey } from "@solana/web3.js";
 import BigNumber from "bignumber.js";
 
 export const getTicketsData = (data: ParsedMemeTicket[] | undefined) => {
@@ -56,4 +57,18 @@ export const getTicketsData = (data: ParsedMemeTicket[] | undefined) => {
     unavailableTicketsAmount: formattedUnavailableAmount,
     unavailableTickets,
   };
+};
+
+type TokenInfoVariant =
+  | { variant: "string"; tokenAddress: string }
+  | { variant: "publicKey"; tokenAddress: PublicKey }
+  | { variant?: undefined; tokenAddress: string };
+
+export const getTokenInfo = ({ variant, tokenAddress }: TokenInfoVariant) => {
+  if (variant === "publicKey" && tokenAddress instanceof PublicKey) {
+    return getTokenInfoByMint(tokenAddress);
+  } else if (variant === "string" || !variant) {
+    return getTokenInfoByMint(new PublicKey(tokenAddress));
+  }
+  throw new Error("Invalid variant or quoteMint type");
 };

@@ -2,6 +2,9 @@ import { PoolApiInstance } from "@/common/solana";
 import useSWR from "swr";
 
 const fetchLivePool = async (memeMint: string) => {
+  if (!memeMint) {
+    return undefined;
+  }
   try {
     const livePool = await PoolApiInstance.getLivePoolByTokenAddress(memeMint);
 
