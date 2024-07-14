@@ -18,7 +18,9 @@ export const Chart = (settingsProps: PropsSettings) => {
   const mergedSettings = {
     ...settings,
     ...settingsProps,
+    contractName: `${settingsProps.tokenName}/${settingsProps.symbol || settings.symbol}`,
   };
+
   const [isLoaded, setIsLoaded] = useState(false);
   useEffect(() => {
     console.log("initialising trading view with app settings", mergedSettings);

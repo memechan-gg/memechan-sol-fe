@@ -18,6 +18,6 @@ export interface EnvSettings {
 
 export interface PropsSettings {
   readonly address: string;
-  readonly symbol?: string;
-  readonly contractName: string;
+  tokenName: string;
+  symbol?: string;
 }
