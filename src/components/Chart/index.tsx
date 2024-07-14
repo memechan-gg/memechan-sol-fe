@@ -10,7 +10,8 @@ export const settings: EnvSettings = {
   historicalPricesEndpoint: process.env.NEXT_PUBLIC_CHART_HISTORICAL_PRICES_ENDPOINT || "",
   currentPriceEndpoint: process.env.NEXT_PUBLIC_CHART_CURRENT_PRICE_ENDPOINT || "",
   realtimeReloadInterval: Number(process.env.NEXT_PUBLIC_CHART_REALTIME_RELOAD_INTERVAL) || 3000,
-  priceDigitsAfterComma: Number(process.env.NEXT_PUBLIC_CHART_PRICE_DIGITS_AFTER_COMMA) || 6,
+  priceDigitsAfterComma: Number(process.env.NEXT_PUBLIC_CHART_PRICE_DIGITS_AFTER_COMMA) || 10,
+  symbol: process.env.NEXT_PUBLIC_CHART_SYMBOL || "USD",
 };
 
 export const Chart = (settingsProps: PropsSettings) => {

@@ -87,7 +87,7 @@ export async function createMemeCoinAndPool({
   const createPoolTransaction = VersionedTransaction.deserialize(buffer);
 
   console.log("createPoolTransaction:", createPoolTransaction);
-  return {createPoolTransaction, memeMint: result.memeMint};
+  return { createPoolTransaction, memeMint: result.memeMint };
 }
 
 export async function handleAuthentication(address: string, sign: (message: Uint8Array) => Promise<Uint8Array>) {

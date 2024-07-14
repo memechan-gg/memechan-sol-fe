@@ -91,7 +91,6 @@ export function PresaleCoin({ coinMetadata, seedPoolData }: { coinMetadata: Sola
               {tokenData ? (
                 <Chart
                   address={seedPoolData.address}
-                  symbol={tokenData.displayName}
                   contractName={`${coinMetadata.symbol.toUpperCase()}/${tokenData.displayName}`}
                 />
               ) : null}

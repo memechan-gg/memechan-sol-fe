@@ -11,6 +11,7 @@ import {
   sleep,
 } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
+import { track } from "@vercel/analytics";
 import BigNumber from "bignumber.js";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -27,7 +28,6 @@ import {
   validateCoinParamsWithImage,
   validateCoinParamsWithoutImage,
 } from "./create-coin.utils";
-import { track } from "@vercel/analytics";
 
 export function CreateCoin() {
   const {
@@ -90,7 +90,7 @@ export function CreateCoin() {
         ...dataWOImage,
       };
 
-      track('CreateMemecoin_Start', trackData);
+      track("CreateMemecoin_Start", trackData);
 
       setState("sign");
       const walletAddress = publicKey.toBase58();
@@ -101,7 +101,7 @@ export function CreateCoin() {
       let ipfsUrl = await uploadImageToIPFS(data.image[0]);
       validateCoinParamsWithImage(data, ipfsUrl);
 
-      const {createPoolTransaction, memeMint} = await createMemeCoinAndPool({
+      const { createPoolTransaction, memeMint } = await createMemeCoinAndPool({
         data,
         ipfsUrl,
         publicKey,
@@ -189,7 +189,7 @@ export function CreateCoin() {
 
       await sleep(3000);
 
-      track('CreateMemecoin_Success', trackData);
+      track("CreateMemecoin_Success", trackData);
 
       router.push(`/coin/${memeMint}`);
     } catch (e) {
