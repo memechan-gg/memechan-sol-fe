@@ -157,6 +157,8 @@ export const LiveCoinSwap = ({
     if (!publicKey || !outputData || !signTransaction || !coinBalance) return;
 
     const swapTrackObj = {
+      tokenAddress,
+      tokenSymbol,
       inputAmount,
       memeBalance: +(memeBalance?.toString() ?? 0),
       outputAmount: +outputData.minAmountOut.toString(),
