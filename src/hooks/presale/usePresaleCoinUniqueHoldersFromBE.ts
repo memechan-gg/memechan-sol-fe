@@ -1,12 +1,12 @@
 import { BOUND_POOL_HOLDERS_INTERVAL, MAX_HOLDERS_COUNT } from "@/config/config";
-import { BE_URL, TokenApiHelper } from "@avernikoz/memechan-sol-sdk";
+import { TokenApiHelper } from "@avernikoz/memechan-sol-sdk";
 import { PublicKey } from "@solana/web3.js";
 import BigNumber from "bignumber.js";
 import useSWR from "swr";
 
 const fetchPresaleCoinUniqueHoldersFromBE = async (memeMint: string) => {
   try {
-    const holdersMap = await TokenApiHelper.getBondingPoolHoldersMap(new PublicKey(memeMint), BE_URL);
+    const holdersMap = await TokenApiHelper.getBondingPoolHoldersMap(new PublicKey(memeMint), process.env.BE_URL);
 
     const holders = Array.from(holdersMap.values()).filter(({ amount }) => !new BigNumber(amount.toString()).isZero());
 

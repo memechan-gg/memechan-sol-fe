@@ -1,5 +1,4 @@
 import { ThreadBoard } from "@/components/thread";
-import { BE_URL } from "@avernikoz/memechan-sol-sdk";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { CoinItem } from "./coin-item";
@@ -29,7 +28,7 @@ export function Profile({ address, coin }: ProfileProps) {
       try {
         // TODO: Use SDK methods instead of direct fetch
         const response = await fetch(
-          `${BE_URL}/sol/holders?walletAddress=${address}&sortBy=tokenAmountInPercentage&direction=asc`,
+          `${process.env.BE_URL}/sol/holders?walletAddress=${address}&sortBy=tokenAmountInPercentage&direction=asc`,
         );
         if (!response.ok) {
           throw new Error(`Error fetching tokens: ${response.statusText}`);
@@ -40,13 +39,13 @@ export function Profile({ address, coin }: ProfileProps) {
           const tokenPromises = data.result.map(async (token: any) => {
             try {
               // TODO: Use SDK methods instead of direct fetch
-              let presaleResponse = await fetch(`${BE_URL}/sol/presale/token?tokenAddress=${token.tokenAddress}`);
+              let presaleResponse = await fetch(`${process.env.BE_URL}/sol/presale/token?tokenAddress=${token.tokenAddress}`);
               let presaleData = await presaleResponse.json();
 
               // Check if presaleData is an empty object
               if (Object.keys(presaleData).length === 0) {
                 // TODO: Use SDK methods instead of direct fetch
-                presaleResponse = await fetch(`${BE_URL}/sol/live/token?tokenAddress=${token.tokenAddress}`);
+                presaleResponse = await fetch(`${process.env.BE_URL}/sol/live/token?tokenAddress=${token.tokenAddress}`);
                 presaleData = await presaleResponse.json();
               }
 

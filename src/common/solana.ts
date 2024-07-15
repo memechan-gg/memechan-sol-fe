@@ -1,4 +1,4 @@
-import { Auth, BE_URL, ChartApi, PoolAPI, SocialAPI, TokenAPI } from "@avernikoz/memechan-sol-sdk";
+import { Auth, ChartApi, PoolAPI, SocialAPI, TokenAPI } from "@avernikoz/memechan-sol-sdk";
 import { Keypair, PublicKey } from "@solana/web3.js";
 
 export const SIMULATION_KEYPAIR = Keypair.fromSeed(
@@ -11,11 +11,11 @@ export const SIMULATION_KEYPAIR = Keypair.fromSeed(
   ),
 );
 
-export const AuthInstance = new Auth(BE_URL);
-export const TokenApiInstance = new TokenAPI(BE_URL);
-export const PoolApiInstance = new PoolAPI(BE_URL);
-export const SocialApiInstance = new SocialAPI(BE_URL);
-export const ChartApiInstance = new ChartApi(BE_URL);
+export const AuthInstance = new Auth(process.env.BE_URL);
+export const TokenApiInstance = new TokenAPI(process.env.BE_URL);
+export const PoolApiInstance = new PoolAPI(process.env.BE_URL);
+export const SocialApiInstance = new SocialAPI(process.env.BE_URL);
+export const ChartApiInstance = new ChartApi(process.env.BE_URL);
 
 // export const MEMECHAN_QUOTE_TOKEN = "WSOL";
 // export const MEMECHAN_QUOTE_TOKEN_DECIMALS = TOKEN_INFOS[MEMECHAN_QUOTE_TOKEN].decimals;
