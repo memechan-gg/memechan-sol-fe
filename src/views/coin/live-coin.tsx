@@ -5,6 +5,7 @@ import { useLiveCoinUniqueHoldersFromBE } from "@/hooks/live/useLiveCoinUniqueHo
 import { useLiveMemePrice } from "@/hooks/live/useLiveMemePrice";
 import { useSeedPool } from "@/hooks/presale/useSeedPool";
 import { useStakingPoolFromApi } from "@/hooks/staking/useStakingPoolFromApi";
+import { useMemePriceFromBE } from "@/hooks/useMemePriceFromBE";
 import { LivePoolData } from "@/types/pool";
 import { formatNumber } from "@/utils/formatNumber";
 import { SolanaToken } from "@avernikoz/memechan-sol-sdk";
