@@ -15,7 +15,14 @@ import type { AppProps } from "next/app";
 import Head from "next/head";
 import { Toaster } from "react-hot-toast";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnMount: false, // Do not refetch on mount
+      refetchOnWindowFocus: false, // Do not refetch when window regains focus
+    },
+  },
+});
 
 export default function App({ Component, pageProps }: AppProps) {
   return (

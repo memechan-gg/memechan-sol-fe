@@ -1,24 +1,23 @@
 import { BALANCE_INTERVAL } from "@/config/config";
 import { useConnection } from "@/context/ConnectionContext";
 import { useWallet } from "@solana/wallet-adapter-react";
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 
 export const useSolanaBalance = () => {
   const { connection } = useConnection();
   const { publicKey } = useWallet();
 
-  const { data: balance } = useSWR(
-    publicKey ? [`solana-balance/${publicKey}`, publicKey, connection] : null,
-    async ([_, publicKey, connection]) => {
-      const balance = await connection.getBalance(publicKey);
-      return balance / 1e9; // Convert lamports to SOL
+  return useQuery({
+    queryKey: [[`solana-balance/${publicKey}`, publicKey, connection]],
+    queryFn: async () => {
+      if (publicKey) {
+        const balance = await connection.getBalance(publicKey);
+        return balance / 1e9; // Convert lamports to SOL
+      }
     },
-    {
-      refreshInterval: BALANCE_INTERVAL,
-      revalidateIfStale: false,
-      revalidateOnFocus: false,
-    },
-  );
-
-  return balance;
+    enabled: !!publicKey,
+    staleTime: Infinity,
+    refetchOnWindowFocus: false,
+    refetchInterval: BALANCE_INTERVAL,
+  });
 };

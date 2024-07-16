@@ -28,6 +28,8 @@ export const MAX_SLIPPAGE = 50;
 export const MIN_SLIPPAGE = 0;
 
 // Refresh Intervals
+export const STALE_TIME = 30000;
+
 export const LIVE_POOL_PRICE_INTERVAL = 15_000;
 export const LIVE_POOL_HOLDERS_INTERVAL = 15_000;
 export const IS_LIVE_POOL_CREATED_INTERVAL = 15_000;

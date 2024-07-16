@@ -14,7 +14,7 @@ import { CommentsPanel } from "./comments-panel";
 import { LiveCoinSidebar } from "./sidebar/live-coin-sidebar";
 
 export function LiveCoin({ coinMetadata, livePoolData }: { coinMetadata: SolanaToken; livePoolData: LivePoolData }) {
-  const price = useMemePriceFromBE({ memeMint: coinMetadata.address, poolType: "livePool" });
+  const { data: price } = useMemePriceFromBE({ memeMint: coinMetadata.address, poolType: "livePool" });
   const seedPoolData = useSeedPool(coinMetadata.address);
   const stakingPoolFromApi = useStakingPoolFromApi(coinMetadata.address);
   const uniqueHoldersData = useLiveCoinUniqueHoldersFromBE(coinMetadata.address, stakingPoolFromApi?.address);
