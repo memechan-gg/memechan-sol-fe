@@ -1,8 +1,8 @@
-import { LIVE_POOL_PRICE_INTERVAL } from "@/config/config";
+import { LIVE_POOL_PRICE_INTERVAL, STALE_TIME } from "@/config/config";
 import { useConnection } from "@/context/ConnectionContext";
 import { MemechanClient, MemechanClientV2, getLivePoolClientFromId } from "@avernikoz/memechan-sol-sdk";
 import { Connection, PublicKey } from "@solana/web3.js";
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 import { useSlerfPrice } from "../useSlerfPrice";
 
 const fetchLiveMemePrice = async (
@@ -24,17 +24,19 @@ const fetchLiveMemePrice = async (
 };
 
 export function useLiveMemePrice(raydiumPoolAddress: string) {
-  const slerfPrice = useSlerfPrice();
+  const { data: slerf } = useSlerfPrice();
   const { memechanClient, memechanClientV2, connection } = useConnection();
 
-  const { data: memePrice } = useSWR(
-    slerfPrice
-      ? [`price-${raydiumPoolAddress}`, slerfPrice, raydiumPoolAddress, memechanClient, memechanClientV2, connection]
-      : null,
-    ([url, price, poolAddress, memechanClient, memechanClientV2]) =>
-      fetchLiveMemePrice(price, poolAddress, memechanClient, memechanClientV2, connection),
-    { refreshInterval: LIVE_POOL_PRICE_INTERVAL, revalidateIfStale: false, revalidateOnFocus: false },
-  );
-
-  return memePrice;
+  return useQuery({
+    queryKey: [`price`, raydiumPoolAddress],
+    queryFn: () => {
+      if (slerf?.price && raydiumPoolAddress)
+        return fetchLiveMemePrice(slerf.price, raydiumPoolAddress, memechanClient, memechanClientV2, connection);
+      return undefined;
+    },
+    enabled: !!slerf?.price && !!raydiumPoolAddress,
+    refetchOnWindowFocus: false,
+    staleTime: STALE_TIME,
+    refetchInterval: LIVE_POOL_PRICE_INTERVAL,
+  });
 }
