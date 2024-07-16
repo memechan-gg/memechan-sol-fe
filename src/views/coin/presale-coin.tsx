@@ -17,7 +17,7 @@ import { PresaleCoinSidebar } from "./sidebar/presale-coin-sidebar";
 
 export function PresaleCoin({ coinMetadata, seedPoolData }: { coinMetadata: SolanaToken; seedPoolData: SeedPoolData }) {
   const { data: price } = useMemePriceFromBE({ memeMint: coinMetadata.address, poolType: "seedPool" });
-  const uniqueHoldersData = usePresaleCoinUniqueHoldersFromBE(coinMetadata.address);
+  const { data: uniqueHoldersData } = usePresaleCoinUniqueHoldersFromBE(coinMetadata.address);
   const ticketsData = useTickets({
     poolAddress: seedPoolData.address,
     poolStatus: "PRESALE",

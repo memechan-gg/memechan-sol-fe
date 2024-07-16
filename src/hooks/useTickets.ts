@@ -3,8 +3,9 @@ import { PoolStatus } from "@/types/pool";
 import { MemechanClient, MemechanClientV2, MemeTicketClient, MemeTicketClientV2 } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
+import { useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
 import toast from "react-hot-toast";
-import useSWR from "swr";
 import { PoolVersion, usePoolVersion } from "./usePoolVersion";
 import { getTicketsData } from "./utils";
 
@@ -48,28 +49,31 @@ export function useTickets({
   const { publicKey } = useWallet();
   const { memechanClient, memechanClientV2 } = useConnection();
   const version = usePoolVersion(poolStatus, poolAddress, livePoolAddress);
-  const shouldFetch = poolAddress && publicKey && poolStatus && version;
+  const shouldFetch = !!(poolAddress && publicKey && poolStatus && version);
 
-  const { data, mutate, isLoading } = useSWR(
-    shouldFetch
-      ? [`tickets-${poolAddress}`, poolAddress, publicKey, memechanClient, memechanClientV2, poolStatus, version]
-      : null,
-    ([_, pool, user, client, clientV2, status, version]) =>
-      fetchTickets(pool || null, user || null, client, clientV2, status, version),
-    {
-      refreshInterval,
-      revalidateIfStale: false,
-      revalidateOnFocus: false,
+  const { data, ...rest } = useQuery({
+    queryKey: ["tickets", poolAddress, publicKey, poolStatus, version],
+    queryFn: () => {
+      if (poolAddress && publicKey) {
+        return fetchTickets(poolAddress, publicKey, memechanClient, memechanClientV2, poolStatus, version);
+      }
     },
+    enabled: shouldFetch,
+    staleTime: Infinity,
+    refetchInterval: refreshInterval,
+  });
+
+  const ticketsData = useMemo(() => {
+    return getTicketsData(data?.tickets);
+  }, [data?.tickets]);
+
+  return useMemo(
+    () => ({
+      ...data,
+      ...ticketsData,
+      ...rest,
+      refresh: rest.refetch,
+    }),
+    [data, rest, ticketsData],
   );
-
-  const ticketsData = getTicketsData(data?.tickets);
-
-  return {
-    ...ticketsData,
-    isLoading: isLoading,
-    freeIndexes: data?.freeIndexes,
-    lockedIndexes: data?.lockedIndexes,
-    refresh: mutate,
-  };
 }

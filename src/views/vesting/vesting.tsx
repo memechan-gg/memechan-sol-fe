@@ -22,7 +22,7 @@ export const Vesting = () => {
 
   const { publicKey, sendTransaction } = useWallet();
   const { connection } = useConnection();
-  const { vesting, connected, isLoading, refresh: refreshVesting } = useVesting();
+  const { vesting, connected, isLoading, refetch: refreshVesting } = useVesting();
 
   const updateClaimableAmount = useCallback(async () => {
     if (!vesting) return;

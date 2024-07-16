@@ -15,10 +15,10 @@ import { LiveCoinSidebar } from "./sidebar/live-coin-sidebar";
 
 export function LiveCoin({ coinMetadata, livePoolData }: { coinMetadata: SolanaToken; livePoolData: LivePoolData }) {
   const { data: price } = useMemePriceFromBE({ memeMint: coinMetadata.address, poolType: "livePool" });
-  const seedPoolData = useSeedPool(coinMetadata.address);
-  const stakingPoolFromApi = useStakingPoolFromApi(coinMetadata.address);
-  const uniqueHoldersData = useLiveCoinUniqueHoldersFromBE(coinMetadata.address, stakingPoolFromApi?.address);
-
+  const { data: seedPoolData } = useSeedPool(coinMetadata.address);
+  const { data: stakingPoolFromApi } = useStakingPoolFromApi(coinMetadata.address);
+  const { data: uniqueHoldersData } = useLiveCoinUniqueHoldersFromBE(coinMetadata.address, stakingPoolFromApi?.address);
+  // uniqueHoldersData.
   // Initialize state with 'birdeye' as the default
   const [selectedChart, setSelectedChart] = useState<"birdeye" | "dexscreener">("dexscreener");
 

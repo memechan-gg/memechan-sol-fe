@@ -1,6 +1,5 @@
 import { ChartApiInstance } from "@/common/solana";
-import { BOUND_POOL_PRICE_INTERVAL } from "@/config/config";
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 
 const fetchPresaleMemePrice = async (poolAddress: string) => {
   try {
@@ -13,11 +12,10 @@ const fetchPresaleMemePrice = async (poolAddress: string) => {
 };
 
 export function usePresaleMemePrice(boundPoolAddress?: string) {
-  const { data: memePrice } = useSWR(
-    boundPoolAddress ? [`price-${boundPoolAddress}`, boundPoolAddress] : null,
-    ([url, pool]) => fetchPresaleMemePrice(pool),
-    { refreshInterval: BOUND_POOL_PRICE_INTERVAL, revalidateIfStale: false, revalidateOnFocus: false },
-  );
-
-  return memePrice;
+  return useQuery({
+    queryKey: ["price", "presale", boundPoolAddress],
+    queryFn: () => (boundPoolAddress ? fetchPresaleMemePrice(boundPoolAddress) : undefined),
+    enabled: !!boundPoolAddress,
+    staleTime: Infinity,
+  });
 }

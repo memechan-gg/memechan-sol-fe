@@ -1,5 +1,5 @@
 import { PoolApiInstance } from "@/common/solana";
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 
 const fetchAllLivePools = async () => {
   try {
@@ -12,7 +12,5 @@ const fetchAllLivePools = async () => {
 };
 
 export function useLivePools() {
-  const { data: livePools } = useSWR("live-pools", fetchAllLivePools, { refreshInterval: 5000 });
-
-  return livePools;
+  return useQuery({ queryKey: ["live-pools"], queryFn: fetchAllLivePools, refetchInterval: 5000 });
 }

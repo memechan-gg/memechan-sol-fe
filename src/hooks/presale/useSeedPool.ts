@@ -1,5 +1,5 @@
 import { PoolApiInstance } from "@/common/solana";
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 
 const fetchSeedPoolByMeme = async (memeMint: string) => {
   try {
@@ -16,11 +16,10 @@ const fetchSeedPoolByMeme = async (memeMint: string) => {
 };
 
 export function useSeedPool(memeMint?: string) {
-  const { data: seedPool, isLoading } = useSWR(
-    memeMint ? [`seed-pool-${memeMint}`, memeMint] : null,
-    ([url, mint]) => fetchSeedPoolByMeme(mint),
-    { revalidateIfStale: false, revalidateOnFocus: false },
-  );
-
-  return { seedPool, isLoading };
+  return useQuery({
+    queryKey: ["seed-pool", memeMint],
+    queryFn: () => (memeMint ? fetchSeedPoolByMeme(memeMint) : undefined),
+    enabled: !!memeMint,
+    staleTime: Infinity,
+  });
 }
