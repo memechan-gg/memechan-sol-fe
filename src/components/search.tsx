@@ -1,23 +1,19 @@
-import SearchIcon from "@/ui-library/icons/search-icon.svg";
-import Image from "next/image";
-import { Dispatch, SetStateAction } from "react";
-import { Button } from "../ui-library/Button";
-export const Search = ({
-  isSearchActive,
-  setIsSearchActive,
-}: {
-  isSearchActive: boolean;
-  setIsSearchActive: Dispatch<SetStateAction<boolean>>;
-}) => {
+import { useState } from "react";
+import { FaSearch } from "react-icons/fa";
+import { Button } from "./ui-library/Button";
+
+export const Search = () => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
   return (
     <div
-      className={`ml-1 pink-border dark flex items-center border-2 rounded ${isSearchActive ? "w-auto" : "w-10"} transition-all duration-300 overflow-hidden`}
+      className={`pink-border dark flex items-center border-2 rounded ${isExpanded ? "w-72" : "w-10"} transition-all duration-300 overflow-hidden`}
     >
-      <Button className="flex items-center justify-center w-10 h-10" onClick={() => setIsSearchActive(!isSearchActive)}>
-        <Image src={SearchIcon} alt="search icon" />
+      <Button className="flex items-center justify-center w-10 h-10" onClick={() => setIsExpanded(!isExpanded)}>
+        <FaSearch className="primary-pink" />
       </Button>
-      {isSearchActive && (
-        <input type="text" className=" w-auto bg-inherit px-2 py-1 border-none outline-none" placeholder="Search..." />
+      {isExpanded && (
+        <input type="text" className="w-full px-2 py-1 border-none outline-none" placeholder="Search..." />
       )}
     </div>
   );

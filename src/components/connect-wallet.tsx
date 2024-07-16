@@ -1,9 +1,9 @@
 import { Popover } from "@headlessui/react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { track } from "@vercel/analytics";
-import Image from "next/image";
-import MenuIcon from "../ui-library/icons/menu-icon.svg";
-import SolanaIcon from "../ui-library/icons/solana-icon.svg";
+import { FaEllipsisV } from "react-icons/fa";
+import { Button } from "./ui-library/Button";
+
 export const ConnectWallet = () => {
   const { disconnect, select, wallets, connect } = useWallet();
 
@@ -24,12 +24,12 @@ export const ConnectWallet = () => {
       <Popover.Button>
         <div
           role="button"
-          className="text-primaryPink text-xs font-bold h-10 w-[137px] justify-evenly rounded-sm bg-inherit border pink-border flex items-center"
+          className=" text-primaryPink h-10 w-[137px] justify-evenly rounded-sm bg-inherit border pink-border flex  items-center"
         >
           Connect
-          <div className=" w-10 pl-4 ml-2 p-1 rounded-none border-l border-primaryPink">
-            <Image src={MenuIcon} alt="menu icon" />
-          </div>
+          <Button className=" p-1 bg-dark rounded-none border-l border-primaryPink">
+            <FaEllipsisV size={15} />
+          </Button>
         </div>
       </Popover.Button>
       <Popover.Panel className="bg-dark p-3 top-20 h-max absolute z-10 flex flex-col w-full sm:w-[430px] left-0 sm:left-auto sm:transform sm:translate-x-[-50%] right-[-202px]">
