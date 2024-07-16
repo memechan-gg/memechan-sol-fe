@@ -1,7 +1,8 @@
-import { cn } from "@/utils";
 import { Popover } from "@headlessui/react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { track } from "@vercel/analytics";
+import { FaEllipsisV } from "react-icons/fa";
+import { Button } from "./ui-library/Button";
 
 export const ConnectWallet = () => {
   const { disconnect, select, wallets, connect } = useWallet();
@@ -23,12 +24,12 @@ export const ConnectWallet = () => {
       <Popover.Button>
         <div
           role="button"
-          className={cn(
-            "bg-title gap-1 bg-opacity-15 items-center text-xs justify-center flex flex-row font-bold text-regular px-4 py-2 rounded-lg transition-all duration-300 hover:bg-opacity-25",
-          )}
+          className=" text-primaryPink h-10 w-[137px] justify-evenly rounded-sm bg-inherit border pink-border flex  items-center"
         >
           Connect
-          <span className="lg:flex hidden">Wallet</span>
+          <Button className=" p-1 bg-dark rounded-none border-l border-primaryPink">
+            <FaEllipsisV size={15} />
+          </Button>
         </div>
       </Popover.Button>
       <Popover.Panel className="absolute z-10 flex flex-col">

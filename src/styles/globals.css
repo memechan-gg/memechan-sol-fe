@@ -14,7 +14,7 @@ body {
 }
 
 .dark body {
-  background: #121212;
+  background: #222222;
 }
 
 .gradient-bg {
@@ -69,4 +69,13 @@ a {
 
 .dark {
   --color-text-regular: #d1d5db;
+}
+.primary-btn {
+  background-color: #f95292;
+}
+.primary-pink {
+  color: #f95292;
+}
+.pink-border {
+  border: #f95292 solid;
 }

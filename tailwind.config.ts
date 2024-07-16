@@ -24,6 +24,7 @@ const config: Config = {
         deepGreen: "#117743",
         lightRose: "#E0BFB7",
         lightGray: "#D1D5DB",
+        primaryPink: "#f95292",
       },
       backgroundColor: {
         "link-quote-hover": "#FF0000",
