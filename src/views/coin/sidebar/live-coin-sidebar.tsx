@@ -15,7 +15,7 @@ export function LiveCoinSidebar({
   stakingPoolFromApi,
 }: LiveCoinSidebarProps) {
   const ticketsData = useTickets({
-    poolAddress: seedPoolData.seedPool?.address,
+    poolAddress: seedPoolData?.address,
     poolStatus: "LIVE",
     refreshInterval: TICKETS_INTERVAL,
     livePoolAddress: pool.id,
