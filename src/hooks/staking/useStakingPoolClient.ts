@@ -1,7 +1,7 @@
 import { useConnection } from "@/context/ConnectionContext";
 import { MemechanClient, MemechanClientV2, getStakingPoolClientFromId } from "@avernikoz/memechan-sol-sdk";
 import { PublicKey } from "@solana/web3.js";
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 
 const fetchStakingPoolClient = async (poolAddress: string, client: MemechanClient, clientV2: MemechanClientV2) => {
   try {
@@ -15,10 +15,9 @@ const fetchStakingPoolClient = async (poolAddress: string, client: MemechanClien
 
 export function useStakingPoolClient(poolAddress?: string) {
   const { memechanClient, memechanClientV2 } = useConnection();
-
-  return useSWR(
-    poolAddress ? [`staking-pool-client-${poolAddress}`, poolAddress, memechanClient, memechanClientV2] : null,
-    ([_, pool, client, clientV2]) => fetchStakingPoolClient(pool, client, clientV2),
-    { revalidateIfStale: false, revalidateOnFocus: false },
-  );
+  return useQuery({
+    queryKey: ["staking-pool-client", poolAddress],
+    queryFn: () => (poolAddress ? fetchStakingPoolClient(poolAddress, memechanClient, memechanClientV2) : undefined),
+    enabled: !!poolAddress,
+  });
 }

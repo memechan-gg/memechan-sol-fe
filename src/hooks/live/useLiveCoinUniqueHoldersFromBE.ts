@@ -1,7 +1,7 @@
-import { LIVE_POOL_HOLDERS_INTERVAL, MAX_HOLDERS_COUNT } from "@/config/config";
+import { MAX_HOLDERS_COUNT } from "@/config/config";
 import { BE_URL, MEMECHAN_PROGRAM_ID, TokenApiHelper } from "@avernikoz/memechan-sol-sdk";
 import { PublicKey } from "@solana/web3.js";
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 
 const fetchLiveCoinUniqueHoldersFromBE = async (memeMint: string, stakingPoolAddress: string) => {
   try {
@@ -25,13 +25,10 @@ const fetchLiveCoinUniqueHoldersFromBE = async (memeMint: string, stakingPoolAdd
 };
 
 export const useLiveCoinUniqueHoldersFromBE = (memeMint?: string, stakingPoolAddress?: string) => {
-  const { data } = useSWR(
-    memeMint && stakingPoolAddress
-      ? [`be-holders-${memeMint}-${stakingPoolAddress}`, memeMint, stakingPoolAddress]
-      : null,
-    ([url, meme, stakingAddress]) => fetchLiveCoinUniqueHoldersFromBE(meme, stakingAddress),
-    { refreshInterval: LIVE_POOL_HOLDERS_INTERVAL, revalidateIfStale: false, revalidateOnFocus: false },
-  );
-
-  return data;
+  return useQuery({
+    queryKey: ["be-holders-live", memeMint, stakingPoolAddress],
+    queryFn: () =>
+      memeMint && stakingPoolAddress ? fetchLiveCoinUniqueHoldersFromBE(memeMint, stakingPoolAddress) : undefined,
+    enabled: !!memeMint && !!stakingPoolAddress,
+  });
 };

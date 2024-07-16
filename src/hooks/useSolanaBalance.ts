@@ -8,7 +8,7 @@ export const useSolanaBalance = () => {
   const { publicKey } = useWallet();
 
   return useQuery({
-    queryKey: [[`solana-balance/${publicKey}`, publicKey, connection]],
+    queryKey: [[`solana-balance`, publicKey]],
     queryFn: async () => {
       if (publicKey) {
         const balance = await connection.getBalance(publicKey);

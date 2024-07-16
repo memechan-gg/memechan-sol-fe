@@ -27,7 +27,7 @@ export const UnstakePopUp = ({
 
   const { publicKey, sendTransaction } = useWallet();
   const { connection } = useConnection();
-  const stakingPool = useStakingPool(stakingPoolFromApi?.address);
+  const { data: stakingPool } = useStakingPool(stakingPoolFromApi?.address);
   const { data: stakingPoolClient } = useStakingPoolClient(stakingPoolFromApi?.address);
 
   let cliffStartedTime: JSX.Element | string = <Skeleton width={35} />;

@@ -1,10 +1,10 @@
-import { BOUND_POOL_HOLDERS_INTERVAL, MAX_HOLDERS_COUNT } from "@/config/config";
+import { MAX_HOLDERS_COUNT } from "@/config/config";
 import { useConnection } from "@/context/ConnectionContext";
 import { getBoundPoolHolderPercentage } from "@/views/coin/sidebar/holders/utils";
 import { MemechanClient, MemechanClientV2, getBoundPoolClientFromId } from "@avernikoz/memechan-sol-sdk";
 import { PublicKey } from "@solana/web3.js";
+import { useQuery } from "@tanstack/react-query";
 import BigNumber from "bignumber.js";
-import useSWR from "swr";
 
 export const fetchPresaleCoinUniqueHolders = async (
   poolAddress: string,
@@ -39,11 +39,10 @@ export const fetchPresaleCoinUniqueHolders = async (
 export function usePresaleCoinUniqueHolders(poolAddress: string) {
   const { memechanClient, memechanClientV2 } = useConnection();
 
-  const { data: uniqueHolders } = useSWR(
-    [`unique-holders-${poolAddress}`, poolAddress, memechanClient, memechanClientV2],
-    ([_, pool, client, clientV2]) => fetchPresaleCoinUniqueHolders(pool, client, clientV2),
-    { refreshInterval: BOUND_POOL_HOLDERS_INTERVAL, revalidateIfStale: false, revalidateOnFocus: false },
-  );
-
-  return { holders: uniqueHolders?.slicedHolders, map: uniqueHolders?.map };
+  const { data, ...rest } = useQuery({
+    queryKey: ["unique-holders", poolAddress],
+    queryFn: () =>
+      poolAddress ? fetchPresaleCoinUniqueHolders(poolAddress, memechanClient, memechanClientV2) : undefined,
+  });
+  return { ...data, holders: data?.slicedHolders, map: data?.map, ...rest };
 }

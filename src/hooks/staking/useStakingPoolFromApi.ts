@@ -1,5 +1,5 @@
 import { PoolApiInstance } from "@/common/solana";
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 
 const fetchStakingPoolFromApi = async (memeMint: string) => {
   try {
@@ -12,11 +12,10 @@ const fetchStakingPoolFromApi = async (memeMint: string) => {
 };
 
 export function useStakingPoolFromApi(memeMint: string) {
-  const { data } = useSWR(
-    [`staking-pool-from-api-${memeMint}`, memeMint],
-    ([url, meme]) => fetchStakingPoolFromApi(meme),
-    { revalidateIfStale: false, revalidateOnFocus: false },
-  );
-
-  return data;
+  return useQuery({
+    queryKey: ["staking-pool-from-api"],
+    queryFn: () => (memeMint ? fetchStakingPoolFromApi(memeMint) : undefined),
+    enabled: !!memeMint,
+    staleTime: Infinity,
+  });
 }
