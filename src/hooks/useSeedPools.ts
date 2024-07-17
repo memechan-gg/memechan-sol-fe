@@ -1,5 +1,7 @@
 import { PoolApiInstance } from "@/common/solana";
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
+
+const SEED_POOL_REFRESH_INTERVAL = 5000;
 
 const fetchAllSeedPools = async () => {
   try {
@@ -12,7 +14,9 @@ const fetchAllSeedPools = async () => {
 };
 
 export function useSeedPools() {
-  const { data: seedPools } = useSWR("seed-pools", fetchAllSeedPools, { refreshInterval: 5000 });
-
-  return seedPools;
+  return useQuery({
+    queryKey: ["seed-pools"],
+    queryFn: fetchAllSeedPools,
+    refetchInterval: SEED_POOL_REFRESH_INTERVAL,
+  });
 }

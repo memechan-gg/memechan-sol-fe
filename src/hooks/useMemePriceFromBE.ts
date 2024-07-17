@@ -1,6 +1,6 @@
 import { ChartApiInstance } from "@/common/solana";
 import { POOL_PRICE_INTERVAL } from "@/config/config";
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 
 const fetchMemePriceFromBE = async (memeMint: string, poolType: "seedPool" | "livePool") => {
   try {
@@ -13,11 +13,10 @@ const fetchMemePriceFromBE = async (memeMint: string, poolType: "seedPool" | "li
 };
 
 export function useMemePriceFromBE({ memeMint, poolType }: { memeMint: string; poolType: "seedPool" | "livePool" }) {
-  const { data: memePrice } = useSWR(
-    [`price-${memeMint}`, memeMint, poolType],
-    ([url, meme, type]) => fetchMemePriceFromBE(meme, type),
-    { refreshInterval: POOL_PRICE_INTERVAL, revalidateIfStale: false, revalidateOnFocus: false },
-  );
-
-  return memePrice;
+  return useQuery({
+    queryKey: [`price-${memeMint}`, memeMint, poolType],
+    queryFn: () => fetchMemePriceFromBE(memeMint, poolType),
+    refetchInterval: POOL_PRICE_INTERVAL,
+    refetchOnWindowFocus: false,
+  });
 }

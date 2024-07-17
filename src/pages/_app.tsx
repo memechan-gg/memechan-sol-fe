@@ -7,6 +7,7 @@ import { SolanaProvider } from "@/components/provider/solana";
 import { ConnectionProvider } from "@/context/ConnectionContext";
 import { UserProvider } from "@/context/UserContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import NextProgress from "next-progress";
@@ -15,7 +16,14 @@ import type { AppProps } from "next/app";
 import Head from "next/head";
 import { Toaster } from "react-hot-toast";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnMount: false, // Do not refetch on mount
+      refetchOnWindowFocus: false, // Do not refetch when window regains focus
+    },
+  },
+});
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
@@ -66,6 +74,7 @@ export default function App({ Component, pageProps }: AppProps) {
                 </Layout>
               </ThemeProvider>
             </ConnectionProvider>
+            {process.env.VERCEL_ENV === "development" && <ReactQueryDevtools initialIsOpen={false} />}
           </QueryClientProvider>
           <Toaster position="bottom-right" />
         </UserProvider>

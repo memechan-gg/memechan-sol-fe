@@ -37,11 +37,11 @@ export const LiveCoinSwap = ({
 
   const { publicKey, sendTransaction, signTransaction } = useWallet();
   const { connection } = useConnection();
-  const livePoolClient = useLivePoolClient(address);
+  const { data: livePoolClient } = useLivePoolClient(address);
 
   const { balance: coinBalance } = useBalance(tokenData.mint.toString(), tokenData.decimals);
   const { balance: memeBalance } = useBalance(tokenAddress, MEMECHAN_MEME_TOKEN_DECIMALS);
-  const { tokenAccounts, refetch: refetchTokenAccounts } = useTokenAccounts();
+  const { data: tokenAccounts, refetch: refetchTokenAccounts } = useTokenAccounts();
 
   const getSwapOutputAmount = useCallback(
     async ({

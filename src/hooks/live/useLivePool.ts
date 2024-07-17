@@ -1,5 +1,5 @@
 import { PoolApiInstance } from "@/common/solana";
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 
 const fetchLivePool = async (memeMint: string) => {
   if (!memeMint) {
@@ -19,11 +19,10 @@ const fetchLivePool = async (memeMint: string) => {
 };
 
 export function useLivePool(memeMint?: string) {
-  const { data: livePool, isLoading } = useSWR(
-    memeMint ? [`live-pool-${memeMint}`, memeMint] : null,
-    ([url, meme]) => fetchLivePool(meme),
-    { revalidateIfStale: false, revalidateOnFocus: false },
-  );
-
-  return { livePool, isLoading };
+  return useQuery({
+    queryKey: ["live-pool", memeMint],
+    queryFn: () => (memeMint ? fetchLivePool(memeMint) : undefined),
+    enabled: !!memeMint,
+    staleTime: Infinity,
+  });
 }

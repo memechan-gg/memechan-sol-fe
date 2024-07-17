@@ -8,7 +8,7 @@ export function usePoolVersion(poolStatus: PoolStatus, poolAddress?: string, liv
   const livePoolAddressKey = poolStatus === "LIVE" ? livePoolAddress || poolAddress : null;
   const boundPoolAddressKey = poolStatus === "PRESALE" ? poolAddress : null;
 
-  const livePoolClient = useLivePoolClient(livePoolAddressKey);
+  const { data: livePoolClient } = useLivePoolClient(livePoolAddressKey);
   const { data: boundPoolClient } = useBoundPoolClient(boundPoolAddressKey);
 
   return (livePoolClient || boundPoolClient)?.version as PoolVersion;

@@ -1,3 +1,4 @@
+import { UserContextType } from "@/context/UserContext";
 import { cn } from "@/utils";
 import { RpcConnectionDialog } from "@/views/rpc-connection/rpc-connection-dialog";
 import { Popover } from "@headlessui/react";
@@ -8,7 +9,8 @@ import CloseIcon from "../ui-library/icons/close-icon.svg"; // Assuming you have
 import MenuIcon from "../ui-library/icons/menu-icon.svg";
 import TelegramIcon from "../ui-library/icons/telegram-icon.svg";
 import TwitterIcon from "../ui-library/icons/twitter-icon.svg";
-export default function SideMenu(props) {
+
+export default function SideMenu(props: { account: UserContextType; disconnect: () => Promise<void> }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
