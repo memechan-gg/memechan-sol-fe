@@ -1,86 +1,63 @@
 import { useUser } from "@/context/UserContext";
-import { cn } from "@/utils/cn";
-import { RpcConnectionDialog } from "@/views/rpc-connection/rpc-connection-dialog";
-import { Popover } from "@headlessui/react";
-import { CaretDown } from "@phosphor-icons/react/CaretDown";
 import { useWallet } from "@solana/wallet-adapter-react";
 import Link from "next/link";
-import { Button } from "./button";
+import { useState } from "react";
+import { Button } from "../ui-library/Button";
 import { ConnectWallet } from "./connect-wallet";
-import DarkModeToggle from "./dark-mode-toggle";
 import { Logo } from "./logo";
+import { Search } from "./search";
+import SideMenu from "./side-menu";
 
 export const Header = () => {
   const account = useUser();
-  const { disconnect } = useWallet();
+  const { disconnect, connected } = useWallet();
+  const [isSearchActive, setIsSearchActive] = useState(false);
 
   return (
-    <header className="relative fixed top-0 w-full lg:bg-transparent bg-board dark:bg-dark z-10">
-      <div className="container mx-auto px-4 py-2 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 gap-2">
-          <div className="flex items-center w-full">
-            <Link href="/" className="font-bold text-lg">
-              <Logo />
-            </Link>
-          </div>
-          <div className="flex flex-col xxs:flex-row items-center gap-2">
-            <Link
-              href="https://docs.memechan.gg/"
-              className="bg-title bg-opacity-15 items-center text-xs justify-center flex flex-row gap-2 font-bold text-regular px-4 py-2 rounded-lg transition-all duration-300 hover:bg-opacity-25"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Docs
-            </Link>
-            <Button>
-              <img src="/tokens/solana.png" className="w-4 h-4" alt="Solana" />
-              Solana
-              <CaretDown className="w-4 h-4" />
-            </Button>
-            <DarkModeToggle />
-            {account.address ? (
-              <Popover>
-                <Popover.Button>
-                  <div
-                    role="button"
-                    className={cn(
-                      "bg-title bg-opacity-15 items-center text-xs justify-center flex flex-row gap-2 font-bold text-regular px-4 py-2 rounded-lg transition-all duration-300 hover:bg-opacity-25",
-                    )}
-                  >
-                    {account.address.slice(0, 3)}...
-                    {account.address.slice(-3)}
-                  </div>
-                </Popover.Button>
-                <Popover.Panel className="absolute z-10 flex flex-col">
-                  <Link href={`/profile/${account.address}`}>
-                    <div
-                      role="button"
-                      className="bg-white w-full text-regular text-xs text-left p-2 hover:bg-regular hover:text-white"
-                    >
-                      Profile
-                    </div>
-                  </Link>
-                  <Link href={`/vesting`}>
-                    <div
-                      role="button"
-                      className="bg-white w-full text-regular text-xs text-left p-2 hover:bg-regular hover:text-white"
-                    >
-                      $CHAN vesting
-                    </div>
-                  </Link>
-                  <RpcConnectionDialog />
-                  <button
-                    onClick={() => disconnect()}
-                    className="bg-white text-regular text-xs text-left p-2 hover:bg-regular hover:text-white"
-                  >
-                    Disconnect
-                  </button>
-                </Popover.Panel>
-              </Popover>
-            ) : (
-              <ConnectWallet />
-            )}
-          </div>
+    <header className=" bg-dark bottom-border relative top-0 w-full lg:bg-transparent z-10">
+      <div className=" mx-0 sm:mx-auto px-2 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16 gap-1">
+          {!isSearchActive ? (
+            <>
+              <div className="flex items-center">
+                <Link href="/" className="font-bold text-lg w-10 h-10">
+                  <Logo />
+                </Link>
+                <Link href="/create">
+                  <Button className="ml-2 w-[165px] text-white primary-btn h-10 rounded-sm">Create Memecoin</Button>
+                </Link>
+              </div>
+              <div className="hidden items-center sm:flex flex-grow justify-center gap-4">
+                <Link
+                  href="https://docs.memechan.gg/"
+                  className="text-xs font-bold text-regular"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Docs
+                </Link>
+                <Link href="/" className="text-xs font-bold text-regular">
+                  Home
+                </Link>
+                <Link href={`/profile/${account.address}`} className="text-xs font-bold text-regular">
+                  Profile
+                </Link>
+              </div>
+              <div className="flex items-center gap-2">
+                <Search isSearchActive={isSearchActive} setIsSearchActive={setIsSearchActive} />
+                {account.address ? <SideMenu account={account} disconnect={disconnect} /> : <ConnectWallet />}
+              </div>
+            </>
+          ) : (
+            <div className="flex items-center w-full">
+              <Link href="/" className="font-bold text-lg w-10 h-10">
+                <Logo />
+              </Link>
+              <div className="flex-grow">
+                <Search isSearchActive={isSearchActive} setIsSearchActive={setIsSearchActive} />
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </header>
