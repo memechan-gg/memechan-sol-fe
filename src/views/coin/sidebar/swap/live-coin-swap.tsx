@@ -331,8 +331,8 @@ export const LiveCoinSwap = ({
         {outputData !== null && !isLoadingOutputAmount && (
           <div className="text-xs font-bold text-regular">
             {coinToMeme
-              ? `${tokenSymbol} to receive: ${tokenData.symbol === "SOL" ? parseChainValue(Number(outputData.minAmountOut.toString()), MEMECHAN_MEME_TOKEN_DECIMALS, 6) : parseChainValue(Number(outputData.minAmountOut.toString()), 0, 2)}`
-              : `${tokenData.displayName} to receive: ${parseChainValue(Number(outputData.minAmountOut.toString()), QUOTE_TOKEN_DECIMALS, 12)}`}
+              ? `${tokenSymbol} to receive: ${tokenData.symbol === "SOL" ? parseChainValue(Number(outputData.minAmountOut.toString()), MEMECHAN_MEME_TOKEN_DECIMALS, 6) : parseChainValue(Number(+outputData.minAmountOut.toExact()), 0, 2)}`
+              : `${tokenData.displayName} to receive: ${tokenData.symbol === "SOL" ? parseChainValue(Number(outputData.minAmountOut.toString()), QUOTE_TOKEN_DECIMALS, 12) : parseChainValue(Number(+outputData.minAmountOut.toExact()), 0, 12)}`}
           </div>
         )}
       </div>
