@@ -1,7 +1,9 @@
+import { searchAtom } from "@/atoms";
 import { useUser } from "@/context/UserContext";
 import { useWallet } from "@solana/wallet-adapter-react";
 import Link from "next/link";
 import { useState } from "react";
+import { useRecoilState } from "recoil";
 import { Button } from "../ui-library/Button";
 import { ConnectWallet } from "./connect-wallet";
 import { Logo } from "./logo";
@@ -10,8 +12,10 @@ import SideMenu from "./side-menu";
 
 export const Header = () => {
   const account = useUser();
-  const { disconnect, connected } = useWallet();
+  const { disconnect } = useWallet();
   const [isSearchActive, setIsSearchActive] = useState(false);
+
+  const [search, setSearch] = useRecoilState(searchAtom);
 
   return (
     <header className=" bg-dark bottom-border relative top-0 w-full lg:bg-transparent z-10">
@@ -44,7 +48,12 @@ export const Header = () => {
                 </Link>
               </div>
               <div className="flex items-center gap-2">
-                <Search isSearchActive={isSearchActive} setIsSearchActive={setIsSearchActive} />
+                <Search
+                  isSearchActive={isSearchActive}
+                  setIsSearchActive={setIsSearchActive}
+                  search={search}
+                  setSearch={setSearch}
+                />
                 {account.address ? <SideMenu account={account} disconnect={disconnect} /> : <ConnectWallet />}
               </div>
             </>
@@ -54,7 +63,12 @@ export const Header = () => {
                 <Logo />
               </Link>
               <div className="flex-grow">
-                <Search isSearchActive={isSearchActive} setIsSearchActive={setIsSearchActive} />
+                <Search
+                  isSearchActive={isSearchActive}
+                  setIsSearchActive={setIsSearchActive}
+                  search={search}
+                  setSearch={setSearch}
+                />
               </div>
             </div>
           )}
