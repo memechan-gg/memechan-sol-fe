@@ -2,7 +2,7 @@ import { LIVE_POOL_HOLDERS_INTERVAL, MAX_HOLDERS_COUNT } from "@/config/config";
 import { useConnection } from "@/context/ConnectionContext";
 import { MemechanClient, MemechanClientV2, getStakingPoolClientFromId } from "@avernikoz/memechan-sol-sdk";
 import { PublicKey } from "@solana/web3.js";
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 
 const fetchLiveUniqueHolders = async (
   mint: string,
@@ -33,12 +33,12 @@ const fetchLiveUniqueHolders = async (
 
 export function useLiveCoinUniqueHolders(mint: string, boundPoolId?: string) {
   const { memechanClient, memechanClientV2 } = useConnection();
-
-  const { data } = useSWR(
-    boundPoolId ? [`unique-holders-${boundPoolId}-${mint}`, mint, boundPoolId, memechanClient, memechanClientV2] : null,
-    ([_, meme, pool, client, clientV2]) => fetchLiveUniqueHolders(meme, pool, client, clientV2),
-    { refreshInterval: LIVE_POOL_HOLDERS_INTERVAL, revalidateIfStale: false, revalidateOnFocus: false },
-  );
-
-  return data;
+  return useQuery({
+    queryKey: ["unique-holders", mint, boundPoolId],
+    queryFn: () => {
+      if (boundPoolId) return fetchLiveUniqueHolders(mint, boundPoolId, memechanClient, memechanClientV2);
+    },
+    refetchInterval: LIVE_POOL_HOLDERS_INTERVAL,
+    staleTime: Infinity,
+  });
 }

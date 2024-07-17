@@ -3,7 +3,7 @@ import { useConnection } from "@/context/ConnectionContext";
 import { VestingClient } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Connection, PublicKey } from "@solana/web3.js";
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 
 const fetchVesting = async (user: PublicKey, connection: Connection) => {
   try {
@@ -18,12 +18,13 @@ const fetchVesting = async (user: PublicKey, connection: Connection) => {
 export const useVesting = () => {
   const { publicKey, connected } = useWallet();
   const { connection } = useConnection();
+  const data = useQuery({
+    queryKey: [`vesting`, publicKey],
+    queryFn: () => (publicKey ? fetchVesting(publicKey, connection) : undefined),
+    enabled: !!publicKey,
+    staleTime: Infinity,
+    refetchInterval: VESTING_INTERVAL,
+  });
 
-  const { data, mutate, isLoading } = useSWR(
-    publicKey ? [`vesting`, publicKey, connection] : null,
-    ([url, pubkey, connection]) => fetchVesting(pubkey, connection),
-    { revalidateIfStale: false, revalidateOnFocus: false, refreshInterval: VESTING_INTERVAL },
-  );
-
-  return { vesting: data, refresh: mutate, connected, isLoading };
+  return { ...data, vesting: data.data, connected };
 };

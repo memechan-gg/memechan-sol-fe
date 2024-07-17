@@ -10,11 +10,14 @@ type CoinProps = {
 };
 
 export function Coin({ coin }: CoinProps) {
-  const { token, isLoading: tokenIsLoading } = useToken(coin);
-  const { seedPool, isLoading: seedPoolIsLoading } = useSeedPool(
+  const { data: token, isLoading: tokenIsLoading } = useToken(coin);
+
+  const { data: seedPool, isLoading: seedPoolIsLoading } = useSeedPool(
     token?.status === "PRESALE" ? token?.address : undefined,
   );
-  const { livePool, isLoading: livePoolIsLoading } = useLivePool(token?.status === "LIVE" ? token.address : undefined);
+  const { data: livePool, isLoading: livePoolIsLoading } = useLivePool(
+    token?.status === "LIVE" ? token.address : undefined,
+  );
 
   if (tokenIsLoading || seedPoolIsLoading || livePoolIsLoading) return <div className="text-regular">Loading...</div>;
   if (!token) return <CoinNotFound />;

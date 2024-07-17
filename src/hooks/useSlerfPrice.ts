@@ -1,6 +1,5 @@
 import { SLERF_PRICE_INTERVAL } from "@/config/config";
-import { useEffect, useState } from "react";
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 
 export type PriceData = {
   chainId: "solana";
@@ -22,16 +21,10 @@ const fetchSlerfPrice = async () => {
 };
 
 export function useSlerfPrice() {
-  const [price, setPrice] = useState<number | null>(null);
-  const { data: fetchedPrice } = useSWR("slerf-price", fetchSlerfPrice, {
-    refreshInterval: SLERF_PRICE_INTERVAL,
-    revalidateIfStale: false,
-    revalidateOnFocus: false,
+  return useQuery({
+    queryKey: ["slerf-price"],
+    queryFn: fetchSlerfPrice,
+    refetchInterval: SLERF_PRICE_INTERVAL,
+    refetchOnWindowFocus: false,
   });
-
-  useEffect(() => {
-    if (fetchedPrice) setPrice(fetchedPrice.price);
-  }, [fetchedPrice]);
-
-  return price;
 }

@@ -6,7 +6,7 @@ import {
   getBoundPoolClientFromId,
 } from "@avernikoz/memechan-sol-sdk";
 import { PublicKey } from "@solana/web3.js";
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 
 const fetchBoundPoolClient = async (poolAddress: string, client: MemechanClient, clientV2: MemechanClientV2) => {
   try {
@@ -21,10 +21,10 @@ const fetchBoundPoolClient = async (poolAddress: string, client: MemechanClient,
 
 export function useBoundPoolClient(poolAddress?: string | null) {
   const { memechanClient, memechanClientV2 } = useConnection();
-
-  return useSWR(
-    poolAddress ? [`bound-pool-client-${poolAddress}`, poolAddress, memechanClient, memechanClientV2] : null,
-    ([_, pool, memechanClient, memechanClientV2]) => fetchBoundPoolClient(pool, memechanClient, memechanClientV2),
-    { revalidateIfStale: false, revalidateOnFocus: false },
-  );
+  return useQuery({
+    queryKey: ["bound-pool-client", poolAddress],
+    queryFn: () => (poolAddress ? fetchBoundPoolClient(poolAddress, memechanClient, memechanClientV2) : undefined),
+    enabled: !!poolAddress,
+    staleTime: Infinity,
+  });
 }
