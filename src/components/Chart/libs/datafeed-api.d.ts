@@ -19,7 +19,7 @@
  * type TagName = Nominal<string, 'TagName'>;
  */
 export declare type Nominal<T, Name extends string> = T & {
-  /* eslint-disable-next-line jsdoc/require-jsdoc */ [Symbol.species]: Name;
+  [Symbol.species]: Name;
 };
 /**
  * Bar data point
