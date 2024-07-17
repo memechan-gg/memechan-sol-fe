@@ -79,3 +79,9 @@ a {
 .pink-border {
   border: #f95292 solid;
 }
+.bottom-border {
+  border-bottom: 1px #3e3e3e solid;
+}
+.primary-border {
+  border: 1px #3e3e3e solid;
+}

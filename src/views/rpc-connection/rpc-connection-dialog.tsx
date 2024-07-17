@@ -7,7 +7,7 @@ export const RpcConnectionDialog = () => {
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => setIsOpen(open)}>
-      <DialogTrigger className="bg-white w-full text-regular text-xs text-left p-2 hover:bg-regular hover:text-white">
+      <DialogTrigger className=" mt-14 sm:mt-2  w-full font-bold text-xs text-left p-2 hover:text-white">
         RPC Connection
       </DialogTrigger>
       {isOpen && <RpcConnectionPopUp />}

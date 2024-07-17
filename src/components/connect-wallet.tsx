@@ -1,9 +1,9 @@
 import { Popover } from "@headlessui/react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { track } from "@vercel/analytics";
-import { FaEllipsisV } from "react-icons/fa";
-import { Button } from "./ui-library/Button";
-
+import Image from "next/image";
+import MenuIcon from "../ui-library/icons/menu-icon.svg";
+import SolanaIcon from "../ui-library/icons/solana-icon.svg";
 export const ConnectWallet = () => {
   const { disconnect, select, wallets, connect } = useWallet();
 
@@ -24,23 +24,27 @@ export const ConnectWallet = () => {
       <Popover.Button>
         <div
           role="button"
-          className=" text-primaryPink h-10 w-[137px] justify-evenly rounded-sm bg-inherit border pink-border flex  items-center"
+          className="text-primaryPink text-xs font-bold h-10 w-[137px] justify-evenly rounded-sm bg-inherit border pink-border flex items-center"
         >
           Connect
-          <Button className=" p-1 bg-dark rounded-none border-l border-primaryPink">
-            <FaEllipsisV size={15} />
-          </Button>
+          <div className=" w-10 pl-4 ml-2 p-1 rounded-none border-l border-primaryPink">
+            <Image src={MenuIcon} alt="menu icon" />
+          </div>
         </div>
       </Popover.Button>
-      <Popover.Panel className="absolute z-10 flex flex-col">
-        <div className="bg-white dark:bg-gray-800 gap-1 text-xs flex flex-col font-bold text-regular px-2 py-2">
+      <Popover.Panel className="bg-dark p-3 top-20 h-max absolute z-10 flex flex-col w-full sm:w-[430px] left-0 sm:left-auto sm:transform sm:translate-x-[-50%] right-[-202px]">
+        <div className="flex justify-between">
+          <h1 className="text-white font-bold text-2xl leading-9">Connect Wallet</h1>
+          <Image src={SolanaIcon} alt="solana"></Image>
+        </div>
+        <div className="">
           {wallets.map((w) => (
             <button
               key={w.adapter.name}
               onClick={() => connectWallet(w.adapter.name)}
-              className="w-30 bg-title gap-1 bg-opacity-15 items-center text-xs justify-center flex flex-row font-bold text-regular px-4 py-2 rounded-lg transition-all duration-300 hover:bg-opacity-25"
+              className=" p-4 h-16 w-full mt-2 border border-white bg-dark flex items-center font-bold"
             >
-              <img alt={w.adapter.name} width={20} src={w.adapter.icon} />
+              <img alt={w.adapter.name} width={24} className="mr-4" src={w.adapter.icon} />
               {w.adapter.name}
             </button>
           ))}
