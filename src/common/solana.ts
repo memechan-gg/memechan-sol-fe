@@ -1,4 +1,4 @@
-import { Auth, BE_URL, ChartApi, PoolAPI, SocialAPI, TokenAPI } from "@avernikoz/memechan-sol-sdk";
+import { Auth, ChartApi, PoolAPI, SocialAPI, TokenAPI } from "@avernikoz/memechan-sol-sdk";
 import { Keypair, PublicKey } from "@solana/web3.js";
 
 export const SIMULATION_KEYPAIR = Keypair.fromSeed(
@@ -10,6 +10,7 @@ export const SIMULATION_KEYPAIR = Keypair.fromSeed(
     ].slice(0, 32),
   ),
 );
+export const BE_URL = process.env.BE_URL;
 
 export const AuthInstance = new Auth(BE_URL);
 export const TokenApiInstance = new TokenAPI(BE_URL);
