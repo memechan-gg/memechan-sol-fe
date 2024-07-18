@@ -79,7 +79,7 @@ export const PresaleCoinSwap = ({
       console.log("Starting swap");
 
       if (!boundPoolClient?.boundPoolInstance || !freeIndexes) return;
-      console.log("Starting swap");
+      console.log("Continuing swap");
       if (coinToMeme) {
         let result = undefined;
         try {
