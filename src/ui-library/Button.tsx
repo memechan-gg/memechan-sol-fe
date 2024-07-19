@@ -12,7 +12,7 @@ export const Button = ({ children, width, height, ...props }: ButtonProps) => (
   <button
     {...props}
     className={cn(
-      " text-primaryPink bg-opacity-15 items-center text-xs justify-center flex flex-row gap-2 font-bold text-regular",
+      " text-primary-100 bg-opacity-15 items-center text-xs justify-center flex flex-row gap-2 font-bold text-regular",
       width ? `w-[${width}px]` : "",
       height ? `h-[${height}px]` : "",
       props.className,

@@ -18,7 +18,7 @@ export const Search = ({
       } transition-all duration-300 overflow-hidden`}
     >
       <Button
-        className="flex items-center justify-center hover:bg-primaryPink w-10 h-10"
+        className="flex items-center justify-center hover:bg-primary-100 w-10 h-10"
         onClick={() => setIsSearchActive(!isSearchActive)}
       >
         <Image src={SearchIcon} alt="search icon" />
