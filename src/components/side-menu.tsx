@@ -31,7 +31,7 @@ export default function SideMenu(props: { account: UserContextType; disconnect: 
             </div>
           </div>
         </Popover.Button>
-        <Popover.Panel className="w-72 pl-6 primary-border right-0 bg-dark p-3 top-20 h-max absolute z-10 flex flex-col sm:w-[177px] left-[-155px] sm:left-auto">
+        <Popover.Panel className="w-72 pl-6 primary-border right-0 bg-dark p-3 top-20 h-max absolute z-10 flex flex-col sm:w-[177px] left-[-155px] sm:left-auto bg-monochrome-200">
           <Link href={`/`}>
             <div
               role="button"
