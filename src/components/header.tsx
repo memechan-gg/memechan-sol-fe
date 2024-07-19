@@ -24,23 +24,18 @@ export const Header = () => {
                   <Logo />
                 </Link>
                 <Link href="/create">
-                  <Button className="ml-2 w-[165px] text-white primary-btn h-10 rounded-sm">Create Memecoin</Button>
+                  <Button className="ml-2 w-[165px] text-white primary-btn h-10 rounded-sm hover:bg-pinkShadow    ">
+                    Create Memecoin
+                  </Button>
                 </Link>
               </div>
-              <div className="hidden items-center sm:flex flex-grow justify-center gap-4">
-                <Link
-                  href="https://docs.memechan.gg/"
-                  className="text-xs font-bold text-regular"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Docs
+              <div className=" text-white font-bold text-sm hidden items-center sm:flex flex-grow justify-center gap-4">
+                <Link href="/" className="font-bold">
+                  📦 Home
                 </Link>
-                <Link href="/" className="text-xs font-bold text-regular">
-                  Home
-                </Link>
-                <Link href={`/profile/${account.address}`} className="text-xs font-bold text-regular">
-                  Profile
+                <Link href={`/profile/${account.address}`}>🤡 Profile</Link>
+                <Link href="https://docs.memechan.gg/" target="_blank" rel="noopener noreferrer">
+                  🤓 Docs
                 </Link>
               </div>
               <div className="flex items-center gap-2">

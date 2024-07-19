@@ -2,7 +2,6 @@ import { Popover } from "@headlessui/react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { track } from "@vercel/analytics";
 import Image from "next/image";
-import MenuIcon from "../ui-library/icons/menu-icon.svg";
 import SolanaIcon from "../ui-library/icons/solana-icon.svg";
 export const ConnectWallet = () => {
   const { disconnect, select, wallets, connect } = useWallet();
@@ -24,11 +23,18 @@ export const ConnectWallet = () => {
       <Popover.Button>
         <div
           role="button"
-          className="text-primaryPink text-xs font-bold h-10 w-[137px] justify-evenly rounded-sm bg-inherit border pink-border flex items-center"
+          className="text-primaryPink text-xs font-bold h-10 w-[130px] sm:w-[137px] justify-evenly rounded-sm bg-inherit border pink-border flex items-center"
         >
-          Connect
-          <div className=" w-10 pl-4 ml-2 p-1 rounded-none border-l border-primaryPink">
-            <Image src={MenuIcon} alt="menu icon" />
+          <span className="text-primaryPink text-xs font-bold flex-1 h-full flex items-center justify-center hover:bg-primaryPink hover:text-white transition-colors">
+            Connect
+          </span>
+          <span className="h-[90%] border-r border-primaryPink"></span>
+          <div className="flex items-center justify-center w-10 h-full hover:bg-primaryPink hover:text-white transition-colors">
+            <div className="flex flex-col items-center justify-center space-y-1 text-current">
+              <div className="w-1 h-1 rounded-full bg-current"></div>
+              <div className="w-1 h-1 rounded-full bg-current"></div>
+              <div className="w-1 h-1 rounded-full bg-current"></div>
+            </div>
           </div>
         </div>
       </Popover.Button>
@@ -37,7 +43,7 @@ export const ConnectWallet = () => {
           <h1 className="text-white font-bold text-2xl leading-9">Connect Wallet</h1>
           <Image src={SolanaIcon} alt="solana"></Image>
         </div>
-        <div className="">
+        <div>
           {wallets.map((w) => (
             <button
               key={w.adapter.name}
