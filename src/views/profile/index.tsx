@@ -1,8 +1,9 @@
 import { ThreadBoard } from "@/components/thread";
-import { BE_URL } from "@avernikoz/memechan-sol-sdk";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { CoinItem } from "./coin-item";
+import { BE_URL } from "@/common/solana";
+
 
 type ProfileProps = {
   address: string;
