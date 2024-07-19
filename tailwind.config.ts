@@ -113,6 +113,9 @@ const config: Config = {
         "red-500": "#703e3e",
         "red-600": "#4d3232",
       },
+      height: {
+        "13": "52px",
+      },
     },
     screens: {
       xxs: "350px",
