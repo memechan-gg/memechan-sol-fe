@@ -29,23 +29,6 @@ const fetchLiveMemePrice = async (
   }
 };
 
-<<<<<<< HEAD
-export function useLiveMemePrice(raydiumPoolAddress: string) {
-  const { data: slerf } = useSlerfPrice();
-  const { memechanClient, memechanClientV2, connection } = useConnection();
-
-  return useQuery({
-    queryKey: [`price`, raydiumPoolAddress],
-    queryFn: () => {
-      if (slerf?.price && raydiumPoolAddress)
-        return fetchLiveMemePrice(slerf.price, raydiumPoolAddress, memechanClient, memechanClientV2, connection);
-      return undefined;
-    },
-    enabled: !!slerf?.price && !!raydiumPoolAddress,
-    refetchOnWindowFocus: false,
-    staleTime: STALE_TIME,
-    refetchInterval: LIVE_POOL_PRICE_INTERVAL,
-=======
 export function useLiveMemePrice(poolAddress: string) {
   const { data: slerfData } = useSlerfPrice();
   const { data: solanaData } = useSolanaPrice();
@@ -68,6 +51,5 @@ export function useLiveMemePrice(poolAddress: string) {
     },
     refetchInterval: LIVE_POOL_PRICE_INTERVAL,
     enabled: !!(slerfData?.price && solanaData?.price),
->>>>>>> 69c75d4 (fix develop)
   });
 }
