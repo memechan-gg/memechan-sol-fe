@@ -2,7 +2,7 @@ import { Popover } from "@headlessui/react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { track } from "@vercel/analytics";
 import Image from "next/image";
-import SolanaIcon from "../ui-library/icons/solana-icon.svg";
+import SolanaIcon from "../memechan-ui/icons/solana-icon.svg";
 export const ConnectWallet = () => {
   const { disconnect, select, wallets, connect } = useWallet();
 

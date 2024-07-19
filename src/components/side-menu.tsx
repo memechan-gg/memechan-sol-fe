@@ -4,10 +4,10 @@ import { Popover } from "@headlessui/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import CloseIcon from "../ui-library/icons/close-icon.svg"; // Assuming you have a close icon
-import MenuIcon from "../ui-library/icons/menu-icon.svg";
-import TelegramIcon from "../ui-library/icons/telegram-icon.svg";
-import TwitterIcon from "../ui-library/icons/twitter-icon.svg";
+import CloseIcon from "../memechan-ui/icons/close-icon.svg"; // Assuming you have a close icon
+import MenuIcon from "../memechan-ui/icons/menu-icon.svg";
+import TelegramIcon from "../memechan-ui/icons/telegram-icon.svg";
+import TwitterIcon from "../memechan-ui/icons/twitter-icon.svg";
 
 export default function SideMenu(props: { account: UserContextType; disconnect: () => Promise<void> }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -31,7 +31,7 @@ export default function SideMenu(props: { account: UserContextType; disconnect: 
             </div>
           </div>
         </Popover.Button>
-        <Popover.Panel className="w-72 pl-6 primary-border right-0 bg-dark p-3 top-20 h-max absolute z-10 flex flex-col sm:w-[177px] left-[-155px] sm:left-auto bg-monochrome-200">
+        <Popover.Panel className="w-72 pl-6 primary-border right-0 bg-dark p-3 top-20 h-max absolute z-10 flex flex-col sm:w-[177px] left-[-155px] sm:left-auto bg-mono-200">
           <Link href={`/`}>
             <div
               role="button"
