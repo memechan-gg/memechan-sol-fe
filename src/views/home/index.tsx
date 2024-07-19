@@ -4,7 +4,6 @@ import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import { useCoinApi } from "./hooks/useCoinApi";
 
-
 export function Home() {
   const { items: tokenList, status, liveNextPageToken, loadMore } = useCoinApi();
 
