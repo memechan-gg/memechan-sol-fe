@@ -15,6 +15,7 @@ import { ThemeProvider } from "next-themes";
 import type { AppProps } from "next/app";
 import Head from "next/head";
 import { Toaster } from "react-hot-toast";
+import { RecoilRoot } from "recoil";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -62,23 +63,25 @@ export default function App({ Component, pageProps }: AppProps) {
         <meta name="twitter:creator" content="@memechan" />
       </Head>
       <NextProgress options={{ showSpinner: false }} />
-      <SolanaProvider>
-        <UserProvider>
-          <QueryClientProvider client={queryClient}>
-            <ConnectionProvider>
-              <ThemeProvider attribute="class" defaultTheme="light">
-                <Layout>
-                  <Component {...pageProps} />
-                  <SpeedInsights />
-                  <Analytics />
-                </Layout>
-              </ThemeProvider>
-            </ConnectionProvider>
-            {process.env.VERCEL_ENV === "development" && <ReactQueryDevtools initialIsOpen={false} />}
-          </QueryClientProvider>
-          <Toaster position="bottom-right" />
-        </UserProvider>
-      </SolanaProvider>
+      <RecoilRoot>
+        <SolanaProvider>
+          <UserProvider>
+            <QueryClientProvider client={queryClient}>
+              <ConnectionProvider>
+                <ThemeProvider attribute="class" defaultTheme="light">
+                  <Layout>
+                    <Component {...pageProps} />
+                    <SpeedInsights />
+                    <Analytics />
+                  </Layout>
+                </ThemeProvider>
+              </ConnectionProvider>
+              {process.env.VERCEL_ENV === "development" && <ReactQueryDevtools initialIsOpen={false} />}
+            </QueryClientProvider>
+            <Toaster position="bottom-right" />
+          </UserProvider>
+        </SolanaProvider>
+      </RecoilRoot>
     </>
   );
 }
