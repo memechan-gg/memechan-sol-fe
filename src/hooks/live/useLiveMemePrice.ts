@@ -29,20 +29,18 @@ const fetchLiveMemePrice = async (
   }
 };
 
-export function useLiveMemePrice(poolAddress: string) {
+export function useLiveMemePrice(poolAddress?: string, enabled: boolean = true) {
   const slerfPrice = useSlerfPrice();
   const solanaPrice = useSolanaPrice();
 
   const { memechanClient, memechanClientV2, connection } = useConnection();
 
-  const { data: memePrice } = useSWR(
-    slerfPrice && solanaPrice
+  return useSWR(
+    slerfPrice && solanaPrice && poolAddress && enabled
       ? [`price-${poolAddress}`, slerfPrice, poolAddress, memechanClient, memechanClientV2, connection, solanaPrice]
       : null,
     ([url, price, poolAddress, memechanClient, memechanClientV2, connection, solPrice]) =>
       fetchLiveMemePrice(price, poolAddress, memechanClient, memechanClientV2, connection, solPrice),
     { refreshInterval: LIVE_POOL_PRICE_INTERVAL, revalidateIfStale: false, revalidateOnFocus: false },
   );
-
-  return memePrice;
 }
