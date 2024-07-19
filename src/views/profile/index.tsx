@@ -116,7 +116,7 @@ export function Profile({ address, coin }: ProfileProps) {
                     <div key={index}>
                       <Link href={`/coin/${token.mint}`}>
                         {token.mint}
-                        <CoinItem image={token.image} name={token.name} marketCap={token.marketCap} />
+                        <CoinItem image={token.image} name={token.name} marketCap={token.marketCap} mint={token.mint} />
                       </Link>
                     </div>
                   ))}
