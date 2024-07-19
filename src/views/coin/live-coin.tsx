@@ -20,7 +20,7 @@ export function LiveCoin({ coinMetadata, livePoolData }: { coinMetadata: SolanaT
   const { data: uniqueHoldersData } = useLiveCoinUniqueHoldersFromBE(coinMetadata.address, stakingPoolFromApi?.address);
   // uniqueHoldersData.
   // Initialize state with 'birdeye' as the default
-  const [selectedChart, setSelectedChart] = useState<"birdeye" | "dexscreener">("birdeye");
+  const [selectedChart, setSelectedChart] = useState<"birdeye" | "dexscreener">("dexscreener");
 
   return (
     <>
