@@ -2,10 +2,11 @@ import { Button } from "@/components/button";
 import { ChartIframe } from "@/components/chart-iframe";
 import { ThreadBoard } from "@/components/thread";
 import { useLiveCoinUniqueHoldersFromBE } from "@/hooks/live/useLiveCoinUniqueHoldersFromBE";
+import { useLiveMemePrice } from "@/hooks/live/useLiveMemePrice";
 import { useSeedPool } from "@/hooks/presale/useSeedPool";
 import { useStakingPoolFromApi } from "@/hooks/staking/useStakingPoolFromApi";
-import { useMemePriceFromBE } from "@/hooks/useMemePriceFromBE";
 import { LivePoolData } from "@/types/pool";
+import { formatNumber } from "@/utils/formatNumber";
 import { SolanaToken } from "@avernikoz/memechan-sol-sdk";
 import Link from "next/link";
 import { useState } from "react";
@@ -14,13 +15,14 @@ import { CommentsPanel } from "./comments-panel";
 import { LiveCoinSidebar } from "./sidebar/live-coin-sidebar";
 
 export function LiveCoin({ coinMetadata, livePoolData }: { coinMetadata: SolanaToken; livePoolData: LivePoolData }) {
-  const price = useMemePriceFromBE({ memeMint: coinMetadata.address, poolType: "livePool" });
   const seedPoolData = useSeedPool(coinMetadata.address);
   const stakingPoolFromApi = useStakingPoolFromApi(coinMetadata.address);
   const uniqueHoldersData = useLiveCoinUniqueHoldersFromBE(coinMetadata.address, stakingPoolFromApi?.address);
 
   // Initialize state with 'birdeye' as the default
   const [selectedChart, setSelectedChart] = useState<"birdeye" | "dexscreener">("dexscreener");
+
+  const prices = useLiveMemePrice(livePoolData.id);
 
   return (
     <>
@@ -52,13 +54,16 @@ export function LiveCoin({ coinMetadata, livePoolData }: { coinMetadata: SolanaT
             </div>
             <div className="flex flex-col gap-1">
               <div className="text-sm font-bold text-regular">Market Cap</div>
-              {/* <div className="text-xs font-bold text-regular">${formatNumber(coinMetadata.marketcap, 2)}</div> */}
+              <div className="text-xs font-bold text-regular">
+                {" "}
+                {prices ? `$${formatNumber(+prices.priceInUsd * 1_000_000_000, 2)}` : "-"}
+              </div>
               <div className="text-xs font-bold text-regular">-</div>
             </div>
             <div className="flex flex-col gap-1">
               <div className="text-sm font-bold !normal-case text-regular">USD price</div>
               <div className="text-xs font-bold !normal-case text-regular">
-                {price ? `$${(+price).toFixed(10)}` : <Skeleton />}
+                {prices ? `$${(+prices.priceInUsd).toFixed(10)}` : "-"}
               </div>
             </div>
             <div className="flex flex-col gap-1">

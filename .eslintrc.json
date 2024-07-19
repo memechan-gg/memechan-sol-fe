@@ -1,12 +1,6 @@
 {
-  "plugins": ["jsdoc"],
-  "extends": ["next/core-web-vitals", "plugin:jsdoc/recommended"],
+  "extends": ["next/core-web-vitals"],
   "rules": {
     "@next/next/no-img-element": "off"
-  },
-  "settings": {
-    "jsdoc": {
-      "mode": "typescript"
-    }
   }
 }

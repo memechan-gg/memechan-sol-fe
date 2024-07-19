@@ -4,6 +4,7 @@ import { MemechanClient, MemechanClientV2, getLivePoolClientFromId } from "@aver
 import { Connection, PublicKey } from "@solana/web3.js";
 import useSWR from "swr";
 import { useSlerfPrice } from "../useSlerfPrice";
+import { useSolanaPrice } from "../useSolanaPrice";
 
 const fetchLiveMemePrice = async (
   slerfPriceInUsd: number,
@@ -11,11 +12,16 @@ const fetchLiveMemePrice = async (
   client: MemechanClient,
   clientV2: MemechanClientV2,
   connection: Connection,
+  solPrice: number,
 ) => {
   try {
-    const prices = (
-      await getLivePoolClientFromId(new PublicKey(livePoolAddress), client, clientV2)
-    ).livePool.getMemePrice({ connection, poolAddress: livePoolAddress, quotePriceInUsd: slerfPriceInUsd });
+    const pool = await getLivePoolClientFromId(new PublicKey(livePoolAddress), client, clientV2);
+
+    const prices = pool.livePool.getMemePrice({
+      connection,
+      poolAddress: livePoolAddress,
+      quotePriceInUsd: pool.version === "V2" ? solPrice : slerfPriceInUsd,
+    });
 
     return prices;
   } catch (e) {
@@ -23,16 +29,18 @@ const fetchLiveMemePrice = async (
   }
 };
 
-export function useLiveMemePrice(raydiumPoolAddress: string) {
+export function useLiveMemePrice(poolAddress: string) {
   const slerfPrice = useSlerfPrice();
+  const solanaPrice = useSolanaPrice();
+
   const { memechanClient, memechanClientV2, connection } = useConnection();
 
   const { data: memePrice } = useSWR(
-    slerfPrice
-      ? [`price-${raydiumPoolAddress}`, slerfPrice, raydiumPoolAddress, memechanClient, memechanClientV2, connection]
+    slerfPrice && solanaPrice
+      ? [`price-${poolAddress}`, slerfPrice, poolAddress, memechanClient, memechanClientV2, connection, solanaPrice]
       : null,
-    ([url, price, poolAddress, memechanClient, memechanClientV2]) =>
-      fetchLiveMemePrice(price, poolAddress, memechanClient, memechanClientV2, connection),
+    ([url, price, poolAddress, memechanClient, memechanClientV2, connection, solPrice]) =>
+      fetchLiveMemePrice(price, poolAddress, memechanClient, memechanClientV2, connection, solPrice),
     { refreshInterval: LIVE_POOL_PRICE_INTERVAL, revalidateIfStale: false, revalidateOnFocus: false },
   );
 
