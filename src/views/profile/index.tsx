@@ -3,8 +3,6 @@ import { ThreadBoard } from "@/components/thread";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { CoinItem } from "./coin-item";
-import { BE_URL } from "@/common/solana";
-
 
 type ProfileProps = {
   address: string;

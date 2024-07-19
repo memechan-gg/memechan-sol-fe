@@ -23,7 +23,7 @@ export function LiveCoin({ coinMetadata, livePoolData }: { coinMetadata: SolanaT
   // Initialize state with 'birdeye' as the default
   const [selectedChart, setSelectedChart] = useState<"birdeye" | "dexscreener">("dexscreener");
 
-  const prices = useLiveMemePrice(livePoolData.id);
+  const { data: prices } = useLiveMemePrice(livePoolData.id);
 
   return (
     <>
