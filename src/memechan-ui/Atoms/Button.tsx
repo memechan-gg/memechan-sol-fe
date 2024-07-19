@@ -1,23 +1,23 @@
 import { cn } from "@/utils/cn";
 import React from "react";
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  children: React.ReactNode;
-  asDiv?: boolean;
-  width?: number;
-  height?: number;
+export type ButtonTypes = "primary" | "secondary" | "regular";
+export interface ButtonProps {
+  children?: React.ReactNode;
+  type: ButtonTypes;
+  onClick?: () => void;
 }
+type ButtonTypeMap = {
+  [K in ButtonTypes]: string;
+};
 
-export const Button = ({ children, width, height, ...props }: ButtonProps) => (
-  <button
-    {...props}
-    className={cn(
-      " text-primary-100 bg-opacity-15 items-center text-xs justify-center flex flex-row gap-2 font-bold text-regular",
-      width ? `w-[${width}px]` : "",
-      height ? `h-[${height}px]` : "",
-      props.className,
-    )}
-  >
-    {children}
-  </button>
-);
+const Button = ({ children, type }: ButtonProps) => {
+  const buttonStyles: ButtonTypeMap = {
+    primary: "bg-primary-100 items-center text-xs justify-center flex flex-row gap-2 font-bold text-regular",
+    secondary: "bg-primary-100 items-center text-xs justify-center flex flex-row gap-2 font-bold text-regular",
+    regular: "bg-primary-100 items-center text-xs justify-center flex flex-row gap-2 font-bold text-regular",
+  };
+  return <button className={cn(buttonStyles[type])}>{children}</button>;
+};
+
+export default Button;

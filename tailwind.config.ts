@@ -14,12 +14,12 @@ const config: Config = {
       colors: {
         title: "#CF1105", // TODO REMOVE AFTER REFACTOR
         regular: "var(--color-text-regular)", // TODO REMOVE AFTER REFACTOR
-        "monochrome-100": "#222222",
-        "monochrome-200": "#242424",
-        "monochrome-300": "#353535",
-        "monochrome-400": "#3e3e3e",
-        "monochrome-500": "#979797",
-        "monochrome-600": "#ffffff",
+        "mono-100": "#222222",
+        "mono-200": "#242424",
+        "mono-300": "#353535",
+        "mono-400": "#3e3e3e",
+        "mono-500": "#979797",
+        "mono-600": "#ffffff",
         "primary-100": "#f95292",
         "primary-200": "#d74a80",
         "primary-300": "#b4446e",
@@ -48,12 +48,12 @@ const config: Config = {
       backgroundColor: {
         title: "#CF1105", // TODO REMOVE AFTER REFACTOR
         regular: "var(--color-text-regular)", // TODO REMOVE AFTER REFACTOR
-        "monochrome-100": "#222222",
-        "monochrome-200": "#242424",
-        "monochrome-300": "#353535",
-        "monochrome-400": "#3e3e3e",
-        "monochrome-500": "#979797",
-        "monochrome-600": "#ffffff",
+        "mono-100": "#222222",
+        "mono-200": "#242424",
+        "mono-300": "#353535",
+        "mono-400": "#3e3e3e",
+        "mono-500": "#979797",
+        "mono-600": "#ffffff",
         "primary-100": "#f95292",
         "primary-200": "#d74a80",
         "primary-300": "#b4446e",
@@ -82,12 +82,12 @@ const config: Config = {
       borderColor: {
         title: "#CF1105", // TODO REMOVE AFTER REFACTOR
         regular: "var(--color-text-regular)", // TODO REMOVE AFTER REFACTOR
-        "monochrome-100": "#222222",
-        "monochrome-200": "#242424",
-        "monochrome-300": "#353535",
-        "monochrome-400": "#3e3e3e",
-        "monochrome-500": "#979797",
-        "monochrome-600": "#ffffff",
+        "mono-100": "#222222",
+        "mono-200": "#242424",
+        "mono-300": "#353535",
+        "mono-400": "#3e3e3e",
+        "mono-500": "#979797",
+        "mono-600": "#ffffff",
         "primary-100": "#f95292",
         "primary-200": "#d74a80",
         "primary-300": "#b4446e",
