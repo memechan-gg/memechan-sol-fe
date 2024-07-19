@@ -1,5 +1,4 @@
 import { UserContextType } from "@/context/UserContext";
-import { cn } from "@/utils";
 import { RpcConnectionDialog } from "@/views/rpc-connection/rpc-connection-dialog";
 import { Popover } from "@headlessui/react";
 import Image from "next/image";
@@ -17,64 +16,69 @@ export default function SideMenu(props: { account: UserContextType; disconnect: 
     <div className="relative">
       <Popover>
         <Popover.Button onClick={() => setIsOpen(!isOpen)}>
-          <div className="w-[137px] h-10 pink-border dark items-center border-2 rounded transition-all duration-300 overflow-hidden flex">
+          <div className="max-w-32 w-[137px] h-10 pink-border items-center border-2 border-primaryPink rounded transition-all duration-300 overflow-hidden flex">
             <div
               role="button"
-              className={cn(
-                "items-center text-xs justify-center flex flex-row gap-2 font-bold text-regular px-4 py-2 rounded-lg transition-all duration-300 hover:bg-opacity-25",
-              )}
+              className="text-primaryPink text-xs font-bold h-full w-full flex justify-evenly items-center bg-inherit transition-colors"
             >
-              {props.account.address.slice(0, 3)}...
-              {props.account.address.slice(-3)}
-              <div className="pl-3 w-10 ml-2 p-1 rounded-none border-l border-primaryPink">
-                <Image src={isOpen ? CloseIcon : MenuIcon} alt="menu icon" />
+              <span className="flex-1 h-full flex items-center justify-center hover:bg-primaryPink hover:text-white transition-colors">
+                {props.account.address.slice(0, 3)}...{props.account.address.slice(-3)}
+              </span>
+              <span className="h-[90%] border-r border-primaryPink"></span>
+              <div className="flex items-center justify-center w-10 h-full hover:bg-primaryPink hover:text-white transition-colors">
+                <Image src={isOpen ? MenuIcon : CloseIcon} alt="menu icon" />
               </div>
             </div>
           </div>
         </Popover.Button>
-        <Popover.Panel className="w-72 pl-8 primary-border right-0 bg-dark p-3 top-20 h-max absolute z-10 flex flex-col sm:w-[177px] left-[-155px] sm:left-auto">
+        <Popover.Panel className="w-72 pl-6 primary-border right-0 bg-dark p-3 top-20 h-max absolute z-10 flex flex-col sm:w-[177px] left-[-155px] sm:left-auto">
           <Link href={`/`}>
             <div
               role="button"
-              className="mt-14 sm:mt-2 text-left bg-dark-background font-bold text-white w-full text-regular text-xs p-2 hover:text-white rounded"
+              className="mt-14 sm:mt-2 text-left bg-dark-background font-bold text-white w-full text-regular text-xs p-2 hover:text-white rounded flex items-center space-x-[12px]"
             >
-              Home
+              <span>📦</span>
+              <span>Home</span>
             </div>
           </Link>
           <Link href={`/profile/${props.account.address}`}>
             <div
               role="button"
-              className="mt-14 sm:mt-2 bg-dark-background font-bold text-white w-full text-regular text-xs text-left p-2 hover:text-white rounded"
+              className="mt-14 sm:mt-2 bg-dark-background font-bold text-white w-full text-regular text-xs text-left p-2 hover:text-white rounded flex items-center space-x-[12px]"
             >
-              Profile
-            </div>
-          </Link>
-          <Link href={`/vesting`}>
-            <div
-              role="button"
-              className="mt-14 sm:mt-2 bg-dark-background font-bold text-white w-full text-regular text-xs text-left p-2 hover:text-white rounded"
-            >
-              $CHAN vesting
+              <span>🤡</span>
+              <span>Profile</span>
             </div>
           </Link>
           <RpcConnectionDialog />
+          <Link href={`/vesting`}>
+            <div
+              role="button"
+              className="mt-14 sm:mt-2 bg-dark-background font-bold text-white w-full text-regular text-xs text-left p-2 hover:text-white rounded flex items-center space-x-[12px]"
+            >
+              <span>🪤</span>
+              <span>$CHAN vesting</span>
+            </div>
+          </Link>
           <Link
             href="https://docs.memechan.gg/"
-            className="mt-14 sm:mt-2 bg-dark-background font-bold text-white w-full text-regular text-xs text-left p-2 hover:text-white rounded"
+            className="mt-14 sm:mt-2 bg-dark-background font-bold text-white w-full text-regular text-xs text-left p-2 hover:text-white rounded flex items-center space-x-[12px]"
             target="_blank"
             rel="noopener noreferrer"
           >
-            Docs
+            <span>🤓</span>
+            <span>Docs</span>
           </Link>
           <button
             onClick={() => props.disconnect()}
-            className=" pb-16 bottom-border mt-14 sm:mt-2 bg-dark-background font-bold text-white w-full text-regular text-xs text-left p-2 hover:text-white rounded"
+            className="pb-16 bottom-border mt-14 sm:mt-2 bg-dark-background font-bold text-white w-full text-regular text-xs text-left p-2 hover:text-white rounded flex items-center space-x-[12px]"
           >
-            Disconnect
+            <span>🖕</span>
+            <span>Disconnect</span>
           </button>
-          <div className=" my-10 flex justify-start">
-            <Image src={TwitterIcon} alt="twitter" className=" mr-12" />
-            <Image src={TelegramIcon} alt="telegram" />
+          <div className="my-10 flex justify-start space-x-10">
+            <Image width={26} height={26} src={TwitterIcon} alt="twitter" />
+            <Image width={26} height={26} src={TelegramIcon} alt="telegram" />
           </div>
         </Popover.Panel>
       </Popover>
