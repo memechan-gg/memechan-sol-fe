@@ -1,5 +1,4 @@
 import { formatNumber } from "@/utils/formatNumber";
-import BigNumber from "bignumber.js";
 
 type CoinItemProps = { image: string; name: string; marketCap: number };
 
