@@ -24,7 +24,7 @@ export const Header = () => {
                   <Logo />
                 </Link>
                 <Link href="/create">
-                  <Button className="ml-2 w-[165px] text-white primary-btn h-10 rounded-sm hover:bg-pinkShadow    ">
+                  <Button className="ml-2 w-[165px] text-white primary-btn h-10 rounded-sm hover:bg-primary-200    ">
                     Create Memecoin
                   </Button>
                 </Link>

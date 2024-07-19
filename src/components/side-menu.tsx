@@ -16,16 +16,16 @@ export default function SideMenu(props: { account: UserContextType; disconnect: 
     <div className="relative">
       <Popover>
         <Popover.Button onClick={() => setIsOpen(!isOpen)}>
-          <div className="max-w-32 w-[137px] h-10 pink-border items-center border-2 border-primaryPink rounded transition-all duration-300 overflow-hidden flex">
+          <div className="max-w-32 w-[137px] h-10 pink-border items-center border-2 border-primary-100 rounded transition-all duration-300 overflow-hidden flex">
             <div
               role="button"
-              className="text-primaryPink text-xs font-bold h-full w-full flex justify-evenly items-center bg-inherit transition-colors"
+              className="text-primary-100 text-xs font-bold h-full w-full flex justify-evenly items-center bg-inherit transition-colors"
             >
-              <span className="flex-1 h-full flex items-center justify-center hover:bg-primaryPink hover:text-white transition-colors">
+              <span className="flex-1 h-full flex items-center justify-center hover:bg-primary-100 hover:text-white transition-colors">
                 {props.account.address.slice(0, 3)}...{props.account.address.slice(-3)}
               </span>
-              <span className="h-[90%] border-r border-primaryPink"></span>
-              <div className="flex items-center justify-center w-10 h-full hover:bg-primaryPink hover:text-white transition-colors">
+              <span className="h-[90%] border-r border-primary-100"></span>
+              <div className="flex items-center justify-center w-10 h-full hover:bg-primary-100 hover:text-white transition-colors">
                 <Image src={isOpen ? CloseIcon : MenuIcon} alt="menu icon" />
               </div>
             </div>

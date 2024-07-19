@@ -86,13 +86,13 @@ export function Comment({
 
   return (
     <div className="flex flex-row gap-1">
-      <span className="text-lightRose">{">>"}</span>
+      <span className="text-primary-100">{">>"}</span>
       <div id={id} className="flex flex-col gap-3 w-[fit-content]">
-        <div className="bg-title flex flex-row gap-4 bg-opacity-20 p-2 border-solid border-[1px] border border-t-0 border-l-0 border-dustyPink">
+        <div className="bg-title flex flex-row gap-4 bg-opacity-20 p-2 border-solid border-[1px] border border-t-0 border-l-0 border-primary-600">
           <div className="flex flex-col gap-2">
             <div className="text-xs flex flex-row gap-1.5 font-bold text-regular">
               <Link className="hover:underline text-customGreen" href={`/profile/${creator}`}>
-                <span className="text-deepGreen">
+                <span className="text-green-400">
                   {slicedAddress} {isUsersComment ? "(me)" : ""} {devsComment ? "(dev)" : ""}
                 </span>
               </Link>
