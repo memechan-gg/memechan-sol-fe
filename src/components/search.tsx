@@ -2,7 +2,7 @@ import CancelIcon from "@/ui-library/icons/close-icon.svg";
 import SearchIcon from "@/ui-library/icons/search-icon.svg";
 import Image from "next/image";
 import { Dispatch, SetStateAction } from "react";
-import { Button } from "../ui-library/Button";
+import { Button } from "../memechan-ui/Atoms/Button";
 
 export const Search = ({
   isSearchActive,

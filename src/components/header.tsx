@@ -2,7 +2,7 @@ import { useUser } from "@/context/UserContext";
 import { useWallet } from "@solana/wallet-adapter-react";
 import Link from "next/link";
 import { useState } from "react";
-import { Button } from "../ui-library/Button";
+import { Button } from "../memechan-ui/Atoms/Button";
 import { ConnectWallet } from "./connect-wallet";
 import { Logo } from "./logo";
 import { Search } from "./search";
