@@ -13,15 +13,7 @@ body {
   min-height: 100vh;
 }
 
-.dark body {
-  background: #222222;
-}
-
 .gradient-bg {
-  background: linear-gradient(180deg, #fdd8b2 0%, #fff9f2 50.52%, #fdf1e6 100%);
-}
-
-.dark .gradient-bg {
   background: linear-gradient(180deg, #222 0%, #444 50.52%, #666 100%);
 }
 
@@ -45,10 +37,6 @@ a {
   border-radius: 0.5rem;
   background: transparent;
   transition: all 300ms ease-in-out;
-}
-
-/* Track on hover */
-.dark ::-webkit-scrollbar-track:hover {
   background: #444;
 }
 
@@ -57,10 +45,6 @@ a {
   background: #888;
   border-radius: 0.5rem;
   border: 5px solid transparent;
-}
-
-.dark ::-webkit-scrollbar-thumb {
-  background: #bbb;
 }
 
 :root {
