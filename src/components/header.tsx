@@ -10,12 +10,12 @@ import SideMenu from "./side-menu";
 
 export const Header = () => {
   const account = useUser();
-  const { disconnect, connected } = useWallet();
+  const { disconnect } = useWallet();
   const [isSearchActive, setIsSearchActive] = useState(false);
 
   return (
-    <header className=" bg-dark bottom-border relative top-0 w-full lg:bg-transparent z-10">
-      <div className=" mx-0 sm:mx-auto px-2 sm:px-6 lg:px-8">
+    <header className="fixed top-0 left-0 w-full bg-dark bottom-border z-10 bg-monochrome-200">
+      <div className="mx-0 sm:mx-auto px-2 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 gap-1">
           {!isSearchActive ? (
             <>
@@ -24,12 +24,12 @@ export const Header = () => {
                   <Logo />
                 </Link>
                 <Link href="/create">
-                  <Button className="ml-2 w-[165px] text-white primary-btn h-10 rounded-sm hover:bg-primary-200    ">
+                  <Button className="ml-2 w-[165px] text-white primary-btn h-10 rounded-sm hover:bg-primary-200">
                     Create Memecoin
                   </Button>
                 </Link>
               </div>
-              <div className=" text-white font-bold text-sm hidden items-center sm:flex flex-grow justify-center gap-4">
+              <div className="text-white font-bold text-sm hidden items-center sm:flex flex-grow justify-center gap-4">
                 <Link href="/" className="font-bold">
                   📦 Home
                 </Link>
