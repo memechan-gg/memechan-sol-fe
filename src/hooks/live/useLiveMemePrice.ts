@@ -4,6 +4,7 @@ import { MemechanClient, MemechanClientV2, getLivePoolClientFromId } from "@aver
 import { Connection, PublicKey } from "@solana/web3.js";
 import { useQuery } from "@tanstack/react-query";
 import { useSlerfPrice } from "../useSlerfPrice";
+import { useSolanaPrice } from "../useSolanaPrice";
 
 const fetchLiveMemePrice = async (
   slerfPriceInUsd: number,
@@ -11,11 +12,16 @@ const fetchLiveMemePrice = async (
   client: MemechanClient,
   clientV2: MemechanClientV2,
   connection: Connection,
+  solPrice: number,
 ) => {
   try {
-    const prices = (
-      await getLivePoolClientFromId(new PublicKey(livePoolAddress), client, clientV2)
-    ).livePool.getMemePrice({ connection, poolAddress: livePoolAddress, quotePriceInUsd: slerfPriceInUsd });
+    const pool = await getLivePoolClientFromId(new PublicKey(livePoolAddress), client, clientV2);
+
+    const prices = pool.livePool.getMemePrice({
+      connection,
+      poolAddress: livePoolAddress,
+      quotePriceInUsd: pool.version === "V2" ? solPrice : slerfPriceInUsd,
+    });
 
     return prices;
   } catch (e) {
