@@ -1,5 +1,5 @@
 import { useUser } from "@/context/UserContext";
-import Button from "@/memechan-ui/Atoms/Button";
+import { Button } from "@/memechan-ui/Atoms/Button";
 import { useWallet } from "@solana/wallet-adapter-react";
 import Link from "next/link";
 import { useState } from "react";

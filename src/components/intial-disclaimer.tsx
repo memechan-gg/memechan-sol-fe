@@ -1,4 +1,4 @@
-import Button from "@/memechan-ui/Atoms/Button";
+import { Button } from "@/memechan-ui/Atoms/Button";
 import Image from "next/image";
 
 export interface InitialDisclaimerProps {
