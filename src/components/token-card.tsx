@@ -1,9 +1,10 @@
+/* eslint-disable @next/next/no-img-element */
 import { parseChainValue } from "@/utils/parseChainValue";
+import { SolanaToken } from "@avernikoz/memechan-sol-sdk";
 import Link from "next/link";
 import { useState } from "react";
 
-export function TokenCard({ token:  }) {
-  console.log(token);
+export function TokenCard({ token }: { token: SolanaToken }) {
   const { name, address, image, marketcap, symbol, description, status, holdersCount } = token;
   const [isChecked, setIsChecked] = useState(false);
 
