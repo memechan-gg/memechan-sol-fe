@@ -12,6 +12,8 @@ export const SIMULATION_KEYPAIR = Keypair.fromSeed(
 );
 export const BE_URL = process.env.NEXT_PUBLIC_BE_URL;
 
+export const BE_URL = process.env.NEXT_PUBLIC_BE_URL;
+
 export const AuthInstance = new Auth(BE_URL);
 export const TokenApiInstance = new TokenAPI(BE_URL);
 export const PoolApiInstance = new PoolAPI(BE_URL);

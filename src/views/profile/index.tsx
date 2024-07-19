@@ -1,3 +1,4 @@
+import { BE_URL } from "@/common/solana";
 import { ThreadBoard } from "@/components/thread";
 import Link from "next/link";
 import { useEffect, useState } from "react";
