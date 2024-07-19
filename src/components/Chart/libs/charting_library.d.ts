@@ -22,6 +22,7 @@ declare const dateFormatFunctions: {
   readonly "MM/dd/yy": (date: Date, local: boolean) => string;
   readonly "MM/dd/yyyy": (date: Date, local: boolean) => string;
 };
+
 declare enum HHistDirection {
   LeftToRight = "left_to_right",
   RightToLeft = "right_to_left",
@@ -551,7 +552,9 @@ export declare function version(): string;
  * @example
  * type TagName = Nominal<string, 'TagName'>;
  */
-export declare type Nominal<T, Name extends string> = T & {};
+export declare type Nominal<T, Name extends string> = T & {
+  [Symbol.species]: Name;
+};
 /**
  * Override properties for the Abcd drawing tool.
  */
@@ -15090,6 +15093,7 @@ export interface SortingParameters {
   /** Ascending sorting order (default `true`) - If it is `false`, then initial sorting will be in descending order */
   asc?: boolean;
 }
+
 export interface StandardFormattersDependenciesMapping {
   [StandardFormatterName.Default]: string[];
   [StandardFormatterName.Symbol]:
@@ -15118,6 +15122,7 @@ export interface StandardFormattersDependenciesMapping {
   [StandardFormatterName.MarginPercent]: [valueProperty: string];
   [StandardFormatterName.Empty]: [];
 }
+
 /**
  * Position defined by an OHLC price on a bar at a specified time.
  */
