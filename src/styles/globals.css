@@ -14,7 +14,7 @@ body {
 }
 
 .dark body {
-  background: #121212;
+  background: #222222;
 }
 
 .gradient-bg {
@@ -69,4 +69,57 @@ a {
 
 .dark {
   --color-text-regular: #d1d5db;
+}
+.primary-btn {
+  background-color: #f95292;
+}
+.primary-pink {
+  color: #f95292;
+}
+.pink-border {
+  border: #f95292 solid;
+}
+.bottom-border {
+  border-bottom: 1px #3e3e3e solid;
+}
+.primary-border {
+  border: 1px #3e3e3e solid;
+}
+.card-bg {
+  background: "#242424";
+}
+.text-xs-custom {
+  font-size: 13px;
+  line-height: 1rem /* 16px */;
+}
+.text-gradient-gold {
+  background: linear-gradient(to right, #b9a727, #e4f149, #be8e46);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.card-shadow {
+  box-shadow: 3px 3px 0px 1px black;
+}
+.card-shadow:hover {
+  box-shadow: 2px 2px 0px 0px black;
+}
+/* styles.css */
+.line-clamp {
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* number of lines to show */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.menu-icon {
+  fill: #f95292;
+  stroke: #f95292;
+  transition:
+    fill 0.3s,
+    stroke 0.3s;
+}
+
+.menu-icon:hover {
+  fill: white !important;
+  stroke: white !important;
 }

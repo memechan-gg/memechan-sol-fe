@@ -72,7 +72,7 @@ export const LiveCoinSwap = ({
     [address, tokenAddress, connection, livePoolClient],
   );
 
-  // TODO:TYPESCRIPT
+  // TODO:TYPESCRIPT.
   const getSwapTransactions = useCallback(
     async ({ outputData, coinToMeme }: GetLiveSwapTransactionParams): Promise<any> => {
       if (!publicKey || !tokenAccounts || !livePoolClient) return;

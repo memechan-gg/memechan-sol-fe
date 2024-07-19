@@ -1,8 +1,8 @@
-import { cn } from "@/utils";
 import { Popover } from "@headlessui/react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { track } from "@vercel/analytics";
-
+import Image from "next/image";
+import SolanaIcon from "../ui-library/icons/solana-icon.svg";
 export const ConnectWallet = () => {
   const { disconnect, select, wallets, connect } = useWallet();
 
@@ -23,23 +23,34 @@ export const ConnectWallet = () => {
       <Popover.Button>
         <div
           role="button"
-          className={cn(
-            "bg-title gap-1 bg-opacity-15 items-center text-xs justify-center flex flex-row font-bold text-regular px-4 py-2 rounded-lg transition-all duration-300 hover:bg-opacity-25",
-          )}
+          className="text-primaryPink text-xs font-bold h-10 w-[130px] sm:w-[137px] justify-evenly rounded-sm bg-inherit border pink-border flex items-center"
         >
-          Connect
-          <span className="lg:flex hidden">Wallet</span>
+          <span className="text-primaryPink text-xs font-bold flex-1 h-full flex items-center justify-center hover:bg-primaryPink hover:text-white transition-colors">
+            Connect
+          </span>
+          <span className="h-[90%] border-r border-primaryPink"></span>
+          <div className="flex items-center justify-center w-10 h-full hover:bg-primaryPink hover:text-white transition-colors">
+            <div className="flex flex-col items-center justify-center space-y-1 text-current">
+              <div className="w-1 h-1 rounded-full bg-current"></div>
+              <div className="w-1 h-1 rounded-full bg-current"></div>
+              <div className="w-1 h-1 rounded-full bg-current"></div>
+            </div>
+          </div>
         </div>
       </Popover.Button>
-      <Popover.Panel className="absolute z-10 flex flex-col">
-        <div className="bg-white dark:bg-gray-800 gap-1 text-xs flex flex-col font-bold text-regular px-2 py-2">
+      <Popover.Panel className="bg-dark p-3 top-20 h-max absolute z-10 flex flex-col w-full sm:w-[430px] left-0 sm:left-auto sm:transform sm:translate-x-[-50%] right-[-202px]">
+        <div className="flex justify-between">
+          <h1 className="text-white font-bold text-2xl leading-9">Connect Wallet</h1>
+          <Image src={SolanaIcon} alt="solana"></Image>
+        </div>
+        <div>
           {wallets.map((w) => (
             <button
               key={w.adapter.name}
               onClick={() => connectWallet(w.adapter.name)}
-              className="w-30 bg-title gap-1 bg-opacity-15 items-center text-xs justify-center flex flex-row font-bold text-regular px-4 py-2 rounded-lg transition-all duration-300 hover:bg-opacity-25"
+              className=" p-4 h-16 w-full mt-2 border border-white bg-dark flex items-center font-bold"
             >
-              <img alt={w.adapter.name} width={20} src={w.adapter.icon} />
+              <img alt={w.adapter.name} width={24} className="mr-4" src={w.adapter.icon} />
               {w.adapter.name}
             </button>
           ))}

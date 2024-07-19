@@ -24,6 +24,9 @@ const config: Config = {
         deepGreen: "#117743",
         lightRose: "#E0BFB7",
         lightGray: "#D1D5DB",
+        primaryPink: "#f95292",
+        brighterDark: "#3E3E3E",
+        customGray: "#979797",
       },
       backgroundColor: {
         "link-quote-hover": "#FF0000",
@@ -37,7 +40,9 @@ const config: Config = {
         blue: "#0047FF",
         board: "#fca",
         lightPink: "#F0E0D6",
-        dark: "#121212",
+        dark: "#222222",
+        brighterDark: "#3E3E3E",
+        pinkShadow: "#D74A80",
       },
       borderColor: {
         "link-quote-hover": "#FF0000",
