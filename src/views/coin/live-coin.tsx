@@ -66,7 +66,6 @@ export function LiveCoin({ coinMetadata, livePoolData }: { coinMetadata: SolanaT
                 {" "}
                 {prices ? `$${formatNumber(+prices.priceInUsd * 1_000_000_000, 2)}` : "-"}
               </div>
-              <div className="text-xs font-bold text-regular">-</div>
             </div>
             <div className="flex flex-col gap-1">
               <div className="text-sm font-bold !normal-case text-regular">USD price</div>
