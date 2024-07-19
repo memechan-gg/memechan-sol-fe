@@ -1,4 +1,4 @@
-import Button from "@/memechan-ui/Atoms/Button";
+import { Button } from "@/memechan-ui/Atoms/Button";
 import CancelIcon from "@/memechan-ui/icons/close-icon.svg";
 import SearchIcon from "@/memechan-ui/icons/search-icon.svg";
 import Image from "next/image";
