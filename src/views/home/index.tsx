@@ -1,6 +1,6 @@
 import InitialDisclaimer from "@/components/intial-disclaimer";
 import { TokenCard } from "@/components/token-card";
-import Button from "@/memechan-ui/Atoms/Button";
+import { Button } from "@/memechan-ui/Atoms/Button";
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import { useCoinApi } from "./hooks/useCoinApi";
