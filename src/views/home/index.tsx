@@ -1,6 +1,8 @@
 import InitialDisclaimer from "@/components/intial-disclaimer";
 import { TokenCard } from "@/components/token-card";
 import { Button } from "@/memechan-ui/Atoms";
+import MenuIcon from "@/memechan-ui/icons/MenuIcon";
+import SearchIcon from "@/memechan-ui/icons/SearchIcon";
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import { useCoinApi } from "./hooks/useCoinApi";
@@ -67,8 +69,9 @@ export function Home() {
       )}
       {isConfirmed && (
         <div className="flex flex-col items-center">
-          <div className="text-primary-100">Some text to check color</div>
-          <Button variant="primary">Confirm</Button>
+          <Button startIcon={<SearchIcon color="#fff" />} variant="primary" endIcon={<MenuIcon color="#fff" />}>
+            Confirm
+          </Button>
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 justify-center">
             {isLoading && <div className="text-regular">Loading...</div>}
             {isCoinsListExist && tokenList.map((token) => <TokenCard key={token.address} token={token} />)}
