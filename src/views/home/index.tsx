@@ -1,5 +1,5 @@
 import InitialDisclaimer from "@/components/intial-disclaimer";
-import { TokenCard } from "@/components/token-card";
+import { TokenCard } from "@/components/TokenCard";
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import { useCoinApi } from "./hooks/useCoinApi";
