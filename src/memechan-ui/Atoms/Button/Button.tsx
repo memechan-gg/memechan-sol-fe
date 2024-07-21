@@ -1,22 +1,25 @@
-import { cn } from "@/utils/cn";
 import React from "react";
 
-export type ButtonTypes = "primary" | "secondary" | "regular";
+export type ButtonVariant = "primary" | "secondary" | "regular";
 export interface ButtonProps {
   children?: React.ReactNode;
-  type: ButtonTypes;
+  variant: ButtonVariant;
   onClick?: () => void;
 }
-type ButtonTypeMap = {
-  [K in ButtonTypes]: string;
+type ButtonVariantMap = {
+  [K in ButtonVariant]: string;
 };
 
-const buttonStyles: ButtonTypeMap = {
-  primary: "bg-primary-100 items-center text-xs justify-center flex flex-row gap-2 font-bold text-regular",
-  secondary: "bg-primary-100 items-center text-xs justify-center flex flex-row gap-2 font-bold text-regular",
-  regular: "bg-primary-100 items-center text-xs justify-center flex flex-row gap-2 font-bold text-regular",
-};
-
-export const Button = ({ children, type }: ButtonProps) => {
-  return <button className={cn(buttonStyles[type])}>{children}</button>;
+export const Button = ({ children, variant }: ButtonProps) => {
+  const buttonStyles: ButtonVariantMap = {
+    primary: "bg-primary-100 font-bold text-mono-600",
+    secondary: "bg-primary-100 items-center text-xs justify-center flex flex-row gap-2 font-bold text-regular",
+    regular: "bg-primary-100 items-center text-xs justify-center flex flex-row gap-2 font-bold text-regular",
+  };
+  return (
+    <>
+      <button className="bg-primary-100 font-bold text-mono-600">{children}</button>
+      <button className="border-black border-2 rounded-2xl py-2 px-4">Search</button>
+    </>
+  );
 };

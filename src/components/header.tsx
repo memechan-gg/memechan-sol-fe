@@ -24,7 +24,7 @@ export const Header = () => {
                   <Logo />
                 </Link>
                 <Link href="/create">
-                  <Button type="primary">Create Memecoin</Button>
+                  <Button variant="primary">Create Memecoin</Button>
                 </Link>
               </div>
               <div className="text-white font-bold text-sm hidden items-center sm:flex flex-grow justify-center gap-4">

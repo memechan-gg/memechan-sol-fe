@@ -19,7 +19,7 @@ const InitialDisclaimer = ({ headerText, bodyText, onClick }: InitialDisclaimerP
       <div className="p-[10px] pl-[15px] pr-[15px]">
         <Image src="/cop-pepe.jpg" alt="Cop pepe" height={400} width={400} />
         <div className="text-yellow-100 font-light text-[13px] leading-[20px] text-left p-[15px]">{bodyText}</div>
-        <Button type="primary">Confirm</Button>
+        <Button variant="primary">Confirm</Button>
       </div>
     </div>
   );

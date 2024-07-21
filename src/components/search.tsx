@@ -17,7 +17,7 @@ export const Search = ({
         isSearchActive ? "w-auto ml-2" : "w-10"
       } transition-all duration-300 overflow-hidden`}
     >
-      <Button type="primary" onClick={() => setIsSearchActive(!isSearchActive)}>
+      <Button variant="primary" onClick={() => setIsSearchActive(!isSearchActive)}>
         <Image src={SearchIcon} alt="search icon" />
       </Button>
       {isSearchActive && (
@@ -27,7 +27,7 @@ export const Search = ({
             className="w-full text-sm text-white font-normal bg-inherit px-2 py-1 border-none outline-none"
             placeholder="Search..."
           />
-          <Button type="secondary" onClick={() => setIsSearchActive(false)}>
+          <Button variant="secondary" onClick={() => setIsSearchActive(false)}>
             <Image src={CancelIcon} alt="cancel icon" />
           </Button>
         </div>
