@@ -5,6 +5,15 @@ interface Props {
 }
 export const PresaleContent = ({ token }: Props) => {
   const { name, address, image, marketcap, description, holdersCount } = token;
+
+  // TODO:EDO for now we will mock presale progress data
+  // Make UI for this
+  // https://www.figma.com/design/9dHzMvZyvOwsPlFMPv6lXf/memechan.gg?node-id=428-6881&t=JvSbSggCPJO8wL1D-4
+  // include only percentage bar and percantage number above bar
+  // no need to include: 123.44 of 500 SOL and 224 Participants / 13h from example
+
+  const mockedPresalePercantage = 24;
+
   return (
     <>
       <div className=" pt-2 p-4  flex flex-row text-sm text-white mt-2">

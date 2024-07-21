@@ -6,7 +6,6 @@ interface Props {
 export const LiveContent = ({ token }: Props) => {
   const { marketcap, holdersCount } = token;
 
-  // TODO:HARUN UPDATE THIS WHEN WE GET PRESALE PROGRESS DATA
   return (
     <div className="pt-2 p-4 flex justify-between text-sm text-white mt-2">
       <div className=" mr-4 flex gap-1 flex-col items-start text-xs-custom text-mono-500">

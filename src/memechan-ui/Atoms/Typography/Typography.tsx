@@ -3,6 +3,9 @@ import { MouseEvent, ReactNode } from "react";
 
 type TypographyVariants = keyof typeof TYPOGRAPHY_VARIANTS;
 
+// TODO:EDO
+// fix typography variants
+// see here: https://www.figma.com/design/9dHzMvZyvOwsPlFMPv6lXf/memechan.gg?node-id=330-37654&t=JvSbSggCPJO8wL1D-4
 const TYPOGRAPHY_VARIANTS = {
   h1: "text-2xl font-bold leading-9 tracking-tightest text-center",
   h2: "text-xl font-bold leading-7 tracking-tightest text-left",
