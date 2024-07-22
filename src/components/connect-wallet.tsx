@@ -48,7 +48,7 @@ export const ConnectWallet = () => {
             <button
               key={w.adapter.name}
               onClick={() => connectWallet(w.adapter.name)}
-              className=" p-4 h-16 w-full mt-2 sm:rounded-sm border border-mono-400 shadow-light bg-mono-200 flex items-center font-bold"
+              className=" p-4 h-16 w-full mt-2 sm:rounded-sm border border-mono-400 shadow-light bg-mono-200 flex items-center font-bold hover:opacity-80"
             >
               <img alt={w.adapter.name} width={24} className="mr-4" src={w.adapter.icon} />
               {w.adapter.name}
