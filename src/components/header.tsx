@@ -14,8 +14,8 @@ export const Header = () => {
   const [isSearchActive, setIsSearchActive] = useState(false);
 
   return (
-    <header className="fixed top-0 left-0 w-full bg-dark bottom-border z-10 bg-mono-200">
-      <div className="mx-0 sm:mx-auto px-2 sm:px-6 lg:px-8">
+    <header className="fixed top-0 left-0 w-full bg-dark z-10 bg-mono-200">
+      <div className="sm:mx-auto px-2 sm:px-6 lg:mx-[150px] bottom-border lg:px-0">
         <div className="flex items-center justify-between h-16 gap-1">
           {!isSearchActive ? (
             <>
