@@ -38,9 +38,9 @@ export const ConnectWallet = () => {
           </div>
         </div>
       </Popover.Button>
-      <Popover.Panel className="bg-dark p-3 top-20 h-max absolute z-10 flex flex-col w-full sm:w-[430px] left-0 sm:left-auto sm:transform sm:translate-x-[-50%] right-[-202px]">
-        <div className="flex justify-between">
-          <h1 className="text-white font-bold text-2xl leading-9">Connect Wallet</h1>
+      <Popover.Panel className="bg-mono-100 sm:rounded-sm border border-mono-400  sm:shadow-light p-3 h-max absolute top-[64px] sm:top-[60px] z-10 flex flex-col w-full sm:w-[430px] left-0 sm:left-auto sm:transform sm:translate-x-[-50%] sm:right-[-191px] lg:right-[-183px]">
+        <div className="flex justify-between mb-1">
+          <h1 className="text-white font-bold my-5 text-2xl leading-9">Connect Wallet</h1>
           <Image src={SolanaIcon} alt="solana"></Image>
         </div>
         <div>
@@ -48,7 +48,7 @@ export const ConnectWallet = () => {
             <button
               key={w.adapter.name}
               onClick={() => connectWallet(w.adapter.name)}
-              className=" p-4 h-16 w-full mt-2 border border-white bg-dark flex items-center font-bold"
+              className=" p-4 h-16 w-full mt-2 sm:rounded-sm border border-mono-400 shadow-light bg-mono-200 flex items-center font-bold"
             >
               <img alt={w.adapter.name} width={24} className="mr-4" src={w.adapter.icon} />
               {w.adapter.name}

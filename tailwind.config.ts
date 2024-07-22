@@ -50,6 +50,9 @@ const config: Config = {
       colors: colors,
       backgroundColor: colors,
       borderColor: colors,
+      boxShadow: {
+        'light': '4px 4px 0px 0px #00000040',
+      },
     },
     screens: {
       xxs: "350px",
