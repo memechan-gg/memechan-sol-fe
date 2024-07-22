@@ -7,13 +7,13 @@ type TypographyVariants = keyof typeof TYPOGRAPHY_VARIANTS;
 // fix typography variants
 // see here: https://www.figma.com/design/9dHzMvZyvOwsPlFMPv6lXf/memechan.gg?node-id=330-37654&t=JvSbSggCPJO8wL1D-4
 const TYPOGRAPHY_VARIANTS = {
-  h1: "text-2xl font-bold leading-9 tracking-tightest text-center",
-  h2: "text-xl font-bold leading-7 tracking-tightest text-left",
-  h3: "text-lg font-bold leading-6 tracking-tightest text-left",
-  h4: "text-base font-bold leading-5 text-left",
-  body: "text-base font-normal leading-5 text-left",
-  "text-button": "text-base font-normal leading-4 text-left",
-  caption: "text-xs font-normal leading-4 tracking-tightest text-left",
+  h1: "text-2xl font-semibold leading-9 tracking-tight text-center", // 24px, line-height 36px, semi-bold (700)
+  h2: "text-xl font-semibold leading-[30px] tracking-tight text-left", // 20px, line-height 30px, semi-bold (700)
+  h3: "text-lg font-semibold leading-6 tracking-tight text-left", // 16px, line-height 24px, semi-bold (700)
+  h4: "text-[13px] font-semibold leading-5 text-left", // 13px, line-height 20px, semi-bold (700)
+  body: "text-[13px] font-normal leading-5 text-left", // 13px, line-height 20px, regular (400)
+  "text-button": "text-[13px] font-normal leading-[16px] text-left", // 13px, line-height 16px, regular (400)
+  caption: "text-xs font-normal leading-[16px] tracking-tight text-left", // 12px, line-height 16px, regular (400)
 };
 
 interface Props {
