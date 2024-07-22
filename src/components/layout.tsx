@@ -1,4 +1,3 @@
-import { Typography } from "@/memechan-ui/Atoms/Typography";
 import { Footer } from "./footer";
 import { Header } from "./header";
 
@@ -12,9 +11,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
         </div>
       </main>
       <Footer />
-      <Typography variant="h1" color="green-500">
-        Heading/1
-      </Typography>
     </div>
   );
 }
