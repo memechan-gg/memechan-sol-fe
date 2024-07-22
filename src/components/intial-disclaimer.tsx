@@ -21,7 +21,7 @@ const InitialDisclaimer = ({ onConfirm }: InitialDisclaimerProps) => {
           Sup
         </Typography>
       </div>
-      <div className="p-[10px] pl-[15px] pr-[15px]">
+      <div className="p-[15px]">
         <Image src="/cop-pepe.jpg" alt="Cop pepe" height={400} width={400} />
         <div className="text-left mt-[15px]">
           <Typography variant="body" color="mono-600">
@@ -30,7 +30,7 @@ const InitialDisclaimer = ({ onConfirm }: InitialDisclaimerProps) => {
             be contrary to local law or regulation.
           </Typography>
         </div>
-        <div className="mt-[15px]">
+        <div className="mt-[15px] h-[60px]">
           <Button variant="primary" onClick={onConfirm}>
             Confirm
           </Button>

@@ -14,9 +14,9 @@ export const Header = () => {
   const [isSearchActive, setIsSearchActive] = useState(false);
 
   return (
-    <header className="fixed top-0 left-0 w-full bg-dark bottom-border z-10 bg-mono-100">
-      <div className="mx-0 sm:mx-auto px-2 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 gap-1">
+    <header className="fixed top-0 left-0 w-full bg-dark z-10 bg-mono-100">
+      <div className="mx-2 sm:px-6 lg:px-8 bottom-border lg:mx-[150px]">
+        <div className="flex items-center justify-between h-16">
           {!isSearchActive ? (
             <>
               <div className="flex items-center">
@@ -24,17 +24,24 @@ export const Header = () => {
                   <Logo />
                 </Link>
                 <Link href="/create">
-                  <div className="w-[165px] sm:w-[140px] justify-center text-center">
+                  <div className="sm:w-[140px] h-full justify-center text-center">
                     <Button variant="primary">Create Memecoin</Button>
                   </div>
                 </Link>
               </div>
-              <div className="text-white font-bold text-sm hidden items-center sm:flex flex-grow justify-center gap-4">
-                <Link href="/" className="font-bold">
+              <div className="text-white font-bold text-sm hidden px-2 items-center sm:flex flex-grow justify-center gap-4">
+                <Link href="/" className="font-bold text-center">
                   📦 Home
                 </Link>
-                <Link href={`/profile/${account.address}`}>🤡 Profile</Link>
-                <Link href="https://docs.memechan.gg/" target="_blank" rel="noopener noreferrer">
+                <Link href={`/profile/${account.address}`} className="text-center">
+                  🤡 Profile
+                </Link>
+                <Link
+                  href="https://docs.memechan.gg/"
+                  className="text-center"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   🤓 Docs
                 </Link>
               </div>
