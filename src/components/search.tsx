@@ -1,8 +1,8 @@
-import CancelIcon from "@/ui-library/icons/close-icon.svg";
-import SearchIcon from "@/ui-library/icons/search-icon.svg";
+import { Button } from "@/memechan-ui/Atoms/Button";
+import CancelIcon from "@/memechan-ui/icons/close-icon.svg";
+import SearchIcon from "@/memechan-ui/icons/search-icon.svg";
 import Image from "next/image";
 import { Dispatch, SetStateAction } from "react";
-import { Button } from "../ui-library/Button";
 
 export const Search = ({
   isSearchActive,
@@ -17,10 +17,7 @@ export const Search = ({
         isSearchActive ? "w-auto ml-2" : "w-10"
       } transition-all duration-300 overflow-hidden`}
     >
-      <Button
-        className="flex items-center justify-center hover:bg-primary-100 w-10 h-10"
-        onClick={() => setIsSearchActive(!isSearchActive)}
-      >
+      <Button variant="primary" onClick={() => setIsSearchActive(!isSearchActive)}>
         <Image src={SearchIcon} alt="search icon" />
       </Button>
       {isSearchActive && (
@@ -30,7 +27,7 @@ export const Search = ({
             className="w-full text-sm text-white font-normal bg-inherit px-2 py-1 border-none outline-none"
             placeholder="Search..."
           />
-          <Button className="flex items-center justify-center w-10 h-10" onClick={() => setIsSearchActive(false)}>
+          <Button variant="secondary" onClick={() => setIsSearchActive(false)}>
             <Image src={CancelIcon} alt="cancel icon" />
           </Button>
         </div>

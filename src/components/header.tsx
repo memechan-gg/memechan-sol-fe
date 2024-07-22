@@ -1,8 +1,8 @@
 import { useUser } from "@/context/UserContext";
+import { Button } from "@/memechan-ui/Atoms/Button";
 import { useWallet } from "@solana/wallet-adapter-react";
 import Link from "next/link";
 import { useState } from "react";
-import { Button } from "../ui-library/Button";
 import { ConnectWallet } from "./connect-wallet";
 import { Logo } from "./logo";
 import { Search } from "./search";
@@ -14,7 +14,7 @@ export const Header = () => {
   const [isSearchActive, setIsSearchActive] = useState(false);
 
   return (
-    <header className="fixed top-0 left-0 w-full bg-dark bottom-border z-10 bg-monochrome-200">
+    <header className="fixed top-0 left-0 w-full bg-dark bottom-border z-10 bg-mono-200">
       <div className="mx-0 sm:mx-auto px-2 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 gap-1">
           {!isSearchActive ? (
@@ -24,9 +24,7 @@ export const Header = () => {
                   <Logo />
                 </Link>
                 <Link href="/create">
-                  <Button className="ml-2 w-[165px] text-white primary-btn h-10 rounded-sm hover:bg-primary-200">
-                    Create Memecoin
-                  </Button>
+                  <Button variant="primary">Create Memecoin</Button>
                 </Link>
               </div>
               <div className="text-white font-bold text-sm hidden items-center sm:flex flex-grow justify-center gap-4">

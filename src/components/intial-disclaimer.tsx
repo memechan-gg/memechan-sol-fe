@@ -1,10 +1,13 @@
-export interface DisclaimerProps {
+import { Button } from "@/memechan-ui/Atoms/Button";
+import Image from "next/image";
+
+export interface InitialDisclaimerProps {
   headerText: string;
   bodyText: string;
   onClick: () => void;
 }
 
-const Disclaimer = ({ headerText, bodyText, onClick }: DisclaimerProps) => {
+const InitialDisclaimer = ({ headerText, bodyText, onClick }: InitialDisclaimerProps) => {
   return (
     <div className="rounded-tl-[2px] border-[1px] border-solid border-mono-400">
       <div className=" bg-mono-400 p-[5px] pl-[15px] pr-[15px] flex justify-between items-center">
@@ -13,9 +16,13 @@ const Disclaimer = ({ headerText, bodyText, onClick }: DisclaimerProps) => {
           <path d="M2 2L8 8M14 14L8 8M8 8L14 2L2 14" stroke="white" stroke-width="2" />
         </svg>
       </div>
-      <div className="text-yellow-100 font-light text-[13px] leading-[20px] text-left p-[15px]">{bodyText}</div>
+      <div className="p-[10px] pl-[15px] pr-[15px]">
+        <Image src="/cop-pepe.jpg" alt="Cop pepe" height={400} width={400} />
+        <div className="text-yellow-100 font-light text-[13px] leading-[20px] text-left p-[15px]">{bodyText}</div>
+        <Button variant="primary">Confirm</Button>
+      </div>
     </div>
   );
 };
 
-export default Disclaimer;
+export default InitialDisclaimer;

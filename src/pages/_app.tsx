@@ -14,6 +14,7 @@ import NextProgress from "next-progress";
 import { ThemeProvider } from "next-themes";
 import type { AppProps } from "next/app";
 import Head from "next/head";
+import { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 
 const queryClient = new QueryClient({
@@ -26,6 +27,9 @@ const queryClient = new QueryClient({
 });
 
 export default function App({ Component, pageProps }: AppProps) {
+  useEffect(() => {
+    localStorage.setItem("theme", "dark");
+  }, []);
   return (
     <>
       <Head>
@@ -66,7 +70,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <UserProvider>
           <QueryClientProvider client={queryClient}>
             <ConnectionProvider>
-              <ThemeProvider attribute="class" defaultTheme="light">
+              <ThemeProvider attribute="class" defaultTheme="dark">
                 <Layout>
                   <Component {...pageProps} />
                   <SpeedInsights />
@@ -74,7 +78,7 @@ export default function App({ Component, pageProps }: AppProps) {
                 </Layout>
               </ThemeProvider>
             </ConnectionProvider>
-            {process.env.VERCEL_ENV === "development" && <ReactQueryDevtools initialIsOpen={false} />}
+            {process.env.NODE_ENV === "development" && <ReactQueryDevtools initialIsOpen={false} />}
           </QueryClientProvider>
           <Toaster position="bottom-right" />
         </UserProvider>
