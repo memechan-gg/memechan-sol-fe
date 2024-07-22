@@ -6,6 +6,7 @@ import { usePresaleCoinUniqueHoldersFromBE } from "@/hooks/presale/usePresaleCoi
 import { useMemePriceFromBE } from "@/hooks/useMemePriceFromBE";
 import { useTickets } from "@/hooks/useTickets";
 import { getTokenInfo } from "@/hooks/utils";
+import TopBar from "@/memechan-ui/Atoms/TopBar/TopBar";
 import { SeedPoolData } from "@/types/pool";
 import { formatNumber } from "@/utils/formatNumber";
 import { SolanaToken } from "@avernikoz/memechan-sol-sdk";
@@ -62,21 +63,7 @@ export function PresaleCoin({ coinMetadata, seedPoolData }: { coinMetadata: Sola
 
   return (
     <>
-      <div className="flex justify-center">
-        <div className="inline-flex justify-center items-center p-2 border border-black shadow-sm w-full max-w-sm sm:max-w-md">
-          <div className="flex flex-col items-center text-center">
-            <div className="font-bold text-regular">{coinMetadata.name}</div>
-            <div>
-              <Link
-                href={`/profile/${coinMetadata.address}/${coinMetadata.creator}`}
-                className="text-[11px] md:text-xs text-link hover:underline text-ellipsis"
-              >
-                {coinMetadata.creator}
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
+      <TopBar tokenAddress={coinMetadata.address} tokenSymbol={coinMetadata.symbol} />
       <ThreadBoard title={coinMetadata.name} showNavigateBtn>
         <div className="flex flex-col gap-2">
           <div className="flex flex-wrap flex-row gap-3 gap-x-10">
