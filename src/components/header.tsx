@@ -15,7 +15,7 @@ export const Header = () => {
 
   return (
     <header className="fixed top-0 left-0 w-full bg-dark z-10 bg-mono-100">
-      <div className="mx-2 sm:px-6 lg:px-8 bottom-border lg:mx-[150px]">
+      <div className="mx-2 bottom-border lg:mx-[150px]">
         <div className="flex items-center justify-between h-16">
           {!isSearchActive ? (
             <>
