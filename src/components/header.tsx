@@ -36,7 +36,7 @@ export const Header = () => {
                   🤓 Docs
                 </Link>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 ml-2">
                 <Search isSearchActive={isSearchActive} setIsSearchActive={setIsSearchActive} />
                 {account.address ? <SideMenu account={account} disconnect={disconnect} /> : <ConnectWallet />}
               </div>
@@ -46,7 +46,7 @@ export const Header = () => {
               <Link href="/" className="font-bold text-lg w-10 h-10">
                 <Logo />
               </Link>
-              <div className="flex-grow">
+              <div className="flex-grow ml-3">
                 <Search isSearchActive={isSearchActive} setIsSearchActive={setIsSearchActive} />
               </div>
             </div>
