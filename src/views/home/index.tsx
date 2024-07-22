@@ -37,37 +37,16 @@ export function Home() {
   return (
     <>
       {!isConfirmed && (
-        // <Dialog open={isDialogOpen} onOpenChange={() => {}}>
-        //   <DialogContent>
-        //     <DialogHeader>
-        //       <DialogTitle className="text-xl text-center mb-5">Disclaimer</DialogTitle>
-        //     </DialogHeader>
-        //     <div className="text-justify mb-1">
-        //       I confirm that I am a citizen of Afghanistan, Benin, China, Crimea region, Cuba, Iran, Iraq, Syria, USA,
-        //       Vatican City, or for use by any person in any country or jurisdiction where such distribution or use would
-        //       be contrary to local law or regulation.
-        //     </div>
-        //     <DialogFooter>
-        //       <button
-        //         className="flex border text-regular hover:bg-regular hover:text-white font-bold py-2 px-4 rounded"
-        //         onClick={handleConfirm}
-        //       >
-        //         Confirm
-        //       </button>
-        //     </DialogFooter>
-        //   </DialogContent>
-        // </Dialog>
         <Dialog
           isOpen={isDialogOpen}
           onDismiss={() => setIsDialogOpen(false)}
-          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 backdrop-blur-[0.7px] z-50"
+          className="fixed inset-0 flex items-center justify-center bg-mono-200 md:bg-[#19191957] md:backdrop-blur-[0.5px] md:z-50"
         >
-          <div className="max-w-sm max-h-full overflow-auto bg-[#252525]">
+          <div className="max-w-sm max-h-full mx-2 overflow-auto bg-mono-200 shadow-ligsht">
             <InitialDisclaimer onConfirm={handleConfirm} />
           </div>
         </Dialog>
       )}
-
       <div className="flex flex-col items-center">
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 justify-center">
           {isLoading && <div className="text-regular">Loading...</div>}
