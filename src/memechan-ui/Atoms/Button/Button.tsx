@@ -16,10 +16,6 @@ type ButtonVariantMap = {
   [K in ButtonVariant]: string;
 };
 
-{
-  /* TODO:DIGITALLOVEX */
-  // FIX CSS
-}
 export const Button = ({
   children,
   startIcon,
@@ -30,27 +26,30 @@ export const Button = ({
   subVariant = "primary",
 }: ButtonProps) => {
   const buttonStyles: ButtonVariantMap = {
-    primary: "flex items-center bg-primary-100 font-bold text-mono-600 p-2 pl-4 pr-4 rounded-sm",
-    secondary: "bg-primary-100 items-center text-xs justify-center flex flex-row gap-2 font-bold text-regular",
-    regular: "bg-primary-100 items-center text-xs justify-center flex flex-row gap-2 font-bold text-regular",
-    text: "bg-primary-100 items-center text-xs justify-center flex flex-row gap-2 font-bold text-regular",
+    primary:
+      "flex items-center text-white h-10 bg-primary-100 text-xs leading-5 font-bold text-mono-600 p-2 pl-4 pr-4 rounded-sm hover:bg-primary-300 active:bg-primary-400 focus:outline-none",
+    secondary:
+      "bg-mono-100 cursor-pointer h-10 w-full text-center border border-primar-100 items-center text-xs justify-center flex flex-row gap-2 font-bold text-regular hover:bg-primary-200 active:bg-primary-300 focus:outline-none",
+    regular:
+      "bg-primary-100 items-center text-xs justify-center flex flex-row gap-2 font-bold text-regular hover:bg-primary-200 active:bg-primary-300 focus:outline-none",
+    text: "bg-primary-100 items-center text-xs justify-center flex flex-row gap-2 font-bold text-regular hover:bg-primary-200 active:bg-primary-300 focus:outline-none",
   };
 
   const backButtonStyles: Omit<ButtonVariantMap, "text"> = {
     primary:
-      "focus:outline-none mr-3 flex items-center bg-primary-100 font-bold text-mono-600 p-2 pl-4 pr-4 rounded-sm",
+      "flex items-center bg-primary-100 font-bold text-mono-600 p-2 pl-4 pr-4 rounded-sm hover:bg-primary-300 active:bg-primary-400 focus:outline-none",
     secondary:
-      "focus:outline-none mr-3 bg-primary-100 items-center text-xs justify-center flex flex-row gap-2 font-bold text-regular",
+      "bg-transparent items-center text-xs justify-center flex flex-row gap-2 font-bold text-regular hover:bg-primary-200 active:bg-primary-300 focus:outline-none",
     regular:
-      "focus:outline-none mr-3 bg-primary-100 items-center text-xs justify-center flex flex-row gap-2 font-bold text-regular",
+      "bg-primary-100 items-center text-xs justify-center flex flex-row gap-2 font-bold text-regular hover:bg-primary-200 active:bg-primary-300 focus:outline-none",
   };
 
   const dividerColor = variant === "primary" && subVariant === "primary" ? "mono-600" : "primary-100";
 
   return (
-    <div className="flex items-center bg-primary-100 rounded-sm">
+    <div className="flex items-center bg-primary-100 rounded-sm w-full">
       <button className={buttonStyles[variant]} onClick={onClick}>
-        {startIcon && <span className="mr-2">{startIcon}</span>}
+        {startIcon && <span>{startIcon}</span>}
         {children}
       </button>
       {endIcon && (

@@ -1,6 +1,6 @@
-import { Button } from "@/memechan-ui/Atoms/Button";
+import { Button } from "@/memechan-ui/Atoms";
 import CancelIcon from "@/memechan-ui/icons/close-icon.svg";
-import SearchIcon from "@/memechan-ui/icons/search-icon.svg";
+import SearchIcon from "@/memechan-ui/icons/SearchIcon";
 import Image from "next/image";
 import { Dispatch, SetStateAction } from "react";
 
@@ -13,12 +13,15 @@ export const Search = ({
 }) => {
   return (
     <div
-      className={`ml-1 sm:ml-4 h-10 pink-border dark flex items-center border-none rounded ${
+      className={`ml-1 sm:ml-4 h-10 pink-border dark flex items-center justify-center border-none rounded ${
         isSearchActive ? "w-auto ml-2" : "w-10"
       } transition-all duration-300 overflow-hidden`}
     >
-      <Button variant="primary" onClick={() => setIsSearchActive(!isSearchActive)}>
+      {/* <div className=" cursor-pointer w-10 h-10 flex justify-center" onClick={() => setIsSearchActive(!isSearchActive)}>
         <Image src={SearchIcon} alt="search icon" />
+      </div> */}
+      <Button variant="secondary">
+        <SearchIcon className={"text:bg-white"} />
       </Button>
       {isSearchActive && (
         <div className="flex items-center w-full">
@@ -27,9 +30,9 @@ export const Search = ({
             className="w-full text-sm text-white font-normal bg-inherit px-2 py-1 border-none outline-none"
             placeholder="Search..."
           />
-          <Button variant="secondary" onClick={() => setIsSearchActive(false)}>
+          <div className=" cursor-pointer w-10 h-10 flex justify-center" onClick={() => setIsSearchActive(false)}>
             <Image src={CancelIcon} alt="cancel icon" />
-          </Button>
+          </div>
         </div>
       )}
     </div>

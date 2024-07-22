@@ -60,6 +60,10 @@ const config: Config = {
     },
   },
   plugins: [],
-  safelist: colorKeys.map((color) => `text-${color}`),
+  safelist: [
+    ...colorKeys.map((color) => `text-${color}`),
+    ...colorKeys.map((color) => `bg-${color}`),
+    ...colorKeys.map((color) => `border-${color}`),
+  ],
 };
 export default config;

@@ -121,7 +121,7 @@ a {
 }
 
 .pink-border {
-  border: #f95292 solid;
+  border: #f95292 solid 1px;
 }
 
 .bottom-border {
