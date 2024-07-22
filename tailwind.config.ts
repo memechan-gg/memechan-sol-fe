@@ -1,7 +1,7 @@
 import type { Config } from "tailwindcss";
 import defaultTheme from "tailwindcss/defaultTheme";
 
-const colors = {
+export const colors = {
   title: "var(--color-title)",
   regular: "var(--color-text-regular)",
   "mono-100": "var(--color-mono-100)",
@@ -34,7 +34,7 @@ const colors = {
   "red-400": "var(--color-red-400)",
   "red-500": "var(--color-red-500)",
   "red-600": "var(--color-red-600)",
-};
+} as const;
 
 const colorKeys = Object.keys(colors) as Array<keyof typeof colors>;
 

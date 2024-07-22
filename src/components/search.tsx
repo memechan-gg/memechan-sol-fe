@@ -1,8 +1,10 @@
 import { Button } from "@/memechan-ui/Atoms";
 import TextInput from "@/memechan-ui/Atoms/Input/TextInput";
-import CloseIcon from "@/memechan-ui/icons/CloseIcon";
-import SearchIcon from "@/memechan-ui/icons/SearchIcon";
+import { faClose } from "@fortawesome/free-solid-svg-icons/faClose";
+import { faSearch } from "@fortawesome/free-solid-svg-icons/faSearch";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Dispatch, SetStateAction, useState } from "react";
+import { colors } from "../../tailwind.config";
 
 export const Search = ({
   isSearchActive,
@@ -15,9 +17,9 @@ export const Search = ({
   return (
     <div>
       {!isSearchActive && (
-        <div className="w-10 h-10 border-none">
+        <div className="w-10 h-10 border-primary-100">
           <Button variant="secondary" onClick={() => setIsSearchActive(!isSearchActive)}>
-            <SearchIcon />
+            <FontAwesomeIcon icon={faSearch} onClick={() => setIsSearchActive(false)} />
           </Button>
         </div>
       )}
@@ -27,8 +29,12 @@ export const Search = ({
           value={search}
           placeholder="Search"
           setValue={setSearch}
-          startAdornment={<SearchIcon />}
-          endAdornment={<CloseIcon onClick={() => setIsSearchActive(false)} />}
+          startAdornment={<FontAwesomeIcon fontSize={12} color={colors["primary-100"]} icon={faSearch} />}
+          endAdornment={
+            <span className="cursor-pointer">
+              <FontAwesomeIcon icon={faClose} onClick={() => setIsSearchActive(false)} />
+            </span>
+          }
         />
       )}
     </div>
