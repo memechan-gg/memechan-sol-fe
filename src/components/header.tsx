@@ -14,17 +14,19 @@ export const Header = () => {
   const [isSearchActive, setIsSearchActive] = useState(false);
 
   return (
-    <header className="fixed top-0 left-0 w-full bg-dark z-10 bg-mono-200">
-      <div className="sm:mx-auto px-2 sm:px-6 lg:mx-[150px] bottom-border lg:px-0">
+    <header className="fixed top-0 left-0 w-full bg-dark bottom-border z-10 bg-mono-100">
+      <div className="mx-0 sm:mx-auto px-2 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 gap-1">
           {!isSearchActive ? (
             <>
               <div className="flex items-center">
-                <Link href="/" className="font-bold text-lg w-10 h-10">
+                <Link href="/" className="font-bold text-lg w-10 h-full mr-2 pink-border rounded-sm">
                   <Logo />
                 </Link>
                 <Link href="/create">
-                  <Button variant="primary">Create Memecoin</Button>
+                  <div className="w-[165px] sm:w-[140px] justify-center text-center">
+                    <Button variant="primary">Create Memecoin</Button>
+                  </div>
                 </Link>
               </div>
               <div className="text-white font-bold text-sm hidden items-center sm:flex flex-grow justify-center gap-4">
@@ -43,7 +45,7 @@ export const Header = () => {
             </>
           ) : (
             <div className="flex items-center w-full">
-              <Link href="/" className="font-bold text-lg w-10 h-10">
+              <Link href="/" className="font-bold text-lg w-10 h-full pink-border rounded-sm">
                 <Logo />
               </Link>
               <div className="flex-grow ml-3">

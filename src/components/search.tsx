@@ -1,3 +1,4 @@
+import { Button } from "@/memechan-ui/Atoms";
 import TextInput from "@/memechan-ui/Atoms/Input/TextInput";
 import CloseIcon from "@/memechan-ui/icons/CloseIcon";
 import SearchIcon from "@/memechan-ui/icons/SearchIcon";
@@ -12,15 +13,13 @@ export const Search = ({
 }) => {
   const [search, setSearch] = useState("");
   return (
-    <div
-    // className={`ml-1 sm:ml-4 h-10 pink-border dark flex items-center border-none rounded ${
-    //   isSearchActive ? "w-auto ml-2" : "w-10"
-    // } transition-all duration-300 overflow-hidden`}
-    >
+    <div>
       {!isSearchActive && (
-        <span onClick={() => setIsSearchActive(!isSearchActive)} className="hover:opacity-75 cursor-pointer">
-          <SearchIcon />
-        </span>
+        <div className="w-10 h-10 border-none">
+          <Button variant="secondary" onClick={() => setIsSearchActive(!isSearchActive)}>
+            <SearchIcon />
+          </Button>
+        </div>
       )}
 
       {isSearchActive && (

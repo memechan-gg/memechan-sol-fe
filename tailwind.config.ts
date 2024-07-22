@@ -36,6 +36,8 @@ const colors = {
   "red-600": "var(--color-red-600)",
 };
 
+const colorKeys = Object.keys(colors) as Array<keyof typeof colors>;
+
 const config: Config = {
   darkMode: "class",
   content: [
@@ -61,5 +63,10 @@ const config: Config = {
     },
   },
   plugins: [],
+  safelist: [
+    ...colorKeys.map((color) => `text-${color}`),
+    ...colorKeys.map((color) => `bg-${color}`),
+    ...colorKeys.map((color) => `border-${color}`),
+  ],
 };
 export default config;

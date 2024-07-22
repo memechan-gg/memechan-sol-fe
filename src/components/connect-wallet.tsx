@@ -23,17 +23,17 @@ export const ConnectWallet = () => {
       <Popover.Button>
         <div
           role="button"
-          className="text-primary-100 text-xs font-bold h-10 w-[130px] sm:w-[137px] justify-evenly rounded-sm bg-inherit border pink-border flex items-center"
+          className="text-primary-100 text-xs font-bold h-10 w-[130px] sm:w-[137px] justify-evenly rounded-sm bg-inherit border border-primary-100 flex items-center"
         >
-          <span className="text-primary-100 text-xs font-bold flex-1 h-full flex items-center justify-center hover:bg-primary-100 hover:text-white transition-colors">
+          <span className="text-primary-100 text-xs leading-5 font-bold flex-1 h-full flex items-center justify-center hover:bg-primary-100 hover:text-white transition-colors">
             Connect
           </span>
           <span className="h-[90%] border-r border-primary-100"></span>
           <div className="flex items-center justify-center w-10 h-full hover:bg-primary-100 hover:text-white transition-colors">
             <div className="flex flex-col items-center justify-center space-y-1 text-current">
-              <div className="w-1 h-1 rounded-full bg-current"></div>
-              <div className="w-1 h-1 rounded-full bg-current"></div>
-              <div className="w-1 h-1 rounded-full bg-current"></div>
+              <div className="w-0.5 h-0.5 rounded-full bg-current"></div>
+              <div className="w-0.5 h-0.5 rounded-full bg-current"></div>
+              <div className="w-0.5 h-0.5 rounded-full bg-current"></div>
             </div>
           </div>
         </div>
