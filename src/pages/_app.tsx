@@ -1,6 +1,9 @@
 import "@/styles/globals.css";
 import "@/styles/skeleton-chart-custom.css";
+import { config } from "@fortawesome/fontawesome-svg-core";
+import "@fortawesome/fontawesome-svg-core/styles.css";
 import "react-loading-skeleton/dist/skeleton.css";
+config.autoAddCss = false;
 
 import { Layout } from "@/components/layout";
 import { SolanaProvider } from "@/components/provider/solana";

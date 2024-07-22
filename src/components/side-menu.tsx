@@ -1,17 +1,18 @@
 import { UserContextType } from "@/context/UserContext";
 import { RpcConnectionDialog } from "@/views/rpc-connection/rpc-connection-dialog";
+import { faClose } from "@fortawesome/free-solid-svg-icons/faClose";
+import { faEllipsisV } from "@fortawesome/free-solid-svg-icons/faEllipsisV";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Popover } from "@headlessui/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import CloseIcon from "../memechan-ui/icons/close-icon.svg"; // Assuming you have a close icon
-import MenuIcon from "../memechan-ui/icons/menu-icon.svg";
 import TelegramIcon from "../memechan-ui/icons/telegram-icon.svg";
 import TwitterIcon from "../memechan-ui/icons/twitter-icon.svg";
 
 export default function SideMenu(props: { account: UserContextType; disconnect: () => Promise<void> }) {
   const [isOpen, setIsOpen] = useState(false);
-
+  console.log(isOpen);
   return (
     <div className="relative">
       <Popover>
@@ -26,7 +27,7 @@ export default function SideMenu(props: { account: UserContextType; disconnect: 
               </span>
               <span className="h-[90%] border-r border-primary-100"></span>
               <div className="flex items-center justify-center w-10 h-full hover:bg-primary-100 hover:text-white transition-colors">
-                <Image src={isOpen ? CloseIcon : MenuIcon} alt="menu icon" />
+                {isOpen ? <FontAwesomeIcon icon={faClose} /> : <FontAwesomeIcon icon={faEllipsisV} />}
               </div>
             </div>
           </div>

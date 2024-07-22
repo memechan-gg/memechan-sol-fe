@@ -15,7 +15,7 @@ const TextInput = ({ startAdornment, endAdornment, value, setValue, placeholder 
   // we have idle, active(while typing) state
   return (
     <div className="relative flex items-center border-2 rounded-lg p-2 border-gray-300 focus-within:border-blue-500">
-      {startAdornment && <span className="mr-2">{startAdornment}</span>}
+      {startAdornment && <span className="mr-2 mb-0.5">{startAdornment}</span>}
       <input
         type="text"
         value={value}
