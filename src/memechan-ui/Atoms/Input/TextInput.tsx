@@ -5,9 +5,10 @@ interface Props {
   endAdornment?: ReactNode;
   setValue: Dispatch<SetStateAction<string>>;
   value: string;
+  placeholder?: string;
 }
 
-const TextInput = ({ startAdornment, endAdornment, value, setValue }: Props) => {
+const TextInput = ({ startAdornment, endAdornment, value, setValue, placeholder }: Props) => {
   // TODO:EDO:2
   // MAKE CSS SAME AS IN FIGMA
   // https://www.figma.com/design/9dHzMvZyvOwsPlFMPv6lXf/memechan.gg?node-id=576-59440&t=pgsueAM0HZAaTUUL-4
@@ -20,7 +21,7 @@ const TextInput = ({ startAdornment, endAdornment, value, setValue }: Props) => 
         value={value}
         onChange={(e) => setValue(e.target.value)}
         className="flex-1 outline-none bg-transparent placeholder-gray-500"
-        placeholder="Search"
+        placeholder={placeholder}
       />
       {endAdornment && <span className="ml-2">{endAdornment}</span>}
     </div>
