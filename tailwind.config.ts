@@ -53,7 +53,10 @@ const config: Config = {
       backgroundColor: colors,
       borderColor: colors,
       boxShadow: {
-        'light': '4px 4px 0px 0px #00000040',
+        light: "4px 4px 0px 0px #00000040",
+      },
+      backdropOpacity: {
+        lightOpacity: "20",
       },
     },
     screens: {
