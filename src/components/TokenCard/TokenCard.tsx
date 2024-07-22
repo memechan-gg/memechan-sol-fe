@@ -8,6 +8,7 @@ interface TokenCardProps {
   token: SolanaToken;
 }
 
+// TODO FIX CSS EDO
 export function TokenCard({ token }: TokenCardProps) {
   const { name, address, image, symbol, description, status, socialLinks } = token;
   // We dont need checked for v1 of redesign
