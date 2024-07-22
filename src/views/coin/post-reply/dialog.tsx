@@ -1,8 +1,9 @@
 import { SocialApiInstance } from "@/common/solana";
+import FileInput from "@/memechan-ui/Atoms/Input/FileInput";
 import { handleAuthentication, uploadImageToIPFS } from "@/views/create-coin/create-coin.utils";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { track } from "@vercel/analytics";
-import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { CoinThreadParsedMessage } from "../coin.types";
 
@@ -31,11 +32,6 @@ export function PostReplyDialog({
 
   const handleReplyChange = (event: any) => {
     setReplyText(event.target.value);
-  };
-
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = event.target.files?.[0] || null;
-    setFile(selectedFile);
   };
 
   const handleSendReply = useCallback(async () => {
@@ -107,30 +103,7 @@ export function PostReplyDialog({
             onChange={handleReplyChange}
             className="w-full text-base h-24 border border-regular rounded-lg p-2 mb-3 focus:border-2 focus:border-regular focus:outline-none"
           ></textarea>
-          <div className="flex flex-col gap-1 mb-5">
-            <label className="text-regular text-xs">Attach a picture</label>
-            <div>
-              <input
-                type="file"
-                // file limits
-                accept="image/png, image/jpeg, image/jpg, image/gif"
-                // only select one file
-                multiple={false}
-                className="border w-[200px] border-regular rounded-lg p-1"
-                onChange={handleFileChange}
-              />
-            </div>
-            {file && (
-              <div className="mt-3">
-                <p className="text-regular">Your picture:</p>
-                <img
-                  src={URL.createObjectURL(file)}
-                  alt="Preview"
-                  className="mt-2 w-[150px] h-auto border border-regular"
-                />
-              </div>
-            )}
-          </div>
+          <FileInput file={file} setFile={setFile} />
           <div className="flex flex-row justify-between items-center">
             <button
               disabled={isLoading}

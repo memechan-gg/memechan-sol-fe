@@ -1,8 +1,7 @@
-import { Button } from "@/memechan-ui/Atoms/Button";
-import CancelIcon from "@/memechan-ui/icons/close-icon.svg";
-import SearchIcon from "@/memechan-ui/icons/search-icon.svg";
-import Image from "next/image";
-import { Dispatch, SetStateAction } from "react";
+import TextInput from "@/memechan-ui/Atoms/Input/TextInput";
+import CloseIcon from "@/memechan-ui/icons/CloseIcon";
+import SearchIcon from "@/memechan-ui/icons/SearchIcon";
+import { Dispatch, SetStateAction, useState } from "react";
 
 export const Search = ({
   isSearchActive,
@@ -11,26 +10,26 @@ export const Search = ({
   isSearchActive: boolean;
   setIsSearchActive: Dispatch<SetStateAction<boolean>>;
 }) => {
+  const [search, setSearch] = useState("");
   return (
     <div
-      className={`ml-1 sm:ml-4 h-10 pink-border dark flex items-center border-none rounded ${
-        isSearchActive ? "w-auto ml-2" : "w-10"
-      } transition-all duration-300 overflow-hidden`}
+    // className={`ml-1 sm:ml-4 h-10 pink-border dark flex items-center border-none rounded ${
+    //   isSearchActive ? "w-auto ml-2" : "w-10"
+    // } transition-all duration-300 overflow-hidden`}
     >
-      <Button variant="primary" onClick={() => setIsSearchActive(!isSearchActive)}>
-        <Image src={SearchIcon} alt="search icon" />
-      </Button>
+      {!isSearchActive && (
+        <span onClick={() => setIsSearchActive(!isSearchActive)} className="hover:opacity-75 cursor-pointer">
+          <SearchIcon />
+        </span>
+      )}
+
       {isSearchActive && (
-        <div className="flex items-center w-full">
-          <input
-            type="text"
-            className="w-full text-sm text-white font-normal bg-inherit px-2 py-1 border-none outline-none"
-            placeholder="Search..."
-          />
-          <Button variant="secondary" onClick={() => setIsSearchActive(false)}>
-            <Image src={CancelIcon} alt="cancel icon" />
-          </Button>
-        </div>
+        <TextInput
+          value={search}
+          setValue={setSearch}
+          startAdornment={<SearchIcon />}
+          endAdornment={<CloseIcon onClick={() => setIsSearchActive(false)} />}
+        />
       )}
     </div>
   );
