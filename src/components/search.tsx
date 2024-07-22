@@ -26,6 +26,7 @@ export const Search = ({
       {isSearchActive && (
         <TextInput
           value={search}
+          placeholder="Search"
           setValue={setSearch}
           startAdornment={<SearchIcon />}
           endAdornment={<CloseIcon onClick={() => setIsSearchActive(false)} />}
