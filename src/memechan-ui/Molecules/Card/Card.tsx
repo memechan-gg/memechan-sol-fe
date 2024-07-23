@@ -31,7 +31,6 @@ export const Card = (props: CardProps) => {
   const body = getChildrenOnDisplayName(children, "Body");
   const footer = getChildrenOnDisplayName(children, "Footer");
 
-  console.log(header);
   return (
     <div className="card-shadow card-bg border border-mono-400 rounded-sm ">
       {header}
@@ -50,7 +49,6 @@ export const Body = (props: BodyProps) => {
 };
 
 export const Footer = (props: FooterProps) => {
-  console.log(props.children);
   return <div className="h-8 bg-mono-400 p-4 flex items-center">{props.children}</div>;
 };
 

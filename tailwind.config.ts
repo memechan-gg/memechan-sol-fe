@@ -58,6 +58,9 @@ const config: Config = {
       backdropOpacity: {
         lightOpacity: "20",
       },
+      letterSpacing: {
+        tightest: "-0.011em",
+      },
     },
     screens: {
       xxs: "350px",
@@ -70,6 +73,9 @@ const config: Config = {
     ...colorKeys.map((color) => `text-${color}`),
     ...colorKeys.map((color) => `bg-${color}`),
     ...colorKeys.map((color) => `border-${color}`),
+    "text-left",
+    "text-center",
+    "text-right",
   ],
 };
 export default config;
