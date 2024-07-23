@@ -106,9 +106,9 @@ export function Home() {
   };
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center w-full min-w-80">
       <Tabs tabs={tabs} onTabChange={onTabChange} activeTab={activeTab} />
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 justify-center">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 justify-center w-full">
         {isLoading && <Typography>Loading...</Typography>}
         {isCoinsListExist && tokenList.map((token) => <TokenCard key={token.address} token={token} />)}
         {isCoinsListEmpty && <Typography>No memecoins yet</Typography>}
