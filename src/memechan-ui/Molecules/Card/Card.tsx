@@ -41,11 +41,11 @@ export const Card = (props: CardProps) => {
 };
 
 export const Header = (props: HeaderProps) => {
-  return <div className="h-8 bg-mono-400 p-4 flex items-center">{props.children}</div>;
+  return <div className="h-8 bg-mono-400 p-4 flex items-center text-mono-600">{props.children}</div>;
 };
 
 export const Body = (props: BodyProps) => {
-  return <div className="p-4">{props.children}</div>;
+  return <div className="p-4 bg-mono-200">{props.children}</div>;
 };
 
 export const Footer = (props: FooterProps) => {
