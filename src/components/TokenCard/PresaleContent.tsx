@@ -1,4 +1,4 @@
-import { parseChainValue } from "@/utils/parseChainValue";
+import { Typography } from "@/memechan-ui/Atoms/Typography";
 import { SolanaToken } from "@avernikoz/memechan-sol-sdk";
 interface Props {
   token: SolanaToken;
@@ -6,24 +6,33 @@ interface Props {
 export const PresaleContent = ({ token }: Props) => {
   const { name, address, image, marketcap, description, holdersCount } = token;
 
-  // TODO:EDO for now we will mock presale progress data
-  // Make UI for this
-  // https://www.figma.com/design/9dHzMvZyvOwsPlFMPv6lXf/memechan.gg?node-id=428-6881&t=JvSbSggCPJO8wL1D-4
-  // include only percentage bar and percantage number above bar
-  // no need to include: 123.44 of 500 SOL and 224 Participants / 13h from example
+  // TODO:ALDIN HANDLE DYNAMIC PERCENTAGE
+  const mockedPresalePercantage = 24.5;
 
-  const mockedPresalePercantage = 24;
+  // Calculate the number of red and black # characters
+  const totalCharacters = 60; // Adjust this value based on how many # characters you want in total
+  const redCharacters = Math.round((mockedPresalePercantage / 100) * totalCharacters);
+  const blackCharacters = totalCharacters - redCharacters;
+
+  // Generate the # strings
+  const redHash = "#".repeat(redCharacters);
+  const blackHash = "#".repeat(blackCharacters);
 
   return (
     <>
       <div className="flex flex-row text-sm text-white mt-2">
-        <div className=" mr-4 flex gap-1 flex-col items-start text-xs-custom text-mono-500">
-          <span>Market Cap</span>
-          <span className="text-white font-bold">${parseChainValue(marketcap, 0, 2)}</span>
-        </div>
-        <div className="flex gap-1 flex-col items-start text-xs-custom text-mono-500">
-          <span>Holders</span>
-          <span className="text-white font-bold">{holdersCount}</span>
+        <div className=" w-full flex gap-1 flex-col items-start text-xs-custom text-mono-500 overflow-hidden">
+          <Typography variant="h4" color="primary-100">
+            {mockedPresalePercantage}%
+          </Typography>
+          <div className="flex w-full">
+            <Typography variant="h4" color="primary-100">
+              {redHash}
+            </Typography>
+            <Typography variant="h4" color="mono-400">
+              {blackHash}
+            </Typography>
+          </div>
         </div>
       </div>
     </>
