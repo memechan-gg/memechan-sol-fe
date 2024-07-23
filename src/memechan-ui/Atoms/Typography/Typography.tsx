@@ -19,6 +19,7 @@ interface Props {
   underline?: boolean;
   color?: ColorVariants;
   align?: "left" | "center" | "right";
+  truncate?: boolean;
   onClick?: (e: MouseEvent<HTMLParagraphElement, globalThis.MouseEvent>) => void;
 }
 
@@ -28,9 +29,10 @@ export const Typography: React.FC<Props> = ({
   align = "left",
   underline,
   color = "mono-600",
+  truncate,
   onClick,
 }) => {
-  const classString = `${TYPOGRAPHY_VARIANTS[variant]} text-${color} text-${align} ${underline ? "underline" : ""} ${
+  const classString = `${TYPOGRAPHY_VARIANTS[variant]} ${truncate ? "truncate" : ""} text-${color} text-${align} ${underline ? "underline" : ""} ${
     onClick ? "cursor-pointer hover:opacity-75 active:opacity-50" : "hover:opacity-90 active:opacity-80"
   }`;
 
