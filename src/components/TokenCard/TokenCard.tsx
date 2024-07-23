@@ -17,7 +17,6 @@ const socialLinks = {
   website: "https://x.com/home?lang=en",
 };
 
-// TODO FIX CSS EDO
 export function TokenCard({ token }: TokenCardProps) {
   const { name, address, image, symbol, description, status, socialLinks: test } = token;
   const router = useRouter();
