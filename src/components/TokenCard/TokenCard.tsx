@@ -3,6 +3,7 @@ import { Typography } from "@/memechan-ui/Atoms/Typography";
 import { Card } from "@/memechan-ui/Molecules";
 import { SolanaToken } from "@avernikoz/memechan-sol-sdk";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { LiveContent } from "./LiveContent";
 import { PresaleContent } from "./PresaleContent";
 
@@ -19,7 +20,7 @@ const socialLinks = {
 // TODO FIX CSS EDO
 export function TokenCard({ token }: TokenCardProps) {
   const { name, address, image, symbol, description, status, socialLinks: test } = token;
-
+  const router = useRouter();
   // We dont need checked for v1 of redesign
   // const [isChecked, setIsChecked] = useState(false);
 
@@ -27,47 +28,54 @@ export function TokenCard({ token }: TokenCardProps) {
   //   setIsChecked(!isChecked);
   // };
   const renderFooter = socialLinks?.discord || socialLinks?.telegram || socialLinks?.twitter || socialLinks?.website;
-
+  const handleCardClick = () => {
+    router.push(`/coin/${address}`);
+  };
   return (
-    <Card>
-      <Card.Header>
-        <div className="flex justify-between w-full">
-          {/* <input type="checkbox" checked={isChecked} onChange={handleCheckboxChange} className="mr-2" /> */}
-          <div className="flex gap-2">
-            <Typography color="green-300" variant="h4">
-              {name}
+    <div onClick={() => handleCardClick()} className="cursor-pointer">
+      <Card>
+        <Card.Header>
+          <div className="flex justify-between w-full">
+            {/* <input type="checkbox" checked={isChecked} onChange={handleCheckboxChange} className="mr-2" /> */}
+            <div className="flex text-left gap-2 min-w-40 mr-2">
+              <div className=" max-w-[50%] text-left">
+                <Typography align="left" truncate color="green-100" variant="h4">
+                  {name}
+                </Typography>
+              </div>
+              <div className=" w-2/4">
+                <Typography variant="h4" truncate>
+                  {symbol}
+                </Typography>
+              </div>
+            </div>
+            <Typography variant="h4" color="primary-100">
+              [{status === "LIVE" ? "Live" : status === "PRESALE" ? "Presale" : "Unknown Status"}]
             </Typography>
-            <Link href={`/coin/${address}`}>
-              <Typography variant="h4">{symbol}</Typography>
-            </Link>
           </div>
-          <Typography variant="h4" color="primary-100">
-            [{status === "LIVE" ? "Live" : status === "PRESALE" ? "Presale" : "Unknown Status"}]
-          </Typography>
-        </div>
-      </Card.Header>
-      <Card.Body>
-        <div className="flex">
-          <Link href={`/coin/${address}`}>
-            <img
-              className="w-[102px] h-[102px] object-cover object-center border border-gray-300 rounded"
-              src={image}
-              alt={`${name} Image`}
-            />
-          </Link>
-          <div className="ml-4 flex-1 min-w-0">
-            <div className="text-white text-sm">
-              <div className="line-clamp">
-                <span className=" text-mono-500">{">> "}</span>
-                {description}
+        </Card.Header>
+        <Card.Body>
+          <div className="flex">
+            <Link href={`/coin/${address}`}>
+              <img
+                className="w-[102px] h-[102px] object-cover object-center border border-mono-300"
+                src={image}
+                alt={`${name} Image`}
+              />
+            </Link>
+            <div className="ml-4 flex-1 min-w-0">
+              <div className="text-white text-sm">
+                <div className="line-clamp">
+                  <span className=" text-mono-500">{">> "}</span>
+                  {description}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        {status === "PRESALE" ? <PresaleContent token={token} /> : <LiveContent token={token} />}
-      </Card.Body>
-      {/* LATER IN V2 */}
-      {/* {renderFooter && socialLinks && (
+          {status === "PRESALE" ? <PresaleContent token={token} /> : <LiveContent token={token} />}
+        </Card.Body>
+        {/* LATER IN V2 */}
+        {/* {renderFooter && socialLinks && (
         <Card.Footer>
           <div className="flex justify-evenly h-8 items-center w-full">
             {Object.keys(socialLinks).map((key, index, array) => (
@@ -88,7 +96,8 @@ export function TokenCard({ token }: TokenCardProps) {
           </div>
         </Card.Footer>
       )} */}
-    </Card>
+      </Card>
+    </div>
   );
 }
 
