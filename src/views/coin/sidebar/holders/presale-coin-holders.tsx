@@ -1,7 +1,17 @@
+import { Typography } from "@/memechan-ui/Atoms/Typography";
+import { Card } from "@/memechan-ui/Molecules";
+import { ConvertedHolderItem } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import { HoldersProps } from "../../coin.types";
 import { getSlicedAddress } from "./utils";
+
+interface HolderProps {
+  holders: ConvertedHolderItem[];
+  publicKey?: PublicKey;
+  poolAddress: string;
+  creator: string;
+}
 
 export const PresaleCoinHolders = ({ poolAddress, coinMetadata, uniqueHoldersData }: HoldersProps) => {
   const { publicKey } = useWallet();
@@ -26,35 +36,40 @@ export const PresaleCoinHolders = ({ poolAddress, coinMetadata, uniqueHoldersDat
   const userIsDev = coinMetadata.creator === publicKey?.toString();
 
   return (
-    <div className="flex flex-col gap-1">
-      <div className="text-xs font-bold text-regular">Holders</div>
-      <div className="flex flex-col gap-1">
+    <Card>
+      <Card.Header>
+        <Typography variant="h4" color="mono-600">
+          Holders
+        </Typography>
+      </Card.Header>
+      <Card.Body>
         {userHoldings && (
-          <div className="flex justify-between flex-row gap-2 text-xs font-bold text-regular">
+          <div className="flex justify-between flex-row gap-2 mt-1">
             <div>
-              <span className="font-normal hover:underline cursor-pointer">
-                <a target="_blank" href={`https://solana.fm/address/${publicKey?.toString()}`}>
+              <a target="_blank" href={`https://solana.fm/address/${publicKey?.toString()}`}>
+                <Typography underline variant="text-button" color="mono-500">
                   {userSlicedAddress}
-                </a>
-              </span>{" "}
-              (me) {userIsDev ? "(dev)" : ""}
+                  (me) {userIsDev ? " (dev)" : ""}
+                </Typography>
+              </a>
             </div>
-            <div>{userPercentage}%</div>
+            <Typography color={userIsDev ? "yellow-100" : "mono-600"}>{userPercentage}%</Typography>
           </div>
         )}
+
         {bondingCurvePercentage && (
-          <div key="bonding-curve" className="flex justify-between flex-row gap-2 text-xs font-bold text-regular">
+          <div className="flex justify-between flex-row gap-2 mt-1">
             <div>
-              <span className="font-normal hover:underline cursor-pointer">
-                <a target="_blank" href={`https://solana.fm/address/${poolAddress}`}>
-                  {bondingCurveSlicedAddress}
-                </a>
-              </span>{" "}
-              (bonding curve)
+              <a target="_blank" href={`https://solana.fm/address/${poolAddress}`}>
+                <Typography underline variant="text-button" color="mono-500">
+                  {bondingCurveSlicedAddress} (bonding curve)
+                </Typography>
+              </a>
             </div>
-            <div>{bondingCurvePercentage}%</div>
+            <Typography color={userIsDev ? "yellow-100" : "mono-600"}>{bondingCurvePercentage}%</Typography>
           </div>
         )}
+
         {holders.length > 0 &&
           holders.map(({ owner, percetange }) => {
             const holderIsUser = publicKey?.equals(owner);
@@ -67,21 +82,21 @@ export const PresaleCoinHolders = ({ poolAddress, coinMetadata, uniqueHoldersDat
             const holderIsDev = coinMetadata.creator === owner.toString();
 
             return (
-              <div key={slicedAddress} className="flex justify-between flex-row gap-2 text-xs font-bold text-regular">
+              <div key={slicedAddress} className="flex justify-between flex-row mt-1">
                 <div>
-                  <span className="font-normal hover:underline cursor-pointer">
-                    <a target="_blank" href={`https://solana.fm/address/${owner.toString()}`}>
+                  <a target="_blank" href={`https://solana.fm/address/${owner.toString()}`}>
+                    <Typography underline variant="text-button" color="mono-500">
                       {slicedAddress}
-                    </a>
-                  </span>{" "}
-                  {holderIsDev ? "(dev)" : ""}
+                      {holderIsDev ? "(dev)" : ""}
+                    </Typography>
+                  </a>
                 </div>
-                <div>{percentage}%</div>
+                <Typography color={holderIsDev ? "yellow-100" : "mono-600"}>{percentage}%</Typography>
               </div>
             );
           })}
-        {holders.length === 0 && <div className="font-normal text-regular">No holders yet.</div>}
-      </div>
-    </div>
+        {holders.length === 0 && <Typography>No holders yet.</Typography>}
+      </Card.Body>
+    </Card>
   );
 };
