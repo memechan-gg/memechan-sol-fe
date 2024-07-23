@@ -14,7 +14,7 @@ export default function SideMenu(props: { account: UserContextType; disconnect: 
   const [isOpen, setIsOpen] = useState(false);
   console.log(isOpen);
   return (
-    <div className="relative">
+    <div className="sm:relative">
       <Popover>
         <Popover.Button onClick={() => setIsOpen(!isOpen)}>
           <div className="max-w-32 w-[137px] h-10 pink-border items-center border-2 border-primary-100 rounded transition-all duration-300 overflow-hidden flex">
@@ -32,55 +32,56 @@ export default function SideMenu(props: { account: UserContextType; disconnect: 
             </div>
           </div>
         </Popover.Button>
-        <Popover.Panel className="w-72 pl-6 primary-border right-0 bg-dark p-3 top-20 h-max absolute z-10 flex flex-col sm:w-[177px] left-[-155px] sm:left-auto bg-mono-200">
-          <Link href={`/`}>
-            <div
-              role="button"
-              className="mt-14 sm:mt-2 text-left bg-dark-background font-bold text-white w-full text-regular text-xs p-2 hover:text-white rounded flex items-center space-x-[12px]"
+        <Popover.Panel className="w-[314px] sm:w-[177px] py-[66px] pr-[104px] pl-8 sm:p-6 sm:pr-2 flex flex-col gap-14 sm:gap-8 sm:rounded-sm border border-mono-400 bg-mono-100 shadow-light top-16 sm:top-12 h-max absolute z-10 right-0">
+            <Link href={`/`}>
+              <div
+                role="button"
+                className=" sm:mt-2 text-left bg-dark-background font-bold text-white w-full text-regular text-xs rounded flex items-center space-x-[12px] hover:opacity-80"
+              >
+                <span>📦</span>
+                <span>Home</span>
+              </div>
+            </Link>
+            <Link href={`/profile/${props.account.address}`}>
+              <div
+                role="button"
+                className=" sm:mt-2 bg-dark-background font-bold text-white w-full text-regular text-xs text-left rounded flex items-center space-x-[12px] hover:opacity-80"
+              >
+                <span>🤡</span>
+                <span>Profile</span>
+              </div>
+            </Link>
+            <RpcConnectionDialog />
+            <Link href={`/vesting`}>
+              <div
+                role="button"
+                className=" sm:mt-2 bg-dark-background font-bold text-white w-full text-regular text-xs text-left rounded flex items-center space-x-[12px] hover:opacity-80"
+              >
+                <span>🪤</span>
+                <span>$CHAN vesting</span>
+              </div>
+            </Link>
+            <Link
+              href="https://docs.memechan.gg/"
+              className=" sm:mt-2 bg-dark-background font-bold text-white w-full text-regular text-xs text-left rounded flex items-center space-x-[12px] hover:opacity-80"
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              <span>📦</span>
-              <span>Home</span>
-            </div>
-          </Link>
-          <Link href={`/profile/${props.account.address}`}>
-            <div
-              role="button"
-              className="mt-14 sm:mt-2 bg-dark-background font-bold text-white w-full text-regular text-xs text-left p-2 hover:text-white rounded flex items-center space-x-[12px]"
+              <span>🤓</span>
+              <span>Docs</span>
+            </Link>
+            <button
+              onClick={() => props.disconnect()}
+              className="sm:mt-2 bg-dark-background font-bold text-white w-full text-regular text-xs text-left rounded flex items-center space-x-[12px] hover:opacity-80"
             >
-              <span>🤡</span>
-              <span>Profile</span>
+              <span>🖕</span>
+              <span>Disconnect</span>
+            </button>
+            <div className="bottom-border w-[145px]"/>
+            <div className="flex gap-12 sm:gap-4">
+              <Image width={24} height={24} src={TwitterIcon} alt="twitter" className="m-[6px] sm:p-1 sm:mx-[2px] sm:my-0 hover:opacity-80 hover:cursor-pointer"/>
+              <Image width={24} height={24} src={TelegramIcon} alt="telegram" className="m-[6px] sm:p-1 sm:mx-[2px] sm:my-0 hover:opacity-80 hover:cursor-pointer"/>
             </div>
-          </Link>
-          <RpcConnectionDialog />
-          <Link href={`/vesting`}>
-            <div
-              role="button"
-              className="mt-14 sm:mt-2 bg-dark-background font-bold text-white w-full text-regular text-xs text-left p-2 hover:text-white rounded flex items-center space-x-[12px]"
-            >
-              <span>🪤</span>
-              <span>$CHAN vesting</span>
-            </div>
-          </Link>
-          <Link
-            href="https://docs.memechan.gg/"
-            className="mt-14 sm:mt-2 bg-dark-background font-bold text-white w-full text-regular text-xs text-left p-2 hover:text-white rounded flex items-center space-x-[12px]"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <span>🤓</span>
-            <span>Docs</span>
-          </Link>
-          <button
-            onClick={() => props.disconnect()}
-            className="pb-16 bottom-border mt-14 sm:mt-2 bg-dark-background font-bold text-white w-full text-regular text-xs text-left p-2 hover:text-white rounded flex items-center space-x-[12px]"
-          >
-            <span>🖕</span>
-            <span>Disconnect</span>
-          </button>
-          <div className="my-10 flex justify-start space-x-10">
-            <Image width={26} height={26} src={TwitterIcon} alt="twitter" />
-            <Image width={26} height={26} src={TelegramIcon} alt="telegram" />
-          </div>
         </Popover.Panel>
       </Popover>
     </div>
