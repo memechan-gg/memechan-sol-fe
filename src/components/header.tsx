@@ -12,7 +12,6 @@ export const Header = () => {
   const account = useUser();
   const { disconnect } = useWallet();
   const [isSearchActive, setIsSearchActive] = useState(false);
-
   return (
     <header className="fixed top-0 left-0 w-full bg-dark z-10 bg-mono-100">
       <div className="mx-2 bottom-border lg:mx-[150px]">
@@ -33,9 +32,11 @@ export const Header = () => {
                 <Link href="/" className="font-bold text-center">
                   📦 Home
                 </Link>
-                <Link href={`/profile/${account.address}`} className="text-center">
-                  🤡 Profile
-                </Link>
+                {account?.address && (
+                  <Link href={`/profile/${account.address}`} className="text-center">
+                    🤡 Profile
+                  </Link>
+                )}
                 <Link
                   href="https://docs.memechan.gg/"
                   className="text-center"
