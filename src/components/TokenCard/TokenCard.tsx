@@ -66,29 +66,28 @@ export function TokenCard({ token }: TokenCardProps) {
         </div>
         {status === "PRESALE" ? <PresaleContent token={token} /> : <LiveContent token={token} />}
       </Card.Body>
-      {renderFooter && socialLinks && (
+      {/* LATER IN V2 */}
+      {/* {renderFooter && socialLinks && (
         <Card.Footer>
-          <div className="flex justify-evenly w-full">
-            {Object.keys(socialLinks).map((key, index, array) => {
-              return (
-                <>
-                  <a
-                    key={key}
-                    href={socialLinks[key as keyof typeof socialLinks]}
-                    className="cursor-pointer"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
+          <div className="flex justify-evenly h-8 items-center w-full">
+            {Object.keys(socialLinks).map((key, index, array) => (
+              <div className="flex items-center gap-4 justify-between h-full" key={key}>
+                <a
+                  href={socialLinks[key as keyof typeof socialLinks]}
+                  className="cursor-pointer underline h-full text-mono-500 flex items-center"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Typography variant="text-button" color="mono-500">
                     {key}
-                  </a>
-                  {/* create divider atom instead of this */}
-                  {array.length !== index + 1 && <span>|</span>}
-                </>
-              );
-            })}
+                  </Typography>
+                </a>
+                {array.length !== index + 1 && <Divider vertical />}
+              </div>
+            ))}
           </div>
         </Card.Footer>
-      )}
+      )} */}
     </Card>
   );
 }
