@@ -32,7 +32,7 @@ export const Card = (props: CardProps) => {
   const footer = getChildrenOnDisplayName(children, "Footer");
 
   return (
-    <div className="card-shadow card-bg border border-mono-400 rounded-sm ">
+    <div className="shadow-light card-bg border border-mono-400 rounded-sm ">
       {header}
       {body}
       {footer}
