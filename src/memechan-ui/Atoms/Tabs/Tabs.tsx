@@ -5,7 +5,7 @@ export interface TabProps {
   size?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl";
 }
 
-const Tabs = ({ tabs, activeTab, onTabChange, size = "sm" }: TabProps) => {
+export const Tabs = ({ tabs, activeTab, onTabChange, size = "sm" }: TabProps) => {
   return (
     <div className="flex">
       {tabs.map((label, index) => (
@@ -24,5 +24,3 @@ const Tabs = ({ tabs, activeTab, onTabChange, size = "sm" }: TabProps) => {
     </div>
   );
 };
-
-export default Tabs;
