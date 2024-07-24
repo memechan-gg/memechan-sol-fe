@@ -3,35 +3,42 @@ import { SolanaToken } from "@avernikoz/memechan-sol-sdk";
 interface Props {
   token: SolanaToken;
 }
+
 export const PresaleContent = ({ token }: Props) => {
-  const { name, address, image, marketcap, description, holdersCount } = token;
+  // const { name, address, image, marketcap, description, holdersCount } = token;
 
-  // TODO:ALDIN HANDLE DYNAMIC PERCENTAGE
-  const mockedPresalePercantage = 24.5;
-
-  // Calculate the number of red and black # characters
-  const totalCharacters = 60; // Adjust this value based on how many # characters you want in total
-  const redCharacters = Math.round((mockedPresalePercantage / 100) * totalCharacters);
-  const blackCharacters = totalCharacters - redCharacters;
-
-  // Generate the # strings
-  const redHash = "#".repeat(redCharacters);
-  const blackHash = "#".repeat(blackCharacters);
+  // TODO:ALDIN HANDLE DYNAMIC mockedPresalePercantage
+  const mockedPresalePercantage = 50;
 
   return (
     <>
       <div className="flex flex-row text-sm text-white mt-2">
-        <div className=" w-full flex gap-1 flex-col items-start text-xs-custom text-mono-500 overflow-hidden">
+        <div className="w-full flex flex-col items-start text-xs-custom text-mono-500 overflow-hidden">
           <Typography variant="h4" color="primary-100">
             {mockedPresalePercantage}%
           </Typography>
-          <div className="flex w-full">
-            <Typography variant="h4" color="primary-100">
-              {redHash}
-            </Typography>
-            <Typography variant="h4" color="mono-400">
-              {blackHash}
-            </Typography>
+          <div className="w-full h-4 relative  overflow-hidden">
+            <div
+              className="h-full text-red-500 whitespace-nowrap overflow-hidden"
+              style={{
+                width: `${mockedPresalePercantage}%`,
+              }}
+            >
+              <Typography variant="h4" color="primary-100">
+                {"#".repeat(100)}
+              </Typography>
+            </div>
+            <div
+              className="h-full  text-white absolute top-0 left-0 whitespace-nowrap overflow-hidden"
+              style={{
+                width: `${100 - mockedPresalePercantage}%`,
+                marginLeft: `${mockedPresalePercantage}%`,
+              }}
+            >
+              <Typography variant="h4" color="mono-400">
+                {"#".repeat(100)}
+              </Typography>
+            </div>
           </div>
         </div>
       </div>
