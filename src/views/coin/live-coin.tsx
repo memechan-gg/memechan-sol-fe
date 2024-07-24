@@ -1,126 +1,152 @@
-import { Button } from "@/components/button";
-import { ChartIframe } from "@/components/chart-iframe";
-import { ThreadBoard } from "@/components/thread";
-import { useLiveCoinUniqueHoldersFromBE } from "@/hooks/live/useLiveCoinUniqueHoldersFromBE";
-import { useLiveMemePrice } from "@/hooks/live/useLiveMemePrice";
-import { useSeedPool } from "@/hooks/presale/useSeedPool";
-import { useStakingPoolFromApi } from "@/hooks/staking/useStakingPoolFromApi";
-import { useMemePriceFromBE } from "@/hooks/useMemePriceFromBE";
+import { useMedia } from "@/hooks/useMedia";
+import { Tabs } from "@/memechan-ui/Atoms/Tabs";
+import TopBar from "@/memechan-ui/Atoms/TopBar/TopBar";
 import { LivePoolData } from "@/types/pool";
-import { formatNumber } from "@/utils/formatNumber";
 import { SolanaToken } from "@avernikoz/memechan-sol-sdk";
-import Link from "next/link";
-import { useState } from "react";
-import Skeleton from "react-loading-skeleton";
-import { CommentsTab } from "./comments-tab/comments-tab";
-import { LiveCoinSidebar } from "./sidebar/live-coin-sidebar";
+import { track } from "@vercel/analytics";
+import { useRouter } from "next/router";
+import { CommentsTab } from "./common-tabs/comments-tab/comments-tab";
+import { ChartTab } from "./live-coin-tabs/chart-tab/chart-tab";
+import { InfoTab } from "./live-coin-tabs/info-tab/info-tab";
+import { desktopTabs, mobileTabs } from "./presale-coin";
 
-export function LiveCoin({ coinMetadata, livePoolData }: { coinMetadata: SolanaToken; livePoolData: LivePoolData }) {
-  const { data: price } = useMemePriceFromBE({ memeMint: coinMetadata.address, poolType: "livePool" });
-  const { data: seedPoolData } = useSeedPool(coinMetadata.address);
-  const { data: stakingPoolFromApi } = useStakingPoolFromApi(coinMetadata.address);
-  const { data: uniqueHoldersData } = useLiveCoinUniqueHoldersFromBE(coinMetadata.address, stakingPoolFromApi?.address);
-  // Initialize state with 'birdeye' as the default
-  const [selectedChart, setSelectedChart] = useState<"birdeye" | "dexscreener">("dexscreener");
+export function LiveCoin({
+  coinMetadata,
+  livePoolData,
+  tab,
+}: {
+  coinMetadata: SolanaToken;
+  livePoolData: LivePoolData;
+  tab: string;
+}) {
+  const mediaQuery = useMedia();
+  const router = useRouter();
 
-  const { data: prices } = useLiveMemePrice(livePoolData.id);
+  const onTabChange = (tab: string) => {
+    track("Live_SetTab", { status: tab });
+    router.push({
+      pathname: `/coin/[coinType]`,
+      query: { coinType: coinMetadata.address, tab: tab },
+    });
+  };
+  console.log(tab);
 
   return (
     <>
-      <div className="flex justify-center">
-        <div className="inline-flex justify-center items-center p-2 border border-black shadow-sm w-full max-w-sm sm:max-w-md">
-          <div className="flex flex-col items-center text-center">
-            <div className="font-bold text-regular">{coinMetadata.name}</div>
-            <div>
-              <Link
-                href={`/profile/${coinMetadata.address}/${coinMetadata.creator}`}
-                className="text-[11px] md:text-xs text-link hover:underline text-ellipsis"
-              >
-                {coinMetadata.creator}
-              </Link>
-            </div>
+      <TopBar tokenAddress={coinMetadata.address} tokenSymbol={coinMetadata.symbol} />
+      {mediaQuery.isSmallDevice ? (
+        <>
+          <div className="fixed bottom-0 bg-mono-100 border-t border-mono-400 w-full z-50 flex items-center justify-center p-2 md:hidden">
+            <Tabs tabs={mobileTabs} onTabChange={onTabChange} activeTab={tab} />
           </div>
-        </div>
-      </div>
-      <ThreadBoard title={coinMetadata.name} showNavigateBtn>
-        <div className="flex flex-col gap-2">
-          <div className="flex flex-wrap flex-row gap-3 gap-x-10">
-            <div className="flex flex-col gap-1">
-              <div className="text-sm font-bold text-regular">Token Name</div>
-              <div className="text-xs font-bold text-regular">{coinMetadata.name}</div>
-            </div>
-            <div className="flex flex-col gap-1">
-              <div className="text-sm font-bold text-regular">Token Ticker</div>
-              <div className="text-xs font-bold text-regular">{coinMetadata.symbol}</div>
-            </div>
-            <div className="flex flex-col gap-1">
-              <div className="text-sm font-bold text-regular">Market Cap</div>
-              <div className="text-xs font-bold text-regular">
-                {" "}
-                {prices ? `$${formatNumber(+prices.priceInUsd * 1_000_000_000, 2)}` : "-"}
-              </div>
-            </div>
-            <div className="flex flex-col gap-1">
-              <div className="text-sm font-bold !normal-case text-regular">USD price</div>
-              <div className="text-xs font-bold !normal-case text-regular">
-                {prices ? `$${(+prices.priceInUsd).toFixed(10)}` : "-"}
-              </div>
-            </div>
-            <div className="flex flex-col gap-1">
-              <div className="text-sm font-bold text-regular">Unique holders</div>
-              <div className="text-xs font-bold text-regular">
-                {uniqueHoldersData ? uniqueHoldersData.fullHolders.length : <Skeleton />}
-              </div>
-            </div>
-            <div className="flex flex-col gap-1">
-              <div className="text-sm font-bold text-link">Created By</div>
-              <Link
-                href={`/profile/${coinMetadata.address}/${coinMetadata.creator}`}
-                className="text-xs font-bold text-link"
-              >
-                {coinMetadata.creator.slice(0, 5)}...
-                {coinMetadata.creator.slice(-3)}
-              </Link>
-            </div>
-          </div>
-          <div className="flex w-full flex-col lg:flex-row gap-6">
-            <div className="flex flex-col gap-3 w-full">
-              {selectedChart === "birdeye" ? (
-                <ChartIframe
-                  src={`https://birdeye.so/tv-widget/${coinMetadata.address}/${livePoolData.id}?chain=solana&chartType=candle&chartInterval=5&chartLeftToolbar=show`}
-                />
-              ) : (
-                <ChartIframe
-                  src={`https://dexscreener.com/solana/${livePoolData.id}?embed=1&theme=dark&trades=0&info=0&interval=5`}
-                />
-              )}
-              <div className="flex flex-col gap-3 lg:hidden">
-                <LiveCoinSidebar
-                  pool={livePoolData}
-                  coinMetadata={coinMetadata}
-                  uniqueHoldersData={uniqueHoldersData}
-                  seedPoolData={seedPoolData}
-                  stakingPoolFromApi={stakingPoolFromApi}
-                />
-              </div>
-              <div className="flex justify-center items-center gap-3">
-                <Button onClick={() => setSelectedChart("birdeye")}>Birdeye.so</Button>
-                <Button onClick={() => setSelectedChart("dexscreener")}>Dexscreener.com</Button>
-              </div>
+          <div className="w-full">
+            {tab === "Info" && <InfoTab coinMetadata={coinMetadata} pool={livePoolData} />}
+            {tab === "Comments" && (
               <CommentsTab coinAddress={coinMetadata.address} coinCreator={coinMetadata.creator} />
+            )}
+            {tab === "Chart" && <ChartTab coinAddress={coinMetadata.address} livePoolDataId={livePoolData.id} />}
+          </div>
+        </>
+      ) : (
+        <div className="grid grid-cols-3 gap-4">
+          <div className="col-span-2 flex flex-col gap-y-2">
+            <div className="bg-mono-400 py-1">
+              <Tabs tabs={desktopTabs} onTabChange={onTabChange} activeTab={tab} />
             </div>
-            <div className="lg:flex hidden w-1/3 flex-col gap-4">
-              <LiveCoinSidebar
-                pool={livePoolData}
-                coinMetadata={coinMetadata}
-                uniqueHoldersData={uniqueHoldersData}
-                seedPoolData={seedPoolData}
-                stakingPoolFromApi={stakingPoolFromApi}
-              />
-            </div>
+            {tab === "Comments" && (
+              <CommentsTab coinAddress={coinMetadata.address} coinCreator={coinMetadata.creator} />
+            )}
+            {tab === "Chart" && <ChartTab coinAddress={coinMetadata.address} livePoolDataId={livePoolData.id} />}
+          </div>
+          <div className="col-span-1">
+            <InfoTab coinMetadata={coinMetadata} pool={livePoolData} />
           </div>
         </div>
-      </ThreadBoard>
+      )}
     </>
+    // <>
+    //   <div className="flex justify-center">
+    //     <div className="inline-flex justify-center items-center p-2 border border-black shadow-sm w-full max-w-sm sm:max-w-md">
+    //       <div className="flex flex-col items-center text-center">
+    //         <div className="font-bold text-regular">{coinMetadata.name}</div>
+    //         <div>
+    //           <Link
+    //             href={`/profile/${coinMetadata.address}/${coinMetadata.creator}`}
+    //             className="text-[11px] md:text-xs text-link hover:underline text-ellipsis"
+    //           >
+    //             {coinMetadata.creator}
+    //           </Link>
+    //         </div>
+    //       </div>
+    //     </div>
+    //   </div>
+    // <div className="flex flex-col gap-3 lg:hidden">
+    //     <LiveCoinSidebar
+    //       pool={livePoolData}
+    //       coinMetadata={coinMetadata}
+    //       uniqueHoldersData={uniqueHoldersData}
+    //       seedPoolData={seedPoolData}
+    //       stakingPoolFromApi={stakingPoolFromApi}
+    //     />
+    //   </div>
+    //   <ThreadBoard title={coinMetadata.name} showNavigateBtn>
+    //     <div className="flex flex-col gap-2">
+    //       <div className="flex flex-wrap flex-row gap-3 gap-x-10">
+    //         <div className="flex flex-col gap-1">
+    //           <div className="text-sm font-bold text-regular">Token Name</div>
+    //           <div className="text-xs font-bold text-regular">{coinMetadata.name}</div>
+    //         </div>
+    //         <div className="flex flex-col gap-1">
+    //           <div className="text-sm font-bold text-regular">Token Ticker</div>
+    //           <div className="text-xs font-bold text-regular">{coinMetadata.symbol}</div>
+    //         </div>
+    //         <div className="flex flex-col gap-1">
+    //           <div className="text-sm font-bold text-regular">Market Cap</div>
+    //           <div className="text-xs font-bold text-regular">
+    //             {" "}
+    //             {prices ? `$${formatNumber(+prices.priceInUsd * 1_000_000_000, 2)}` : "-"}
+    //           </div>
+    //         </div>
+    //         <div className="flex flex-col gap-1">
+    //           <div className="text-sm font-bold !normal-case text-regular">USD price</div>
+    //           <div className="text-xs font-bold !normal-case text-regular">
+    //             {prices ? `$${(+prices.priceInUsd).toFixed(10)}` : "-"}
+    //           </div>
+    //         </div>
+    //         <div className="flex flex-col gap-1">
+    //           <div className="text-sm font-bold text-regular">Unique holders</div>
+    //           <div className="text-xs font-bold text-regular">
+    //             {uniqueHoldersData ? uniqueHoldersData.fullHolders.length : <Skeleton />}
+    //           </div>
+    //         </div>
+    //         <div className="flex flex-col gap-1">
+    //           <div className="text-sm font-bold text-link">Created By</div>
+    //           <Link
+    //             href={`/profile/${coinMetadata.address}/${coinMetadata.creator}`}
+    //             className="text-xs font-bold text-link"
+    //           >
+    //             {coinMetadata.creator.slice(0, 5)}...
+    //             {coinMetadata.creator.slice(-3)}
+    //           </Link>
+    //         </div>
+    //       </div>
+    //       <div className="flex w-full flex-col lg:flex-row gap-6">
+    //         <div className="flex flex-col gap-3 w-full">
+    //
+    //           <CommentsTab coinAddress={coinMetadata.address} coinCreator={coinMetadata.creator} />
+    //         </div>
+    //         <div className="lg:flex hidden w-1/3 flex-col gap-4">
+    //           <LiveCoinSidebar
+    //             pool={livePoolData}
+    //             coinMetadata={coinMetadata}
+    //             uniqueHoldersData={uniqueHoldersData}
+    //             seedPoolData={seedPoolData}
+    //             stakingPoolFromApi={stakingPoolFromApi}
+    //           />
+    //         </div>
+    //       </div>
+    //     </div>
+    //   </ThreadBoard>
+    // </>
   );
 }

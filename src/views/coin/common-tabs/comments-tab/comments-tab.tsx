@@ -1,6 +1,6 @@
 import { track } from "@vercel/analytics";
 import { useCallback, useState } from "react";
-import { useSocialAPI } from "../hooks/useSocialAPI";
+import { useSocialAPI } from "../../hooks/useSocialAPI";
 import { Comments } from "./comments";
 import { PostReply } from "./post-reply";
 import { PostReplyDialog } from "./post-reply/dialog";

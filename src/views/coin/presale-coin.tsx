@@ -7,12 +7,12 @@ import { SolanaToken } from "@avernikoz/memechan-sol-sdk";
 import { track } from "@vercel/analytics";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import { ChartTab } from "./chart-tab/chart-tab";
-import { CommentsTab } from "./comments-tab/comments-tab";
-import { InfoTab } from "./info-tab/info-tab";
+import { ChartTab } from "./presale-coin-tabs/chart-tab/chart-tab";
+import { InfoTab } from "./presale-coin-tabs/info-tab/info-tab";
+import { CommentsTab } from "./common-tabs/comments-tab/comments-tab";
 
-const mobileTabs = ["Info", "Chart", "Comments"];
-const desktopTabs = ["Chart", "Comments"];
+export const mobileTabs = ["Info", "Chart", "Comments"];
+export const desktopTabs = ["Chart", "Comments"];
 
 export function PresaleCoin({
   coinMetadata,
