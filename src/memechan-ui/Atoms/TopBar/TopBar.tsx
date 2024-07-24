@@ -19,11 +19,13 @@ const TopBar = ({ tokenSymbol, tokenAddress }: TopBarProps) => {
         <Typography variant="h4" color="mono-600">
           {tokenSymbol}
         </Typography>
-        {tokenAddress && (
-          <Typography variant="body" color="mono-500">
-            {"/" + tokenAddress}
-          </Typography>
-        )}
+        <div className="hidden md:block">
+          {tokenAddress && (
+            <Typography variant="body" color="mono-500">
+              {"/" + tokenAddress}
+            </Typography>
+          )}
+        </div>
       </div>
       <Link href="/" className="">
         <img src="/android-chrome-192x192.png" alt="logo" className="w-3 h-3" />{" "}

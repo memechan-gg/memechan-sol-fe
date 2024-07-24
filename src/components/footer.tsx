@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 export const Footer = () => (
-  <footer className="pb-2 pt-6 flex flex-col items-center justify-center text-regular text-xs">
+  <footer className="pb-2 pt-6 flex-col items-center justify-center text-regular text-xs hidden md:flex">
     <div className="flex gap-0 mb-2">
       <Link
         href="https://x.com/memechan_gg"

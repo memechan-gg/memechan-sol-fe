@@ -1,3 +1,5 @@
+import { Typography } from "../Typography";
+
 export interface TabProps {
   tabs: string[];
   activeTab?: string;
@@ -18,7 +20,15 @@ export const Tabs = ({ tabs, activeTab, onTabChange, size = "sm" }: TabProps) =>
             activeTab === label ? "text-primary-100 font-extrabold" : "text-mono-500 hover:text-primary-100 underline"
           } relative`}
         >
-          {activeTab === label ? `[${label}]` : `${label}`}
+          {activeTab === label ? (
+            <Typography variant="h4" color="primary-100">
+              {"[" + label + "]"}
+            </Typography>
+          ) : (
+            <Typography variant="text-button" color="mono-500">
+              {label}
+            </Typography>
+          )}
         </button>
       ))}
     </div>

@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
+import { useMedia } from "@/hooks/useMedia";
 import { Typography } from "@/memechan-ui/Atoms/Typography";
 import { Card } from "@/memechan-ui/Molecules";
 import { SolanaToken } from "@avernikoz/memechan-sol-sdk";
@@ -20,6 +21,7 @@ const socialLinks = {
 export function TokenCard({ token }: TokenCardProps) {
   const { name, address, image, symbol, description, status, socialLinks: test } = token;
   const router = useRouter();
+  const media = useMedia();
   // We dont need checked for v1 of redesign
   // const [isChecked, setIsChecked] = useState(false);
 
@@ -28,7 +30,11 @@ export function TokenCard({ token }: TokenCardProps) {
   // };
   const renderFooter = socialLinks?.discord || socialLinks?.telegram || socialLinks?.twitter || socialLinks?.website;
   const handleCardClick = () => {
-    router.push(`/coin/${address}`);
+    const tab = media.isSmallDevice ? "info" : "chart";
+    router.push({
+      pathname: `/coin/[coinType]`,
+      query: { coinType: address, tab: tab },
+    });
   };
   return (
     <div onClick={() => handleCardClick()} className="cursor-pointer">
