@@ -7,10 +7,10 @@ export default function CoinPage() {
   const media = useMedia();
   let { coinType, tab } = router.query as { coinType: string; tab: string };
 
-  if (!media.isSmallDevice && tab === "info") {
+  if (!media.isSmallDevice && tab === "Info") {
     router.push({
       pathname: `/coin/[coinType]`,
-      query: { coinType: coinType, tab: "chart" },
+      query: { coinType: coinType, tab: "Chart" },
     });
   }
   return <Coin coin={coinType} tab={tab} />;

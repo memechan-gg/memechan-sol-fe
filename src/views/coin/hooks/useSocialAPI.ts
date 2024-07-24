@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useInterval } from "usehooks-ts";
 import { CoinThreadWithParsedMessage } from "../coin.types";
-import { filterThreads } from "../comments/utils";
+import { filterThreads } from "../comments-tab/comments/utils";
 
 export function useSocialAPI({ coinType }: { coinType: string }) {
   const [threads, setThreads] = useState<CoinThreadWithParsedMessage[]>([]);

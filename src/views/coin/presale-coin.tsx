@@ -11,8 +11,8 @@ import { ChartTab } from "./chart-tab/chart-tab";
 import { CommentsTab } from "./comments-tab/comments-tab";
 import { InfoTab } from "./info-tab/info-tab";
 
-const mobileTabs = ["info", "chart", "comments"];
-const desktopTabs = ["chart", "comments"];
+const mobileTabs = ["Info", "Chart", "Comments"];
+const desktopTabs = ["Chart", "Comments"];
 
 export function PresaleCoin({
   coinMetadata,
@@ -49,7 +49,7 @@ export function PresaleCoin({
     track("PresaleCoin_SetTab", { status: tab });
     router.push({
       pathname: `/coin/[coinType]`,
-      query: { coinType: coinMetadata.address, tab: tab.toLowerCase() },
+      query: { coinType: coinMetadata.address, tab: tab },
     });
   };
 
@@ -71,30 +71,30 @@ export function PresaleCoin({
           <div className="fixed bottom-0 bg-mono-100 border-t border-mono-400 w-full z-50 flex items-center justify-center p-2 md:hidden">
             <Tabs tabs={mobileTabs} onTabChange={onTabChange} activeTab={tab} />
           </div>
-          <div>
-            {tab === "info" && (
+          <div className="w-full">
+            {tab === "Info" && (
               <InfoTab coinMetadata={coinMetadata} pool={seedPoolData} boundPoolClient={boundPoolClient} />
             )}
-            {tab === "comments" && (
+            {tab === "Comments" && (
               <CommentsTab coinAddress={coinMetadata.address} coinCreator={coinMetadata.creator} />
             )}
-            {tab === "chart" && (
+            {tab === "Chart" && (
               <ChartTab seedPoolDataAddress={seedPoolData.address} tokenSymbol={coinMetadata.symbol} />
             )}
           </div>
         </>
       ) : (
         <div className="grid grid-cols-3 gap-4">
-          <div className="col-span-2">
-            <div>
+          <div className="col-span-2 flex flex-col gap-y-2">
+            <div className="bg-mono-400 py-1">
               <Tabs tabs={desktopTabs} onTabChange={onTabChange} activeTab={tab} />
-              {tab === "comments" && (
-                <CommentsTab coinAddress={coinMetadata.address} coinCreator={coinMetadata.creator} />
-              )}
-              {tab === "chart" && (
-                <ChartTab seedPoolDataAddress={seedPoolData.address} tokenSymbol={coinMetadata.symbol} />
-              )}
             </div>
+            {tab === "Comments" && (
+              <CommentsTab coinAddress={coinMetadata.address} coinCreator={coinMetadata.creator} />
+            )}
+            {tab === "Chart" && (
+              <ChartTab seedPoolDataAddress={seedPoolData.address} tokenSymbol={coinMetadata.symbol} />
+            )}
           </div>
           <div className="col-span-1">
             <InfoTab coinMetadata={coinMetadata} pool={seedPoolData} boundPoolClient={boundPoolClient} />

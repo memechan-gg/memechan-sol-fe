@@ -12,7 +12,7 @@ import { SolanaToken } from "@avernikoz/memechan-sol-sdk";
 import Link from "next/link";
 import { useState } from "react";
 import Skeleton from "react-loading-skeleton";
-import { CommentsPanel } from "./comments-panel";
+import { CommentsTab } from "./comments-tab/comments-tab";
 import { LiveCoinSidebar } from "./sidebar/live-coin-sidebar";
 
 export function LiveCoin({ coinMetadata, livePoolData }: { coinMetadata: SolanaToken; livePoolData: LivePoolData }) {
@@ -107,7 +107,7 @@ export function LiveCoin({ coinMetadata, livePoolData }: { coinMetadata: SolanaT
                 <Button onClick={() => setSelectedChart("birdeye")}>Birdeye.so</Button>
                 <Button onClick={() => setSelectedChart("dexscreener")}>Dexscreener.com</Button>
               </div>
-              <CommentsPanel coinType={coinMetadata.address} coinCreator={coinMetadata.creator} />
+              <CommentsTab coinAddress={coinMetadata.address} coinCreator={coinMetadata.creator} />
             </div>
             <div className="lg:flex hidden w-1/3 flex-col gap-4">
               <LiveCoinSidebar
