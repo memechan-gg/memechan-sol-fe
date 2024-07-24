@@ -61,6 +61,9 @@ const config: Config = {
       letterSpacing: {
         tightest: "-0.011em",
       },
+      height: {
+        "13": "52px",
+      },
     },
     screens: {
       xxs: "350px",
