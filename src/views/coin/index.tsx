@@ -24,7 +24,7 @@ export function Coin({ coin, tab }: CoinProps) {
   if (!token) return <CoinNotFound />;
 
   if (seedPool) return <PresaleCoin coinMetadata={token} tab={tab} seedPoolData={seedPool} />;
-  if (livePool) return <LiveCoin coinMetadata={token} livePoolData={livePool} />;
+  if (livePool) return <LiveCoin coinMetadata={token} tab={tab} livePoolData={livePool} />;
 
   return <CoinNotFound />;
 }

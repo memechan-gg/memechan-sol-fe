@@ -1,6 +1,5 @@
-
-import { CoinThreadWithParsedMessage } from "../../coin.types";
-import { useLikes } from "../../hooks/useLikes";
+import { CoinThreadWithParsedMessage } from "@/views/coin/coin.types";
+import { useLikes } from "@/views/coin/hooks/useLikes";
 import { Comment } from "./comment/comment";
 
 export const Comments = ({

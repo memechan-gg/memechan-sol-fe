@@ -5,7 +5,7 @@ import { useTickets } from "@/hooks/useTickets";
 import { getTokenInfo } from "@/hooks/utils";
 import { SeedPoolData } from "@/types/pool";
 import { BoundPoolClient, BoundPoolClientV2, SolanaToken } from "@avernikoz/memechan-sol-sdk";
-import { PresaleCoinSidebar } from "../sidebar/presale-coin-sidebar";
+import { PresaleCoinSidebar } from "../../sidebar/presale-coin-sidebar";
 
 export function InfoTab({
   coinMetadata,
