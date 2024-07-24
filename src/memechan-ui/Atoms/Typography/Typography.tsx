@@ -4,13 +4,13 @@ import { MouseEvent, ReactNode } from "react";
 type TypographyVariants = keyof typeof TYPOGRAPHY_VARIANTS;
 
 const TYPOGRAPHY_VARIANTS = {
-  h1: "text-2xl leading-9 font-bold tracking-tightest", // 24px, line-height 36px, semi-bold (700)
-  h2: "text-xl leading-[30px] font-bold tracking-tightest", // 20px, line-height 30px, semi-bold (700)
-  h3: "text-[16px] font-bold leading-6 tracking-tightest", // 16px, line-height 24px, semi-bold (700)
-  h4: "text-[13px] font-bold leading-5 ", // 13px, line-height 20px, semi-bold (700)
-  body: "text-[13px] font-normal leading-5 ", // 13px, line-height 20px, regular (400)
-  "text-button": "text-[13px] font-normal leading-4", // 13px, line-height 16px, regular (400)
-  caption: "text-xs font-normal leading-[16px] tracking-tight", // 12px, line-height 16px, regular (400)
+  h1: "text-2xl leading-9 font-bold tracking-tightest inline-block", // 24px, line-height 36px, semi-bold (700)
+  h2: "text-xl leading-[30px] font-bold tracking-tightest inline-block", // 20px, line-height 30px, semi-bold (700)
+  h3: "text-[16px] font-bold leading-6 tracking-tightest inline-block", // 16px, line-height 24px, semi-bold (700)
+  h4: "text-[13px] font-bold leading-5  inline-block", // 13px, line-height 20px, semi-bold (700)
+  body: "text-[13px] font-normal leading-5  inline-block", // 13px, line-height 20px, regular (400)
+  "text-button": " inline text-[13px] font-normal leading-4 inline-block", // 13px, line-height 16px, regular (400)
+  caption: "text-xs font-normal leading-[16px] tracking-tight inline-block", // 12px, line-height 16px, regular (400)
 };
 
 interface Props {
