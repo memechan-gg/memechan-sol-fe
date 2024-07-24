@@ -9,7 +9,6 @@ interface Props {
 }
 
 const TextInput = ({ startAdornment, endAdornment, value, setValue, placeholder }: Props) => {
-  
   return (
     <div className="relative flex items-center rounded-sm pink-border">
       {startAdornment && <span className="m-[14px] flex">{startAdornment}</span>}

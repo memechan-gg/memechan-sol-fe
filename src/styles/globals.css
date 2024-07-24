@@ -174,3 +174,8 @@ a {
   fill: white !important;
   stroke: white !important;
 }
+.custom-inner-shadow {
+  box-shadow:
+    inset 2px 0 0.5px -1px black,
+    inset 0 2px 0.5px -1px black;
+}

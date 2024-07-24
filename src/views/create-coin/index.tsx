@@ -1,15 +1,11 @@
 import { TransactionSentNotification } from "@/components/notifications/transaction-sent-notification";
-import { ThreadBoard } from "@/components/thread";
 import { useConnection } from "@/context/ConnectionContext";
 import { useBalance } from "@/hooks/useBalance";
 import { useTargetConfig } from "@/hooks/useTargetConfig";
-import {
-  MAX_DESCRIPTION_LENGTH,
-  MAX_NAME_LENGTH,
-  MAX_SYMBOL_LENGTH,
-  TOKEN_INFOS,
-  sleep,
-} from "@avernikoz/memechan-sol-sdk";
+import { Button } from "@/memechan-ui/Atoms";
+import UncontrolledTextInput from "@/memechan-ui/Atoms/Input/UncontrolledTextInput";
+import { Typography } from "@/memechan-ui/Atoms/Typography";
+import { MAX_DESCRIPTION_LENGTH, TOKEN_INFOS, sleep } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { track } from "@vercel/analytics";
 import BigNumber from "bignumber.js";
@@ -40,7 +36,7 @@ export function CreateCoin() {
   const router = useRouter();
   const [inputAmount, setInputAmount] = useState<string>("0");
   const { solanaThresholdAmount } = useTargetConfig();
-
+  const [hasMoreOptions, setHasMoreOptions] = useState(true);
   const { balance: solanaAmount } = useBalance(TOKEN_INFOS["WSOL"].mint.toString(), TOKEN_INFOS["WSOL"].decimals);
 
   const { connection, memechanClientV2 } = useConnection();
@@ -200,138 +196,178 @@ export function CreateCoin() {
   });
 
   return (
-    <div className="w-full flex items-center justify-center">
-      <div className="w-full lg:max-w-3xl">
-        <ThreadBoard title="create memecoin" showNavigateBtn>
-          <form onSubmit={onSubmit} className="flex flex-col gap-4 lowercase">
-            <div className="flex flex-col gap-2">
-              <h4 className="text-sm font-bold text-regular lowercase">Memecoin Details</h4>
-              <div className="flex flex-col lg:flex-row gap-4">
-                <div className="flex flex-col gap-1">
-                  <label className="text-regular text-xs">Name</label>
-                  <div>
-                    <input
-                      {...register("name", { required: true })}
-                      className="border w-[200px] border-regular rounded-lg p-1"
-                      maxLength={MAX_NAME_LENGTH}
-                    />
-                  </div>
-                  {errors.name && <p className="text-xs text-red-500">Name is required</p>}
+    <div className="w-full max-w-[375px] flex items-center justify-center border border-mono-400 rounded-sm m-4">
+      <div className="w-full lg:max-w-3xl m-3 ">
+        {/* <ThreadBoard title="create memecoin" showNavigateBtn> */}
+        <form onSubmit={onSubmit} className="flex flex-col ">
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-col  gap-4">
+              <div className="flex flex-col gap-1">
+                <label>
+                  <Typography variant="body" color="mono-500">
+                    Token Name *
+                  </Typography>
+                </label>
+                <div>
+                  <UncontrolledTextInput {...register("name", { required: true })} />
                 </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-regular text-xs">Symbol</label>
-                  <div>
-                    <input
-                      {...register("symbol", { required: true })}
-                      className="border w-[200px] border-regular rounded-lg p-1"
-                      maxLength={MAX_SYMBOL_LENGTH}
-                    />
-                  </div>
-                  {errors.symbol && <p className="text-xs text-red-500">Synbol is required</p>}
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-regular text-xs">Image</label>
-                  <div>
-                    <input
-                      type="file"
-                      {...register("image", { required: true })}
-                      // file limits
-                      accept="image/png, image/jpeg, image/jpg, image/gif"
-                      // only select one fie
-                      multiple={false}
-                      className="border w-[200px] border-regular rounded-lg p-1"
-                    />
-                  </div>
-                  {errors.image && <p className="text-xs text-red-500">Image is required</p>}
-                </div>
+                {errors.name && <p className="text-xs text-red-500">Name is required</p>}
               </div>
               <div className="flex flex-col gap-1">
-                <label className="text-regular text-xs">Description</label>
+                <label>
+                  <Typography variant="body" color="mono-500">
+                    Symbol *
+                  </Typography>
+                </label>
                 <div>
-                  <textarea
-                    {...register("description", { required: true })}
-                    className="border w-[200px] border-regular rounded-lg p-1"
-                    maxLength={MAX_DESCRIPTION_LENGTH}
-                  />
+                  <UncontrolledTextInput {...register("symbol", { required: true })} />
                 </div>
-                {errors.description && <p className="text-xs text-red-500">Description is required</p>}
+                {errors.symbol && <p className="text-xs text-red-500">Synbol is required</p>}
               </div>
-            </div>
-            <div className="flex flex-col gap-2">
-              <h4 className="text-sm font-bold text-regular">More Options</h4>
-              <div className="flex flex-col lg:flex-row gap-4 flex-wrap">
-                <div className="flex flex-col gap-1">
-                  <label className="text-regular text-xs">Twitter (optional)</label>
-                  <div>
-                    <input {...register("twitter")} className="border w-[200px] border-regular rounded-lg p-1" />
-                  </div>
+              <div className="flex flex-col gap-1">
+                <label>
+                  <Typography variant="body" color="mono-500">
+                    Picture *
+                  </Typography>
+                </label>
+                <div>
+                  <UncontrolledTextInput type="file" {...register("image", { required: true })} />
+
+                  {/* <FileInput
+                    // type="file"
+                    {...register("image", { required: true })}
+                    // file limits
+                    // accept="image/png, image/jpeg, image/jpg, image/gif"
+                    // only select one fie
+                    // multiple={false}
+                  /> */}
                 </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-regular text-xs">Telegram (optional)</label>
-                  <div>
-                    <input {...register("telegram")} className="border w-[200px] border-regular rounded-lg p-1" />
-                  </div>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-regular text-xs">Discord (optional)</label>
-                  <div>
-                    <input {...register("discord")} className="border w-[200px] border-regular rounded-lg p-1" />
-                  </div>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-regular text-xs">Website (optional)</label>
-                  <div>
-                    <input {...register("website")} className="border w-[200px] border-regular rounded-lg p-1" />
-                  </div>
-                </div>
+                {errors.image && <p className="text-xs text-red-500">Image is required</p>}
               </div>
-            </div>
-            <div className="flex flex-col gap-2">
-              <h4 className="text-sm font-bold text-regular">Buy your meme first</h4>
-              <div className="flex flex-col lg:flex-row gap-4 flex-wrap">
-                <div className="flex flex-col gap-1">
-                  <label className="text-regular text-xs">SOL amount</label>
-                  <div>
-                    <input
-                      className="border w-[200px] border-regular rounded-lg p-1"
-                      onChange={(e) => setInputAmount(e.target.value)}
-                      value={inputAmount}
-                      type="number"
-                      min="0"
-                      placeholder="0"
-                      step={10 ** -9}
-                    />
-                  </div>
-                  <span className="text-regular">
-                    SOL available:{" "}
-                    {publicKey ? (solanaAmount && (+solanaAmount).toFixed(4)) ?? <Skeleton width={40} /> : 0}
-                  </span>
-                </div>
-              </div>
-            </div>
-            <div className="text-regular">
-              <i>Creation cost: ~0.02 SOL</i>
             </div>
             <div className="flex flex-col gap-1">
+              <Typography variant="body" color="mono-500">
+                Description
+              </Typography>
               <div>
-                <button
-                  type="submit"
-                  className="bg-regular text-white font-bold p-2 rounded-lg disabled:opacity-50 lowercase"
-                  disabled={state !== "idle"}
-                >
-                  {
-                    {
-                      idle: "Create memecoin",
-                      sign: "Signing Message...",
-                      ipfs: "Uploading Image...",
-                      create_bonding_and_meme: "Creating Bonding Curve Pool and memecoin...",
-                    }[state]
-                  }
-                </button>
+                <textarea
+                  {...register("description", { required: true })}
+                  className=" h-32 border border-mono-400 p-4 flex-1 outline-none bg-transparent placeholder-mono-500 w-full"
+                  maxLength={MAX_DESCRIPTION_LENGTH}
+                />
+              </div>
+              {errors.description && <p className="text-xs text-red-500">Description is required</p>}
+            </div>
+          </div>
+          <div className="flex flex-col gap-2">
+            {hasMoreOptions && (
+              <div className=" w-fit cursor-pointer" onClick={() => setHasMoreOptions(false)}>
+                <Typography variant="text-button" color="green-100" underline>
+                  {"I'm not in hurry"}
+                </Typography>
+              </div>
+            )}
+
+            {!hasMoreOptions ? (
+              <div className="flex flex-col gap-4 flex-wrap">
+                <div className="flex flex-col gap-1">
+                  <label>
+                    <Typography variant="body" color="mono-500">
+                      Website
+                    </Typography>
+                  </label>
+                  <div>
+                    <UncontrolledTextInput placeholder="Website URL" {...register("website")} />
+                  </div>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label>
+                    <Typography variant="body" color="mono-500">
+                      Twitter
+                    </Typography>
+                  </label>
+                  <div>
+                    <UncontrolledTextInput placeholder="Twitter URL" {...register("twitter")} />
+                  </div>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label>
+                    <Typography variant="body" color="mono-500">
+                      Telegram
+                    </Typography>
+                  </label>
+                  <div>
+                    <UncontrolledTextInput placeholder="Telegram URL" {...register("telegram")} />
+                  </div>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label>
+                    <Typography variant="body" color="mono-500">
+                      Discord
+                    </Typography>
+                  </label>
+                  <div>
+                    <UncontrolledTextInput placeholder="Discord URL" {...register("discord")} />
+                  </div>
+                </div>
+
+                <div className=" w-fit cursor-pointer" onClick={() => setHasMoreOptions(true)}>
+                  <Typography variant="text-button" color="red-100" underline>
+                    {"Fuck it, I'm in hurry"}
+                  </Typography>
+                </div>
+              </div>
+            ) : (
+              ""
+            )}
+          </div>
+          <div className="flex flex-col gap-2">
+            <h4 className="text-sm font-bold text-regular">Buy your meme first</h4>
+            <div className="flex flex-col  gap-4 flex-wrap">
+              <div className="flex flex-col gap-1">
+                <label>SOL amount</label>
+                <div>
+                  <input
+                    className="border w-[200px] border-regular rounded-lg p-1"
+                    onChange={(e) => setInputAmount(e.target.value)}
+                    value={inputAmount}
+                    type="number"
+                    min="0"
+                    placeholder="0"
+                    step={10 ** -9}
+                  />
+                </div>
+                <span className="text-regular">
+                  SOL available:{" "}
+                  {publicKey ? (solanaAmount && (+solanaAmount).toFixed(4)) ?? <Skeleton width={40} /> : 0}
+                </span>
               </div>
             </div>
-          </form>
-        </ThreadBoard>
+          </div>
+          <div className="text-regular">
+            <i>Creation cost: ~0.02 SOL</i>
+          </div>
+          <div className="flex flex-col gap-1">
+            <div>
+              <Button
+                variant="primary"
+                // type="submit"
+                // className="bg-regular text-white font-bold p-2 rounded-lg disabled:opacity-50 lowercase"
+                // disabled={state !== "idle"}
+              >
+                {
+                  {
+                    idle: "Create memecoin",
+                    sign: "Signing Message...",
+                    ipfs: "Uploading Image...",
+                    create_bonding_and_meme: "Creating Bonding Curve Pool and memecoin...",
+                  }[state]
+                }
+              </Button>
+            </div>
+          </div>
+        </form>
+        {/* </ThreadBoard> */}
       </div>
     </div>
   );
