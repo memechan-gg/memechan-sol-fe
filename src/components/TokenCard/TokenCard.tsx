@@ -37,12 +37,12 @@ export function TokenCard({ token }: TokenCardProps) {
           <div className="flex justify-between w-full">
             {/* <input type="checkbox" checked={isChecked} onChange={handleCheckboxChange} className="mr-2" /> */}
             <div className="flex text-left gap-2 min-w-40 mr-2">
-              <div className=" max-w-[50%] text-left">
+              <div className="flex max-w-[50%] text-left">
                 <Typography align="left" truncate color="green-100" variant="h4">
                   {name}
                 </Typography>
               </div>
-              <div className=" w-2/4">
+              <div className="flex w-2/4">
                 <Typography variant="h4" truncate>
                   {symbol}
                 </Typography>
