@@ -1,4 +1,4 @@
-import { CoinThread, CoinThreadWithParsedMessage } from "../../coin.types";
+import { CoinThread, CoinThreadWithParsedMessage } from "@/views/coin/coin.types";
 
 export function filterThreads(threads: CoinThread[]): CoinThreadWithParsedMessage[] {
   const newThreads: CoinThreadWithParsedMessage[] = [];

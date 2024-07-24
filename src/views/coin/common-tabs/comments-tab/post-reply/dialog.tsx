@@ -1,11 +1,11 @@
 import { SocialApiInstance } from "@/common/solana";
 import FileInput from "@/memechan-ui/Atoms/Input/FileInput";
+import { CoinThreadParsedMessage } from "@/views/coin/coin.types";
 import { handleAuthentication, uploadImageToIPFS } from "@/views/create-coin/create-coin.utils";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { track } from "@vercel/analytics";
 import { useCallback, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
-import { CoinThreadParsedMessage } from "../../coin.types";
 
 export function PostReplyDialog({
   onClose,
