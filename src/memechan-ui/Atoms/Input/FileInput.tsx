@@ -1,5 +1,10 @@
 import CloseIcon from "@/memechan-ui/icons/CloseIcon";
 import { ChangeEvent, Dispatch, SetStateAction } from "react";
+import { Typography } from "../Typography";
+import { red } from "bn.js";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faClose } from "@fortawesome/free-solid-svg-icons/faClose";
+import { colors } from "../../../../tailwind.config";
 
 interface Props {
   file: File | null;
@@ -12,22 +17,22 @@ const FileInput = ({ file, setFile }: Props) => {
     setFile(selectedFile);
   };
 
-  // TODO:EDO:2
-  // make css for INPUT to be pitch perfect as it is in FIGMA
-  // https://www.figma.com/design/9dHzMvZyvOwsPlFMPv6lXf/memechan.gg?node-id=576-68521&t=xJg0UxajLzZyeSqo-4
-  return (
+   return (
     <div className="flex flex-col items-center justify-center gap-2 w-full">
       {file ? (
-        <div className="flex justify-between items-center border border-regular rounded-lg w-full p-1">
-          <span className="text-regular truncate">{file.name}</span>
-          <button onClick={() => setFile(null)} className="text-xs text-error">
-            <CloseIcon />
+        <div className="flex justify-between items-center primary-border rounded-sm w-full py-[18px] px-4">
+          <span className="text-regular truncate">
+          <Typography>
+            {file.name}
+          </Typography>
+          </span>
+          <button onClick={() => setFile(null)} className="text-xs flex">
+            <FontAwesomeIcon icon={faClose} className="text-red-100" size="xl" />
           </button>
         </div>
       ) : (
         <>
-          <label htmlFor="file-upload" className="text-regular text-xs mb-2 self-start">
-            Attach file
+          <label htmlFor="file-upload" className="hidden">
           </label>
           <input
             id="file-upload"
@@ -39,9 +44,9 @@ const FileInput = ({ file, setFile }: Props) => {
           />
           <label
             htmlFor="file-upload"
-            className="border border-regular rounded-lg p-2 inline-block cursor-pointer w-full text-center"
+            className="primary-border rounded-sm py-[18px] inline-block cursor-pointer w-full text-center text-mono-500"
           >
-            Choose a file
+            <Typography align="center" color="mono-500">Attach file </Typography>
           </label>
         </>
       )}

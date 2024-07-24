@@ -29,10 +29,10 @@ export const Search = ({
           value={search}
           placeholder="Search"
           setValue={setSearch}
-          startAdornment={<FontAwesomeIcon fontSize={12} color={colors["primary-100"]} icon={faSearch} />}
+          startAdornment={<FontAwesomeIcon fontSize={12} color={colors["mono-600"]} icon={faSearch} />}
           endAdornment={
-            <span className="cursor-pointer">
-              <FontAwesomeIcon icon={faClose} onClick={() => setIsSearchActive(false)} />
+            <span className="cursor-pointer m-2 mr-[17px]">
+              <FontAwesomeIcon icon={faClose} size="lg" onClick={() => setIsSearchActive(false)} />
             </span>
           }
         />

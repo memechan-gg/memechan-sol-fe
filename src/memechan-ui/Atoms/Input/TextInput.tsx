@@ -9,21 +9,18 @@ interface Props {
 }
 
 const TextInput = ({ startAdornment, endAdornment, value, setValue, placeholder }: Props) => {
-  // TODO:EDO:2
-  // MAKE CSS SAME AS IN FIGMA
-  // https://www.figma.com/design/9dHzMvZyvOwsPlFMPv6lXf/memechan.gg?node-id=576-59440&t=pgsueAM0HZAaTUUL-4
-  // we have idle, active(while typing) state
+  
   return (
-    <div className="relative flex items-center border-2 rounded-lg p-2 border-gray-300 focus-within:border-blue-500">
-      {startAdornment && <span className="mr-2 mb-0.5">{startAdornment}</span>}
+    <div className="relative flex items-center rounded-sm pink-border">
+      {startAdornment && <span className="m-[14px] flex">{startAdornment}</span>}
       <input
         type="text"
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        className="flex-1 outline-none bg-transparent placeholder-gray-500"
+        className="flex-1 outline-none bg-transparent placeholder-mono-500"
         placeholder={placeholder}
       />
-      {endAdornment && <span className="ml-2">{endAdornment}</span>}
+      {endAdornment && <span className="flex">{endAdornment}</span>}
     </div>
   );
 };
