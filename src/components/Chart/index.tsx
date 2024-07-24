@@ -41,7 +41,7 @@ export const Chart = (settingsProps: PropsSettings) => {
   }, [...Object.values(settingsProps)]);
 
   return (
-    <div id="tv-wrapper" style={{ height: "38rem" }} className={`w-full flex items-center justify-center`}>
+    <div id="tv-wrapper" className={`h-[300px] md:h-[500px] w-full flex items-center justify-center`}>
       {!isLoaded && (
         <div className="w-full h-full">
           <Skeleton width="100%" height="100%" className="skeleton-custom" />

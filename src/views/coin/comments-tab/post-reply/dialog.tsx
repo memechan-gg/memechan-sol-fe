@@ -5,7 +5,7 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import { track } from "@vercel/analytics";
 import { useCallback, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
-import { CoinThreadParsedMessage } from "../coin.types";
+import { CoinThreadParsedMessage } from "../../coin.types";
 
 export function PostReplyDialog({
   onClose,
