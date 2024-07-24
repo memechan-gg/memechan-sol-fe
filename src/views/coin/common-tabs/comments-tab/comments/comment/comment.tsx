@@ -1,16 +1,16 @@
 import { SocialApiInstance } from "@/common/solana";
 import CustomDate from "@/components/custom-date";
+import { CoinThreadWithParsedMessage } from "@/views/coin/coin.types";
+import { getSlicedAddress } from "@/views/coin/sidebar/holders/utils";
 import { handleAuthentication } from "@/views/create-coin/create-coin.utils";
 import { useWallet } from "@solana/wallet-adapter-react";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { PostReplyDialog } from "../../post-reply/dialog";
 import { EmptyLikeIconSvgComponent } from "../likes/empty-like-icon";
 import { FullLikeIconSvgComponent } from "../likes/full-like-icon";
 import classes from "./comment.module.css";
-import { CoinThreadWithParsedMessage } from "@/views/coin/coin.types";
-import { getSlicedAddress } from "@/views/coin/sidebar/holders/utils";
-import { PostReplyDialog } from "../../post-reply/dialog";
 
 interface CommentProps {
   thread: CoinThreadWithParsedMessage;
