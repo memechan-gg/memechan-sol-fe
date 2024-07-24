@@ -7,9 +7,10 @@ import { PresaleCoin } from "./presale-coin";
 
 type CoinProps = {
   coin: string;
+  tab: string;
 };
 
-export function Coin({ coin }: CoinProps) {
+export function Coin({ coin, tab }: CoinProps) {
   const { data: token, isLoading: tokenIsLoading } = useToken(coin);
 
   const { data: seedPool, isLoading: seedPoolIsLoading } = useSeedPool(
@@ -22,7 +23,7 @@ export function Coin({ coin }: CoinProps) {
   if (tokenIsLoading || seedPoolIsLoading || livePoolIsLoading) return <div className="text-regular">Loading...</div>;
   if (!token) return <CoinNotFound />;
 
-  if (seedPool) return <PresaleCoin coinMetadata={token} seedPoolData={seedPool} />;
+  if (seedPool) return <PresaleCoin coinMetadata={token} tab={tab} seedPoolData={seedPool} />;
   if (livePool) return <LiveCoin coinMetadata={token} livePoolData={livePool} />;
 
   return <CoinNotFound />;

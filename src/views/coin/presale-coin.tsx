@@ -1,37 +1,31 @@
-import { Chart } from "@/components/Chart";
-import { ThreadBoard } from "@/components/thread";
-import { TICKETS_INTERVAL } from "@/config/config";
 import { useBoundPoolClient } from "@/hooks/presale/useBoundPoolClient";
-import { usePresaleCoinUniqueHoldersFromBE } from "@/hooks/presale/usePresaleCoinUniqueHoldersFromBE";
-import { useMemePriceFromBE } from "@/hooks/useMemePriceFromBE";
-import { useTickets } from "@/hooks/useTickets";
-import { getTokenInfo } from "@/hooks/utils";
+import { useMedia } from "@/hooks/useMedia";
+import { Tabs } from "@/memechan-ui/Atoms/Tabs";
 import TopBar from "@/memechan-ui/Atoms/TopBar/TopBar";
 import { SeedPoolData } from "@/types/pool";
-import { formatNumber } from "@/utils/formatNumber";
 import { SolanaToken } from "@avernikoz/memechan-sol-sdk";
-import Link from "next/link";
+import { track } from "@vercel/analytics";
+import { useRouter } from "next/router";
 import { useEffect } from "react";
-import Skeleton from "react-loading-skeleton";
-import { CommentsPanel } from "./comments-panel";
-import { PresaleCoinSidebar } from "./sidebar/presale-coin-sidebar";
+import { ChartTab } from "./chart-tab/chart-tab";
+import { CommentsTab } from "./comments-tab/comments-tab";
+import { InfoTab } from "./info-tab/info-tab";
 
-export function PresaleCoin({ coinMetadata, seedPoolData }: { coinMetadata: SolanaToken; seedPoolData: SeedPoolData }) {
-  const { data: price } = useMemePriceFromBE({ memeMint: coinMetadata.address, poolType: "seedPool" });
-  const { data: uniqueHoldersData } = usePresaleCoinUniqueHoldersFromBE(coinMetadata.address);
-  const ticketsData = useTickets({
-    poolAddress: seedPoolData.address,
-    poolStatus: "PRESALE",
-    refreshInterval: TICKETS_INTERVAL,
-  });
+const mobileTabs = ["info", "chart", "comments"];
+const desktopTabs = ["chart", "comments"];
 
+export function PresaleCoin({
+  coinMetadata,
+  seedPoolData,
+  tab,
+}: {
+  coinMetadata: SolanaToken;
+  seedPoolData: SeedPoolData;
+  tab: string;
+}) {
+  const mediaQuery = useMedia();
+  const router = useRouter();
   const { data: boundPoolClient } = useBoundPoolClient(seedPoolData.address);
-
-  const boundPool = boundPoolClient?.boundPoolInstance.poolObjectData;
-
-  const tokenData = boundPool?.quoteReserve
-    ? getTokenInfo({ variant: "publicKey", tokenAddress: boundPool?.quoteReserve.mint })
-    : undefined;
 
   useEffect(() => {
     let intervalId: number | undefined;
@@ -51,7 +45,15 @@ export function PresaleCoin({ coinMetadata, seedPoolData }: { coinMetadata: Sola
     };
   }, [boundPoolClient]);
 
-  if (boundPoolClient === null) {
+  const onTabChange = (tab: string) => {
+    track("PresaleCoin_SetTab", { status: tab });
+    router.push({
+      pathname: `/coin/[coinType]`,
+      query: { coinType: coinMetadata.address, tab: tab.toLowerCase() },
+    });
+  };
+
+  if (boundPoolClient === null || boundPoolClient === undefined) {
     return (
       <div className="absolute rounded-xl top-0 left-0 w-full h-full bg-regular bg-opacity-70 flex items-center justify-center">
         <div className="text-white text-center text-balance font-bold text-lg tracking-wide">
@@ -64,70 +66,41 @@ export function PresaleCoin({ coinMetadata, seedPoolData }: { coinMetadata: Sola
   return (
     <>
       <TopBar tokenAddress={coinMetadata.address} tokenSymbol={coinMetadata.symbol} />
-      <ThreadBoard title={coinMetadata.name} showNavigateBtn>
-        <div className="flex flex-col gap-2">
-          <div className="flex flex-wrap flex-row gap-3 gap-x-10">
-            <div className="flex flex-col gap-1">
-              <div className="text-sm font-bold text-regular">Token Name</div>
-              <div className="text-xs font-bold text-regular">{coinMetadata.name}</div>
-            </div>
-            <div className="flex flex-col gap-1">
-              <div className="text-sm font-bold text-regular">Token Ticker</div>
-              <div className="text-xs font-bold text-regular">{coinMetadata.symbol}</div>
-            </div>
-            <div className="flex flex-col gap-1">
-              <div className="text-sm font-bold text-regular">Market Cap</div>
-              <div className="text-xs font-bold text-regular">${formatNumber(coinMetadata.marketcap, 2)}</div>
-            </div>
-            <div className="flex flex-col gap-1">
-              <div className="text-sm font-bold !normal-case text-regular">USD price</div>
-              <div className="text-xs font-bold !normal-case text-regular">
-                {price ? `$${(+price).toFixed(10)}` : <Skeleton />}
-              </div>
-            </div>
-            <div className="flex flex-col gap-1">
-              <div className="text-sm font-bold text-regular">Unique holders</div>
-              <div className="text-xs font-bold text-regular">
-                {uniqueHoldersData ? uniqueHoldersData.fullHolders.length : <Skeleton />}
-              </div>
-            </div>
-            <div className="flex flex-col gap-1">
-              <div className="text-sm font-bold text-link">Created By</div>
-              <Link
-                href={`/profile/${coinMetadata.address}/${coinMetadata.creator}`}
-                className="text-xs font-bold text-link"
-              >
-                {coinMetadata.creator.slice(0, 5)}...
-                {coinMetadata.creator.slice(-3)}
-              </Link>
+      {mediaQuery.isSmallDevice ? (
+        <>
+          <div className="fixed bottom-0 bg-mono-100 border-t border-mono-400 w-full z-50 flex items-center justify-center p-2 md:hidden">
+            <Tabs tabs={mobileTabs} onTabChange={onTabChange} activeTab={tab} />
+          </div>
+          <div>
+            {tab === "info" && (
+              <InfoTab coinMetadata={coinMetadata} pool={seedPoolData} boundPoolClient={boundPoolClient} />
+            )}
+            {tab === "comments" && (
+              <CommentsTab coinAddress={coinMetadata.address} coinCreator={coinMetadata.creator} />
+            )}
+            {tab === "chart" && (
+              <ChartTab seedPoolDataAddress={seedPoolData.address} tokenSymbol={coinMetadata.symbol} />
+            )}
+          </div>
+        </>
+      ) : (
+        <div className="grid grid-cols-3 gap-4">
+          <div className="col-span-2">
+            <div>
+              <Tabs tabs={desktopTabs} onTabChange={onTabChange} activeTab={tab} />
+              {tab === "comments" && (
+                <CommentsTab coinAddress={coinMetadata.address} coinCreator={coinMetadata.creator} />
+              )}
+              {tab === "chart" && (
+                <ChartTab seedPoolDataAddress={seedPoolData.address} tokenSymbol={coinMetadata.symbol} />
+              )}
             </div>
           </div>
-          <div className="flex w-full flex-col lg:flex-row gap-6">
-            <div className="flex flex-col gap-3 w-full">
-              {tokenData ? (
-                <Chart address={seedPoolData.address} tokenName={coinMetadata.symbol.toUpperCase()} />
-              ) : null}
-              <div className="flex flex-col gap-3 lg:hidden">
-                <PresaleCoinSidebar
-                  coinMetadata={coinMetadata}
-                  pool={seedPoolData}
-                  uniqueHoldersData={uniqueHoldersData}
-                  ticketsData={ticketsData}
-                />
-              </div>
-              <CommentsPanel coinType={coinMetadata.address} coinCreator={coinMetadata.creator} />
-            </div>
-            <div className="lg:flex hidden w-1/3 flex-col gap-4">
-              <PresaleCoinSidebar
-                coinMetadata={coinMetadata}
-                pool={seedPoolData}
-                uniqueHoldersData={uniqueHoldersData}
-                ticketsData={ticketsData}
-              />
-            </div>
+          <div className="col-span-1">
+            <InfoTab coinMetadata={coinMetadata} pool={seedPoolData} boundPoolClient={boundPoolClient} />
           </div>
         </div>
-      </ThreadBoard>
+      )}
     </>
   );
 }

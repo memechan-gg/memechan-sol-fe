@@ -1,9 +1,17 @@
+import { useMedia } from "@/hooks/useMedia";
 import { Coin } from "@/views/coin";
 import { useRouter } from "next/router";
 
 export default function CoinPage() {
   const router = useRouter();
-  let { coinType } = router.query as { coinType: string };
+  const media = useMedia();
+  let { coinType, tab } = router.query as { coinType: string; tab: string };
 
-  return <Coin coin={coinType} />;
+  if (!media.isSmallDevice && tab === "info") {
+    router.push({
+      pathname: `/coin/[coinType]`,
+      query: { coinType: coinType, tab: "chart" },
+    });
+  }
+  return <Coin coin={coinType} tab={tab} />;
 }
