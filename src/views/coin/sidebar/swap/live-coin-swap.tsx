@@ -4,20 +4,12 @@ import { useLivePoolClient } from "@/hooks/live/useLivePoolClient";
 import { useBalance } from "@/hooks/useBalance";
 import { useTokenAccounts } from "@/hooks/useTokenAccounts";
 import { getTokenInfo } from "@/hooks/utils";
-import { Divider } from "@/memechan-ui/Atoms/Divider/Divider";
 // import SwapInput from "@/memechan-ui/Atoms/Input/SwapInput";
-import { WithConnectedWallet } from "@/components/WithConnectedWallet";
 import { QUOTE_TOKEN_DECIMALS } from "@/constants/constants";
 import { useSolanaBalance } from "@/hooks/useSolanaBalance";
-import { SwapInput } from "@/memechan-ui/Atoms/Input";
-import { Typography } from "@/memechan-ui/Atoms/Typography";
-import { Card } from "@/memechan-ui/Molecules";
 import { GetLiveSwapTransactionParams, GetSwapOutputAmountParams } from "@/types/hooks";
 import { parseChainValue } from "@/utils/parseChainValue";
 import { MEMECHAN_MEME_TOKEN_DECIMALS, SwapMemeOutput, buildTxs } from "@avernikoz/memechan-sol-sdk";
-import { faClose } from "@fortawesome/free-solid-svg-icons/faClose";
-import { faUpDown } from "@fortawesome/free-solid-svg-icons/faUpDown";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import { track } from "@vercel/analytics";
@@ -25,6 +17,7 @@ import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { LiveCoinSwapProps } from "../../coin.types";
 import { liveSwapParamsAreValid } from "../../coin.utils";
+import { Swap } from "./presale-coin-swap";
 import { handleSwapInputChange, validateSlippage } from "./utils";
 
 export const LiveCoinSwap = ({
@@ -38,21 +31,37 @@ export const LiveCoinSwap = ({
   const [isLoadingOutputAmount, setIsLoadingOutputAmount] = useState<boolean>(false);
   const [slippage, setSlippage] = useState<string>("10");
   const [isSwapping, setIsSwapping] = useState<boolean>(false);
-
+  const { data: solanaBalance } = useSolanaBalance();
+  // const [refetchBalanceIncrement, setRefetchBalanceIncrement] = useState(0);
   const tokenData = getTokenInfo({ variant: "string", tokenAddress: quoteMint });
+  const {
+    balance: coinBalance,
+    isLoading: isBalanceLoading,
+    refetch: coinBalanceRefetch,
+  } = useBalance(tokenData.mint.toString(), tokenData.decimals);
+
+  const {
+    balance: memeBalance,
+    isLoading: isMemeBalanceLoading,
+    refetch: memeBalanceRefech,
+  } = useBalance(tokenAddress, MEMECHAN_MEME_TOKEN_DECIMALS);
+
+  const [baseCurrency, setBaseCurrency] = useState({
+    currencyName: "SOL",
+    currencyLogoUrl: "/tokens/solana.png",
+    coinBalance: solanaBalance ?? 0,
+  });
+
+  const [secondCurrency, setSecondCurrency] = useState({
+    currencyName: tokenSymbol,
+    currencyLogoUrl: memeImage,
+    coinBalance: +(memeBalance ?? 0),
+  });
 
   const { publicKey, sendTransaction, signTransaction } = useWallet();
   const { connection } = useConnection();
   const { data: livePoolClient } = useLivePoolClient(address);
 
-  const { balance: coinBalance, isLoading: isBalanceLoading } = useBalance(
-    tokenData.mint.toString(),
-    tokenData.decimals,
-  );
-  const { balance: memeBalance, isLoading: isMemeBalanceLoading } = useBalance(
-    tokenAddress,
-    MEMECHAN_MEME_TOKEN_DECIMALS,
-  );
   const { data: tokenAccounts, refetch: refetchTokenAccounts } = useTokenAccounts();
 
   const getSwapOutputAmount = useCallback(
@@ -165,6 +174,11 @@ export const LiveCoinSwap = ({
     return () => clearTimeout(timeoutId);
   }, [getSwapOutputAmount, inputAmount, coinToMeme, slippage]);
 
+  const refresh = useCallback(async () => {
+    await coinBalanceRefetch();
+    await memeBalanceRefech();
+  }, [coinBalanceRefetch, memeBalanceRefech]);
+
   const onSwap = useCallback(async () => {
     if (!publicKey || !outputData || !signTransaction || !coinBalance) return;
 
@@ -260,6 +274,8 @@ export const LiveCoinSwap = ({
       setIsSwapping(false);
 
       toast.success("Swap succeeded");
+      refresh();
+      setInputAmount("0");
       refetchTokenAccounts();
       return;
     } catch (e) {
@@ -282,6 +298,7 @@ export const LiveCoinSwap = ({
     coinToMeme,
     getSwapTransactions,
     livePoolClient?.version,
+    refresh,
     refetchTokenAccounts,
     sendTransaction,
     connection,
@@ -297,13 +314,6 @@ export const LiveCoinSwap = ({
     });
   };
 
-  const onSwapClick = () => {
-    setCoinToMeme((prev) => !prev);
-  };
-
-  const [variant, setVariant] = useState<"swap" | "claim">("swap");
-  const isVariantSwap = variant === "swap";
-  const refresh = () => {};
   const onReverseClick = () => {
     setCoinToMeme((prev) => !prev);
     const copyBaseCurrency = { ...baseCurrency };
@@ -332,136 +342,52 @@ export const LiveCoinSwap = ({
       toReceive = parseChainValue(Number(+outputData.minAmountOut.toExact()), 0, 12);
     }
   }
-  const { data: solanaBalance } = useSolanaBalance();
+
+  const [mountedSolana, setMountedSolana] = useState(false);
+  const [mountedMeme, setMountedMeme] = useState(false);
 
   useEffect(() => {
-    if (solanaBalance) setBaseCurrency((prevState) => ({ ...prevState, coinBalance: solanaBalance }));
-  }, [solanaBalance]);
-
-  useEffect(() => {
-    if (memeBalance)
+    if (baseCurrency.currencyName === "SOL") {
+      setBaseCurrency((prevState) => ({ ...prevState, coinBalance: solanaBalance ?? 0 }));
+      // setMountedSolana(true);
+    }
+    if (secondCurrency.currencyName !== "SOL") {
       setSecondCurrency((prevState) => ({
         ...prevState,
-        coinBalance: +memeBalance,
+        coinBalance: +(memeBalance ?? 0),
       }));
-  }, [publicKey, coinBalance, tokenData.decimals, memeBalance]);
+    }
+  }, [baseCurrency.currencyName, memeBalance, mountedSolana, secondCurrency.currencyName, solanaBalance]);
 
-  const [baseCurrency, setBaseCurrency] = useState({
-    currencyName: "SOL",
-    currencyLogoUrl: "/tokens/solana.png",
-    coinBalance: solanaBalance ?? 0,
-  });
-
-  const [secondCurrency, setSecondCurrency] = useState({
-    currencyName: tokenSymbol,
-    currencyLogoUrl: memeImage,
-    coinBalance: +(memeBalance ?? 0),
-  });
-
-  //         available {tokenData.displayName}:{" "}
-  //         {publicKey && coinBalance
-  //           ? Number(coinBalance).toLocaleString(undefined, {
-  //               maximumFractionDigits: tokenData.decimals,
-  //             }) ?? "loading..."
-  //           : "0"}
-
-  // const { data: solanaData } = useSolanaPrice();
-  // const solanaPrice = solanaData?.price || 0;
-
+  useEffect(() => {
+    if (baseCurrency.currencyName !== "SOL") {
+      // setMountedSolana(true);
+      setBaseCurrency((prevState) => ({
+        ...prevState,
+        coinBalance: +(memeBalance ?? 0),
+      }));
+    }
+    if (secondCurrency.currencyName === "SOL") {
+      setSecondCurrency((prevState) => ({ ...prevState, coinBalance: solanaBalance ?? 0 }));
+    }
+  }, [baseCurrency.currencyName, memeBalance, mountedSolana, secondCurrency.currencyName, solanaBalance]);
+  // const submitButtonDisabled = swapButtonIsDiabled || isLoadingOutputAmount
   return (
-    <Card>
-      <Card.Header>
-        <div className="flex justify-between w-full">
-          <div className="flex gap-1">
-            <Typography
-              variant="h4"
-              onClick={() => setVariant("swap")}
-              className={isVariantSwap ? "order-1" : "order-2"}
-            >
-              Swap
-            </Typography>
-            <Typography
-              variant="text-button"
-              underline
-              onClick={() => setVariant("claim")}
-              className={isVariantSwap ? "order-2" : "order-1"}
-            >
-              Claim
-            </Typography>
-          </div>
-          <div className="flex items-center gap-2">
-            {/* <input
-         className="w-full bg-white text-xs font-bold text-regular p-2 rounded-lg"
-         value={slippage}
-         onChange={(e) =>
-           handleSlippageInputChange({
-             decimalPlaces: 2,
-             e,
-             setValue: setSlippage,
-             max: MAX_SLIPPAGE,
-             min: MIN_SLIPPAGE,
-           })
-         }
-         type="text"
-       /> */}
-            <Typography underline onClick={onSlippageClick}>
-              Slippage {slippage}%
-            </Typography>
-            <Typography onClick={refresh}>🔄</Typography>
-            <Divider vertical className="bg-mono-600" />
-            <Typography onClick={onCloseClick}>
-              <FontAwesomeIcon icon={faClose} fontSize={16} />
-            </Typography>
-          </div>
-        </div>
-      </Card.Header>
-      <Card.Body>
-        <div className="flex flex-col">
-          <SwapInput
-            currencyName={baseCurrency.currencyName}
-            inputValue={inputAmount}
-            setInputValue={onInputChange}
-            placeholder="0.00"
-            currencyLogoUrl={baseCurrency.currencyLogoUrl}
-            // TODO:HARUN
-            // usdPrice={13.99}
-            label="Pay"
-            labelRight={publicKey ? `👛 ${baseCurrency.coinBalance ?? 0} ${baseCurrency.currencyName}` : undefined}
-          />
-          <div className="relative h-12">
-            <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 border-t border-mono-400"></div>
-            <div
-              onClick={onReverseClick}
-              className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-5 h-5 bg-mono-200 hover:bg-mono-300 cursor-pointer border-2 border-mono-400 rounded-sm flex justify-center items-center ${swapButtonIsDiabled && "cursor-not-allowed hover:bg-mono-200"}`}
-            >
-              <FontAwesomeIcon icon={faUpDown} className="text-white" fontWeight={100} />
-            </div>
-          </div>
-          <SwapInput
-            currencyName={secondCurrency.currencyName}
-            type="text"
-            inputValue={toReceive}
-            currencyLogoUrl={secondCurrency.currencyLogoUrl}
-            label="Receive"
-            isReadOnly
-            // TODO:HARUN
-            // usdPrice={memePrice?.priceInUsd ? +toReceive * +memePrice.priceInUsd : 0}
-            labelRight={publicKey ? `👛 ${secondCurrency.coinBalance ?? 0} ${secondCurrency.currencyName}` : undefined}
-          />
-        </div>
-
-        <WithConnectedWallet
-          variant="primary"
-          className="mt-4 p-1"
-          disabled={swapButtonIsDiabled || isLoadingOutputAmount}
-          onClick={onSwap}
-          isLoading={isSwapping || isLoadingOutputAmount}
-        >
-          <Typography variant="h4">
-            {isLoadingOutputAmount ? "Calculating..." : isSwapping ? "Swapping..." : "Swap"}
-          </Typography>
-        </WithConnectedWallet>
-      </Card.Body>
-    </Card>
+    <Swap
+      slippage={slippage}
+      setSlippage={setSlippage}
+      refresh={refresh}
+      baseCurrency={baseCurrency}
+      secondCurrency={secondCurrency}
+      onInputChange={onInputChange}
+      inputAmount={inputAmount}
+      publicKey={publicKey}
+      isSwapping={isSwapping}
+      isLoadingOutputAmount={isLoadingOutputAmount}
+      onSwap={onSwap}
+      onReverseClick={onReverseClick}
+      toReceive={toReceive}
+      swapButtonIsDisabled={swapButtonIsDiabled}
+    />
   );
 };

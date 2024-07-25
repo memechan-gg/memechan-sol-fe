@@ -22,6 +22,7 @@ export function PresaleCoinSidebar({ pool, coinMetadata, uniqueHoldersData, tick
           tokenSymbol={coinMetadata.symbol}
           boundPool={boundPool}
           ticketsData={ticketsData}
+          memeImage={coinMetadata.image}
         />
       </SidebarItem>
       {tokenInfo && (

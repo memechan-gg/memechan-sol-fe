@@ -9,7 +9,7 @@ const TYPOGRAPHY_VARIANTS = {
   h3: "text-[16px] font-bold leading-6 tracking-tightest inline-block", // 16px, line-height 24px, semi-bold (700)
   h4: "text-[13px] font-bold leading-5  inline-block", // 13px, line-height 20px, semi-bold (700)
   body: "text-[13px] font-normal leading-5  inline-block", // 13px, line-height 20px, regular (400)
-  "text-button": "text-[13px] font-normal leading-4 inline-block", // 13px, line-height 16px, regular (400)
+  "text-button": "text-[13px] font-normal leading-5 inline-block", // 13px, line-height 16px, regular (400)
   caption: "text-xs font-normal leading-[16px] tracking-tight inline-block", // 12px, line-height 16px, regular (400)
 };
 
