@@ -87,34 +87,48 @@ export function Comment({
   const slicedAddress = getSlicedAddress(creator);
 
   // FIX - CSS EDO2
+  // functionality for reply and like
   return (
     <div className="flex flex-row gap-1 w-full" id={id}>
       <Card>
         <Card.Header>
-          <div>
-            <FontAwesomeIcon icon={faEllipsisVertical} className="text-mono-600" />
-            <Link className="hover:underline text-customGreen" href={`/profile/${creator}`} />
-            {slicedAddress} {isUsersComment ? "(me)" : ""} {devsComment ? "(dev)" : ""}
-            <CustomDate creationDate={new Date(creationDate)} />
-            <div className={classes["hover-underline"] + " text-xs font-medium"}>#{id}</div>
+          <div className="flex justify-between items-center w-full leading-5">
+            <div className="flex gap-2 items-center">
+              <FontAwesomeIcon icon={faEllipsisVertical} className="text-mono-600" />
+              <Link className="hover:underline text-green-100" href={`/profile/${creator}`} >
+                {slicedAddress} {isUsersComment ? "(me)" : ""} {devsComment ? "(dev)" : ""}
+              </Link>
+            </div>
+            <div className="flex items-center text-right">
+              <CustomDate creationDate={new Date(creationDate)} />
+              <div className={classes["hover-underline"] + " text-[13px] font-normal leading-5 text-mono-500"}>&nbsp;#{id}</div>
+            </div>
           </div>
         </Card.Header>
         <Card.Body>
-          {image && (
-            <div>
-              <img
-                src={image}
-                alt="picture"
-                className="mt-1 w-[150px] max-h-[250px] object-cover object-center border border-regular"
-              />
-            </div>
-          )}
-          {message}
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-3">
+            {image && (
+              <div className="flex-1">
+                <img
+                  src={image}
+                  alt="picture"
+                  className="w-full max-h-[100vw] object-cover object-center primary-border"
+                />
+              </div>
+            )}
+            {<Typography className="flex-1">
+              if we killed all mosquitoes would that fuck up the food chain in the same way as the great leap forward
+            </Typography> }
+          </div>
         </Card.Body>
         <Card.Footer>
-          <div onClick={handleReplyThreadEvent}>
-            {" "}
-            <span className="text-primary-100">{">>"}</span>
+          <div className="flex justify-between w-full">
+          <div  onClick={handleReplyThreadEvent}>
+            <span>
+              <Typography color="mono-500" variant="text-button" underline={true}>
+                {">>Reply"}
+              </Typography>
+            </span>
           </div>
           {replyTo ? (
             <a className="hover:underline" href={`#${replyTo}`}>
@@ -124,13 +138,13 @@ export function Comment({
             ""
           )}
           {liked ? (
-            <Typography variant="body">Like</Typography>
+            <Typography variant="text-button" color="mono-500">Like </Typography>
           ) : (
             <div>
-              <Typography variant="body">Liked</Typography>
-              {likesCount}
+              <Typography variant="text-button" color="primary-100">Liked ({likesCount})</Typography>
             </div>
           )}
+          </div>
         </Card.Footer>
       </Card>
       {isPostReplyDialogOpen && (

@@ -38,7 +38,7 @@ export function LiveCoin({
           <div className="fixed bottom-0 bg-mono-100 border-t border-mono-400 w-full z-50 flex items-center justify-center p-2 md:hidden">
             <Tabs tabs={mobileTabs} onTabChange={onTabChange} activeTab={tab} />
           </div>
-          <div className="w-full">
+          <div className="w-full px-3">
             {tab === "Info" && <InfoTab coinMetadata={coinMetadata} pool={livePoolData} />}
             {tab === "Comments" && (
               <CommentsTab coinAddress={coinMetadata.address} coinCreator={coinMetadata.creator} />
@@ -47,8 +47,8 @@ export function LiveCoin({
           </div>
         </>
       ) : (
-        <div className="grid grid-cols-3 gap-4">
-          <div className="col-span-2 flex flex-col gap-y-2">
+        <div className="grid grid-cols-3 gap-3">
+          <div className="col-span-2 flex flex-col gap-y-3">
             <div className="bg-mono-400 py-1">
               <Tabs tabs={desktopTabs} onTabChange={onTabChange} activeTab={tab} />
             </div>

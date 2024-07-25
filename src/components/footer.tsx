@@ -7,7 +7,7 @@ import { Typography } from "@/memechan-ui/Atoms/Typography";
 
 export const Footer = () => (
   <footer className="hidden sm:block">
-    <div className="items-center justify-between flex py-[14px]">
+    <div className="items-center justify-between flex py-[14px] px-3 xl:px-0">
       <div className="flex gap-2 items-center">
         <Link href="/" className="pink-border rounded-sm size-4 self-end">
           <Logo />
