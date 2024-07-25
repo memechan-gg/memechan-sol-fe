@@ -1,24 +1,59 @@
 import * as React from "react";
 import { Typography } from "../Typography";
+import { SetStateAction, useState } from "react";
+import { faClose } from "@fortawesome/free-solid-svg-icons/faClose";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
 
+interface Props {
+  file: File | null;
+  setFile: React.Dispatch<SetStateAction<File | null>>;
+}
+
 const UncontrolledTextInput = ({ type, placeholder, ...props }: InputProps) => {
+  const [file, setFile] = useState<File | null>(null);
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = event.target.files?.[0] || null;
+    setFile(selectedFile);
+  };
+  
   return (
     <div className="relative flex items-center rounded-sm w-full">
       {type === "file" ? (
-        <label className="flex items-center w-full">
+        <>
+          {file ? (
+        <div className="flex justify-between items-center primary-border rounded-sm w-full py-[18px] px-4">
+          <span className="text-regular truncate">
+          <Typography>
+            {file.name}
+          </Typography>
+          </span>
+          <button onClick={() => setFile(null)} className="text-xs flex">
+            <FontAwesomeIcon icon={faClose} className="text-red-100" size="xl" />
+          </button>
+        </div>
+      ) : (
+        <>
+          <label htmlFor="file-upload" className="hidden">
+          </label>
           <input
+            id="file-upload"
             type="file"
-            className=" file:text-white absolute inset-0 opacity-0 cursor-pointer w-full h-full"
-            {...props}
+            accept="image/png, image/jpeg, image/jpg, image/gif"
+            multiple={false}
+            className="hidden"
+            onChange={handleFileChange}
           />
-          <div className="h-13 border border-mono-400 p-4 flex-1 bg-transparent placeholder-mono-500 flex items-center justify-center">
-            <Typography variant="body" color="mono-500">
-              {placeholder || "Attach file"}
-            </Typography>
-          </div>
-        </label>
+          <label
+            htmlFor="file-upload"
+            className="primary-border rounded-sm py-[18px] inline-block cursor-pointer w-full text-center text-mono-500"
+          >
+            <Typography align="center" color="mono-500">Attach file </Typography>
+          </label>
+        </>
+      )}
+        </>
       ) : (
         // <input type="file" className=" opacity-0 cursor-pointer w-full h-full" {...props} />
         <input
