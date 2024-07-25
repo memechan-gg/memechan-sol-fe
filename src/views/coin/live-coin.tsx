@@ -29,7 +29,6 @@ export function LiveCoin({
       query: { coinType: coinMetadata.address, tab: tab },
     });
   };
-  console.log(tab);
 
   return (
     <>

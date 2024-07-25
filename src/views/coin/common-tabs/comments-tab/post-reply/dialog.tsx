@@ -1,5 +1,9 @@
 import { SocialApiInstance } from "@/common/solana";
+import { Button } from "@/memechan-ui/Atoms";
 import FileInput from "@/memechan-ui/Atoms/Input/FileInput";
+import TextInput from "@/memechan-ui/Atoms/Input/TextInput";
+import { Typography } from "@/memechan-ui/Atoms/Typography";
+import { Card } from "@/memechan-ui/Molecules";
 import { CoinThreadParsedMessage } from "@/views/coin/coin.types";
 import { handleAuthentication, uploadImageToIPFS } from "@/views/create-coin/create-coin.utils";
 import { useWallet } from "@solana/wallet-adapter-react";
@@ -7,17 +11,23 @@ import { track } from "@vercel/analytics";
 import { useCallback, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 
-export function PostReplyDialog({
-  onClose,
-  updateThreads,
-  coinType,
-  replyThreadId,
-}: {
-  onClose: () => void;
-  updateThreads: () => void;
-  coinType: string;
-  replyThreadId?: string;
-}) {
+export type PostReplyDialogProps =
+  | {
+      isStatic: true;
+      onClose?: () => void;
+      updateThreads: () => void;
+      coinType: string;
+      replyThreadId?: string;
+    }
+  | {
+      isStatic: false;
+      onClose: () => void;
+      updateThreads: () => void;
+      coinType: string;
+      replyThreadId?: string;
+    };
+
+export function PostReplyDialog({ isStatic, onClose, updateThreads, coinType, replyThreadId }: PostReplyDialogProps) {
   const [replyText, setReplyText] = useState("");
   const { publicKey, signMessage } = useWallet();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -71,22 +81,41 @@ export function PostReplyDialog({
 
       updateThreads();
 
-      onClose();
+      if (!isStatic) {
+        onClose();
+      }
     } catch (e) {
       console.error(e);
       toast.error("Failed to post a reply. Please, try again");
     } finally {
       setIsLoading(false);
     }
-  }, [publicKey, coinType, signMessage, onClose, replyText, replyThreadId, updateThreads, file]);
+  }, [replyText, file, publicKey, signMessage, replyThreadId, coinType, updateThreads, isStatic, onClose]);
 
   return (
     <>
-      {/* Backdrop */}
-      <div className="fixed inset-0 z-40 bg-black/50"></div>
-
-      {/* Dialog */}
-      <div className="fixed inset-0 flex items-center justify-center z-50">
+      {
+        // FIX EDO2 - add Correct CSS to this
+      }
+      {isStatic && (
+        <Card>
+          <Card.Header>
+            <div>
+              <Typography variant="h4" color="mono-600">
+                Post a comment
+              </Typography>
+            </div>
+          </Card.Header>
+          <Card.Body>
+            <TextInput value={replyText} setValue={setReplyText} />
+            <div>
+              <FileInput file={file} setFile={setFile} />
+              <Button variant="primary" />
+            </div>
+          </Card.Body>
+        </Card>
+      )}
+      {/* <div className="fixed inset-0 flex items-center justify-center z-50">
         <div className="gradient-bg p-4 border border-gray-300 rounded-lg w-1/3">
           <h2 className="text-sm mb-1 text-regular">
             message
@@ -97,13 +126,6 @@ export function PostReplyDialog({
               </span>
             )}
           </h2>
-          <textarea
-            ref={textareaRef}
-            value={replyText}
-            onChange={handleReplyChange}
-            className="w-full text-base h-24 border border-regular rounded-lg p-2 mb-3 focus:border-2 focus:border-regular focus:outline-none"
-          ></textarea>
-          <FileInput file={file} setFile={setFile} />
           <div className="flex flex-row justify-between items-center">
             <button
               disabled={isLoading}
@@ -117,7 +139,7 @@ export function PostReplyDialog({
             </button>
           </div>
         </div>
-      </div>
+      </div> */}
     </>
   );
 }

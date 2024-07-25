@@ -1,15 +1,17 @@
 import { SocialApiInstance } from "@/common/solana";
 import CustomDate from "@/components/custom-date";
+import { Typography } from "@/memechan-ui/Atoms/Typography";
+import { Card } from "@/memechan-ui/Molecules";
 import { CoinThreadWithParsedMessage } from "@/views/coin/coin.types";
 import { getSlicedAddress } from "@/views/coin/sidebar/holders/utils";
 import { handleAuthentication } from "@/views/create-coin/create-coin.utils";
+import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons/faEllipsisVertical";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useWallet } from "@solana/wallet-adapter-react";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { PostReplyDialog } from "../../post-reply/dialog";
-import { EmptyLikeIconSvgComponent } from "../likes/empty-like-icon";
-import { FullLikeIconSvgComponent } from "../likes/full-like-icon";
 import classes from "./comment.module.css";
 
 interface CommentProps {
@@ -84,57 +86,60 @@ export function Comment({
   const devsComment = coinCreator === creator;
   const slicedAddress = getSlicedAddress(creator);
 
+  // FIX - CSS EDO2
   return (
-    <div className="flex flex-row gap-1">
-      <span className="text-primary-100">{">>"}</span>
-      <div id={id} className="flex flex-col gap-3 w-[fit-content]">
-        <div className="bg-title flex flex-row gap-4 bg-opacity-20 p-2 border-solid border-[1px] border border-t-0 border-l-0 border-primary-600">
-          <div className="flex flex-col gap-2">
-            <div className="text-xs flex flex-row gap-1.5 font-bold text-regular">
-              <Link className="hover:underline text-customGreen" href={`/profile/${creator}`}>
-                <span className="text-green-400">
-                  {slicedAddress} {isUsersComment ? "(me)" : ""} {devsComment ? "(dev)" : ""}
-                </span>
-              </Link>
-              <div className="text-xs font-medium text-regular">
-                <CustomDate creationDate={new Date(creationDate)} />
-              </div>
-              <div className="text-xs font-medium flex flex-row gap-1 cursor-pointer" onClick={handleLikeEvent}>
-                {liked ? <FullLikeIconSvgComponent /> : <EmptyLikeIconSvgComponent />} {likesCount}
-              </div>
-              <div className={classes["hover-underline"] + " text-xs font-medium"} onClick={handleReplyThreadEvent}>
-                #{id} reply
-              </div>
-            </div>
-            <div className="flex flex-row gap-2">
-              <div className="flex flex-col gap-2">
-                <div className="text-xs text-regular">
-                  <span className="text-regular font-bold cursor-pointer">
-                    {replyTo ? <a className="hover:underline" href={`#${replyTo}`}>{`#${replyTo} `}</a> : ""}
-                  </span>
-                  {message}
-                </div>
-              </div>
-            </div>
-            {image && (
-              <div>
-                <img
-                  src={image}
-                  alt="picture"
-                  className="mt-1 w-[150px] max-h-[250px] object-cover object-center border border-regular"
-                />
-              </div>
-            )}
+    <div className="flex flex-row gap-1 w-full" id={id}>
+      <Card>
+        <Card.Header>
+          <div>
+            <FontAwesomeIcon icon={faEllipsisVertical} className="text-mono-600" />
+            <Link className="hover:underline text-customGreen" href={`/profile/${creator}`} />
+            {slicedAddress} {isUsersComment ? "(me)" : ""} {devsComment ? "(dev)" : ""}
+            <CustomDate creationDate={new Date(creationDate)} />
+            <div className={classes["hover-underline"] + " text-xs font-medium"}>#{id}</div>
           </div>
-        </div>
-      </div>
-
+        </Card.Header>
+        <Card.Body>
+          {image && (
+            <div>
+              <img
+                src={image}
+                alt="picture"
+                className="mt-1 w-[150px] max-h-[250px] object-cover object-center border border-regular"
+              />
+            </div>
+          )}
+          {message}
+        </Card.Body>
+        <Card.Footer>
+          <div onClick={handleReplyThreadEvent}>
+            {" "}
+            <span className="text-primary-100">{">>"}</span>
+          </div>
+          {replyTo ? (
+            <a className="hover:underline" href={`#${replyTo}`}>
+              Reply
+            </a>
+          ) : (
+            ""
+          )}
+          {liked ? (
+            <Typography variant="body">Like</Typography>
+          ) : (
+            <div>
+              <Typography variant="body">Liked</Typography>
+              {likesCount}
+            </div>
+          )}
+        </Card.Footer>
+      </Card>
       {isPostReplyDialogOpen && (
         <PostReplyDialog
           onClose={closePostReplyDialog}
           coinType={coinType}
           replyThreadId={id}
           updateThreads={updateThreads}
+          isStatic={false}
         />
       )}
     </div>
