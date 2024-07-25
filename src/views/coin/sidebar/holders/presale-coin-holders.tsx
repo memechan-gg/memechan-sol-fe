@@ -87,7 +87,7 @@ export const PresaleCoinHolders = ({ poolAddress, coinMetadata, uniqueHoldersDat
                   <a target="_blank" href={`https://solana.fm/address/${owner.toString()}`}>
                     <Typography underline variant="text-button" color="mono-500">
                       {slicedAddress}
-                      {holderIsDev ? "(dev)" : ""}
+                      {holderIsDev ? " (dev)" : ""}
                     </Typography>
                   </a>
                 </div>

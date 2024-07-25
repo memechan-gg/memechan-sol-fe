@@ -1,15 +1,17 @@
+import { faSpinner } from "@fortawesome/free-solid-svg-icons/faSpinner";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { ReactNode } from "react";
 
 export type ButtonVariant = "primary" | "secondary" | "regular" | "text";
 export type ButtonSubVariant = "primary" | "secondary" | "regular";
-export interface ButtonProps {
+export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children?: React.ReactNode;
   variant: ButtonVariant;
   subVariant?: ButtonSubVariant;
-  onClick?: () => void;
   startIcon?: ReactNode;
   endIcon?: ReactNode;
   onEndIconClick?: () => void;
+  isLoading?: boolean;
 }
 
 type ButtonVariantMap = {
@@ -20,46 +22,41 @@ export const Button = ({
   children,
   startIcon,
   endIcon,
-  onClick,
   onEndIconClick,
   variant = "primary",
   subVariant = "primary",
+  isLoading,
+  ...rest
 }: ButtonProps) => {
   const buttonStyles: ButtonVariantMap = {
     primary:
       "flex items-center text-white h-full w-full bg-primary-100 justify-center text-xs leading-5 font-bold text-mono-600 p-2 pl-4 pr-4 rounded-sm hover:bg-primary-300 active:bg-primary-400 focus:outline-none",
     secondary:
-      "bg-mono-100 cursor-pointer h-10 w-full flex justify-center items-center border border-primary-100 rounded text-xs gap-2 font-bold text-primary-100 hover:text-white hover:bg-primary-200 active:bg-primary-300 focus:outline-none",
+      "bg-mono-100 cursor-pointer h-10 w-full flex justify-center items-center border border-primary-100 rounded text-xs gap-2 font-bold text-mono-600 hover:bg-primary-200 active:bg-primary-300 focus:outline-none",
     regular:
       "bg-primary-100 items-center text-xs w-full justify-center flex flex-row gap-2 font-bold text-regular hover:bg-primary-200 active:bg-primary-300 focus:outline-none",
     text: "bg-primary-100 items-center text-xs justify-center flex flex-row gap-2 font-bold text-regular hover:bg-primary-200 active:bg-primary-300 focus:outline-none",
   };
 
-  const backButtonStyles: Omit<ButtonVariantMap, "text"> = {
-    primary:
-      "flex items-center bg-primary-100 font-bold text-mono-600 p-2 pl-4 pr-4 rounded-sm hover:bg-primary-300 active:bg-primary-400 focus:outline-none",
-    secondary:
-      "bg-transparent items-center text-xs justify-center flex flex-row gap-2 font-bold text-regular hover:bg-primary-200 active:bg-primary-300 focus:outline-none",
-    regular:
-      "bg-primary-100 items-center text-xs justify-center flex flex-row gap-2 font-bold text-regular hover:bg-primary-200 active:bg-primary-300 focus:outline-none",
-  };
-
-  const dividerColor = variant === "primary" && subVariant === "primary" ? "mono-600" : "primary-100";
-
+  // TODO:EDO Namudati disabled stilovi
   return (
-    <div className="flex items-center bg-primary-100 rounded-sm w-full h-full">
-      <button className={buttonStyles[variant]} onClick={onClick}>
-        {startIcon && <span>{startIcon}</span>}
-        {children}
-      </button>
-      {endIcon && (
-        <>
-          <span className={`mx-2 text-${dividerColor}`}>|</span>
-          <button onClick={onEndIconClick} className={backButtonStyles[subVariant]}>
-            {endIcon}
-          </button>
-        </>
+    <button
+      {...rest}
+      className={
+        "flex items-center bg-primary-100 rounded-sm w-full h-full cursor-pointer " +
+        buttonStyles[variant] +
+        " " +
+        rest.className
+      }
+    >
+      {isLoading && (
+        <div className="mr-2">
+          <FontAwesomeIcon icon={faSpinner} className="animate-spin" fontSize={18} />
+        </div>
       )}
-    </div>
+      {startIcon && <span>{startIcon}</span>}
+      {children}
+      {endIcon && <span>{endIcon}</span>}
+    </button>
   );
 };
