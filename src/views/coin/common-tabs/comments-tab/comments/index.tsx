@@ -20,11 +20,9 @@ export const Comments = ({
   }
 
   return (
-    <div className="flex flex-col gap-3">
-      <div className="text-sm font-bold text-regular">Comments</div>
+    <div className="flex flex-col gap-3 w-full">
       {threads.map((thread) => {
         const commentIsLiked = !!likesData?.result.find(({ id }) => id === thread.id);
-
         return (
           <Comment
             key={thread.id}
