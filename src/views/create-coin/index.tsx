@@ -1,8 +1,11 @@
 import { TransactionSentNotification } from "@/components/notifications/transaction-sent-notification";
 import { useConnection } from "@/context/ConnectionContext";
 import { useBalance } from "@/hooks/useBalance";
+import { useSolanaBalance } from "@/hooks/useSolanaBalance";
 import { useTargetConfig } from "@/hooks/useTargetConfig";
 import { Button } from "@/memechan-ui/Atoms";
+import { Divider } from "@/memechan-ui/Atoms/Divider/Divider";
+import { SwapInput } from "@/memechan-ui/Atoms/Input";
 import UncontrolledTextInput from "@/memechan-ui/Atoms/Input/UncontrolledTextInput";
 import TopBar from "@/memechan-ui/Atoms/TopBar/TopBar";
 import { Typography } from "@/memechan-ui/Atoms/Typography";
@@ -17,7 +20,6 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import Skeleton from "react-loading-skeleton";
 import { CreateCoinState, ICreateForm } from "./create-coin.types";
 import {
   createCoinOnBE,
@@ -43,7 +45,13 @@ export function CreateCoin() {
   const { solanaThresholdAmount } = useTargetConfig();
   const [hasMoreOptions, setHasMoreOptions] = useState(true);
   const { balance: solanaAmount } = useBalance(TOKEN_INFOS["WSOL"].mint.toString(), TOKEN_INFOS["WSOL"].decimals);
+  const { data: solanaBalance } = useSolanaBalance();
 
+  const baseCurrency = {
+    currencyName: "SOL",
+    currencyLogoUrl: "/tokens/solana.png",
+    coinBalance: solanaBalance ?? 0,
+  };
   const { connection, memechanClientV2 } = useConnection();
   const onSubmit = handleSubmit(async (data) => {
     try {
@@ -202,7 +210,7 @@ export function CreateCoin() {
   return (
     <div className="w-full flex flex-col items-center">
       <TopBar rightIcon="/diamond.png" title={"Create Memecoin"}></TopBar>
-      <div className="min-w-[345px] sm:max-w-[406px]  flex items-center justify-center border border-mono-400 rounded-sm m-4">
+      <div className="min-w-[345px] sm:max-w-[406px] form-shadow flex items-center justify-center border border-mono-400 rounded-sm m-4">
         <div className="w-full lg:max-w-3xl m-4 ">
           <form onSubmit={onSubmit} className="flex flex-col ">
             <div className="flex flex-col gap-2">
@@ -210,8 +218,13 @@ export function CreateCoin() {
                 <div className="flex flex-col gap-1">
                   <label>
                     <Typography variant="body" color="mono-500">
-                      Token Name *
+                      Token Name
                     </Typography>
+                    <div className="inline-block ml-1">
+                      <Typography variant="body" color="red-100">
+                        *
+                      </Typography>
+                    </div>
                   </label>
                   <div>
                     <UncontrolledTextInput {...register("name", { required: true })} />
@@ -221,8 +234,13 @@ export function CreateCoin() {
                 <div className="flex flex-col gap-1">
                   <label>
                     <Typography variant="body" color="mono-500">
-                      Symbol *
+                      Symbol
                     </Typography>
+                    <div className="inline-block ml-1">
+                      <Typography variant="body" color="red-100">
+                        *
+                      </Typography>
+                    </div>
                   </label>
                   <div>
                     <UncontrolledTextInput {...register("symbol", { required: true })} />
@@ -232,8 +250,13 @@ export function CreateCoin() {
                 <div className="flex flex-col gap-1">
                   <label>
                     <Typography variant="body" color="mono-500">
-                      Picture *
+                      Picture
                     </Typography>
+                    <div className="inline-block ml-1">
+                      <Typography variant="body" color="red-100">
+                        *
+                      </Typography>
+                    </div>
                   </label>
                   <div>
                     <UncontrolledTextInput
@@ -247,9 +270,11 @@ export function CreateCoin() {
                 </div>
               </div>
               <div className="flex flex-col gap-1">
-                <Typography variant="body" color="mono-500">
-                  Description
-                </Typography>
+                <label>
+                  <Typography variant="body" color="mono-500">
+                    Description
+                  </Typography>
+                </label>
                 <div>
                   <textarea
                     {...register("description", { required: true })}
@@ -328,33 +353,21 @@ export function CreateCoin() {
                 ""
               )}
             </div>
-            <div className="flex flex-col gap-2">
-              <h4 className="text-sm font-bold text-regular">Buy your meme first</h4>
-              <div className="flex flex-col  gap-4 flex-wrap">
-                <div className="flex flex-col gap-1">
-                  <label>SOL amount</label>
-                  <div>
-                    <input
-                      className="border w-[200px] border-regular rounded-lg p-1"
-                      onChange={(e) => setInputAmount(e.target.value)}
-                      value={inputAmount}
-                      type="number"
-                      min="0"
-                      placeholder="0"
-                      step={10 ** -9}
-                    />
-                  </div>
-                  <span className="text-regular">
-                    SOL available:{" "}
-                    {publicKey ? (solanaAmount && (+solanaAmount).toFixed(4)) ?? <Skeleton width={40} /> : 0}
-                  </span>
-                </div>
-              </div>
+            <div className=" my-4">
+              <Divider />
             </div>
-            <div className="text-regular">
-              <i>Creation cost: ~0.02 SOL</i>
-            </div>
-            <div className="flex flex-col gap-1">
+            <SwapInput
+              currencyName={baseCurrency.currencyName}
+              inputValue={inputAmount}
+              setInputValue={(e) => setInputAmount(e.target.value)}
+              placeholder="0.00"
+              currencyLogoUrl={baseCurrency.currencyLogoUrl}
+              // TODO:HARUN
+              // usdPrice={13.99}
+              label="Pay"
+              labelRight={publicKey ? `👛 ${baseCurrency.coinBalance ?? 0} ${baseCurrency.currencyName}` : undefined}
+            />
+            <div className="flex flex-col gap-1 mt-4">
               <div>
                 <Button variant="primary">
                   {
@@ -368,14 +381,16 @@ export function CreateCoin() {
                 </Button>
               </div>
             </div>
-            <div className="border border-mono-400 mt-4 h-13 px-4 flex items-center">
-              <div className=" p-2">
-                <DangerIcon size={13} fill="var(--color-yellow-100)" />
-              </div>
-              <div className="flex items-center">
-                <Typography variant="body" color="yellow-100">
-                  You’ll be able to add/edit description and links later after your coin is created.
-                </Typography>
+            <div className="border border-mono-400 mt-4 h-13 py-2 px-4 flex items-center">
+              <div className="flex  items-baseline">
+                <div className="  mr-4 flex align-baseline">
+                  <DangerIcon size={13} fill="var(--color-yellow-100)" />
+                </div>
+                <div className="flex items-center">
+                  <Typography variant="body" color="yellow-100">
+                    You’ll be able to add/edit description and links later after your coin is created.
+                  </Typography>
+                </div>
               </div>
             </div>
           </form>

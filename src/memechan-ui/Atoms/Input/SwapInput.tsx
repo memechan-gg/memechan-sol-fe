@@ -58,7 +58,7 @@ export const SwapInput: React.FC<SwapInputProps> = ({
       </div>
       <div
         onClick={handleFocus}
-        className={`flex items-center px-3 py-1.5 rounded-sm ${isFocused && !isReadOnly ? "border border-primary-100" : "border border-mono-400"}`}
+        className={`flex custom-inner-shadow h-14 items-center px-3 py-1.5 rounded-tl-[2px] rounded-tr-[2px] ${isFocused && !isReadOnly ? "border border-primary-100" : "border border-mono-400"}`}
       >
         <div className={`cursor-pointer mr-1 ${isReadOnly ? "cursor-default" : ""}`}>
           <span className="relative flex items-center gap-1.5">
