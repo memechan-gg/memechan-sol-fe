@@ -1,10 +1,17 @@
 import { TransactionSentNotification } from "@/components/notifications/transaction-sent-notification";
 import { useConnection } from "@/context/ConnectionContext";
 import { useBalance } from "@/hooks/useBalance";
+import { useSolanaBalance } from "@/hooks/useSolanaBalance";
 import { useTargetConfig } from "@/hooks/useTargetConfig";
 import { Button } from "@/memechan-ui/Atoms";
+import { Divider } from "@/memechan-ui/Atoms/Divider/Divider";
+import { SwapInput } from "@/memechan-ui/Atoms/Input";
 import UncontrolledTextInput from "@/memechan-ui/Atoms/Input/UncontrolledTextInput";
+import TopBar from "@/memechan-ui/Atoms/TopBar/TopBar";
 import { Typography } from "@/memechan-ui/Atoms/Typography";
+import DangerIcon from "@/memechan-ui/icons/DangerIcon";
+import DownArrowIcon from "@/memechan-ui/icons/DownArrowIcon";
+import UpArrowIcon from "@/memechan-ui/icons/UpArrowIcon";
 import { MAX_DESCRIPTION_LENGTH, TOKEN_INFOS, sleep } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { track } from "@vercel/analytics";
@@ -13,7 +20,6 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import Skeleton from "react-loading-skeleton";
 import { CreateCoinState, ICreateForm } from "./create-coin.types";
 import {
   createCoinOnBE,
@@ -27,6 +33,7 @@ import {
 
 export function CreateCoin() {
   const {
+    resetField,
     register,
     handleSubmit,
     formState: { errors },
@@ -38,9 +45,14 @@ export function CreateCoin() {
   const { solanaThresholdAmount } = useTargetConfig();
   const [hasMoreOptions, setHasMoreOptions] = useState(true);
   const { balance: solanaAmount } = useBalance(TOKEN_INFOS["WSOL"].mint.toString(), TOKEN_INFOS["WSOL"].decimals);
+  const { data: solanaBalance } = useSolanaBalance();
 
+  const baseCurrency = {
+    currencyName: "SOL",
+    currencyLogoUrl: "/tokens/solana.png",
+    coinBalance: solanaBalance ?? 0,
+  };
   const { connection, memechanClientV2 } = useConnection();
-
   const onSubmit = handleSubmit(async (data) => {
     try {
       if (!connected || !publicKey || !signMessage) {
@@ -196,178 +208,193 @@ export function CreateCoin() {
   });
 
   return (
-    <div className="w-full max-w-[375px] flex items-center justify-center border border-mono-400 rounded-sm m-4">
-      <div className="w-full lg:max-w-3xl m-3 ">
-        {/* <ThreadBoard title="create memecoin" showNavigateBtn> */}
-        <form onSubmit={onSubmit} className="flex flex-col ">
-          <div className="flex flex-col gap-2">
-            <div className="flex flex-col  gap-4">
+    <div className="w-full flex flex-col items-center">
+      <TopBar rightIcon="/diamond.png" title={"Create Memecoin"}></TopBar>
+      <div className="min-w-[345px] sm:max-w-[406px] form-shadow flex items-center justify-center border border-mono-400 rounded-sm m-4">
+        <div className="w-full lg:max-w-3xl m-4 ">
+          <form onSubmit={onSubmit} className="flex flex-col ">
+            <div className="flex flex-col gap-2">
+              <div className="flex flex-col  gap-4">
+                <div className="flex flex-col gap-1">
+                  <label>
+                    <Typography variant="body" color="mono-500">
+                      Token Name
+                    </Typography>
+                    <div className="inline-block ml-1">
+                      <Typography variant="body" color="red-100">
+                        *
+                      </Typography>
+                    </div>
+                  </label>
+                  <div>
+                    <UncontrolledTextInput {...register("name", { required: true })} />
+                  </div>
+                  {errors.name && <p className="text-xs text-red-500">Name is required</p>}
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label>
+                    <Typography variant="body" color="mono-500">
+                      Symbol
+                    </Typography>
+                    <div className="inline-block ml-1">
+                      <Typography variant="body" color="red-100">
+                        *
+                      </Typography>
+                    </div>
+                  </label>
+                  <div>
+                    <UncontrolledTextInput {...register("symbol", { required: true })} />
+                  </div>
+                  {errors.symbol && <p className="text-xs text-red-500">Synbol is required</p>}
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label>
+                    <Typography variant="body" color="mono-500">
+                      Picture
+                    </Typography>
+                    <div className="inline-block ml-1">
+                      <Typography variant="body" color="red-100">
+                        *
+                      </Typography>
+                    </div>
+                  </label>
+                  <div>
+                    <UncontrolledTextInput
+                      fieldName="image"
+                      resetField={() => resetField}
+                      type="file"
+                      {...register("image", { required: true })}
+                    />
+                  </div>
+                  {errors.image && <p className="text-xs text-red-500">Image is required</p>}
+                </div>
+              </div>
               <div className="flex flex-col gap-1">
                 <label>
                   <Typography variant="body" color="mono-500">
-                    Token Name *
+                    Description
                   </Typography>
                 </label>
                 <div>
-                  <UncontrolledTextInput {...register("name", { required: true })} />
-                </div>
-                {errors.name && <p className="text-xs text-red-500">Name is required</p>}
-              </div>
-              <div className="flex flex-col gap-1">
-                <label>
-                  <Typography variant="body" color="mono-500">
-                    Symbol *
-                  </Typography>
-                </label>
-                <div>
-                  <UncontrolledTextInput {...register("symbol", { required: true })} />
-                </div>
-                {errors.symbol && <p className="text-xs text-red-500">Synbol is required</p>}
-              </div>
-              <div className="flex flex-col gap-1">
-                <label>
-                  <Typography variant="body" color="mono-500">
-                    Picture *
-                  </Typography>
-                </label>
-                <div>
-                  <UncontrolledTextInput type="file" {...register("image", { required: true })} />
-
-                  {/* <FileInput
-                    // type="file"
-                    {...register("image", { required: true })}
-                    // file limits
-                    // accept="image/png, image/jpeg, image/jpg, image/gif"
-                    // only select one fie
-                    // multiple={false}
-                  /> */}
-                </div>
-                {errors.image && <p className="text-xs text-red-500">Image is required</p>}
-              </div>
-            </div>
-            <div className="flex flex-col gap-1">
-              <Typography variant="body" color="mono-500">
-                Description
-              </Typography>
-              <div>
-                <textarea
-                  {...register("description", { required: true })}
-                  className=" h-32 border border-mono-400 p-4 flex-1 outline-none bg-transparent placeholder-mono-500 w-full"
-                  maxLength={MAX_DESCRIPTION_LENGTH}
-                />
-              </div>
-              {errors.description && <p className="text-xs text-red-500">Description is required</p>}
-            </div>
-          </div>
-          <div className="flex flex-col gap-2">
-            {hasMoreOptions && (
-              <div className=" w-fit cursor-pointer" onClick={() => setHasMoreOptions(false)}>
-                <Typography variant="text-button" color="green-100" underline>
-                  {"I'm not in hurry"}
-                </Typography>
-              </div>
-            )}
-
-            {!hasMoreOptions ? (
-              <div className="flex flex-col gap-4 flex-wrap">
-                <div className="flex flex-col gap-1">
-                  <label>
-                    <Typography variant="body" color="mono-500">
-                      Website
-                    </Typography>
-                  </label>
-                  <div>
-                    <UncontrolledTextInput placeholder="Website URL" {...register("website")} />
-                  </div>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label>
-                    <Typography variant="body" color="mono-500">
-                      Twitter
-                    </Typography>
-                  </label>
-                  <div>
-                    <UncontrolledTextInput placeholder="Twitter URL" {...register("twitter")} />
-                  </div>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label>
-                    <Typography variant="body" color="mono-500">
-                      Telegram
-                    </Typography>
-                  </label>
-                  <div>
-                    <UncontrolledTextInput placeholder="Telegram URL" {...register("telegram")} />
-                  </div>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label>
-                    <Typography variant="body" color="mono-500">
-                      Discord
-                    </Typography>
-                  </label>
-                  <div>
-                    <UncontrolledTextInput placeholder="Discord URL" {...register("discord")} />
-                  </div>
-                </div>
-
-                <div className=" w-fit cursor-pointer" onClick={() => setHasMoreOptions(true)}>
-                  <Typography variant="text-button" color="red-100" underline>
-                    {"Fuck it, I'm in hurry"}
-                  </Typography>
-                </div>
-              </div>
-            ) : (
-              ""
-            )}
-          </div>
-          <div className="flex flex-col gap-2">
-            <h4 className="text-sm font-bold text-regular">Buy your meme first</h4>
-            <div className="flex flex-col  gap-4 flex-wrap">
-              <div className="flex flex-col gap-1">
-                <label>SOL amount</label>
-                <div>
-                  <input
-                    className="border w-[200px] border-regular rounded-lg p-1"
-                    onChange={(e) => setInputAmount(e.target.value)}
-                    value={inputAmount}
-                    type="number"
-                    min="0"
-                    placeholder="0"
-                    step={10 ** -9}
+                  <textarea
+                    {...register("description", { required: true })}
+                    className=" h-32 border border-mono-400 p-4 flex-1 outline-none bg-transparent placeholder-mono-500 w-full"
+                    maxLength={MAX_DESCRIPTION_LENGTH}
                   />
                 </div>
-                <span className="text-regular">
-                  SOL available:{" "}
-                  {publicKey ? (solanaAmount && (+solanaAmount).toFixed(4)) ?? <Skeleton width={40} /> : 0}
-                </span>
+                {errors.description && <p className="text-xs text-red-500">Description is required</p>}
               </div>
             </div>
-          </div>
-          <div className="text-regular">
-            <i>Creation cost: ~0.02 SOL</i>
-          </div>
-          <div className="flex flex-col gap-1">
-            <div>
-              <Button
-                variant="primary"
-                // type="submit"
-                // className="bg-regular text-white font-bold p-2 rounded-lg disabled:opacity-50 lowercase"
-                // disabled={state !== "idle"}
-              >
-                {
-                  {
-                    idle: "Create memecoin",
-                    sign: "Signing Message...",
-                    ipfs: "Uploading Image...",
-                    create_bonding_and_meme: "Creating Bonding Curve Pool and memecoin...",
-                  }[state]
-                }
-              </Button>
+            <div className="flex flex-col gap-2">
+              {hasMoreOptions && (
+                <div className="w-fit cursor-pointer" onClick={() => setHasMoreOptions(false)}>
+                  <Typography variant="text-button" color="green-100" underline>
+                    {"I'm not in hurry"}
+                    <span className="inline-block ml-1">
+                      <DownArrowIcon size={12} fill="var(--color-green-100)" />
+                    </span>
+                  </Typography>
+                </div>
+              )}
+
+              {!hasMoreOptions ? (
+                <div className="flex flex-col gap-4 flex-wrap">
+                  <div className="flex flex-col gap-1">
+                    <label>
+                      <Typography variant="body" color="mono-500">
+                        Website
+                      </Typography>
+                    </label>
+                    <div>
+                      <UncontrolledTextInput placeholder="Website URL" {...register("website")} />
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label>
+                      <Typography variant="body" color="mono-500">
+                        Twitter
+                      </Typography>
+                    </label>
+                    <div>
+                      <UncontrolledTextInput placeholder="Twitter URL" {...register("twitter")} />
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label>
+                      <Typography variant="body" color="mono-500">
+                        Telegram
+                      </Typography>
+                    </label>
+                    <div>
+                      <UncontrolledTextInput placeholder="Telegram URL" {...register("telegram")} />
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label>
+                      <Typography variant="body" color="mono-500">
+                        Discord
+                      </Typography>
+                    </label>
+                    <div>
+                      <UncontrolledTextInput placeholder="Discord URL" {...register("discord")} />
+                    </div>
+                  </div>
+
+                  <div className=" w-fit cursor-pointer" onClick={() => setHasMoreOptions(true)}>
+                    <Typography variant="text-button" color="red-100" underline>
+                      {"Fuck it, I'm in hurry"}
+                      <span className="inline-block ml-1">
+                        <UpArrowIcon size={12} fill="var(--color-red-100)" />
+                      </span>
+                    </Typography>
+                  </div>
+                </div>
+              ) : (
+                ""
+              )}
             </div>
-          </div>
-        </form>
-        {/* </ThreadBoard> */}
+            <div className=" my-4">
+              <Divider />
+            </div>
+            <SwapInput
+              currencyName={baseCurrency.currencyName}
+              inputValue={inputAmount}
+              setInputValue={(e) => setInputAmount(e.target.value)}
+              placeholder="0.00"
+              currencyLogoUrl={baseCurrency.currencyLogoUrl}
+              // TODO:HARUN
+              // usdPrice={13.99}
+              label="Pay"
+              labelRight={publicKey ? `👛 ${baseCurrency.coinBalance ?? 0} ${baseCurrency.currencyName}` : undefined}
+            />
+            <div className="flex flex-col gap-1 mt-4">
+              <div>
+                <Button variant="primary">
+                  {
+                    {
+                      idle: "Create Now",
+                      sign: "Signing Message...",
+                      ipfs: "Uploading Image...",
+                      create_bonding_and_meme: "Creating Bonding Curve Pool and memecoin...",
+                    }[state]
+                  }
+                </Button>
+              </div>
+            </div>
+            <div className="border border-mono-400 mt-4 h-13 py-2 px-4 flex items-center">
+              <div className="flex  items-baseline">
+                <div className="  mr-4 flex align-baseline">
+                  <DangerIcon size={13} fill="var(--color-yellow-100)" />
+                </div>
+                <div className="flex items-center">
+                  <Typography variant="body" color="yellow-100">
+                    You’ll be able to add/edit description and links later after your coin is created.
+                  </Typography>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );

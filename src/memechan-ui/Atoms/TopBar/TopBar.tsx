@@ -3,13 +3,16 @@ import Link from "next/link";
 import { Typography } from "../Typography";
 
 export interface TopBarProps {
-  tokenSymbol: string;
-  tokenAddress: string;
+  tokenSymbol?: string;
+  tokenAddress?: string;
+  title?: string;
+  rightIcon?: string;
+  rightIconLink?: string;
 }
 
-const TopBar = ({ tokenSymbol, tokenAddress }: TopBarProps) => {
+const TopBar = ({ tokenSymbol, tokenAddress, title, rightIcon, rightIconLink }: TopBarProps) => {
   return (
-    <div className="w-full justify-between items-center flex bottom-border py-2 px-3 md:px-0">
+    <div className="w-full justify-between items-center flex bottom-border py-2 px-3 md:px-4">
       <div>
         <Link href="/">
           <BackIcon fill="var(--color-mono-500)" />
@@ -17,7 +20,7 @@ const TopBar = ({ tokenSymbol, tokenAddress }: TopBarProps) => {
       </div>
       <div className="flex items-center">
         <Typography variant="h4" color="mono-600">
-          {tokenSymbol}
+          {tokenSymbol || title}
         </Typography>
         <div className="hidden md:block">
           {tokenAddress && (
@@ -27,9 +30,15 @@ const TopBar = ({ tokenSymbol, tokenAddress }: TopBarProps) => {
           )}
         </div>
       </div>
-      <Link href="/" className="">
-        <img src="/android-chrome-192x192.png" alt="logo" className="w-3 h-3" />{" "}
-      </Link>
+      {rightIcon ? (
+        <Link href={rightIconLink || "/"} className="">
+          <img src={rightIcon as string} alt="logo" className="w-4 h-4" />{" "}
+        </Link>
+      ) : (
+        <Link href="/" className="">
+          <img src="/android-chrome-192x192.png" alt="logo" className="w-4 h-4" />{" "}
+        </Link>
+      )}
     </div>
   );
 };
