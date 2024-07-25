@@ -5,6 +5,7 @@ const nextConfig = {
   env: {
     NEXT_PUBLIC_CHARTS_API_HOSTNAME: "chart.memechan.xyz",
   },
+
   webpack: (config, { isServer }) => {
     if (!isServer) {
       config.resolve.fallback = {

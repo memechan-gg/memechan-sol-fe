@@ -24,7 +24,7 @@ export function LiveCoinSidebar({
   return (
     <>
       <SidebarItem>
-        <LiveCoinSwap pool={pool} tokenSymbol={coinMetadata.symbol} />
+        <LiveCoinSwap pool={pool} tokenSymbol={coinMetadata.symbol} memeImage={coinMetadata.image} />
       </SidebarItem>
       {ticketsData.isLoading
         ? "Loading..."

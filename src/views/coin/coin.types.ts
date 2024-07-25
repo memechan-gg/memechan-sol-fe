@@ -23,6 +23,7 @@ export type PresaleCoinSwapProps = {
 export type LiveCoinSwapProps = {
   tokenSymbol: string;
   pool: LivePoolData;
+  memeImage: string;
 };
 
 export type SwapButtonProps = {
