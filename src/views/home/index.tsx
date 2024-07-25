@@ -106,7 +106,7 @@ export function Home() {
   };
 
   return (
-    <div className="flex flex-col items-center w-full min-w-80 px-3 pt-6 pb-2 md:px-0">
+    <div className="flex flex-col items-center w-full min-w-80 px-3 pt-6 xl:px-0">
       <div className="self-start ml-[-16px]">
         <Tabs tabs={tabs} onTabChange={onTabChange} activeTab={activeTab} />
       </div>

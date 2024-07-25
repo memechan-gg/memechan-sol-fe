@@ -15,12 +15,12 @@ const CustomDate = ({ creationDate }: CustomDateProps) => {
     const minutes = twoDigit(date.getMinutes());
     const seconds = twoDigit(date.getSeconds());
 
-    return `${month}/${day}/${year}(${weekday})${hours}:${minutes}:${seconds}`;
+    return `${month}/${day}/${year} (${weekday}) ${hours}:${minutes}:${seconds}`;
   };
 
   const formattedDateTime = formatDate(new Date(creationDate));
 
-  return <div className="text-xs font-medium text-regular">{formattedDateTime}</div>;
+  return <p className="text-[13px] font-normal leading-5 text-mono-500">{formattedDateTime}</p>;
 };
 
 export default CustomDate;

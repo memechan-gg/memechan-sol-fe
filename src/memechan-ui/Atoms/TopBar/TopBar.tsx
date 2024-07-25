@@ -12,7 +12,7 @@ export interface TopBarProps {
 
 const TopBar = ({ tokenSymbol, tokenAddress, title, rightIcon, rightIconLink }: TopBarProps) => {
   return (
-    <div className="w-full justify-between items-center flex bottom-border py-2 px-3 md:px-4">
+    <div className="w-full justify-between items-center flex bottom-border py-auto px-3 md:px-0 h-10">
       <div>
         <Link href="/">
           <BackIcon fill="var(--color-mono-500)" />

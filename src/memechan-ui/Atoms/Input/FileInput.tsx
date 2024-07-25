@@ -18,7 +18,7 @@ const FileInput = ({ file, setFile }: Props) => {
   };
 
    return (
-    <div className="flex flex-col items-center justify-center gap-2 w-full">
+    <div className="flex flex-col flex-grow items-center justify-center gap-2 w-full">
       {file ? (
         <div className="flex justify-between items-center primary-border rounded-sm w-full py-[18px] px-4">
           <span className="text-regular truncate">
@@ -44,7 +44,7 @@ const FileInput = ({ file, setFile }: Props) => {
           />
           <label
             htmlFor="file-upload"
-            className="primary-border rounded-sm py-[18px] inline-block cursor-pointer w-full text-center text-mono-500"
+            className="primary-border rounded-sm py-[17px] flex justify-center cursor-pointer w-full text-mono-500"
           >
             <Typography align="center" color="mono-500">Attach file </Typography>
           </label>
