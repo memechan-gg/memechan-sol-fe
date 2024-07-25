@@ -55,6 +55,9 @@ const config: Config = {
       boxShadow: {
         light: "4px 4px 0px 0px #00000040",
       },
+      margin: {
+        sideMargin: "calc(calc(100vw - 1240px) / 2)",
+      },
       backdropOpacity: {
         lightOpacity: "20",
       },
