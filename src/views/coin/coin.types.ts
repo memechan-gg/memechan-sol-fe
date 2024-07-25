@@ -18,6 +18,7 @@ export type PresaleCoinSwapProps = {
   pool: SeedPoolData;
   boundPool?: BoundPool;
   ticketsData: ReturnType<typeof useTickets>;
+  memeImage: string;
 };
 
 export type LiveCoinSwapProps = {

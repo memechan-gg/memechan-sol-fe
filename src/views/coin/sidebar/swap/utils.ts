@@ -47,7 +47,7 @@ export const handleSlippageInputChange = ({
   max,
 }: {
   e: ChangeEvent<HTMLInputElement>;
-  setValue: (value: SetStateAction<string>) => void;
+  setValue: (value: string) => void;
   decimalPlaces: number;
   min: number;
   max: number;
