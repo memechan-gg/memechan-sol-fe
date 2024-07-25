@@ -227,7 +227,7 @@ export function CreateCoin() {
                     </div>
                   </label>
                   <div>
-                    <UncontrolledTextInput {...register("name", { required: true })} />
+                    <UncontrolledTextInput placeholder="Name"{ ...register("name", { required: true })} />
                   </div>
                   {errors.name && <p className="text-xs text-red-500">Name is required</p>}
                 </div>
@@ -243,7 +243,7 @@ export function CreateCoin() {
                     </div>
                   </label>
                   <div>
-                    <UncontrolledTextInput {...register("symbol", { required: true })} />
+                    <UncontrolledTextInput placeholder="SYMBOL"{...register("symbol", { required: true })} />
                   </div>
                   {errors.symbol && <p className="text-xs text-red-500">Synbol is required</p>}
                 </div>
@@ -277,8 +277,8 @@ export function CreateCoin() {
                 </label>
                 <div>
                   <textarea
-                    {...register("description", { required: true })}
-                    className=" h-32 border border-mono-400 p-4 flex-1 outline-none bg-transparent placeholder-mono-500 w-full"
+                    {...register("description", { required: true })} placeholder="Description"
+                    className=" h-32 border border-mono-400 p-4 flex-1 outline-none bg-transparent placeholder:text-[13px] placeholder:font-normal placeholder:leading-5 placeholder-mono-500 w-full"
                     maxLength={MAX_DESCRIPTION_LENGTH}
                   />
                 </div>
