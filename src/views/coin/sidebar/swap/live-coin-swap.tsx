@@ -8,6 +8,7 @@ import { Divider } from "@/memechan-ui/Atoms/Divider/Divider";
 // import SwapInput from "@/memechan-ui/Atoms/Input/SwapInput";
 import { WithConnectedWallet } from "@/components/WithConnectedWallet";
 import { QUOTE_TOKEN_DECIMALS } from "@/constants/constants";
+import { useSolanaBalance } from "@/hooks/useSolanaBalance";
 import { SwapInput } from "@/memechan-ui/Atoms/Input";
 import { Typography } from "@/memechan-ui/Atoms/Typography";
 import { Card } from "@/memechan-ui/Molecules";
@@ -165,7 +166,6 @@ export const LiveCoinSwap = ({
   }, [getSwapOutputAmount, inputAmount, coinToMeme, slippage]);
 
   const onSwap = useCallback(async () => {
-    console.log(publicKey, outputData, signTransaction, coinBalance);
     if (!publicKey || !outputData || !signTransaction || !coinBalance) return;
 
     const swapTrackObj = {
@@ -304,22 +304,26 @@ export const LiveCoinSwap = ({
   const [variant, setVariant] = useState<"swap" | "claim">("swap");
   const isVariantSwap = variant === "swap";
   const refresh = () => {};
-  const onReverseClick = () => {};
+  const onReverseClick = () => {
+    setCoinToMeme((prev) => !prev);
+    const copyBaseCurrency = { ...baseCurrency };
+    const copySecondCurrency = { ...secondCurrency };
+    setBaseCurrency(copySecondCurrency);
+    setSecondCurrency(copyBaseCurrency);
+    setInputAmount("0");
+  };
   const onSlippageClick = () => {
     console.log(slippage);
   };
   const onCloseClick = () => {};
-  // tokenSymbol
-  // tokenData.displayName
 
   let toReceive = "0";
 
-  // TODO:TEST
   if (tokenData.symbol === "SOL" && outputData) {
     if (coinToMeme) {
       toReceive = parseChainValue(Number(outputData.minAmountOut.toString()), MEMECHAN_MEME_TOKEN_DECIMALS, 6);
     } else {
-      parseChainValue(Number(outputData.minAmountOut.toString()), QUOTE_TOKEN_DECIMALS, 12);
+      toReceive = parseChainValue(Number(outputData.minAmountOut.toString()), QUOTE_TOKEN_DECIMALS, 12);
     }
   } else if (tokenData.symbol !== "SOL" && outputData) {
     if (coinToMeme) {
@@ -328,14 +332,42 @@ export const LiveCoinSwap = ({
       toReceive = parseChainValue(Number(+outputData.minAmountOut.toExact()), 0, 12);
     }
   }
-  // const { data: solanaBalance } = useSolanaBalance();
-  // const { data: memePrice } = useLiveMemePrice(address);
-  // useLiveMemePrice
+  const { data: solanaBalance } = useSolanaBalance();
 
-  // console.log(toReceive);
-  // console.log(memePrice?.priceInUsd);
-  // TODO:HARUN fix money later
-  // const formattedValue = formatMoney(toReceive);
+  useEffect(() => {
+    if (solanaBalance) setBaseCurrency((prevState) => ({ ...prevState, coinBalance: solanaBalance }));
+  }, [solanaBalance]);
+
+  useEffect(() => {
+    if (memeBalance)
+      setSecondCurrency((prevState) => ({
+        ...prevState,
+        coinBalance: +memeBalance,
+      }));
+  }, [publicKey, coinBalance, tokenData.decimals, memeBalance]);
+
+  const [baseCurrency, setBaseCurrency] = useState({
+    currencyName: "SOL",
+    currencyLogoUrl: "/tokens/solana.png",
+    coinBalance: solanaBalance ?? 0,
+  });
+
+  const [secondCurrency, setSecondCurrency] = useState({
+    currencyName: tokenSymbol,
+    currencyLogoUrl: memeImage,
+    coinBalance: +(memeBalance ?? 0),
+  });
+
+  //         available {tokenData.displayName}:{" "}
+  //         {publicKey && coinBalance
+  //           ? Number(coinBalance).toLocaleString(undefined, {
+  //               maximumFractionDigits: tokenData.decimals,
+  //             }) ?? "loading..."
+  //           : "0"}
+
+  // const { data: solanaData } = useSolanaPrice();
+  // const solanaPrice = solanaData?.price || 0;
+
   return (
     <Card>
       <Card.Header>
@@ -358,6 +390,20 @@ export const LiveCoinSwap = ({
             </Typography>
           </div>
           <div className="flex items-center gap-2">
+            {/* <input
+         className="w-full bg-white text-xs font-bold text-regular p-2 rounded-lg"
+         value={slippage}
+         onChange={(e) =>
+           handleSlippageInputChange({
+             decimalPlaces: 2,
+             e,
+             setValue: setSlippage,
+             max: MAX_SLIPPAGE,
+             min: MIN_SLIPPAGE,
+           })
+         }
+         type="text"
+       /> */}
             <Typography underline onClick={onSlippageClick}>
               Slippage {slippage}%
             </Typography>
@@ -372,39 +418,38 @@ export const LiveCoinSwap = ({
       <Card.Body>
         <div className="flex flex-col">
           <SwapInput
-            currencyName={"SOL"}
+            currencyName={baseCurrency.currencyName}
             inputValue={inputAmount}
             setInputValue={onInputChange}
             placeholder="0.00"
-            currencyLogoUrl="/tokens/solana.png"
+            currencyLogoUrl={baseCurrency.currencyLogoUrl}
+            // TODO:HARUN
             // usdPrice={13.99}
             label="Pay"
-            // labelRight={`👛 0 ${tokenSymbol}`}
+            labelRight={publicKey ? `👛 ${baseCurrency.coinBalance ?? 0} ${baseCurrency.currencyName}` : undefined}
           />
           <div className="relative h-12">
             <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 border-t border-mono-400"></div>
             <div
-              onClick={() => {
-                if (!swapButtonIsDiabled) {
-                  onReverseClick();
-                }
-              }}
+              onClick={onReverseClick}
               className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-5 h-5 bg-mono-200 hover:bg-mono-300 cursor-pointer border-2 border-mono-400 rounded-sm flex justify-center items-center ${swapButtonIsDiabled && "cursor-not-allowed hover:bg-mono-200"}`}
             >
               <FontAwesomeIcon icon={faUpDown} className="text-white" fontWeight={100} />
             </div>
           </div>
           <SwapInput
-            currencyName={tokenSymbol}
+            currencyName={secondCurrency.currencyName}
             type="text"
             inputValue={toReceive}
-            currencyLogoUrl={memeImage}
+            currencyLogoUrl={secondCurrency.currencyLogoUrl}
             label="Receive"
             isReadOnly
+            // TODO:HARUN
             // usdPrice={memePrice?.priceInUsd ? +toReceive * +memePrice.priceInUsd : 0}
-            // labelRight={`👛 0 SLORK`}
+            labelRight={publicKey ? `👛 ${secondCurrency.coinBalance ?? 0} ${secondCurrency.currencyName}` : undefined}
           />
         </div>
+
         <WithConnectedWallet
           variant="primary"
           className="mt-4 p-1"
@@ -419,282 +464,4 @@ export const LiveCoinSwap = ({
       </Card.Body>
     </Card>
   );
-
-  // return (
-  //   <Swap
-  //     slippage={+slippage}
-  //     memeImage={memeImage}
-  //     onSwapClick={() => setCoinToMeme((prev) => !prev)}
-  //     onInputChange={onInputChange}
-  //     coinToMeme={coinToMeme}
-  //   />
-  // );
-
-  // <>
-  //   <div className="flex w-full flex-row gap-2">
-  //     <SwapButton coinToMeme={coinToMeme} onClick={() => setCoinToMeme(true)} label="Buy" />
-  //     <SwapButton coinToMeme={!coinToMeme} onClick={() => setCoinToMeme(false)} label="Sell" />
-  //   </div>
-  //   <div className="flex w-full flex-col gap-1">
-  //     <InputAmountTitle
-  //       memeBalance={memeBalance}
-  //       setInputAmount={setInputAmount}
-  //       setOutputData={setOutputData}
-  //       coinBalance={coinBalance}
-  //       coinToMeme={coinToMeme}
-  //       tokenSymbol={tokenSymbol}
-  //       quoteMint={quoteMint}
-  //     />
-  //     <input
-  //       className="w-full bg-white text-xs font-bold text-regular p-2 rounded-lg"
-  //       value={inputAmount}
-  //       onChange={(e) =>
-  //         handleSwapInputChange({
-  //           decimalPlaces: coinToMeme ? tokenData.decimals : MEMECHAN_MEME_TOKEN_DECIMALS,
-  //           e,
-  //           setValue: setInputAmount,
-  //         })
-  //       }
-  //       placeholder="0"
-  //       type="text"
-  //     />
-  //     {coinToMeme && (
-  //       <div className="text-xs font-bold text-regular">
-  //         available {tokenData.displayName}:{" "}
-  //         {publicKey && coinBalance
-  //           ? Number(coinBalance).toLocaleString(undefined, {
-  //               maximumFractionDigits: tokenData.decimals,
-  //             }) ?? "loading..."
-  //           : "0"}
-  //       </div>
-  //     )}
-  //     {!coinToMeme && memeBalance && (
-  //       <div className="text-xs !normal-case font-bold text-regular">
-  //         available {tokenSymbol} to sell: {formatNumber(Number(memeBalance), MEMECHAN_MEME_TOKEN_DECIMALS)}
-  //       </div>
-  //     )}
-  //     {isLoadingOutputAmount && (
-  //       <div className="text-xs font-bold text-regular">
-  //         {coinToMeme ? (
-  //           <span>{tokenSymbol} to receive: loading...</span>
-  //         ) : (
-  //           <span>{tokenData.displayName} to receive: loading...</span>
-  //         )}
-  //       </div>
-  //     )}
-  //     {outputData !== null && !isLoadingOutputAmount && (
-  //       <div className="text-xs font-bold text-regular">
-  //         {coinToMeme
-  //           ? `${tokenSymbol} to receive: ${tokenData.symbol === "SOL" ? parseChainValue(Number(outputData.minAmountOut.toString()), MEMECHAN_MEME_TOKEN_DECIMALS, 6) : parseChainValue(Number(+outputData.minAmountOut.toExact()), 0, 2)}`
-  //           : `${tokenData.displayName} to receive: ${tokenData.symbol === "SOL" ? parseChainValue(Number(outputData.minAmountOut.toString()), QUOTE_TOKEN_DECIMALS, 12) : parseChainValue(Number(+outputData.minAmountOut.toExact()), 0, 12)}`}
-  //       </div>
-  //     )}
-  //   </div>
-  //   <div className="flex w-full flex-col gap-1">
-  //     <div className="text-xs font-bold text-regular">Slippage (0-50%)</div>
-  //     <input
-  //       className="w-full bg-white text-xs font-bold text-regular p-2 rounded-lg"
-  //       value={slippage}
-  //       onChange={(e) =>
-  //         handleSlippageInputChange({
-  //           decimalPlaces: 2,
-  //           e,
-  //           setValue: setSlippage,
-  //           max: MAX_SLIPPAGE,
-  //           min: MIN_SLIPPAGE,
-  //         })
-  //       }
-  //       type="text"
-  //     />
-  //   </div>
-  //   <Button
-  //     disabled={swapButtonIsDiabled}
-  //     onClick={onSwap}
-  //     className="w-full bg-regular bg-opacity-80 hover:bg-opacity-50 disabled:opacity-50"
-  //   >
-  //     <div className="text-xs font-bold text-white">{isLoadingOutputAmount || isSwapping ? "Loading..." : "Swap"}</div>
-  //   </Button>
-  // </>;
 };
-
-// interface SwapProps {
-//   slippage: number;
-//   onCloseClick?: () => void;
-//   memeImage: string;
-// }
-
-// const Swap = (props: SwapProps) => {
-//   const { slippage, onCloseClick } = props;
-//   const [variant, setVariant] = useState<"swap" | "claim">("swap");
-//   const isVariantSwap = variant === "swap";
-//   const [inputValue, setInputValue] = useState("");
-
-//   const refresh = () => {};
-//   const onReverseClick = () => {};
-//   const onSlippageClick = () => {
-//     console.log(slippage);
-//   };
-
-//   return (
-//     <Card>
-//       <Card.Header>
-//         <div className="flex justify-between w-full">
-//           <div className="flex gap-1">
-//             <Typography
-//               variant="h4"
-//               onClick={() => setVariant("swap")}
-//               className={isVariantSwap ? "order-1" : "order-2"}
-//             >
-//               Swap
-//             </Typography>
-//             <Typography
-//               variant="text-button"
-//               underline
-//               onClick={() => setVariant("claim")}
-//               className={isVariantSwap ? "order-2" : "order-1"}
-//             >
-//               Claim
-//             </Typography>
-//           </div>
-//           <div className="flex items-center gap-2">
-//             <Typography underline onClick={onSlippageClick}>
-//               Slippage {slippage}%
-//             </Typography>
-//             <Typography onClick={refresh}>🔄</Typography>
-//             <Divider vertical className="bg-mono-600" />
-//             <Typography onClick={onCloseClick}>
-//               <FontAwesomeIcon icon={faClose} fontSize={16} />
-//             </Typography>
-//           </div>
-//         </div>
-//       </Card.Header>
-//       <Card.Body>
-//         <div className="flex flex-col">
-//           <SwapInput
-//             currencyName="SOL"
-//             inputValue={inputValue}
-//             setInputValue={setInputValue}
-//             placeholder="0.00"
-//             currencyLogoUrl="/tokens/solana.png"
-//             usdPrice={13.99}
-//             label="Pay"
-//             labelRight="👛 0 SOL"
-//           />
-//           <div className="relative h-12">
-//             <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 border-t border-mono-400"></div>
-//             <div
-//               onClick={onReverseClick}
-//               className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-5 h-5 bg-mono-200 hover:bg-mono-300 cursor-pointer border-2 border-mono-400 rounded-sm flex justify-center items-center"
-//             >
-//               <FontAwesomeIcon icon={faUpDown} className="text-white" fontWeight={100} />
-//             </div>
-//           </div>
-//           <SwapInput
-//             currencyName="SLORK"
-//             inputValue={inputValue}
-//             placeholder="0.00"
-//             currencyLogoUrl={props.memeImage}
-//             usdPrice={13.99}
-//             label="Receive"
-//             isReadOnly
-//             labelRight="👛 0 SLORK"
-//           />
-//         </div>
-//         <Button variant="primary" className="mt-4 p-1">
-//           <Typography variant="h4">Swap</Typography>
-//         </Button>
-//       </Card.Body>
-//     </Card>
-//   );
-// };
-
-// return (
-//   <>
-//     <div className="flex w-full flex-row gap-2">
-//       <SwapButton coinToMeme={coinToMeme} onClick={() => setCoinToMeme(true)} label="Buy" />
-//       <SwapButton coinToMeme={!coinToMeme} onClick={() => setCoinToMeme(false)} label="Sell" />
-//     </div>
-//     <div className="flex w-full flex-col gap-1">
-//       <InputAmountTitle
-//         memeBalance={memeBalance}
-//         setInputAmount={setInputAmount}
-//         setOutputData={setOutputData}
-//         coinBalance={coinBalance}
-//         coinToMeme={coinToMeme}
-//         tokenSymbol={tokenSymbol}
-//         quoteMint={quoteMint}
-//       />
-//       <input
-//         className="w-full bg-white text-xs font-bold text-regular p-2 rounded-lg"
-//         value={inputAmount}
-//         onChange={(e) =>
-//           handleSwapInputChange({
-//             decimalPlaces: coinToMeme ? tokenData.decimals : MEMECHAN_MEME_TOKEN_DECIMALS,
-//             e,
-//             setValue: setInputAmount,
-//           })
-//         }
-//         placeholder="0"
-//         type="text"
-//       />
-//       {coinToMeme && (
-//         <div className="text-xs font-bold text-regular">
-//           available {tokenData.displayName}:{" "}
-//           {publicKey && coinBalance
-//             ? Number(coinBalance).toLocaleString(undefined, {
-//                 maximumFractionDigits: tokenData.decimals,
-//               }) ?? "loading..."
-//             : "0"}
-//         </div>
-//       )}
-//       {!coinToMeme && memeBalance && (
-//         <div className="text-xs !normal-case font-bold text-regular">
-//           available {tokenSymbol} to sell: {formatNumber(Number(memeBalance), MEMECHAN_MEME_TOKEN_DECIMALS)}
-//         </div>
-//       )}
-//       {isLoadingOutputAmount && (
-//         <div className="text-xs font-bold text-regular">
-//           {coinToMeme ? (
-//             <span>{tokenSymbol} to receive: loading...</span>
-//           ) : (
-//             <span>{tokenData.displayName} to receive: loading...</span>
-//           )}
-//         </div>
-//       )}
-//       {outputData !== null && !isLoadingOutputAmount && (
-//         <div className="text-xs font-bold text-regular">
-//           {coinToMeme
-//             ? `${tokenSymbol} to receive: ${tokenData.symbol === "SOL" ? parseChainValue(Number(outputData.minAmountOut.toString()), MEMECHAN_MEME_TOKEN_DECIMALS, 6) : parseChainValue(Number(+outputData.minAmountOut.toExact()), 0, 2)}`
-//             : `${tokenData.displayName} to receive: ${tokenData.symbol === "SOL" ? parseChainValue(Number(outputData.minAmountOut.toString()), QUOTE_TOKEN_DECIMALS, 12) : parseChainValue(Number(+outputData.minAmountOut.toExact()), 0, 12)}`}
-//         </div>
-//       )}
-//     </div>
-//     <div className="flex w-full flex-col gap-1">
-//       <div className="text-xs font-bold text-regular">Slippage (0-50%)</div>
-//       <input
-//         className="w-full bg-white text-xs font-bold text-regular p-2 rounded-lg"
-//         value={slippage}
-//         onChange={(e) =>
-//           handleSlippageInputChange({
-//             decimalPlaces: 2,
-//             e,
-//             setValue: setSlippage,
-//             max: MAX_SLIPPAGE,
-//             min: MIN_SLIPPAGE,
-//           })
-//         }
-//         type="text"
-//       />
-//     </div>
-//     <Button
-//       disabled={swapButtonIsDiabled}
-//       onClick={onSwap}
-//       className="w-full bg-regular bg-opacity-80 hover:bg-opacity-50 disabled:opacity-50"
-//     >
-//       <div className="text-xs font-bold text-white">
-//         {isLoadingOutputAmount || isSwapping ? "Loading..." : "Swap"}
-//       </div>
-//     </Button>
-//   </>
-// );
-// };
