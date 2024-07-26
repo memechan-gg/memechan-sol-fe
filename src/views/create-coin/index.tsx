@@ -212,8 +212,6 @@ export function CreateCoin() {
     }
   });
 
-  console.log("checked", isChecked);
-
   return (
     <div className="w-full flex items-center justify-center">
       <div className="w-full lg:max-w-3xl">
@@ -350,7 +348,7 @@ export function CreateCoin() {
                     onChange={handleChange}
                     className="w-6 h-6 text-blue-600 form-checkbox"
                   />
-                  <label className="ml-2 text-lg">Create for free as chan user</label>
+                  <label className="ml-2 text-lg">Create for free without wallet</label>
                 </div>
               </div>
             </div>
