@@ -18,8 +18,8 @@ export const Search = ({
     <div>
       {!isSearchActive && (
         <div className="w-10 h-10 border-primary-100">
-          <Button variant="secondary" onClick={() => setIsSearchActive(!isSearchActive)}>
-            <FontAwesomeIcon color={colors["primary-100"]} icon={faSearch} onClick={() => setIsSearchActive(false)} />
+          <Button className="text-primary-100 hover:text-mono-600" variant="secondary" onClick={() => setIsSearchActive(!isSearchActive)}>
+            <FontAwesomeIcon icon={faSearch} onClick={() => setIsSearchActive(false)} />
           </Button>
         </div>
       )}
@@ -39,7 +39,7 @@ export const Search = ({
               <FontAwesomeIcon icon={faClose} size="lg" onClick={() => setIsSearchActive(false)} />
             </span>
           }
-          className="p-2.5 pr-4 rounded-sm pink-border"
+          className="py-2.5 pl-3 pr-4 rounded-sm pink-border"
         />
       )}
     </div>
