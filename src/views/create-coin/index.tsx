@@ -36,11 +36,18 @@ export function CreateCoin() {
     formState: { errors },
   } = useForm<ICreateForm>();
   const { publicKey, connected, signMessage, sendTransaction } = useWallet();
+  const [isChecked, setIsChecked] = useState(false);
+
+  const handleChange = () => {
+    setIsChecked(!isChecked);
+  };
   const [state, setState] = useState<CreateCoinState>("idle");
   const router = useRouter();
   const [inputAmount, setInputAmount] = useState<string>("0");
   const { solanaThresholdAmount } = useTargetConfig();
-
+  // const redirectToHome = () => {
+  //   window.location.href = "/";
+  // };
   const { balance: solanaAmount } = useBalance(TOKEN_INFOS["WSOL"].mint.toString(), TOKEN_INFOS["WSOL"].decimals);
 
   const { connection, memechanClientV2 } = useConnection();
@@ -100,17 +107,23 @@ export function CreateCoin() {
       setState("ipfs");
       let ipfsUrl = await uploadImageToIPFS(data.image[0]);
       validateCoinParamsWithImage(data, ipfsUrl);
-
+      console.log("before s");
       const { createPoolTransaction, memeMint } = await createMemeCoinAndPool({
         data,
         ipfsUrl,
         publicKey,
         inputAmount: inputAmountIsSpecified ? inputAmount : undefined,
         client: memechanClientV2,
+        checked: isChecked,
       });
-
+      console.log("after s");
       setState("create_bonding_and_meme");
       // Pool and meme creation
+      toast(() => <span>Coin is created</span>);
+      console.log("createPoolTransaction");
+      console.log(createPoolTransaction);
+      if (!createPoolTransaction) return;
+
       const signature = await sendTransaction(createPoolTransaction, connection, {
         maxRetries: 3,
         skipPreflight: true,
@@ -198,6 +211,8 @@ export function CreateCoin() {
       handleErrors(e);
     }
   });
+
+  console.log("checked", isChecked);
 
   return (
     <div className="w-full flex items-center justify-center">
@@ -313,7 +328,7 @@ export function CreateCoin() {
               <i>Creation cost: ~0.02 SOL</i>
             </div>
             <div className="flex flex-col gap-1">
-              <div>
+              <div className="flex gap-2">
                 <button
                   type="submit"
                   className="bg-regular text-white font-bold p-2 rounded-lg disabled:opacity-50 lowercase"
@@ -328,6 +343,15 @@ export function CreateCoin() {
                     }[state]
                   }
                 </button>
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={isChecked}
+                    onChange={handleChange}
+                    className="w-6 h-6 text-blue-600 form-checkbox"
+                  />
+                  <label className="ml-2 text-lg">Create for free as chan user</label>
+                </div>
               </div>
             </div>
           </form>
