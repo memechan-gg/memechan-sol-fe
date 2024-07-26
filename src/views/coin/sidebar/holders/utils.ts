@@ -41,3 +41,9 @@ export const getBoundPoolHolderPercentage = (tickets: MemeTicketFields[], maxTic
 
   return percentage;
 };
+
+export const getSlicedAddressV2 = (address: string | PublicKey) => {
+  const stringAddress = address.toString();
+
+  return stringAddress.slice(0, 4) + "..." + stringAddress.slice(-4);
+};
