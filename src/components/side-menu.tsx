@@ -16,7 +16,7 @@ export default function SideMenu(props: { account: UserContextType; disconnect: 
     <div className="sm:relative">
       <Popover>
         <Popover.Button onClick={() => setIsOpen(!isOpen)}>
-          <div className="max-w-32 w-[137px] h-10 pink-border items-center border-2 border-primary-100 rounded transition-all duration-300 overflow-hidden flex">
+          <div className="max-w-[137px] w-[137px] h-10 pink-border items-center border-2 border-primary-100 rounded-sm transition-all duration-300 overflow-hidden flex">
             <div
               role="button"
               className="text-primary-100 text-xs font-bold h-full w-full flex justify-evenly items-center bg-inherit transition-colors"
@@ -26,7 +26,7 @@ export default function SideMenu(props: { account: UserContextType; disconnect: 
               </span>
               <span className="h-[90%] border-r border-primary-100"></span>
               <div className="flex items-center justify-center w-10 h-full hover:bg-primary-100 hover:text-white transition-colors">
-                {isOpen ? <FontAwesomeIcon icon={faClose} /> : <FontAwesomeIcon icon={faEllipsisV} />}
+                {isOpen ? <FontAwesomeIcon fontSize={16} icon={faClose} /> : <FontAwesomeIcon fontSize={16} icon={faEllipsisV} />}
               </div>
             </div>
           </div>
