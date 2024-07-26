@@ -1,5 +1,6 @@
 import { useBoundPoolClient } from "@/hooks/presale/useBoundPoolClient";
 import { useMedia } from "@/hooks/useMedia";
+import { Button } from "@/memechan-ui/Atoms";
 import { Tabs } from "@/memechan-ui/Atoms/Tabs";
 import TopBar from "@/memechan-ui/Atoms/TopBar/TopBar";
 import { SeedPoolData } from "@/types/pool";
@@ -7,9 +8,9 @@ import { SolanaToken } from "@avernikoz/memechan-sol-sdk";
 import { track } from "@vercel/analytics";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+import { CommentsTab } from "./common-tabs/comments-tab/comments-tab";
 import { ChartTab } from "./presale-coin-tabs/chart-tab/chart-tab";
 import { InfoTab } from "./presale-coin-tabs/info-tab/info-tab";
-import { CommentsTab } from "./common-tabs/comments-tab/comments-tab";
 
 export const mobileTabs = ["Info", "Chart", "Comments"];
 export const desktopTabs = ["Chart", "Comments"];
@@ -68,7 +69,17 @@ export function PresaleCoin({
       <TopBar tokenAddress={coinMetadata.address} tokenSymbol={coinMetadata.symbol} />
       {mediaQuery.isSmallDevice ? (
         <>
-          <div className="fixed bottom-0 bg-mono-100 border-t border-mono-400 w-full z-50 flex items-center justify-center p-2 md:hidden">
+          <div className="fixed bottom-0 bg-mono-100 border-t border-mono-400 w-full z-50 flex flex-col items-center justify-center p-2 md:hidden">
+            <div className="flex h-[50px] mx-4 mb-4 mt-2 gap-2 w-full">
+              <div className="flex-grow w-3/5">
+                <Button variant="contained">
+                  <img src="/memechan-button.png" alt="Memechan Button" className="max-h-[50px]" />
+                </Button>
+              </div>
+              <div className="flex-grow-2 w-2/5">
+                <Button variant="primary">Buy / Claim</Button>
+              </div>
+            </div>
             <Tabs tabs={mobileTabs} onTabChange={onTabChange} activeTab={tab} />
           </div>
           <div className="w-full px-3">
