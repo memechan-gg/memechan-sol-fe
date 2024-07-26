@@ -111,7 +111,7 @@ export function PresaleCoin({
               <ChartTab seedPoolDataAddress={seedPoolData.address} tokenSymbol={coinMetadata.symbol} />
             )}
           </div>
-          <div className="col-span-1">
+          <div className="col-span-1 flex flex-col gap-3">
             <InfoTab coinMetadata={coinMetadata} pool={seedPoolData} boundPoolClient={boundPoolClient} />
           </div>
         </div>

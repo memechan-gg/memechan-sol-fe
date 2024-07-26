@@ -83,9 +83,6 @@ export function PostReplyDialog({ isStatic, onClose, updateThreads, coinType, re
 
   return (
     <>
-      {
-        // FIX EDO2 - add Correct CSS to this
-      }
       {isStatic && (
         <Card>
           <Card.Header>

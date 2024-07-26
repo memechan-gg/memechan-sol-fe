@@ -13,7 +13,7 @@ const TextInput = ({ startAdornment, endAdornment, value, setValue, placeholder,
     <div
       className={`relative flex items-center border-2 rounded-lg p-4 border-gray-300 focus-within:border-primary-100 ${rest.className}`}
     >
-      {startAdornment && <span className="m-[14px] flex">{startAdornment}</span>}
+      {startAdornment && <span className="flex">{startAdornment}</span>}
       <input
         {...rest}
         type="text"

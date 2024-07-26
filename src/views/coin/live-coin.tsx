@@ -51,7 +51,7 @@ export function LiveCoin({
           </div>
         </>
       ) : (
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-3 gap-3 px-3 xl:px-0">
           <div className="col-span-2 flex flex-col gap-y-3">
             <div className="bg-mono-400 py-1">
               <Tabs tabs={desktopTabs} onTabChange={onTabChange} activeTab={tab} />
@@ -61,7 +61,7 @@ export function LiveCoin({
             )}
             {tab === "Chart" && <ChartTab coinAddress={coinMetadata.address} livePoolDataId={livePoolData.id} />}
           </div>
-          <div className="col-span-1">
+          <div className="col-span-1 flex flex-col gap-3">
             <InfoTab coinMetadata={coinMetadata} pool={livePoolData} />
           </div>
         </div>
