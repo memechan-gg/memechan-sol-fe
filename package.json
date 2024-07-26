@@ -13,7 +13,7 @@
     "child_process": false
   },
   "dependencies": {
-    "@avernikoz/memechan-sol-sdk": "2.2.3",
+    "@avernikoz/memechan-sol-sdk": "2.2.8",
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
     "@fortawesome/free-brands-svg-icons": "^6.6.0",
     "@fortawesome/free-regular-svg-icons": "^6.6.0",
