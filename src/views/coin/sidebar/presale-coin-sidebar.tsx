@@ -1,3 +1,4 @@
+import { TokenCard } from "@/components/TokenCard";
 import { useBoundPoolClient } from "@/hooks/presale/useBoundPoolClient";
 import { getTokenInfo } from "@/hooks/utils";
 import { PresaleCoinSidebarProps } from "../coin.types";
@@ -15,7 +16,10 @@ export function PresaleCoinSidebar({ pool, coinMetadata, uniqueHoldersData, tick
     ? getTokenInfo({ tokenAddress: boundPool?.quoteReserve.mint.toString() })
     : undefined;
   return (
-    <>
+    <div className="flex flex-col gap-y-3">
+      <SidebarItem>
+        <TokenCard key={coinMetadata.address} token={coinMetadata} />
+      </SidebarItem>
       <SidebarItem>
         <PresaleCoinSwap
           pool={pool}
@@ -25,11 +29,6 @@ export function PresaleCoinSidebar({ pool, coinMetadata, uniqueHoldersData, tick
           memeImage={coinMetadata.image}
         />
       </SidebarItem>
-      {tokenInfo && (
-        <SidebarItem>
-          <PresaleCoinInfo metadata={coinMetadata} boundPool={boundPool} tokenInfo={tokenInfo} />
-        </SidebarItem>
-      )}
       <SidebarItem>
         <PresaleCoinHolders
           poolAddress={pool.address}
@@ -37,6 +36,6 @@ export function PresaleCoinSidebar({ pool, coinMetadata, uniqueHoldersData, tick
           uniqueHoldersData={uniqueHoldersData}
         />
       </SidebarItem>
-    </>
+    </div>
   );
 }

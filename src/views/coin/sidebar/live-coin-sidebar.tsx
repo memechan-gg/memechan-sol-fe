@@ -1,8 +1,8 @@
+import { TokenCard } from "@/components/TokenCard";
 import { TICKETS_INTERVAL } from "@/config/config";
 import { useTickets } from "@/hooks/useTickets";
 import { LiveCoinSidebarProps } from "../coin.types";
 import { LiveCoinHolders } from "./holders/live-coin-holders";
-import { LiveCoinInfo } from "./info/live-coin-info";
 import { SidebarItem } from "./sidebar-item";
 import { StakingPool } from "./staking-pool/staking-pool";
 import { LiveCoinSwap } from "./swap/live-coin-swap";
@@ -22,7 +22,10 @@ export function LiveCoinSidebar({
   });
 
   return (
-    <>
+    <div className="flex flex-col gap-y-3">
+      <SidebarItem>
+        <TokenCard key={coinMetadata.address} token={coinMetadata} />
+      </SidebarItem>
       <SidebarItem>
         <LiveCoinSwap pool={pool} tokenSymbol={coinMetadata.symbol} memeImage={coinMetadata.image} />
       </SidebarItem>
@@ -42,11 +45,8 @@ export function LiveCoinSidebar({
             </SidebarItem>
           )}
       <SidebarItem>
-        <LiveCoinInfo metadata={coinMetadata} livePoolAddress={pool.id} quoteMint={pool.quoteMint} />
-      </SidebarItem>
-      <SidebarItem>
         <LiveCoinHolders coinMetadata={coinMetadata} uniqueHoldersData={uniqueHoldersData} livePool={pool} />
       </SidebarItem>
-    </>
+    </div>
   );
 }
