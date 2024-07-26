@@ -53,7 +53,7 @@ export const Header = () => {
             </>
           ) : (
             <div className="flex items-center w-full">
-              <Link href="/" className="w-10 max-full pink-border rounded-sm">
+              <Link href="/" className="w-10 h-full pink-border rounded-sm">
                 <Logo />
               </Link>
               <div className="flex-grow ml-3">
