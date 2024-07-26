@@ -210,7 +210,7 @@ export function CreateCoin() {
   return (
     <div className="w-full flex flex-col items-center">
       <TopBar rightIcon="/diamond.png" title={"Create Memecoin"}></TopBar>
-      <div className="min-w-[345px] sm:max-w-[406px] form-shadow flex items-center justify-center border border-mono-400 rounded-sm m-4">
+      <div className="min-w-[345px] sm:max-w-[406px] custom-outer-shadow flex items-center justify-center border border-mono-400 rounded-sm m-4">
         <div className="w-full lg:max-w-3xl m-4 ">
           <form onSubmit={onSubmit} className="flex flex-col ">
             <div className="flex flex-col gap-2">
@@ -227,7 +227,7 @@ export function CreateCoin() {
                     </div>
                   </label>
                   <div>
-                    <UncontrolledTextInput placeholder="Name"{ ...register("name", { required: true })} />
+                    <UncontrolledTextInput placeholder="Name" {...register("name", { required: true })} />
                   </div>
                   {errors.name && <p className="text-xs text-red-500">Name is required</p>}
                 </div>
@@ -243,7 +243,7 @@ export function CreateCoin() {
                     </div>
                   </label>
                   <div>
-                    <UncontrolledTextInput placeholder="SYMBOL"{...register("symbol", { required: true })} />
+                    <UncontrolledTextInput placeholder="SYMBOL" {...register("symbol", { required: true })} />
                   </div>
                   {errors.symbol && <p className="text-xs text-red-500">Synbol is required</p>}
                 </div>
@@ -277,8 +277,9 @@ export function CreateCoin() {
                 </label>
                 <div>
                   <textarea
-                    {...register("description", { required: true })} placeholder="Description"
-                    className=" h-32 border border-mono-400 p-4 flex-1 outline-none bg-transparent placeholder:text-[13px] placeholder:font-normal placeholder:leading-5 placeholder-mono-500 w-full"
+                    {...register("description", { required: true })}
+                    placeholder="Description"
+                    className="text-[13px] h-32 border border-mono-400 p-4 flex-1 outline-none bg-transparent placeholder:text-[13px] placeholder:font-normal placeholder:leading-5 placeholder-mono-500 w-full"
                     maxLength={MAX_DESCRIPTION_LENGTH}
                   />
                 </div>
