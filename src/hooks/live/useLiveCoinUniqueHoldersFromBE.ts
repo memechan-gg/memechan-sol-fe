@@ -1,5 +1,5 @@
 import { LIVE_POOL_HOLDERS_INTERVAL, MAX_HOLDERS_COUNT } from "@/config/config";
-import { BE_URL, MEMECHAN_PROGRAM_ID, TokenApiHelper } from "@avernikoz/memechan-sol-sdk";
+import { BE_URL, TokenApiHelper } from "@avernikoz/memechan-sol-sdk";
 import { PublicKey } from "@solana/web3.js";
 import useSWR from "swr";
 
@@ -8,7 +8,7 @@ const fetchLiveCoinUniqueHoldersFromBE = async (memeMint: string, stakingPoolAdd
     const [holders, stakingData] = await TokenApiHelper.getStakingPoolHoldersList(
       new PublicKey(memeMint),
       new PublicKey(stakingPoolAddress),
-      new PublicKey(MEMECHAN_PROGRAM_ID),
+      new PublicKey(process.env.NEXT_PUBLIC_MEMECHAN_PROGRAM_ID),
       BE_URL,
     );
 
