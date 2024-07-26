@@ -35,7 +35,7 @@ export const Typography: React.FC<Props> = ({
   className,
 }) => {
   const classString = `${TYPOGRAPHY_VARIANTS[variant]} ${truncate ? "truncate" : ""} text-${color} text-${align} ${underline ? "underline" : ""} ${
-    onClick ? "cursor-pointer hover:opacity-75 active:opacity-50" : "hover:opacity-90 active:opacity-80"
+    onClick ? "cursor-pointer hover:opacity-75 active:opacity-50" : ""
   }`;
 
   return (

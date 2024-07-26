@@ -86,8 +86,6 @@ export function Comment({
   const devsComment = coinCreator === creator;
   const slicedAddress = getSlicedAddress(creator);
 
-  // FIX - CSS EDO2
-  // functionality for reply and like
   return (
     <div className="flex flex-row gap-1 w-full" id={id}>
       <Card>
@@ -95,8 +93,10 @@ export function Comment({
           <div className="flex justify-between items-center w-full leading-5">
             <div className="flex gap-2 items-center">
               <FontAwesomeIcon icon={faEllipsisVertical} className="text-mono-600" />
-              <Link className="hover:underline text-green-100" href={`/profile/${creator}`} >
+              <Link className="hover:underline" href={`/profile/${creator}`} >
+              <Typography variant="h4" color="green-100">
                 {slicedAddress} {isUsersComment ? "(me)" : ""} {devsComment ? "(dev)" : ""}
+              </Typography>
               </Link>
             </div>
             <div className="flex items-center text-right">

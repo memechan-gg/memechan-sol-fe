@@ -19,7 +19,7 @@ export const Search = ({
       {!isSearchActive && (
         <div className="w-10 h-10 border-primary-100">
           <Button variant="secondary" onClick={() => setIsSearchActive(!isSearchActive)}>
-            <FontAwesomeIcon icon={faSearch} onClick={() => setIsSearchActive(false)} />
+            <FontAwesomeIcon color={colors["primary-100"]} icon={faSearch} onClick={() => setIsSearchActive(false)} />
           </Button>
         </div>
       )}
@@ -29,12 +29,17 @@ export const Search = ({
           value={search}
           placeholder="Search"
           setValue={setSearch}
-          startAdornment={<FontAwesomeIcon fontSize={12} color={colors["mono-600"]} icon={faSearch} />}
+          startAdornment={
+            <span className="m-px mr-3 flex fa-">
+              <FontAwesomeIcon size="sm" color={colors["mono-600"]} icon={faSearch} />
+            </span>
+          }
           endAdornment={
-            <span className="cursor-pointer m-2 mr-[17px]">
+            <span className="cursor-pointer flex">
               <FontAwesomeIcon icon={faClose} size="lg" onClick={() => setIsSearchActive(false)} />
             </span>
           }
+          className="p-2.5 pr-4 rounded-sm pink-border"
         />
       )}
     </div>

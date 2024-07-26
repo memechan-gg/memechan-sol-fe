@@ -22,7 +22,7 @@ export const Header = () => {
                 <Link href="/" className="font-bold text-lg w-10 h-full mr-2 pink-border rounded-sm">
                   <Logo />
                 </Link>
-                <Link href="/create">
+                <Link href="/create" className="flex-1">
                   <div className="sm:w-[140px] h-[40px] justify-center text-center">
                     <Button variant="primary">Create Memecoin</Button>
                   </div>
@@ -53,7 +53,7 @@ export const Header = () => {
             </>
           ) : (
             <div className="flex items-center w-full">
-              <Link href="/" className="font-bold text-lg w-10 h-full pink-border rounded-sm">
+              <Link href="/" className="w-10 h-full pink-border rounded-sm">
                 <Logo />
               </Link>
               <div className="flex-grow ml-3">
