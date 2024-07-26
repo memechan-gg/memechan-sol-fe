@@ -24,10 +24,14 @@ export function LiveCoin({
 
   const onTabChange = (tab: string) => {
     track("Live_SetTab", { status: tab });
-    router.push({
-      pathname: `/coin/[coinType]`,
-      query: { coinType: coinMetadata.address, tab: tab },
-    });
+    router.push(
+      {
+        pathname: `/coin/[coinType]`,
+        query: { coinType: coinMetadata.address, tab: tab },
+      },
+      undefined,
+      { shallow: true },
+    );
   };
 
   return (

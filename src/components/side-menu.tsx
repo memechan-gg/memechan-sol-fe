@@ -12,7 +12,6 @@ import TwitterIcon from "../memechan-ui/icons/twitter-icon.svg";
 
 export default function SideMenu(props: { account: UserContextType; disconnect: () => Promise<void> }) {
   const [isOpen, setIsOpen] = useState(false);
-  console.log(isOpen);
   return (
     <div className="sm:relative">
       <Popover>
