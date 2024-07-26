@@ -21,12 +21,12 @@ export const RadioButton: FC<RadioButtonProps> = ({ id, name, label, selectedVal
       />
       <label htmlFor={id} className="flex items-center cursor-pointer">
         <span
-          className={`w-4 h-4 mr-2 border border-regular rounded-full flex items-center justify-center transition duration-200 ease-linear ${
-            selectedValue === id ? "border-regular" : ""
+          className={`w-4 h-4 mr-2 border-mono-500 border  rounded-full flex items-center justify-center transition duration-200 ease-linear ${
+            selectedValue === id ? "border-primary-100" : ""
           }`}
         >
           {selectedValue === id && (
-            <span className="w-2 h-2 bg-regular rounded-full transition duration-200 ease-linear"></span>
+            <span className="w-2 h-2 bg-primary-100  rounded-full transition duration-200 ease-linear"></span>
           )}
         </span>
         {label}
