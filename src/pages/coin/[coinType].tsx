@@ -13,5 +13,6 @@ export default function CoinPage() {
       query: { coinType: coinType, tab: "Chart" },
     });
   }
+
   return <Coin coin={coinType} tab={tab} />;
 }

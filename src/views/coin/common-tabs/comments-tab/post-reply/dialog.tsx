@@ -8,7 +8,7 @@ import { CoinThreadParsedMessage } from "@/views/coin/coin.types";
 import { handleAuthentication, uploadImageToIPFS } from "@/views/create-coin/create-coin.utils";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { track } from "@vercel/analytics";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useState } from "react";
 import toast from "react-hot-toast";
 
 export type PostReplyDialogProps =
@@ -30,19 +30,8 @@ export type PostReplyDialogProps =
 export function PostReplyDialog({ isStatic, onClose, updateThreads, coinType, replyThreadId }: PostReplyDialogProps) {
   const [replyText, setReplyText] = useState("");
   const { publicKey, signMessage } = useWallet();
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [file, setFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.focus();
-    }
-  }, []);
-
-  const handleReplyChange = (event: any) => {
-    setReplyText(event.target.value);
-  };
 
   const handleSendReply = useCallback(async () => {
     try {
@@ -132,11 +121,10 @@ export function PostReplyDialog({ isStatic, onClose, updateThreads, coinType, re
           </h2>
           <div className="flex flex-row justify-between items-center">
             <button
-              disabled={isLoading}
+              
               onClick={handleSendReply}
               className="text-blue py-2 rounded-lg text-sm hover:underline"
             >
-              {isLoading ? "Loading..." : "Send a reply"}
             </button>
             <button onClick={onClose} className="text-regular text-sm hover:underline">
               Close

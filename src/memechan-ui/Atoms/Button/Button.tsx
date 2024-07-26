@@ -2,7 +2,7 @@ import { faSpinner } from "@fortawesome/free-solid-svg-icons/faSpinner";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { ReactNode } from "react";
 
-export type ButtonVariant = "primary" | "secondary" | "regular" | "text";
+export type ButtonVariant = "primary" | "secondary" | "regular" | "text" | "contained";
 export type ButtonSubVariant = "primary" | "secondary" | "regular";
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children?: React.ReactNode;
@@ -36,6 +36,7 @@ export const Button = ({
     regular:
       "bg-primary-100 items-center text-xs w-full justify-center flex flex-row gap-2 font-bold text-regular hover:bg-primary-200 active:bg-primary-300 focus:outline-none",
     text: "bg-primary-100 items-center text-xs justify-center flex flex-row gap-2 font-bold text-regular hover:bg-primary-200 active:bg-primary-300 focus:outline-none",
+    contained: "w-full h-full rounded-sm bg-mono-600 text-primary-100",
   };
 
   // TODO:EDO Namudati disabled stilovi
@@ -43,10 +44,7 @@ export const Button = ({
     <button
       {...rest}
       className={
-        "flex items-center bg-primary-100 rounded-sm w-full h-full cursor-pointer " +
-        buttonStyles[variant] +
-        " " +
-        rest.className
+        "flex items-center rounded-sm w-full h-full cursor-pointer" + buttonStyles[variant] + " " + rest.className
       }
     >
       {isLoading && (
