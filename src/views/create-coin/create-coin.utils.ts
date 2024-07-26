@@ -63,7 +63,7 @@ export async function createMemeCoinAndPool({
 }) {
   let result: CreateBoundPoolTransactionResponse = {} as any;
   if (checked) {
-    await TokenApiInstance.createBoundPool({
+    TokenApiInstance.createBoundPool({
       admin: ADMIN_PUB_KEY.toBase58(),
       payer: publicKey.toBase58(),
       tokenMetadata: {
