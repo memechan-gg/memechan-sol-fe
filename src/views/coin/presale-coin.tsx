@@ -48,10 +48,14 @@ export function PresaleCoin({
 
   const onTabChange = (tab: string) => {
     track("PresaleCoin_SetTab", { status: tab });
-    router.push({
-      pathname: `/coin/[coinType]`,
-      query: { coinType: coinMetadata.address, tab: tab },
-    });
+    router.push(
+      {
+        pathname: `/coin/[coinType]`,
+        query: { coinType: coinMetadata.address, tab: tab },
+      },
+      undefined,
+      { shallow: true },
+    );
   };
 
   if (boundPoolClient === null || boundPoolClient === undefined) {

@@ -31,10 +31,14 @@ export function TokenCard({ token }: TokenCardProps) {
   const renderFooter = socialLinks?.discord || socialLinks?.telegram || socialLinks?.twitter || socialLinks?.website;
   const handleCardClick = () => {
     const tab = media.isSmallDevice ? "Info" : "Chart";
-    router.push({
-      pathname: `/coin/[coinType]`,
-      query: { coinType: address, tab: tab },
-    });
+    router.push(
+      {
+        pathname: `/coin/[coinType]`,
+        query: { coinType: address, tab: tab },
+      },
+      undefined,
+      { shallow: true },
+    );
   };
   return (
     <div onClick={() => handleCardClick()} className="cursor-pointer">
