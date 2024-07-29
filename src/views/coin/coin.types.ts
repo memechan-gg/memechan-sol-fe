@@ -78,6 +78,7 @@ export type PresaleCoinInfoProps = {
 
 export type UnstakeDialogProps = Omit<StakingPoolProps, "memeMint"> & {
   stakingPoolFromApi: ReturnType<typeof useStakingPoolFromApi>["data"];
+  closePopUp?: () => void;
 };
 
 export type WithdrawFeesDialogProps = UnstakeDialogProps;

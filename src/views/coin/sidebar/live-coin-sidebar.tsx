@@ -37,24 +37,26 @@ export function LiveCoinSidebar({
           seedPoolAddress={seedPoolData?.address}
         />
       </SidebarItem>
-      {ticketsData.isLoading
-        ? "Loading..."
-        : ticketsData.tickets.length > 0 &&
-          (ticketsData.stakedAmount !== "0.000001" || ticketsData.unavailableTicketsAmount !== "0") && (
-            <SidebarItem>
-              {
-                <StakingPool
-                  tokenSymbol={coinMetadata.symbol}
-                  livePoolAddress={pool.id}
-                  ticketsData={ticketsData}
-                  stakingPoolFromApi={stakingPoolFromApi}
-                />
-              }
-            </SidebarItem>
-          )}
+      {ticketsData.isLoading ? (
+        "Loading..."
+      ) : (
+        <SidebarItem>
+          {
+            <StakingPool
+              tokenSymbol={coinMetadata.symbol}
+              livePoolAddress={pool.id}
+              ticketsData={ticketsData}
+              stakingPoolFromApi={stakingPoolFromApi}
+            />
+          }
+        </SidebarItem>
+      )}
       <SidebarItem>
         <LiveCoinHolders coinMetadata={coinMetadata} uniqueHoldersData={uniqueHoldersData} livePool={pool} />
       </SidebarItem>
     </div>
   );
 }
+
+//ticketsData.tickets.length > 0 &&
+// (ticketsData.stakedAmount !== "0.000001" || ticketsData.unavailableTicketsAmount !== "0") &&
