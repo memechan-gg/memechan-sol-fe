@@ -24,9 +24,14 @@ const TopBar = ({ tokenSymbol, tokenAddress, title, rightIcon, rightIconLink }: 
         </Typography>
         <div className="hidden md:block">
           {tokenAddress && (
-            <Typography variant="body" color="mono-500">
-              {"/" + tokenAddress}
-            </Typography>
+            <>
+              <Typography variant="body" color="mono-500" className="mx-1">
+                /
+              </Typography>
+              <Typography variant="body" color="mono-500">
+                {tokenAddress}
+              </Typography>
+            </>
           )}
         </div>
       </div>

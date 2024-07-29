@@ -33,6 +33,7 @@ import {
 
 export function CreateCoin() {
   const {
+    watch,
     resetField,
     register,
     handleSubmit,
@@ -40,6 +41,7 @@ export function CreateCoin() {
   } = useForm<ICreateForm>();
   const { publicKey, connected, signMessage, sendTransaction } = useWallet();
   const [state, setState] = useState<CreateCoinState>("idle");
+  console.log(state);
   const router = useRouter();
   const [inputAmount, setInputAmount] = useState<string>("0");
   const { solanaThresholdAmount } = useTargetConfig();
@@ -207,6 +209,10 @@ export function CreateCoin() {
     }
   });
 
+  const nameInput = watch("name");
+  const symbolInput = watch("symbol");
+  const imageInput = watch("image");
+  const filledRequired = nameInput && symbolInput && imageInput?.length;
   return (
     <div className="w-full flex flex-col items-center">
       <TopBar rightIcon="/diamond.png" title={"Create Memecoin"}></TopBar>
@@ -261,7 +267,7 @@ export function CreateCoin() {
                   <div>
                     <UncontrolledTextInput
                       fieldName="image"
-                      resetField={() => resetField}
+                      resetField={resetField}
                       type="file"
                       {...register("image", { required: true })}
                     />
@@ -364,22 +370,31 @@ export function CreateCoin() {
               currencyLogoUrl={baseCurrency.currencyLogoUrl}
               // TODO:HARUN
               // usdPrice={13.99}
-              label="Pay"
-              labelRight={publicKey ? `👛 ${baseCurrency.coinBalance ?? 0} ${baseCurrency.currencyName}` : undefined}
+              label="Be the very first person to buy your token"
+              // labelRight={publicKey ? `👛 ${baseCurrency.coinBalance ?? 0} ${baseCurrency.currencyName}` : undefined}
             />
             <div className="flex flex-col gap-1 mt-4">
-              <div className="h-14">
-                <Button variant="primary">
-                  {
+              {filledRequired ? (
+                <div className="h-14">
+                  <Button variant="primary" className="grid py-2">
                     {
-                      idle: "Create Now",
-                      sign: "Signing Message...",
-                      ipfs: "Uploading Image...",
-                      create_bonding_and_meme: "Creating Bonding Curve Pool and memecoin...",
-                    }[state]
-                  }
-                </Button>
-              </div>
+                      {
+                        idle: "Create Now",
+                        sign: "Signing Message...",
+                        ipfs: "Uploading Image...",
+                        create_bonding_and_meme: "Creating Bonding Curve Pool and memecoin...",
+                      }[state]
+                    }
+                    <Typography variant="caption">0.02 SOL to deploy</Typography>
+                  </Button>
+                </div>
+              ) : (
+                <div className="h-14 bg-mono-400">
+                  <Button variant="disabled" disabled>
+                    <Typography variant="h4">Fill required fields to create memecoin</Typography>
+                  </Button>
+                </div>
+              )}
             </div>
             <div className="border border-mono-400 mt-4 h-13 py-2 px-4 flex items-center">
               <div className="flex  items-baseline">
