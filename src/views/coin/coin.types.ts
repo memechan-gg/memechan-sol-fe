@@ -20,7 +20,7 @@ export type PresaleCoinSwapProps = {
   ticketsData: ReturnType<typeof useTickets>;
   memeImage: string;
   livePoolAddress?: string;
-  stakingPoolFromApi: ReturnType<typeof useStakingPoolFromApi>["data"];
+  stakingPoolFromApi?: ReturnType<typeof useStakingPoolFromApi>["data"];
 };
 
 export type LiveCoinSwapProps = {
