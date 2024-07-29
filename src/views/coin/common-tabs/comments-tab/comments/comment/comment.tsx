@@ -87,21 +87,23 @@ export function Comment({
   const slicedAddress = getSlicedAddress(creator);
 
   return (
-    <div className="flex flex-row gap-1 w-full" id={id}>
+    <div className="flex flex-col gap-1 w-full" id={id}>
       <Card>
         <Card.Header>
           <div className="flex justify-between items-center w-full leading-5">
             <div className="flex gap-2 items-center">
               <FontAwesomeIcon icon={faEllipsisVertical} className="text-mono-600" />
-              <Link className="hover:underline" href={`/profile/${creator}`} >
-              <Typography variant="h4" color="green-100">
-                {slicedAddress} {isUsersComment ? "(me)" : ""} {devsComment ? "(dev)" : ""}
-              </Typography>
+              <Link className="hover:underline" href={`/profile/${creator}`}>
+                <Typography variant="h4" color="green-100">
+                  {slicedAddress} {isUsersComment ? "(me)" : ""} {devsComment ? "(dev)" : ""}
+                </Typography>
               </Link>
             </div>
             <div className="flex items-center text-right">
               <CustomDate creationDate={new Date(creationDate)} />
-              <div className={classes["hover-underline"] + " text-[13px] font-normal leading-5 text-mono-500"}>&nbsp;#{id}</div>
+              <div className={classes["hover-underline"] + " text-[13px] font-normal leading-5 text-mono-500"}>
+                &nbsp;#{id}
+              </div>
             </div>
           </div>
         </Card.Header>
@@ -116,34 +118,45 @@ export function Comment({
                 />
               </div>
             )}
-            {<Typography className="flex-1">
-              if we killed all mosquitoes would that fuck up the food chain in the same way as the great leap forward
-            </Typography> }
+            {<Typography className="flex-1">{message}</Typography>}
           </div>
         </Card.Body>
         <Card.Footer>
           <div className="flex justify-between w-full">
-          <div  onClick={handleReplyThreadEvent}>
             <span>
-              <Typography color="mono-500" variant="text-button" underline={true}>
+              <Typography
+                color={isPostReplyDialogOpen ? "primary-100" : "mono-500"}
+                variant="text-button"
+                underline={true}
+                onClick={() => {
+                  if (!isPostReplyDialogOpen) {
+                    handleReplyThreadEvent();
+                  } else {
+                    closePostReplyDialog();
+                  }
+                }}
+              >
                 {">>Reply"}
               </Typography>
             </span>
-          </div>
-          {replyTo ? (
-            <a className="hover:underline" href={`#${replyTo}`}>
-              Reply
-            </a>
-          ) : (
-            ""
-          )}
-          {liked ? (
-            <Typography variant="text-button" color="mono-500">Like </Typography>
-          ) : (
-            <div>
-              <Typography variant="text-button" color="primary-100">Liked ({likesCount})</Typography>
-            </div>
-          )}
+            {replyTo ? (
+              <a className="hover:underline" href={`#${replyTo}`}>
+                Reply
+              </a>
+            ) : (
+              ""
+            )}
+            {liked ? (
+              <Typography variant="text-button" color="mono-500">
+                Like{" "}
+              </Typography>
+            ) : (
+              <div>
+                <Typography variant="text-button" color="primary-100">
+                  Liked ({likesCount})
+                </Typography>
+              </div>
+            )}
           </div>
         </Card.Footer>
       </Card>

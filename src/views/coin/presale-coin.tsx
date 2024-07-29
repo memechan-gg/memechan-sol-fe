@@ -26,7 +26,7 @@ export function PresaleCoin({
 }) {
   const mediaQuery = useMedia();
   const router = useRouter();
-  const { data: boundPoolClient } = useBoundPoolClient(seedPoolData.address);
+  const { data: boundPoolClient, isFetching, isError, isLoading } = useBoundPoolClient(seedPoolData.address);
 
   useEffect(() => {
     let intervalId: number | undefined;
@@ -58,7 +58,7 @@ export function PresaleCoin({
     );
   };
 
-  if (boundPoolClient === null || boundPoolClient === undefined) {
+  if (!isFetching && isError && (boundPoolClient === null || boundPoolClient === undefined)) {
     return (
       <div className="absolute rounded-xl top-0 left-0 w-full h-full bg-regular bg-opacity-70 flex items-center justify-center">
         <div className="text-white text-center text-balance font-bold text-lg tracking-wide">
@@ -67,6 +67,8 @@ export function PresaleCoin({
       </div>
     );
   }
+
+  if (isLoading || boundPoolClient === null || boundPoolClient === undefined) return <div>Loading...</div>;
 
   return (
     <>

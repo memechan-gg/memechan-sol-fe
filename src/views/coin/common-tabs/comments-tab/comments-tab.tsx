@@ -1,6 +1,5 @@
 import { useSocialAPI } from "../../hooks/useSocialAPI";
 import { Comments } from "./comments";
-import { PostReply } from "./post-reply";
 import { PostReplyDialog } from "./post-reply/dialog";
 
 export interface CommentsTabProps {
@@ -9,7 +8,6 @@ export interface CommentsTabProps {
 }
 export function CommentsTab({ coinAddress, coinCreator }: CommentsTabProps) {
   const { threads, updateThreads, loadMore, nextPageToken } = useSocialAPI({ coinType: coinAddress });
-  //PostReply doesnt exist in figma design
   return (
     <div className="flex flex-col gap-3">
       <PostReplyDialog isStatic updateThreads={updateThreads} coinType={coinAddress} />
@@ -19,8 +17,6 @@ export function CommentsTab({ coinAddress, coinCreator }: CommentsTabProps) {
           Load more
         </div>
       )}
-      
-      <PostReply openDialog={() => {}} /> 
     </div>
   );
 }

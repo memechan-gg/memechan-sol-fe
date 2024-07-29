@@ -5,6 +5,7 @@ import { Card } from "@/memechan-ui/Molecules";
 import { SolanaToken } from "@avernikoz/memechan-sol-sdk";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { ImageComponent } from "../image-component";
 import { LiveContent } from "./LiveContent";
 import { PresaleContent } from "./PresaleContent";
 
@@ -66,10 +67,10 @@ export function TokenCard({ token }: TokenCardProps) {
         <Card.Body>
           <div className="flex">
             <Link href={`/coin/${address}`}>
-              <img
+              <ImageComponent
                 className="w-[102px] h-[102px] object-cover object-center border border-mono-300"
-                src={image}
-                alt={`${name} Image`}
+                imageUrl={image}
+                altText={`${name} Image`}
               />
             </Link>
             <div className="ml-4 flex-1 min-w-0">

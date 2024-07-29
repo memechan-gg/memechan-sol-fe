@@ -83,7 +83,7 @@ export function PostReplyDialog({ isStatic, onClose, updateThreads, coinType, re
 
   return (
     <>
-      {isStatic && (
+      {isStatic ? (
         <Card>
           <Card.Header>
             <div>
@@ -92,12 +92,53 @@ export function PostReplyDialog({ isStatic, onClose, updateThreads, coinType, re
               </Typography>
             </div>
           </Card.Header>
-          <Card.Body >
+          <Card.Body>
             <div className="flex flex-col gap-3">
-              <TextInput value={replyText} setValue={setReplyText} placeholder="Comment" className="primary-border p-[15px] custom-inner-shadow rounded-b-none"/>
+              <TextInput
+                value={replyText}
+                setValue={setReplyText}
+                placeholder="Comment"
+                className="primary-border p-[15px] custom-inner-shadow rounded-b-none"
+              />
               <div className="flex justify-between items-center gap-3">
                 <FileInput file={file} setFile={setFile} />
-                <Button className="py-[18px] pr-0 pl-0 max-w-[181px]" variant="primary" onClick={handleSendReply} disabled={isLoading}>
+                <Button
+                  className="py-[18px] pr-0 pl-0 max-w-[181px]"
+                  variant="primary"
+                  onClick={handleSendReply}
+                  disabled={isLoading}
+                >
+                  {isLoading ? "Loading..." : "Post"}
+                </Button>
+              </div>
+            </div>
+          </Card.Body>
+        </Card>
+      ) : (
+        <Card>
+          <Card.Header>
+            <div>
+              <Typography variant="h4" color="mono-600">
+                Post a comment
+              </Typography>
+            </div>
+          </Card.Header>
+          <Card.Body>
+            <div className="flex flex-col gap-3">
+              <TextInput
+                value={replyText}
+                setValue={setReplyText}
+                placeholder="Comment"
+                className="primary-border p-[15px] custom-inner-shadow rounded-b-none"
+              />
+              <div className="flex justify-between items-center gap-3">
+                <FileInput file={file} setFile={setFile} />
+                <Button
+                  className="py-[18px] pr-0 pl-0 max-w-[181px]"
+                  variant="primary"
+                  onClick={handleSendReply}
+                  disabled={isLoading}
+                >
                   {isLoading ? "Loading..." : "Post"}
                 </Button>
               </div>

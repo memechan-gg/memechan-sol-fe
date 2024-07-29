@@ -3,8 +3,9 @@ import { useSolanaBalance } from "@/hooks/useSolanaBalance";
 import { Divider } from "@/memechan-ui/Atoms/Divider/Divider";
 import TopBar from "@/memechan-ui/Atoms/TopBar/TopBar";
 import { Typography } from "@/memechan-ui/Atoms/Typography";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getSlicedAddressV2 } from "../coin/sidebar/holders/utils";
+import { BE_URL } from "@/common/solana";
 
 type ProfileProps = {
   address: string;
@@ -17,148 +18,109 @@ type Token = {
   decimals: number;
   image: string;
   name: string;
-  marketCap: number;
+  marketcap: number;
+  address: string;
+  creationTime: number;
+  creator: string;
+  description: string;
+  holdersCount: number;
+  lastReply: number;
+  socialLinks: { telegram: string; website: string; twitter: string; discord: string };
+  status: "LIVE" | "PRESALE";
+  symbol: string;
+  txDigest: string;
 };
-//TODO ALDIN , INSERT REAL TOKENS AFTER FIX FETCHING TOKENS ERROR
-const dummyTokens: any[] = [
-  {
-    name: "SOLDOG",
-    address: "AmhW7smMiTiTBUD5pUaFgq3Cq2RZoWEaJRLvZavsKH37",
-    decimals: 6,
-    symbol: "SOLDOG",
-    description: "SOLDOG",
-    image:
-      "https://lavender-gentle-primate-223.mypinata.cloud/ipfs/QmdZrkEnaT7DVRjkWNnqQZAcgdQKF4QvTThcTZ6c2qZzZj?pinataGatewayToken=M45Jh03NicrVqTZJJhQIwDtl7G6fGS90bjJiIQrmyaQXC_xXj4BgRqjjBNyGV7q2",
-    lastReply: 0,
-    marketcap: 85.84968719185119,
-    creator: "HLaPceN1Hct4qvDC21PetsaVkyUrBC97n1FYeXAZ4mz5",
-    status: "PRESALE",
-    socialLinks: {
-      telegram: "",
-      website: "",
-      twitter: "",
-      discord: "",
-    },
-    txDigest: "QpKHTHFjoupU7sWJ74NT4Fpox8P8kHzRjbG79oF3a8SxAFyAVZjLu3ScwoiRhPo6eqbrxVu4jXnmXUCx9x3vowJ",
-    creationTime: 1718985843865,
-    holdersCount: 4,
-    quoteIn: "1094500000000",
-  },
-  {
-    name: "mem4",
-    address: "8NudgqMi9V3E4jq1uaUg9Ya15aMX7rLwyF5sVkj1V8Zq",
-    decimals: 6,
-    symbol: "mem4",
-    description: "mem4",
-    image:
-      "https://lavender-gentle-primate-223.mypinata.cloud/ipfs/QmWE2WwRNT1AUdLEUo6CBXLWpM4JyJC7nbEC4WMz7C5LvH?pinataGatewayToken=M45Jh03NicrVqTZJJhQIwDtl7G6fGS90bjJiIQrmyaQXC_xXj4BgRqjjBNyGV7q2",
-    lastReply: 0,
-    marketcap: 0,
-    creator: "2NcmLZYeRdHYkTazDDYEkqBL1d4cMdSzAeDF4z5wc2WB",
-    status: "LIVE",
-    holders: 6,
-    socialLinks: {
-      telegram: "",
-      website: "",
-      twitter: "",
-      discord: "",
-    },
-    txDigest: "5Le6Z7nzoDgnwa6MaPKbhVjsUEuQMiiFgpvxxy1jEyXd9F24DnZiinDMi15zaUqnEatHYeZQ9WZPaMxYsghEPkgf",
-    creationTime: 1716761653047,
-  },
-  {
-    name: "mem4",
-    address: "8NudgqMi9V3E4jq1uaUg9Ya15aMX7rLwyF5sVkj1V8Zq",
-    decimals: 6,
-    symbol: "mem4",
-    description: "mem4",
-    image:
-      "https://lavender-gentle-primate-223.mypinata.cloud/ipfs/QmWE2WwRNT1AUdLEUo6CBXLWpM4JyJC7nbEC4WMz7C5LvH?pinataGatewayToken=M45Jh03NicrVqTZJJhQIwDtl7G6fGS90bjJiIQrmyaQXC_xXj4BgRqjjBNyGV7q2",
-    lastReply: 0,
-    marketcap: 0,
-    creator: "2NcmLZYeRdHYkTazDDYEkqBL1d4cMdSzAeDF4z5wc2WB",
-    status: "LIVE",
-    socialLinks: {
-      telegram: "",
-      website: "",
-      twitter: "",
-      discord: "",
-    },
-    txDigest: "5Le6Z7nzoDgnwa6MaPKbhVjsUEuQMiiFgpvxxy1jEyXd9F24DnZiinDMi15zaUqnEatHYeZQ9WZPaMxYsghEPkgf",
-    creationTime: 1716761653047,
-  },
-];
 
 export function Profile({ address, coin }: ProfileProps) {
-  const [tokens, setTokens] = useState<Token[]>(dummyTokens); // Use dummyTokens for now
+  const [tokens, setTokens] = useState<Token[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { data: solanaBalance } = useSolanaBalance();
   const slicedAddress = address ? getSlicedAddressV2(address) : null;
 
-  // useEffect(() => {
-  //   const fetchTokens = async () => {
-  //     setIsLoading(true);
-  //     try {
-  //       // TODO: Use SDK methods instead of direct fetch
-  //       const response = await fetch(
-  //         `${BE_URL}/sol/holders?walletAddress=${address}&sortBy=tokenAmountInPercentage&direction=asc`,
-  //       );
-  //       if (!response.ok) {
-  //         throw new Error(`Error fetching tokens: ${response.statusText}`);
-  //       }
-  //       const data = await response.json();
+  useEffect(() => {
+    const fetchTokens = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch(
+          `${BE_URL}/sol/holders?walletAddress=${address}&sortBy=tokenAmountInPercentage&direction=asc`,
+        );
+        if (!response.ok) {
+          throw new Error(`Error fetching tokens: ${response.statusText}`);
+        }
+        const data = await response.json();
 
-  //       if (data && data.result) {
-  //         const tokenPromises = data.result.map(async (token: any) => {
-  //           try {
-  //             // TODO: Use SDK methods instead of direct fetch
-  //             let presaleResponse = await fetch(`${BE_URL}/sol/presale/token?tokenAddress=${token.tokenAddress}`);
-  //             let presaleData = await presaleResponse.json();
+        if (data && data.result) {
+          const tokenPromises = data.result.map(async (token: any) => {
+            try {
+              // TODO: Use SDK methods instead of direct fetch
+              let presaleResponse = await fetch(`${BE_URL}/sol/presale/token?tokenAddress=${token.tokenAddress}`);
+              let presaleData = await presaleResponse.json();
 
-  //             // Check if presaleData is an empty object
-  //             if (Object.keys(presaleData).length === 0) {
-  //               // TODO: Use SDK methods instead of direct fetch
-  //               presaleResponse = await fetch(`${BE_URL}/sol/live/token?tokenAddress=${token.tokenAddress}`);
-  //               presaleData = await presaleResponse.json();
-  //             }
+              // Check if presaleData is an empty object
+              if (Object.keys(presaleData).length === 0) {
+                // TODO: Use SDK methods instead of direct fetch
+                presaleResponse = await fetch(`${BE_URL}/sol/live/token?tokenAddress=${token.tokenAddress}`);
+                presaleData = await presaleResponse.json();
+              }
+              console.log(presaleData);
 
-  //             return {
-  //               mint: token.tokenAddress,
-  //               tokenAmount: token.tokenAmount,
-  //               decimals: 0,
-  //               image: presaleData.image || "",
-  //               name: presaleData.name || "",
-  //               marketCap: presaleData.marketcap || 0,
-  //             };
-  //           } catch (presaleError) {
-  //             console.error("Error fetching presale data for token:", token.tokenAddress, presaleError);
-  //             return {
-  //               mint: token.tokenAddress,
-  //               tokenAmount: token.tokenAmount,
-  //               decimals: 0,
-  //               image: "",
-  //               name: "",
-  //               marketCap: 0,
-  //             };
-  //           }
-  //         });
+              return {
+                mint: token.tokenAddress,
+                tokenAmount: token.tokenAmount,
+                decimals: presaleData.decimals || 0,
+                image: presaleData.image || "",
+                name: presaleData.name || "",
+                marketcap: presaleData.marketcap || 0,
+                address: presaleData.address || "",
+                creationTime: presaleData.creationTime || 0,
+                creator: presaleData.creator || "",
+                description: presaleData.description || "",
+                holdersCount: presaleData.holdersCount || 0,
+                lastReply: presaleData.lastReply || 0,
+                socialLinks: presaleData.socialLinks || { telegram: "", website: "", twitter: "", discord: "" },
+                status: presaleData.status || "",
+                symbol: presaleData.symbol || "",
+                txDigest: presaleData.txDigest || "",
+              };
+            } catch (presaleError) {
+              console.error("Error fetching presale data for token:", token.tokenAddress, presaleError);
+              return {
+                mint: token.tokenAddress,
+                tokenAmount: token.tokenAmount,
+                decimals: 0,
+                image: "",
+                name: "",
+                marketcap: 0,
+                address: "",
+                creationTime: 0,
+                creator: "",
+                description: "",
+                holdersCount: 0,
+                lastReply: 0,
+                socialLinks: { telegram: "", website: "", twitter: "", discord: "" },
+                status: "",
+                symbol: "",
+                txDigest: "",
+              };
+            }
+          });
 
-  //         const formattedTokens = await Promise.all(tokenPromises);
-  //         setTokens(formattedTokens);
-  //       } else {
-  //         console.error("Unexpected data format:", data);
-  //       }
-  //     } catch (error) {
-  //       setError("Error fetching tokens.");
-  //       console.error("Error fetching tokens:", error);
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   };
+          const formattedTokens = await Promise.all(tokenPromises);
+          setTokens(formattedTokens);
+        } else {
+          console.error("Unexpected data format:", data);
+        }
+      } catch (error) {
+        setError("Error fetching tokens.");
+        console.error("Error fetching tokens:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  //   fetchTokens();
-  // }, [address]);
+    fetchTokens();
+  }, [address]);
 
   return (
     <>
@@ -185,7 +147,7 @@ export function Profile({ address, coin }: ProfileProps) {
         </div>
       </div>
       <Divider />
-      <div className="flex flex-col items-center w-full ">
+      <div className="flex flex-col items-center w-full mt-3">
         {isLoading ? (
           <div className="text-regular">Loading...</div>
         ) : error ? (
@@ -193,9 +155,9 @@ export function Profile({ address, coin }: ProfileProps) {
         ) : tokens.length === 0 ? (
           <div className="text-red-500">No coins fetched.</div>
         ) : (
-          <div className="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3 justify-center md:justify-start">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 justify-center w-full">
             {tokens.map((token, index) => (
-              <div key={index} className="w-full max-w-[406px] p-3 sm:p-3 lg:w-auto lg:p-0">
+              <div key={index} className="w-full lg:w-auto p-3 lg:p-0">
                 <TokenCard key={token.mint} token={token} />
               </div>
             ))}
