@@ -7,7 +7,7 @@ export const LiveContent = ({ token }: Props) => {
   const { marketcap, holdersCount } = token;
 
   return (
-    <div className="flex justify-between text-sm text-white mt-4">
+    <div className="flex justify-between text-sm text-white mt-4 h-7">
       <div className="mr-4 flex gap-1 flex-col items-start text-xs-custom text-mono-500">
         <span>Market Cap</span>
         <span className="text-white font-bold">${parseChainValue(marketcap, 0, 2)}</span>
