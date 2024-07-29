@@ -5,6 +5,7 @@ import { useBalance } from "@/hooks/useBalance";
 import { useTokenAccounts } from "@/hooks/useTokenAccounts";
 import { getTokenInfo } from "@/hooks/utils";
 // import SwapInput from "@/memechan-ui/Atoms/Input/SwapInput";
+import { Swap } from "@/components/Swap";
 import { QUOTE_TOKEN_DECIMALS } from "@/constants/constants";
 import { useSolanaBalance } from "@/hooks/useSolanaBalance";
 import { GetLiveSwapTransactionParams, GetSwapOutputAmountParams } from "@/types/hooks";
@@ -17,13 +18,14 @@ import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { LiveCoinSwapProps } from "../../coin.types";
 import { liveSwapParamsAreValid } from "../../coin.utils";
-import { Swap } from "./presale-coin-swap";
 import { handleSwapInputChange, validateSlippage } from "./utils";
 
 export const LiveCoinSwap = ({
   tokenSymbol,
   pool: { id: address, baseMint: tokenAddress, quoteMint },
   memeImage,
+  stakingPoolFromApi,
+  seedPoolAddress,
 }: LiveCoinSwapProps) => {
   const [coinToMeme, setCoinToMeme] = useState<boolean>(true);
   const [inputAmount, setInputAmount] = useState<string>("");
@@ -374,6 +376,7 @@ export const LiveCoinSwap = ({
   // const submitButtonDisabled = swapButtonIsDiabled || isLoadingOutputAmount
   return (
     <Swap
+      variant="LIVE"
       slippage={slippage}
       setSlippage={setSlippage}
       refresh={refresh}
@@ -388,6 +391,10 @@ export const LiveCoinSwap = ({
       onReverseClick={onReverseClick}
       toReceive={toReceive}
       swapButtonIsDisabled={swapButtonIsDiabled}
+      stakingPoolFromApi={stakingPoolFromApi}
+      livePoolId={address}
+      seedPoolAddress={seedPoolAddress}
+      tokenSymbol={tokenSymbol}
     />
   );
 };
