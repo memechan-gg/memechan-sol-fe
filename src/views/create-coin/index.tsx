@@ -12,7 +12,7 @@ import { Typography } from "@/memechan-ui/Atoms/Typography";
 import DangerIcon from "@/memechan-ui/icons/DangerIcon";
 import DownArrowIcon from "@/memechan-ui/icons/DownArrowIcon";
 import UpArrowIcon from "@/memechan-ui/icons/UpArrowIcon";
-import { MAX_DESCRIPTION_LENGTH, TOKEN_INFOS, sleep } from "@avernikoz/memechan-sol-sdk";
+import { TOKEN_INFOS, sleep } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { track } from "@vercel/analytics";
 import BigNumber from "bignumber.js";
@@ -213,7 +213,7 @@ export function CreateCoin() {
       <div className="min-w-[345px] sm:max-w-[406px] custom-outer-shadow flex items-center justify-center border border-mono-400 rounded-sm m-4">
         <div className="w-full lg:max-w-3xl m-4 ">
           <form onSubmit={onSubmit} className="flex flex-col ">
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-4">
               <div className="flex flex-col  gap-4">
                 <div className="flex flex-col gap-1">
                   <label>
@@ -275,20 +275,19 @@ export function CreateCoin() {
                     Description
                   </Typography>
                 </label>
-                <div>
+                <div className="h-32 max-h-32 ">
                   <textarea
                     {...register("description", { required: true })}
                     placeholder="Description"
-                    className="text-[13px] h-32 border border-mono-400 p-4 flex-1 outline-none bg-transparent placeholder:text-[13px] placeholder:font-normal placeholder:leading-5 placeholder-mono-500 w-full"
-                    maxLength={MAX_DESCRIPTION_LENGTH}
+                    className="text-[13px] h-32 max-h-32 border border-mono-400 p-4 flex-1 outline-none bg-transparent placeholder:text-[13px] placeholder:font-normal placeholder:leading-5 placeholder-mono-500 w-full"
                   />
                 </div>
                 {errors.description && <p className="text-xs text-red-500">Description is required</p>}
               </div>
             </div>
-            <div className="flex flex-col gap-2">
+            <div className="">
               {hasMoreOptions && (
-                <div className="w-fit cursor-pointer" onClick={() => setHasMoreOptions(false)}>
+                <div className="w-fit mt-4 cursor-pointer" onClick={() => setHasMoreOptions(false)}>
                   <Typography variant="text-button" color="green-100" underline>
                     {"I'm not in hurry"}
                     <span className="inline-block ml-1">
@@ -299,7 +298,7 @@ export function CreateCoin() {
               )}
 
               {!hasMoreOptions ? (
-                <div className="flex flex-col gap-4 flex-wrap">
+                <div className="flex mt-4 flex-col gap-4 flex-wrap">
                   <div className="flex flex-col gap-1">
                     <label>
                       <Typography variant="body" color="mono-500">
@@ -369,7 +368,7 @@ export function CreateCoin() {
               labelRight={publicKey ? `👛 ${baseCurrency.coinBalance ?? 0} ${baseCurrency.currencyName}` : undefined}
             />
             <div className="flex flex-col gap-1 mt-4">
-              <div>
+              <div className="h-14">
                 <Button variant="primary">
                   {
                     {

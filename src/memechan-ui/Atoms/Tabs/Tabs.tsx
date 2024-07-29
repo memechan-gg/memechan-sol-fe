@@ -16,7 +16,7 @@ export const Tabs = ({ tabs, activeTab, onTabChange, size = "sm" }: TabProps) =>
           onClick={() => {
             onTabChange?.(label, index);
           }}
-          className={`px-4 py-2 text-${size} font-medium transition-colors duration-300 ${
+          className={`px-4 py-3 text-${size} font-medium transition-colors duration-300 ${
             activeTab === label ? "text-primary-100 font-extrabold" : "text-mono-500 hover:text-primary-100 underline"
           } relative`}
         >
@@ -25,7 +25,7 @@ export const Tabs = ({ tabs, activeTab, onTabChange, size = "sm" }: TabProps) =>
               {"[" + label + "]"}
             </Typography>
           ) : (
-            <Typography variant="text-button" color="mono-500">
+            <Typography variant="text-button" color="mono-500" underline>
               {label}
             </Typography>
           )}

@@ -1,5 +1,6 @@
 import { useUser } from "@/context/UserContext";
 import { Button } from "@/memechan-ui/Atoms/Button";
+import { Typography } from "@/memechan-ui/Atoms/Typography";
 import { useWallet } from "@solana/wallet-adapter-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -28,13 +29,19 @@ export const Header = () => {
                   </div>
                 </Link>
               </div>
-              <div className="text-white font-bold text-sm hidden px-2 items-center sm:flex flex-grow justify-center gap-4">
+              <div className="text-white font-bold gap-6 text-sm hidden px-2 items-center sm:flex flex-grow justify-center">
                 <Link href="/" className="font-bold text-center">
-                  📦 Home
+                  📦
+                  <Typography variant="h4" color="mono-600" className="ml-3 hover:text-primary-100">
+                    Home
+                  </Typography>
                 </Link>
                 {account?.address && (
                   <Link href={`/profile/${account.address}`} className="text-center">
-                    🤡 Profile
+                    🤡{" "}
+                    <Typography variant="h4" color="mono-600" className="ml-3 hover:text-primary-100">
+                      Profile
+                    </Typography>
                   </Link>
                 )}
                 <Link
@@ -43,7 +50,10 @@ export const Header = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  🤓 Docs
+                  🤓{" "}
+                  <Typography variant="h4" color="mono-600" className="ml-3 hover:text-primary-100">
+                    Docs
+                  </Typography>
                 </Link>
               </div>
               <div className="flex items-center gap-2 ml-2">
