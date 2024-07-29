@@ -58,7 +58,7 @@ export async function createMemeCoinAndPool({
   inputAmount?: string;
   client: MemechanClientV2;
 }) {
-  const result = await TokenApiInstance.createBoundPoolTransaction({
+  const result = await TokenApiInstance.createBoundPool({
     admin: ADMIN_PUB_KEY.toBase58(),
     payer: publicKey.toBase58(),
     tokenMetadata: {

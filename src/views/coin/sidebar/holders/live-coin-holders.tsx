@@ -11,7 +11,7 @@ export const LiveCoinHolders = ({ coinMetadata, uniqueHoldersData, livePool }: L
   const userPercentage = userHoldings?.tokenAmountInPercentage.toFixed(2);
   const userSlicedAddress = publicKey ? getSlicedAddress(publicKey) : null;
   const userIsDev = coinMetadata.creator === publicKey?.toString();
-
+  console.log(uniqueHoldersData);
   return (
     <div className="flex flex-col gap-1">
       <Card>

@@ -21,13 +21,21 @@ export function LiveCoinSidebar({
     livePoolAddress: pool.id,
   });
 
+  console.log(ticketsData);
+
   return (
     <div className="flex flex-col gap-y-3">
       <SidebarItem>
         <TokenCard key={coinMetadata.address} token={coinMetadata} />
       </SidebarItem>
       <SidebarItem>
-        <LiveCoinSwap pool={pool} tokenSymbol={coinMetadata.symbol} memeImage={coinMetadata.image} />
+        <LiveCoinSwap
+          pool={pool}
+          tokenSymbol={coinMetadata.symbol}
+          memeImage={coinMetadata.image}
+          stakingPoolFromApi={stakingPoolFromApi}
+          seedPoolAddress={seedPoolData?.address}
+        />
       </SidebarItem>
       {ticketsData.isLoading
         ? "Loading..."

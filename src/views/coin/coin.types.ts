@@ -19,12 +19,16 @@ export type PresaleCoinSwapProps = {
   boundPool?: BoundPool;
   ticketsData: ReturnType<typeof useTickets>;
   memeImage: string;
+  livePoolAddress?: string;
+  stakingPoolFromApi: ReturnType<typeof useStakingPoolFromApi>["data"];
 };
 
 export type LiveCoinSwapProps = {
   tokenSymbol: string;
   pool: LivePoolData;
   memeImage: string;
+  stakingPoolFromApi: ReturnType<typeof useStakingPoolFromApi>["data"];
+  seedPoolAddress?: string;
 };
 
 export type SwapButtonProps = {
