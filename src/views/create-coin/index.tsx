@@ -12,7 +12,7 @@ import { Typography } from "@/memechan-ui/Atoms/Typography";
 import DangerIcon from "@/memechan-ui/icons/DangerIcon";
 import DownArrowIcon from "@/memechan-ui/icons/DownArrowIcon";
 import UpArrowIcon from "@/memechan-ui/icons/UpArrowIcon";
-import { MAX_DESCRIPTION_LENGTH, TOKEN_INFOS, sleep } from "@avernikoz/memechan-sol-sdk";
+import { TOKEN_INFOS, sleep } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { track } from "@vercel/analytics";
 import BigNumber from "bignumber.js";
@@ -33,6 +33,7 @@ import {
 
 export function CreateCoin() {
   const {
+    watch,
     resetField,
     register,
     handleSubmit,
@@ -40,6 +41,7 @@ export function CreateCoin() {
   } = useForm<ICreateForm>();
   const { publicKey, connected, signMessage, sendTransaction } = useWallet();
   const [state, setState] = useState<CreateCoinState>("idle");
+  console.log(state);
   const router = useRouter();
   const [inputAmount, setInputAmount] = useState<string>("0");
   const { solanaThresholdAmount } = useTargetConfig();
@@ -207,13 +209,17 @@ export function CreateCoin() {
     }
   });
 
+  const nameInput = watch("name");
+  const symbolInput = watch("symbol");
+  const imageInput = watch("image");
+  const filledRequired = nameInput && symbolInput && imageInput?.length;
   return (
     <div className="w-full flex flex-col items-center">
       <TopBar rightIcon="/diamond.png" title={"Create Memecoin"}></TopBar>
       <div className="min-w-[345px] sm:max-w-[406px] custom-outer-shadow flex items-center justify-center border border-mono-400 rounded-sm m-4">
         <div className="w-full lg:max-w-3xl m-4 ">
           <form onSubmit={onSubmit} className="flex flex-col ">
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-4">
               <div className="flex flex-col  gap-4">
                 <div className="flex flex-col gap-1">
                   <label>
@@ -261,7 +267,7 @@ export function CreateCoin() {
                   <div>
                     <UncontrolledTextInput
                       fieldName="image"
-                      resetField={() => resetField}
+                      resetField={resetField}
                       type="file"
                       {...register("image", { required: true })}
                     />
@@ -275,20 +281,19 @@ export function CreateCoin() {
                     Description
                   </Typography>
                 </label>
-                <div>
+                <div className="h-32 max-h-32 ">
                   <textarea
                     {...register("description", { required: true })}
                     placeholder="Description"
-                    className="text-[13px] h-32 border border-mono-400 p-4 flex-1 outline-none bg-transparent placeholder:text-[13px] placeholder:font-normal placeholder:leading-5 placeholder-mono-500 w-full"
-                    maxLength={MAX_DESCRIPTION_LENGTH}
+                    className="text-[13px] h-32 max-h-32 border border-mono-400 p-4 flex-1 outline-none bg-transparent placeholder:text-[13px] placeholder:font-normal placeholder:leading-5 placeholder-mono-500 w-full"
                   />
                 </div>
                 {errors.description && <p className="text-xs text-red-500">Description is required</p>}
               </div>
             </div>
-            <div className="flex flex-col gap-2">
+            <div className="">
               {hasMoreOptions && (
-                <div className="w-fit cursor-pointer" onClick={() => setHasMoreOptions(false)}>
+                <div className="w-fit mt-4 cursor-pointer" onClick={() => setHasMoreOptions(false)}>
                   <Typography variant="text-button" color="green-100" underline>
                     {"I'm not in hurry"}
                     <span className="inline-block ml-1">
@@ -299,7 +304,7 @@ export function CreateCoin() {
               )}
 
               {!hasMoreOptions ? (
-                <div className="flex flex-col gap-4 flex-wrap">
+                <div className="flex mt-4 flex-col gap-4 flex-wrap">
                   <div className="flex flex-col gap-1">
                     <label>
                       <Typography variant="body" color="mono-500">
@@ -365,22 +370,31 @@ export function CreateCoin() {
               currencyLogoUrl={baseCurrency.currencyLogoUrl}
               // TODO:HARUN
               // usdPrice={13.99}
-              label="Pay"
-              labelRight={publicKey ? `👛 ${baseCurrency.coinBalance ?? 0} ${baseCurrency.currencyName}` : undefined}
+              label="Be the very first person to buy your token"
+              // labelRight={publicKey ? `👛 ${baseCurrency.coinBalance ?? 0} ${baseCurrency.currencyName}` : undefined}
             />
             <div className="flex flex-col gap-1 mt-4">
-              <div>
-                <Button variant="primary">
-                  {
+              {filledRequired ? (
+                <div className="h-14">
+                  <Button variant="primary" className="grid py-2">
                     {
-                      idle: "Create Now",
-                      sign: "Signing Message...",
-                      ipfs: "Uploading Image...",
-                      create_bonding_and_meme: "Creating Bonding Curve Pool and memecoin...",
-                    }[state]
-                  }
-                </Button>
-              </div>
+                      {
+                        idle: "Create Now",
+                        sign: "Signing Message...",
+                        ipfs: "Uploading Image...",
+                        create_bonding_and_meme: "Creating Bonding Curve Pool and memecoin...",
+                      }[state]
+                    }
+                    <Typography variant="caption">0.02 SOL to deploy</Typography>
+                  </Button>
+                </div>
+              ) : (
+                <div className="h-14 bg-mono-400">
+                  <Button variant="disabled" disabled>
+                    <Typography variant="h4">Fill required fields to create memecoin</Typography>
+                  </Button>
+                </div>
+              )}
             </div>
             <div className="border border-mono-400 mt-4 h-13 py-2 px-4 flex items-center">
               <div className="flex  items-baseline">
