@@ -20,7 +20,7 @@ export type PresaleCoinSwapProps = {
   ticketsData: ReturnType<typeof useTickets>;
   memeImage: string;
   livePoolAddress?: string;
-  stakingPoolFromApi: ReturnType<typeof useStakingPoolFromApi>["data"];
+  stakingPoolFromApi?: ReturnType<typeof useStakingPoolFromApi>["data"];
 };
 
 export type LiveCoinSwapProps = {
@@ -78,6 +78,7 @@ export type PresaleCoinInfoProps = {
 
 export type UnstakeDialogProps = Omit<StakingPoolProps, "memeMint"> & {
   stakingPoolFromApi: ReturnType<typeof useStakingPoolFromApi>["data"];
+  closePopUp?: () => void;
 };
 
 export type WithdrawFeesDialogProps = UnstakeDialogProps;
