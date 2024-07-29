@@ -1,3 +1,4 @@
+import { BE_URL } from "@/common/solana";
 import { TokenCard } from "@/components/TokenCard";
 import { useSolanaBalance } from "@/hooks/useSolanaBalance";
 import { Divider } from "@/memechan-ui/Atoms/Divider/Divider";
@@ -5,7 +6,7 @@ import TopBar from "@/memechan-ui/Atoms/TopBar/TopBar";
 import { Typography } from "@/memechan-ui/Atoms/Typography";
 import { useEffect, useState } from "react";
 import { getSlicedAddressV2 } from "../coin/sidebar/holders/utils";
-import { BE_URL } from "@/common/solana";
+import { NoCoinsPage } from "./no-coins-page";
 
 type ProfileProps = {
   address: string;
@@ -147,13 +148,13 @@ export function Profile({ address, coin }: ProfileProps) {
         </div>
       </div>
       <Divider />
-      <div className="flex flex-col items-center w-full mt-3">
+      <div className="flex flex-col items-center w-full mt-3 px-3 xl:px-0">
         {isLoading ? (
           <div className="text-regular">Loading...</div>
         ) : error ? (
           <div className="text-red-500">{error}</div>
         ) : tokens.length === 0 ? (
-          <div className="text-red-500">No coins fetched.</div>
+          <NoCoinsPage />
         ) : (
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 justify-center w-full">
             {tokens.map((token, index) => (
@@ -163,6 +164,9 @@ export function Profile({ address, coin }: ProfileProps) {
             ))}
           </div>
         )}
+      </div>
+      <div className="mt-3">
+        <Divider />
       </div>
     </>
   );

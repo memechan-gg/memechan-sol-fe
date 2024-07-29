@@ -1,6 +1,6 @@
 import { Button } from "@/memechan-ui/Atoms/Button";
 import { Typography } from "@/memechan-ui/Atoms/Typography";
-import MenuIcon from "@/memechan-ui/icons/MenuIcon";
+import SquareDotsMenu from "@/memechan-ui/icons/SquareDotsMenu";
 import Image from "next/image";
 
 export interface InitialDisclaimerProps {
@@ -12,7 +12,7 @@ const InitialDisclaimer = ({ onConfirm }: InitialDisclaimerProps) => {
     <div className="rounded-tl-[2px] border-[1px] border-solid border-mono-400">
       <div className="bg-mono-400 p-[5px] px-[10px] flex justify-between items-center">
         <div className="flex justify-between items-center gap-x-1">
-          <MenuIcon />
+          <SquareDotsMenu size={12} fill="white" />
           <Typography variant="h4" color="green-100">
             Disclaimer
           </Typography>
