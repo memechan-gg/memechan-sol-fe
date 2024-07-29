@@ -17,11 +17,15 @@ const fetchLiveMemePrice = async (
   try {
     const pool = await getLivePoolClientFromId(new PublicKey(livePoolAddress), client, clientV2);
 
-    const prices = pool.livePool.getMemePrice({
+    const prices = await pool.livePool.getMemePrice({
       connection,
       poolAddress: livePoolAddress,
       quotePriceInUsd: pool.version === "V2" ? solPrice : slerfPriceInUsd,
     });
+
+    if (pool.version === "V2") {
+      prices.priceInUsd = (+prices.priceInUsd / 10_000).toString();
+    }
 
     return prices;
   } catch (e) {
