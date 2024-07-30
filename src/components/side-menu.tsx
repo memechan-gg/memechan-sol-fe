@@ -4,6 +4,7 @@ import { faClose } from "@fortawesome/free-solid-svg-icons/faClose";
 import { faEllipsisV } from "@fortawesome/free-solid-svg-icons/faEllipsisV";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Popover } from "@headlessui/react";
+import { useWallet } from "@solana/wallet-adapter-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -11,28 +12,21 @@ import TelegramIcon from "../memechan-ui/icons/telegram-icon.svg";
 import TwitterIcon from "../memechan-ui/icons/twitter-icon.svg";
 
 export default function SideMenu(props: { account: UserContextType; disconnect: () => Promise<void> }) {
+  const { connected } = useWallet();
   const [isOpen, setIsOpen] = useState(false);
   return (
-    <div className="sm:relative">
+    <div className="sm:relative focus-visible:outline-none">
       <Popover>
-        <Popover.Button onClick={() => setIsOpen(!isOpen)}>
-          <div className="max-w-[137px] w-[137px] h-10 pink-border items-center border-2 border-primary-100 rounded-sm transition-all duration-300 overflow-hidden flex">
-            <div
-              role="button"
-              className="text-primary-100 text-xs font-bold h-full w-full flex justify-evenly items-center bg-inherit transition-colors"
-            >
-              <span className="flex-1 h-full flex items-center justify-center hover:bg-primary-100 hover:text-white transition-colors">
-                {props.account.address.slice(0, 4)}...{props.account.address.slice(-4)}
-              </span>
-              <span className="h-[90%] border-r border-primary-100"></span>
-              <div className="flex items-center justify-center w-10 h-full hover:bg-primary-100 hover:text-white transition-colors">
-                {isOpen ? (
-                  <FontAwesomeIcon fontSize={16} icon={faClose} />
-                ) : (
-                  <FontAwesomeIcon fontSize={16} icon={faEllipsisV} />
-                )}
-              </div>
-            </div>
+        <Popover.Button className="h-10 focus-visible:outline-none" onClick={() => setIsOpen(!isOpen)}>
+          <div
+            role="button"
+            className="h-10 text-primary-100 w-10 text-xs font-bold flex justify-evenly items-center bg-inherit hover:bg-primary-100 hover:text-white transition-colors focus-visible:outline-none"
+          >
+            {isOpen ? (
+              <FontAwesomeIcon fontSize={16} icon={faClose} />
+            ) : (
+              <FontAwesomeIcon fontSize={16} icon={faEllipsisV} />
+            )}
           </div>
         </Popover.Button>
         <Popover.Panel className="w-[314px] sm:w-[177px] py-[66px] pr-[104px] pl-8 sm:p-6 sm:pr-2 flex flex-col gap-14 sm:gap-8 sm:rounded-sm border border-mono-400 bg-mono-100 shadow-light top-16 sm:top-12 h-max absolute z-10 right-0">
@@ -45,15 +39,17 @@ export default function SideMenu(props: { account: UserContextType; disconnect: 
               <span>Home</span>
             </div>
           </Link>
-          <Link href={`/profile/${props.account.address}`}>
-            <div
-              role="button"
-              className=" sm:mt-2 bg-dark-background font-bold text-white w-full text-regular text-xs text-left rounded flex items-center space-x-[12px] hover:opacity-80"
-            >
-              <span>🤡</span>
-              <span>Profile</span>
-            </div>
-          </Link>
+          {connected && (
+            <Link href={`/profile/${props.account.address}`}>
+              <div
+                role="button"
+                className=" sm:mt-2 bg-dark-background font-bold text-white w-full text-regular text-xs text-left rounded flex items-center space-x-[12px] hover:opacity-80"
+              >
+                <span>🤡</span>
+                <span>Profile</span>
+              </div>
+            </Link>
+          )}
           <RpcConnectionDialog />
           <Link href={`/vesting`}>
             <div
@@ -73,13 +69,15 @@ export default function SideMenu(props: { account: UserContextType; disconnect: 
             <span>🤓</span>
             <span>Docs</span>
           </Link>
-          <button
-            onClick={() => props.disconnect()}
-            className="sm:mt-2 bg-dark-background font-bold text-white w-full text-regular text-xs text-left rounded flex items-center space-x-[12px] hover:opacity-80"
-          >
-            <span>🖕</span>
-            <span>Disconnect</span>
-          </button>
+          {connected && (
+            <button
+              onClick={() => props.disconnect()}
+              className="sm:mt-2 bg-dark-background font-bold text-white w-full text-regular text-xs text-left rounded flex items-center space-x-[12px] hover:opacity-80"
+            >
+              <span>🖕</span>
+              <span>Disconnect</span>
+            </button>
+          )}
           <div className="bottom-border w-[145px]" />
           <div className="flex gap-12 sm:gap-4">
             <Image

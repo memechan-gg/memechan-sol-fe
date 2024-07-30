@@ -5,7 +5,6 @@ import { UnstakeDialog } from "./unstake/unstake-dialog";
 import { WithdrawFeesDialog } from "./withdraw-fees/withdraw-fees-dialog";
 
 export const StakingPool = ({ tokenSymbol, livePoolAddress, ticketsData, stakingPoolFromApi }: StakingPoolProps) => {
-  console.log("Selam merab!!!!");
   return (
     <div className="flex flex-col gap-2 w-full">
       <Card>

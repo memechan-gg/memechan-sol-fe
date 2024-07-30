@@ -11,12 +11,6 @@ export const LiveClaim = (props: LiveClaimProps) => {
     refreshInterval: TICKETS_INTERVAL,
     livePoolAddress: livePoolId,
   });
-  console.log(ticketsData.tickets.length);
-  console.log(
-    ticketsData.tickets.length > 0 &&
-      (ticketsData.stakedAmount !== "0.000001" || ticketsData.unavailableTicketsAmount !== "0") &&
-      livePoolId,
-  );
   return ticketsData.isLoading
     ? "Loading..."
     : ticketsData.tickets.length > 0 &&

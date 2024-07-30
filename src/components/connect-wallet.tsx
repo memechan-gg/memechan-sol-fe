@@ -1,6 +1,6 @@
-import { faClose } from "@fortawesome/free-solid-svg-icons/faClose";
-import { faEllipsisV } from "@fortawesome/free-solid-svg-icons/faEllipsisV";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { UserContextType } from "@/context/UserContext";
+import { useSolanaBalance } from "@/hooks/useSolanaBalance";
+import { formatNumber } from "@/utils/formatNumber";
 import { Popover } from "@headlessui/react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { track } from "@vercel/analytics";
@@ -8,9 +8,10 @@ import Image from "next/image";
 import { useState } from "react";
 import SolanaIcon from "../memechan-ui/icons/solana-icon.svg";
 
-export const ConnectWallet = () => {
-  const { disconnect, select, wallets, connect } = useWallet();
+export const ConnectWallet = (props: { account: UserContextType; disconnect: () => Promise<void> }) => {
+  const { select, wallets, connected, wallet } = useWallet();
   const [isOpen, setIsOpen] = useState(false);
+  const { data: solanaBalance } = useSolanaBalance();
 
   const connectWallet = async (walletName: string) => {
     const wallet = wallets.find((w) => w.adapter.name === walletName);
@@ -25,27 +26,28 @@ export const ConnectWallet = () => {
   };
 
   return (
-    <Popover className="sm:relative">
+    <Popover className="sm:relative focus-visible:outline-none h-full flex">
       {({ open }) => {
         setIsOpen(open);
         return (
           <>
-            <Popover.Button>
+            <Popover.Button className="w-full focus-visible:outline-none h-full leading-none flex">
               <div
                 role="button"
-                className="text-primary-100 text-xs font-bold h-10 w-[137px] justify-evenly rounded-sm bg-inherit border border-primary-100 flex items-center"
+                className={`h-full w-full gap-y-[6px] text-primary-100 pl-2 text-[0.75rem] font-bold flex flex-col ${connected ? "items-start" : "items-center"} justify-center hover:bg-primary-100 hover:text-white transition-colors focus-visible:outline-none`}
               >
-                <span className="text-primary-100 text-xs leading-5 font-bold flex-1 h-full flex items-center justify-center hover:bg-primary-100 hover:text-white transition-colors">
-                  {open ? "Cancel" : "Connect"}
-                </span>
-                <span className="h-[90%] border-r border-primary-100"></span>
-                <div className="flex items-center justify-center w-10 h-full hover:bg-primary-100 hover:text-white transition-colors">
-                  {open ? (
-                    <FontAwesomeIcon fontSize={16} icon={faClose} />
-                  ) : (
-                    <FontAwesomeIcon fontSize={16} icon={faEllipsisV} />
-                  )}
-                </div>
+                {connected ? (
+                  <>
+                    <p>
+                      {props.account.address.slice(0, 4)}...{props.account.address.slice(-4)}
+                    </p>
+                    {solanaBalance && <p className="font-normal">{formatNumber(solanaBalance, 5)} SOL</p>}
+                  </>
+                ) : isOpen ? (
+                  "Cancel"
+                ) : (
+                  "Connect"
+                )}
               </div>
             </Popover.Button>
             <Popover.Panel className=" h-screen bg-mono-100 sm:rounded-sm border border-mono-400 sm:shadow-light p-3 sm:h-max absolute top-[64px] sm:top-12 z-10 flex flex-col w-full sm:w-[430px] left-0 sm:left-auto sm:right-0">

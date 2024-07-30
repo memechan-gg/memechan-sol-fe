@@ -64,8 +64,6 @@ export function Profile({ address, coin }: ProfileProps) {
                 presaleResponse = await fetch(`${BE_URL}/sol/live/token?tokenAddress=${token.tokenAddress}`);
                 presaleData = await presaleResponse.json();
               }
-              console.log(presaleData);
-
               return {
                 mint: token.tokenAddress,
                 tokenAmount: token.tokenAmount,
