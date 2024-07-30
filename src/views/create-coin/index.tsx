@@ -285,7 +285,7 @@ export function CreateCoin() {
                   <textarea
                     {...register("description", { required: true })}
                     placeholder="Description"
-                    className="text-[13px] h-32 max-h-32 border border-mono-400 p-4 flex-1 outline-none bg-transparent placeholder:text-[13px] placeholder:font-normal placeholder:leading-5 placeholder-mono-500 w-full"
+                    className="text-[13px] focus-within:border-red-100 h-32 max-h-32 border border-mono-400 p-4 flex-1 outline-none bg-transparent placeholder:text-[13px] placeholder:font-normal placeholder:leading-5 placeholder-mono-500 w-full"
                   />
                 </div>
                 {errors.description && <p className="text-xs text-red-500">Description is required</p>}

@@ -67,6 +67,9 @@ const config: Config = {
       height: {
         "13": "52px",
       },
+      translate: {
+        "1px": "1px",
+      },
     },
     screens: {
       xxs: "350px",

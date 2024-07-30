@@ -1,11 +1,11 @@
-import React, { ReactNode } from "react";
+import React, { HTMLProps, ReactNode } from "react";
 
 interface BaseProps {
   children: ReactNode;
 }
 
 interface ContentProps {
-  //   additionalStyles?: HTMLProps<HTMLElement>["className"];
+  additionalStyles?: HTMLProps<HTMLElement>["className"];
 }
 
 interface CardProps extends BaseProps, ContentProps {}
@@ -26,13 +26,13 @@ const getChildrenOnDisplayName = (children: ReactNode, displayName: string) => {
 };
 
 export const Card = (props: CardProps) => {
-  const { children } = props;
+  const { children, additionalStyles } = props;
   const header = getChildrenOnDisplayName(children, "Header");
   const body = getChildrenOnDisplayName(children, "Body");
   const footer = getChildrenOnDisplayName(children, "Footer");
 
   return (
-    <div className="shadow-light card-bg border border-mono-400 rounded-sm w-full">
+    <div className={`custom-outer-shadow card-bg border border-mono-400 rounded-sm w-full ${additionalStyles}`}>
       {header}
       {body}
       {footer}
@@ -41,15 +41,18 @@ export const Card = (props: CardProps) => {
 };
 
 export const Header = (props: HeaderProps) => {
-  return <div className="h-8 bg-mono-400 p-4 flex items-center text-mono-600">{props.children}</div>;
+  const { children, additionalStyles } = props;
+  return <div className={`h-8 bg-mono-400 p-4 flex items-center text-mono-600 ${additionalStyles}`}>{children}</div>;
 };
 
 export const Body = (props: BodyProps) => {
-  return <div className="p-4 bg-mono-200">{props.children}</div>;
+  const { children, additionalStyles } = props;
+  return <div className={`p-4 bg-mono-200 ${additionalStyles}`}>{children}</div>;
 };
 
 export const Footer = (props: FooterProps) => {
-  return <div className="h-8 bg-mono-400 p-4 flex items-center">{props.children}</div>;
+  const { children, additionalStyles } = props;
+  return <div className={`h-8 bg-mono-400 p-4 flex items-center ${additionalStyles}`}>{children}</div>;
 };
 
 Header.displayName = "Header";

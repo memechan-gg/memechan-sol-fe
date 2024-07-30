@@ -14,7 +14,7 @@ export const LiveCoinHolders = ({ coinMetadata, uniqueHoldersData, livePool }: L
   console.log(uniqueHoldersData);
   return (
     <div className="flex flex-col gap-1">
-      <Card>
+      <Card additionalStyles="hover:border-primary-100">
         <Card.Header>
           <Typography variant="h4" color="mono-600">
             Holders

@@ -70,7 +70,7 @@ const UncontrolledTextInput = React.forwardRef<HTMLInputElement, InputProps>(
         ) : (
           <input
             type={type}
-            className="h-13 text-[13px] font-normal leading-5 inline-block text-mono-600 text-left hover:opacity-90 active:opacity-80 custom-inner-shadow rounded-tl-[2px] rounded-tr-[2px] placeholder:text-[13px] placeholder:font-normal placeholder:leading-5 border border-mono-400 p-4 flex-1 outline-none bg-transparent placeholder-mono-500 w-full"
+            className="h-13 focus-within:border-red-100 text-[13px] font-normal leading-5 inline-block text-mono-600 text-left hover:opacity-90 active:opacity-80 custom-inner-shadow rounded-tl-[2px] rounded-tr-[2px] placeholder:text-[13px] placeholder:font-normal placeholder:leading-5 border border-mono-400 p-4 flex-1 outline-none bg-transparent placeholder-mono-500 w-full"
             placeholder={placeholder}
             onChange={onChange}
             onBlur={onBlur}

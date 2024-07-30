@@ -16,15 +16,15 @@ export const Header = () => {
   return (
     <header className="fixed top-0 left-0 w-full max-w-[1240px] m-auto right-0 bg-dark z-10 bg-mono-100">
       <div className=" bottom-border px-3 xl:px-0">
-        <div className="flex items-center justify-between h-16 xl:mx-0">
+        <div className="flex items-center sm:justify-between h-16 xl:mx-0">
           {!isSearchActive ? (
             <>
-              <div className="flex items-center">
+              <div className="flex items-center w-full sm:w-fit">
                 <Link href="/" className="font-bold text-lg w-10 h-full mr-2 pink-border rounded-sm">
                   <Logo />
                 </Link>
                 <Link href="/create" className="flex-1">
-                  <div className="sm:w-[140px] h-[40px] justify-center text-center">
+                  <div className="w-full sm:w-[140px] h-[40px] justify-center text-center">
                     <Button variant="primary">Create Memecoin</Button>
                   </div>
                 </Link>

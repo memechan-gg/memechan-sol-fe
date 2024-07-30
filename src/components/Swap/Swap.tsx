@@ -4,10 +4,11 @@ import { Button } from "@/memechan-ui/Atoms";
 import { SwapInput } from "@/memechan-ui/Atoms/Input";
 import TextInput from "@/memechan-ui/Atoms/Input/TextInput";
 import { Typography } from "@/memechan-ui/Atoms/Typography";
+import DownArrowIcon from "@/memechan-ui/icons/DownArrowIcon";
+import UpArrowIcon from "@/memechan-ui/icons/UpArrowIcon";
 import { Card } from "@/memechan-ui/Molecules";
 import { handleSlippageInputChange } from "@/views/coin/sidebar/swap/utils";
 import { faClose } from "@fortawesome/free-solid-svg-icons/faClose";
-import { faUpDown } from "@fortawesome/free-solid-svg-icons/faUpDown";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Dialog } from "@reach/dialog";
 import { PublicKey } from "@solana/web3.js";
@@ -77,7 +78,7 @@ export const Swap = (props: SwapProps) => {
 
   return (
     <>
-      <Card>
+      <Card additionalStyles="min-h-[392px] bg-mono-200">
         <Card.Header>
           <div className="flex justify-between w-full">
             <div className="flex gap-1">
@@ -95,7 +96,7 @@ export const Swap = (props: SwapProps) => {
               )}
             </div>
             <div className="flex items-center gap-2">
-              <Typography underline onClick={() => setIsOpen(true)}>
+              <Typography variant="text-button" color="mono-500" underline onClick={() => setIsOpen(true)}>
                 Slippage {slippage}%
               </Typography>
               <Typography onClick={refresh}>🔄</Typography>
@@ -133,9 +134,10 @@ export const Swap = (props: SwapProps) => {
                   <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 border-t border-mono-400"></div>
                   <div
                     onClick={onReverseClick}
-                    className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-5 h-5 bg-mono-200 hover:bg-mono-300 cursor-pointer border-2 border-mono-400 rounded-sm flex justify-center items-center ${swapButtonIsDisabled && "cursor-not-allowed hover:bg-mono-200"}`}
+                    className={`absolute left-1/2 top-1/2 w-6 h-6 -translate-x-1/2 -translate-y-1/2  bg-mono-200 hover:bg-mono-300 cursor-pointer border-2 border-mono-400 rounded-sm flex justify-center items-center ${swapButtonIsDisabled && "cursor-not-allowed hover:bg-mono-200"}`}
                   >
-                    <FontAwesomeIcon icon={faUpDown} className="text-white" fontWeight={100} />
+                    <DownArrowIcon fill="#979797" />
+                    <UpArrowIcon fill="#979797" />
                   </div>
                 </div>
                 <SwapInput
@@ -150,18 +152,19 @@ export const Swap = (props: SwapProps) => {
                   }
                 />
               </div>
-
-              <WithConnectedWallet
-                variant="primary"
-                className="mt-4 p-1"
-                disabled={swapButtonIsDisabled || isLoadingOutputAmount}
-                onClick={onSwap}
-                isLoading={isSwapping || isLoadingOutputAmount}
-              >
-                <Typography variant="h4">
-                  {isLoadingOutputAmount ? "Calculating..." : isSwapping ? "Swapping..." : "Swap"}
-                </Typography>
-              </WithConnectedWallet>
+              <div className="h-14">
+                <WithConnectedWallet
+                  variant="primary"
+                  className="mt-4 p-1 h-14"
+                  disabled={swapButtonIsDisabled || isLoadingOutputAmount}
+                  onClick={onSwap}
+                  isLoading={isSwapping || isLoadingOutputAmount}
+                >
+                  <Typography variant="h4">
+                    {isLoadingOutputAmount ? "Calculating..." : isSwapping ? "Swapping..." : "Swap"}
+                  </Typography>
+                </WithConnectedWallet>
+              </div>
             </>
           )}
         </Card.Body>
@@ -171,11 +174,11 @@ export const Swap = (props: SwapProps) => {
         onDismiss={() => setIsOpen(false)}
         className="fixed inset-0 flex items-center justify-center bg-mono-200 md:bg-[#19191957] md:backdrop-blur-[0.5px] md:z-50"
       >
-        <Card>
+        <Card additionalStyles="max-w-[409px]">
           <Card.Header>
             <div className="flex justify-between items-center w-full">
               <Typography>Slippage Preferences</Typography>
-              <FontAwesomeIcon icon={faClose} onClick={() => setIsOpen(false)} />
+              <FontAwesomeIcon className="cursor-pointer" icon={faClose} onClick={() => setIsOpen(false)} />
             </div>
           </Card.Header>
           <Card.Body>
@@ -184,26 +187,28 @@ export const Swap = (props: SwapProps) => {
               setValue={setLocalSlippage}
               onChange={(e) => setSlippage(e.target.value)}
             />
-            <Button
-              variant="primary"
-              className="mt-5 p-4"
-              onClick={() => {
-                const e = { target: { value: slippage } } as any;
-                handleSlippageInputChange({
-                  decimalPlaces: 2,
-                  e,
-                  setValue: setSlippage,
-                  max: MAX_SLIPPAGE,
-                  min: MIN_SLIPPAGE,
-                });
-                setSlippage(localSlippage);
-                setIsOpen(false);
-              }}
-            >
-              <Typography variant="h4" color="mono-600">
-                Save
-              </Typography>
-            </Button>
+            <div className="h-12">
+              <Button
+                variant="primary"
+                className="mt-5"
+                onClick={() => {
+                  const e = { target: { value: slippage } } as any;
+                  handleSlippageInputChange({
+                    decimalPlaces: 2,
+                    e,
+                    setValue: setSlippage,
+                    max: MAX_SLIPPAGE,
+                    min: MIN_SLIPPAGE,
+                  });
+                  setSlippage(localSlippage);
+                  setIsOpen(false);
+                }}
+              >
+                <Typography variant="h4" color="mono-600">
+                  Save
+                </Typography>
+              </Button>
+            </div>
           </Card.Body>
         </Card>
       </Dialog>
