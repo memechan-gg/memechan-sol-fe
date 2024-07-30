@@ -26,9 +26,11 @@ export const WithConnectedWallet = (props: ButtonProps) => {
     return (
       <Popover className="sm:relative">
         <Popover.Button className="w-full">
-          <Button {...props} role="button">
-            <Typography variant="h4">Connect</Typography>
-          </Button>
+          <div className="h-14">
+            <Button {...props} role="button">
+              <Typography variant="h4">Connect Wallet</Typography>
+            </Button>
+          </div>
         </Popover.Button>
         <Popover.Panel className="bg-mono-100 sm:rounded-sm border border-mono-400 sm:shadow-light p-3 h-max absolute top-[-64px] sm:top-12 z-10 flex flex-col w-full sm:w-[430px] left-0 sm:left-auto sm:right-0">
           <div className="flex justify-between mb-1">

@@ -42,8 +42,8 @@ export function TokenCard({ token }: TokenCardProps) {
     );
   };
   return (
-    <div onClick={() => handleCardClick()} className="cursor-pointer">
-      <Card>
+    <div onClick={() => handleCardClick()} className="cursor-pointer hover:-translate-x-1px hover:translate-y-1px">
+      <Card additionalStyles="card-shadow hover:border-primary-100">
         <Card.Header>
           <div className="flex justify-between w-full">
             {/* <input type="checkbox" checked={isChecked} onChange={handleCheckboxChange} className="mr-2" /> */}
@@ -54,7 +54,7 @@ export function TokenCard({ token }: TokenCardProps) {
                 </Typography>
               </div>
               <div className="flex w-2/4">
-                <Typography variant="h4" truncate>
+                <Typography variant="body" truncate>
                   {symbol}
                 </Typography>
               </div>

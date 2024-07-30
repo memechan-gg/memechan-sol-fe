@@ -48,7 +48,7 @@ export const ConnectWallet = () => {
                 </div>
               </div>
             </Popover.Button>
-            <Popover.Panel className="bg-mono-100 sm:rounded-sm border border-mono-400 sm:shadow-light p-3 h-max absolute top-[64px] sm:top-12 z-10 flex flex-col w-full sm:w-[430px] left-0 sm:left-auto sm:right-0">
+            <Popover.Panel className=" h-screen bg-mono-100 sm:rounded-sm border border-mono-400 sm:shadow-light p-3 sm:h-max absolute top-[64px] sm:top-12 z-10 flex flex-col w-full sm:w-[430px] left-0 sm:left-auto sm:right-0">
               <div className="flex justify-between mb-1">
                 <h1 className="text-white font-bold my-5 text-2xl leading-9">Connect Wallet</h1>
                 <Image src={SolanaIcon} alt="solana"></Image>
