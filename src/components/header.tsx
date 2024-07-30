@@ -4,10 +4,9 @@ import { Typography } from "@/memechan-ui/Atoms/Typography";
 import { useWallet } from "@solana/wallet-adapter-react";
 import Link from "next/link";
 import { useState } from "react";
-import { ConnectWallet } from "./connect-wallet";
 import { Logo } from "./logo";
+import { ProfileManagment } from "./profile-management";
 import { Search } from "./search";
-import SideMenu from "./side-menu";
 
 export const Header = () => {
   const account = useUser();
@@ -58,7 +57,7 @@ export const Header = () => {
               </div>
               <div className="flex items-center gap-2 ml-2">
                 <Search isSearchActive={isSearchActive} setIsSearchActive={setIsSearchActive} />
-                {account.address ? <SideMenu account={account} disconnect={disconnect} /> : <ConnectWallet />}
+                <ProfileManagment account={account} disconnect={disconnect} />
               </div>
             </>
           ) : (

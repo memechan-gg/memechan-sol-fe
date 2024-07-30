@@ -85,7 +85,6 @@ export function Home() {
     setActiveTab(tab);
     track("List_SetStatus", { status: tab });
     track("List_SetSortBy", { sortBy: tab });
-    console.log(tab);
     switch (tab) {
       case "New": {
         showNew();

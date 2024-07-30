@@ -2,6 +2,7 @@ import { TransactionSentNotification } from "@/components/notifications/transact
 import { useConnection } from "@/context/ConnectionContext";
 import { useBalance } from "@/hooks/useBalance";
 import { useSolanaBalance } from "@/hooks/useSolanaBalance";
+import { useSolanaPrice } from "@/hooks/useSolanaPrice";
 import { useTargetConfig } from "@/hooks/useTargetConfig";
 import { Button } from "@/memechan-ui/Atoms";
 import { Divider } from "@/memechan-ui/Atoms/Divider/Divider";
@@ -41,13 +42,13 @@ export function CreateCoin() {
   } = useForm<ICreateForm>();
   const { publicKey, connected, signMessage, sendTransaction } = useWallet();
   const [state, setState] = useState<CreateCoinState>("idle");
-  console.log(state);
   const router = useRouter();
   const [inputAmount, setInputAmount] = useState<string>("0");
   const { solanaThresholdAmount } = useTargetConfig();
   const [hasMoreOptions, setHasMoreOptions] = useState(true);
   const { balance: solanaAmount } = useBalance(TOKEN_INFOS["WSOL"].mint.toString(), TOKEN_INFOS["WSOL"].decimals);
   const { data: solanaBalance } = useSolanaBalance();
+  const { data: solanaPriceInUSD } = useSolanaPrice();
 
   const baseCurrency = {
     currencyName: "SOL",
@@ -302,7 +303,6 @@ export function CreateCoin() {
                   </Typography>
                 </div>
               )}
-
               {!hasMoreOptions ? (
                 <div className="flex mt-4 flex-col gap-4 flex-wrap">
                   <div className="flex flex-col gap-1">
@@ -355,9 +355,7 @@ export function CreateCoin() {
                     </Typography>
                   </div>
                 </div>
-              ) : (
-                ""
-              )}
+              ) : null}
             </div>
             <div className=" my-4">
               <Divider />
@@ -368,9 +366,9 @@ export function CreateCoin() {
               setInputValue={(e) => setInputAmount(e.target.value)}
               placeholder="0.00"
               currencyLogoUrl={baseCurrency.currencyLogoUrl}
-              // TODO:HARUN
-              // usdPrice={13.99}
+              usdPrice={solanaPriceInUSD?.price ? Number(inputAmount ?? 0) * solanaPriceInUSD.price : 0}
               label="Be the very first person to buy your token"
+              showQuickInput
               // labelRight={publicKey ? `👛 ${baseCurrency.coinBalance ?? 0} ${baseCurrency.currencyName}` : undefined}
             />
             <div className="flex flex-col gap-1 mt-4">
