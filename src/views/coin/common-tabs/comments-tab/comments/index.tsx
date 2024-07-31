@@ -16,7 +16,7 @@ export const Comments = ({
   const { data: likesData, refetch: refetchLikes } = useLikes(coinType);
 
   if (!threads || threads.length === 0) {
-    return <div className="text-xs font-bold text-regular">No comments yet.</div>;
+    return <div className="text-xs font-bold text-regular mb-[87%]">No comments yet.</div>;
   }
 
   return (

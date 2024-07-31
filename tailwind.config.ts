@@ -66,6 +66,7 @@ const config: Config = {
       },
       height: {
         "13": "52px",
+        "15": "60px",
       },
       translate: {
         "1px": "1px",
