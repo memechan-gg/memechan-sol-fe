@@ -40,25 +40,29 @@ export function LiveCoin({
       <TopBar tokenAddress={coinMetadata.address} tokenSymbol={coinMetadata.symbol} />
       {mediaQuery.isSmallDevice ? (
         <>
-          <div className="fixed bottom-0 bg-mono-100 w-full z-50 flex flex-col items-center p-2 justify-center md:hidden">
-            <div className="flex mb-4 mt-2 gap-2 px-2 w-full">
-              <div className="flex-grow w-3/5">
-                <Button variant="contained">
-                  <img src="/memechan-button.png" alt="Memechan Button" className="max-h-[50px]" />
-                </Button>
-              </div>
-              <div className="flex-grow-2 w-2/5">
-                <Button variant="primary">Buy / Claim</Button>
-              </div>
-            </div>
-            <Tabs tabs={mobileTabs} onTabChange={onTabChange} activeTab={tab} />
-          </div>
-          <div className="w-full px-3">
+          <div className="w-full px-3 ">
             {tab === "Info" && <InfoTab coinMetadata={coinMetadata} pool={livePoolData} />}
             {tab === "Comments" && (
               <CommentsTab coinAddress={coinMetadata.address} coinCreator={coinMetadata.creator} />
             )}
             {tab === "Chart" && <ChartTab coinAddress={coinMetadata.address} livePoolDataId={livePoolData.id} />}
+          </div>
+          <div className="pt-1 flex w-full">
+            <div className="fixed w-[30%] h-12 bottom-[10.7%] right-[7%]">
+              <Button className="custom-outer-shadow" variant="primary">
+                Buy / Claim
+              </Button>
+            </div>
+          </div>
+          <div className=" h-40 w-full ">
+            <div className="relative bottom-[-15%] ml-6 w-[52%] h-12">
+              <Button variant="contained">
+                <img src="/memechan-button.png" alt="Memechan Button" className="w-full h-12" />
+              </Button>
+            </div>
+            <div className="fixed bottom-0 bg-mono-200 border-t border-t-mono-400 h-15 w-screen px-3 justify-between">
+              <Tabs className="justify-between" tabs={mobileTabs} onTabChange={onTabChange} activeTab={tab} />
+            </div>
           </div>
         </>
       ) : (

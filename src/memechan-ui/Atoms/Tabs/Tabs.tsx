@@ -5,11 +5,12 @@ export interface TabProps {
   activeTab?: string;
   onTabChange?: (label: string, index: number) => void;
   size?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl";
+  className?: string;
 }
 
-export const Tabs = ({ tabs, activeTab, onTabChange, size = "sm" }: TabProps) => {
+export const Tabs = ({ tabs, activeTab, onTabChange, size = "sm", className = "" }: TabProps) => {
   return (
-    <div className="flex">
+    <div className={`flex ${className}`}>
       {tabs.map((label, index) => (
         <button
           key={index}
