@@ -21,7 +21,7 @@ export const PresaleContent = ({ token, progressInfo }: Props) => {
             <div className="flex flex-row gap-x-2">
               {progressInfo?.progress !== undefined && (
                 <Typography variant="h4" color="primary-100">
-                  {parseChainValue(progressInfo?.progress, 0, 2)}%
+                  {parseChainValue(progressInfo?.progress, 0, 1)}%
                 </Typography>
               )}
               {progressInfo?.currentQuoteAmount !== undefined && progressInfo.totalQuoteAmount !== undefined && (
@@ -40,31 +40,33 @@ export const PresaleContent = ({ token, progressInfo }: Props) => {
             </div>
           </div>
         )}
-        <div className="w-full flex flex-col items-start text-xs-custom text-mono-500 overflow-hidden">
-          <div className="w-full h-4 relative  overflow-hidden">
-            <div
-              className="h-full text-red-500 whitespace-nowrap overflow-hidden"
-              style={{
-                width: `${progressInfo?.progress}%`,
-              }}
-            >
-              <Typography variant="h4" color="primary-100">
-                {"#".repeat(100)}
-              </Typography>
-            </div>
-            <div
-              className="h-full  text-white absolute top-0 left-0 whitespace-nowrap overflow-hidden"
-              style={{
-                width: `${100 - (progressInfo?.progress ?? 0)}%`,
-                marginLeft: `${progressInfo?.progress}%`,
-              }}
-            >
-              <Typography variant="h4" color="mono-400">
-                {"#".repeat(100)}
-              </Typography>
+        {progressInfo && (
+          <div className="w-full flex flex-col items-start text-xs-custom text-mono-500 overflow-hidden">
+            <div className="w-full h-4 relative  overflow-hidden">
+              <div
+                className="h-full text-red-500 whitespace-nowrap overflow-hidden"
+                style={{
+                  width: `${progressInfo?.progress}%`,
+                }}
+              >
+                <Typography variant="h4" color="primary-100">
+                  {"#".repeat(100)}
+                </Typography>
+              </div>
+              <div
+                className="h-full  text-white absolute top-0 left-0 whitespace-nowrap overflow-hidden"
+                style={{
+                  width: `${100 - (progressInfo?.progress ?? 0)}%`,
+                  marginLeft: `${progressInfo?.progress}%`,
+                }}
+              >
+                <Typography variant="h4" color="mono-400">
+                  {"#".repeat(100)}
+                </Typography>
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </>
   );
