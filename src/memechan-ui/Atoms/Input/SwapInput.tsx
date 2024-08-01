@@ -95,7 +95,7 @@ export const SwapInput: React.FC<SwapInputProps> = ({
               name="fromValue"
               data-lpignore="true"
               placeholder={placeholder}
-              className="h-full w-full bg-transparent disabled:cursor-not-allowed disabled:opacity-100 disabled:text-black dark:text-white text-right font-semibold dark:placeholder:text-white/25 text-xl outline-none"
+              className="h-full w-full size-4 leading-6 bg-transparent disabled:cursor-not-allowed disabled:opacity-100 disabled:text-black dark:text-white text-right font-bold dark:placeholder:text-white/25 outline-none"
               type={type}
               value={inputValue}
               onChange={(e) => setInputValue?.(e)}
@@ -118,10 +118,10 @@ export const SwapInput: React.FC<SwapInputProps> = ({
       </div>
       {showQuickInput && (
         <div
-          className={`flex custom-inner-shadow h-9 items-center rounded-tl-[2px] rounded-tr-[2px] border border-mono-400 justify-between w-full`}
+          className={`flex cursor-pointer custom-inner-shadow h-9 items-center rounded-tl-[2px] rounded-tr-[2px] border border-mono-400 justify-between w-full`}
         >
           <div
-            className="flex justify-center items-center w-1/6 hover:bg-mono-300 active:bg-mono-400 h-full"
+            className="flex  justify-center items-center w-1/6 hover:bg-mono-300 active:bg-mono-400 h-full"
             onClick={() => {
               quickInputClick(0.1);
             }}
