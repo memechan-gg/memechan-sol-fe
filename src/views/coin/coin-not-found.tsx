@@ -1,4 +1,10 @@
+import { Typography } from "@/memechan-ui/Atoms/Typography";
+
 // TODO: Refactor design
 export function CoinNotFound() {
-  return <div className="text-regular">Coin not found</div>;
+  return (
+    <div>
+      <Typography variant="h4">Coin not found</Typography>{" "}
+    </div>
+  );
 }

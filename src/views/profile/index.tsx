@@ -148,7 +148,9 @@ export function Profile({ address, coin }: ProfileProps) {
       <Divider />
       <div className="flex flex-col items-center w-full mt-3 px-3 xl:px-0">
         {isLoading ? (
-          <div className="text-regular">Loading...</div>
+          <div>
+            <Typography variant="h4">Loading...</Typography>{" "}
+          </div>
         ) : error ? (
           <div className="text-red-500">{error}</div>
         ) : tokens.length === 0 ? (
