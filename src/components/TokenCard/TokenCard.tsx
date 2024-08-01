@@ -5,7 +5,6 @@ import { Divider } from "@/memechan-ui/Atoms/Divider/Divider";
 import { Typography } from "@/memechan-ui/Atoms/Typography";
 import { Card } from "@/memechan-ui/Molecules";
 import { SolanaToken } from "@avernikoz/memechan-sol-sdk";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { ImageComponent } from "../image-component";
@@ -102,13 +101,11 @@ export function TokenCard({
         <Card.Body additionalStyles="p-[0px]">
           <div className="p-4">
             <div className="flex">
-              <Link href={`/coin/${address}`}>
-                <ImageComponent
-                  className="w-[102px] h-[102px] object-cover object-center border border-mono-300"
-                  imageUrl={image}
-                  altText={`${name} Image`}
-                />
-              </Link>
+              <ImageComponent
+                className="w-[102px] h-[102px] object-cover object-center border border-mono-300"
+                imageUrl={image}
+                altText={`${name} Image`}
+              />
               <div className="ml-4 flex-1 min-w-0">
                 <div className="text-white text-sm">
                   <div className="line-clamp">

@@ -13,9 +13,9 @@ const CustomDate = ({ creationDate }: CustomDateProps) => {
 
     const hours = twoDigit(date.getHours());
     const minutes = twoDigit(date.getMinutes());
-    const seconds = twoDigit(date.getSeconds());
+    // const seconds = twoDigit(date.getSeconds());
 
-    return `${month}/${day}/${year} (${weekday}) ${hours}:${minutes}:${seconds}`;
+    return `${month}/${day}/${year} (${weekday}) ${hours}:${minutes}`;
   };
 
   const formattedDateTime = formatDate(new Date(creationDate));
