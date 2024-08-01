@@ -1,34 +1,46 @@
 /* eslint-disable @next/next/no-img-element */
 import { useMedia } from "@/hooks/useMedia";
+import Checkbox from "@/memechan-ui/Atoms/CheckBox/CheckBox";
+import { Divider } from "@/memechan-ui/Atoms/Divider/Divider";
 import { Typography } from "@/memechan-ui/Atoms/Typography";
 import { Card } from "@/memechan-ui/Molecules";
 import { SolanaToken } from "@avernikoz/memechan-sol-sdk";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useState } from "react";
 import { ImageComponent } from "../image-component";
 import { LiveContent } from "./LiveContent";
 import { PresaleContent } from "./PresaleContent";
 
 interface TokenCardProps {
   token: SolanaToken;
+  progressInfo?: {
+    progress?: number;
+    totalQuoteAmount?: string;
+    currentQuoteAmount?: string;
+    participactsAmount?: string;
+    timeFromCreation?: string;
+  };
+  showLinks?: boolean;
+  showCheckmark?: boolean;
+  showOnClick?: boolean;
 }
-const socialLinks = {
-  discord: "https://x.com/home?lang=en",
-  telegram: "https://x.com/home?lang=en",
-  twitter: "https://x.com/home?lang=en",
-  website: "https://x.com/home?lang=en",
-};
 
-export function TokenCard({ token }: TokenCardProps) {
-  const { name, address, image, symbol, description, status, socialLinks: test } = token;
+export function TokenCard({
+  token,
+  progressInfo,
+  showLinks = false,
+  showCheckmark = false,
+  showOnClick = false,
+}: TokenCardProps) {
+  const { name, address, image, symbol, description, status, socialLinks } = token;
   const router = useRouter();
   const media = useMedia();
-  // We dont need checked for v1 of redesign
-  // const [isChecked, setIsChecked] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
 
-  // const handleCheckboxChange = () => {
-  //   setIsChecked(!isChecked);
-  // };
+  const handleCheckboxChange = () => {
+    setIsChecked(!isChecked);
+  };
   const renderFooter = socialLinks?.discord || socialLinks?.telegram || socialLinks?.twitter || socialLinks?.website;
   const handleCardClick = () => {
     const tab = media.isSmallDevice ? "Info" : "Chart";
@@ -41,13 +53,30 @@ export function TokenCard({ token }: TokenCardProps) {
       { shallow: true },
     );
   };
+
+  const capitalizeFirstLetter = (string: string) => {
+    if (!string) return "";
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
+
   return (
-    <div onClick={() => handleCardClick()} className="cursor-pointer hover:-translate-x-1px hover:translate-y-1px">
-      <Card additionalStyles="card-shadow hover:border-primary-100">
+    <div
+      onClick={showOnClick ? () => handleCardClick() : undefined}
+      className={showOnClick ? "cursor-pointer hover:-translate-x-1px hover:translate-y-1px" : ""}
+    >
+      <Card additionalStyles={`card-shadow ${showOnClick ? "hover:border-primary-100" : "hover:none"}`}>
         <Card.Header>
           <div className="flex justify-between w-full">
-            {/* <input type="checkbox" checked={isChecked} onChange={handleCheckboxChange} className="mr-2" /> */}
             <div className="flex text-left gap-2 min-w-40 mr-2">
+              {showCheckmark && (
+                <Checkbox
+                  checked={isChecked}
+                  onChange={(e) => {
+                    e.stopPropagation();
+                    handleCheckboxChange();
+                  }}
+                />
+              )}
               <div className="flex max-w-[50%] text-left">
                 <Typography align="left" truncate color="green-100" variant="h4">
                   {name}
@@ -64,48 +93,53 @@ export function TokenCard({ token }: TokenCardProps) {
             </Typography>
           </div>
         </Card.Header>
-        <Card.Body>
-          <div className="flex">
-            <Link href={`/coin/${address}`}>
-              <ImageComponent
-                className="w-[102px] h-[102px] object-cover object-center border border-mono-300"
-                imageUrl={image}
-                altText={`${name} Image`}
-              />
-            </Link>
-            <div className="ml-4 flex-1 min-w-0">
-              <div className="text-white text-sm">
-                <div className="line-clamp">
-                  <span className=" text-mono-500">{">> "}</span>
-                  {description}
+        <Card.Body additionalStyles="p-[0px]">
+          <div className="p-4">
+            <div className="flex">
+              <Link href={`/coin/${address}`}>
+                <ImageComponent
+                  className="w-[102px] h-[102px] object-cover object-center border border-mono-300"
+                  imageUrl={image}
+                  altText={`${name} Image`}
+                />
+              </Link>
+              <div className="ml-4 flex-1 min-w-0">
+                <div className="text-white text-sm">
+                  <div className="line-clamp">
+                    <span className=" text-mono-500">{">> "}</span>
+                    {description}
+                  </div>
                 </div>
               </div>
             </div>
+            {status === "PRESALE" ? (
+              <PresaleContent token={token} progressInfo={progressInfo} />
+            ) : (
+              <LiveContent token={token} />
+            )}
           </div>
-          {status === "PRESALE" ? <PresaleContent token={token} /> : <LiveContent token={token} />}
+          {showLinks && renderFooter && socialLinks && (
+            <div
+              className={`flex custom-inner-shadow h-9 items-center rounded-tl-[2px] rounded-tr-[2px] border border-mono-400 justify-between w-full`}
+            >
+              {Object.keys(socialLinks).map((key, index, array) => (
+                <div className="flex w-full hover:bg-mono-300 active:bg-mono-400 h-full" key={key}>
+                  <a
+                    href={socialLinks[key as keyof typeof socialLinks] ?? undefined}
+                    className="w-full h-full flex items-center justify-center"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Typography variant="text-button" color="mono-500" underline>
+                      {capitalizeFirstLetter(key)}
+                    </Typography>
+                  </a>
+                  {array.length !== index + 1 && <Divider vertical />}
+                </div>
+              ))}
+            </div>
+          )}
         </Card.Body>
-        {/* LATER IN V2 */}
-        {/* {renderFooter && socialLinks && (
-        <Card.Footer>
-          <div className="flex justify-evenly h-8 items-center w-full">
-            {Object.keys(socialLinks).map((key, index, array) => (
-              <div className="flex items-center gap-4 justify-between h-full" key={key}>
-                <a
-                  href={socialLinks[key as keyof typeof socialLinks]}
-                  className="cursor-pointer underline h-full text-mono-500 flex items-center"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Typography variant="text-button" color="mono-500">
-                    {key}
-                  </Typography>
-                </a>
-                {array.length !== index + 1 && <Divider vertical />}
-              </div>
-            ))}
-          </div>
-        </Card.Footer>
-      )} */}
       </Card>
     </div>
   );
