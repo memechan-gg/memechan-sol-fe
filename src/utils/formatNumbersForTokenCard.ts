@@ -8,9 +8,6 @@ interface Props {
 }
 
 export const formatNumberForTokenCard = ({ token }: Props) => {
-  if (token.name === "SOLDOG") {
-    console.log(token);
-  }
   if (
     !token?.quoteIn ||
     !token?.quoteLimit ||
