@@ -1,8 +1,6 @@
 import { TICKETS_INTERVAL } from "@/config/config";
 import { usePresaleCoinUniqueHoldersFromBE } from "@/hooks/presale/usePresaleCoinUniqueHoldersFromBE";
-import { useMemePriceFromBE } from "@/hooks/useMemePriceFromBE";
 import { useTickets } from "@/hooks/useTickets";
-import { getTokenInfo } from "@/hooks/utils";
 import { SeedPoolData } from "@/types/pool";
 import { BoundPoolClient, BoundPoolClientV2, SolanaToken } from "@avernikoz/memechan-sol-sdk";
 import { PresaleCoinSidebar } from "../../sidebar/presale-coin-sidebar";
@@ -24,7 +22,6 @@ export function InfoTab({
         version: string;
       };
 }) {
-  const { data: price } = useMemePriceFromBE({ memeMint: coinMetadata.address, poolType: "seedPool" });
   const ticketsData = useTickets({
     poolAddress: pool.address,
     poolStatus: "PRESALE",
@@ -32,16 +29,12 @@ export function InfoTab({
   });
 
   const { data: uniqueHoldersData } = usePresaleCoinUniqueHoldersFromBE(coinMetadata.address);
-  const boundPool = boundPoolClient.boundPoolInstance.poolObjectData;
-
-  const tokenData = boundPool?.quoteReserve
-    ? getTokenInfo({ variant: "publicKey", tokenAddress: boundPool?.quoteReserve.mint })
-    : undefined;
 
   return (
     <PresaleCoinSidebar
       coinMetadata={coinMetadata}
       pool={pool}
+      boundPoolClient={boundPoolClient}
       uniqueHoldersData={uniqueHoldersData}
       ticketsData={ticketsData}
     />

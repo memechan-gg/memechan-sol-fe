@@ -2,6 +2,7 @@ import InitialDisclaimer from "@/components/intial-disclaimer";
 import { TokenCard } from "@/components/TokenCard";
 import { Tabs } from "@/memechan-ui/Atoms/Tabs";
 import { Typography } from "@/memechan-ui/Atoms/Typography";
+import { formatNumberForTokenCard } from "@/utils/formatNumbersForTokenCard";
 import { Dialog } from "@reach/dialog";
 import { track } from "@vercel/analytics";
 import Cookies from "js-cookie";
@@ -111,7 +112,16 @@ export function Home() {
       </div>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 justify-center w-full">
         {isLoading && <Typography>Loading...</Typography>}
-        {isCoinsListExist && tokenList.map((token) => <TokenCard key={token.address} token={token} />)}
+        {isCoinsListExist &&
+          tokenList.map((token, index) => (
+            <TokenCard
+              key={`${index}-${token.address}`}
+              progressInfo={formatNumberForTokenCard({ token })}
+              token={token}
+              showCheckmark
+              showOnClick
+            />
+          ))}
         {isCoinsListEmpty && <Typography>No memecoins yet</Typography>}
       </div>
     </div>
