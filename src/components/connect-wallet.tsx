@@ -1,5 +1,6 @@
 import { UserContextType } from "@/context/UserContext";
 import { useSolanaBalance } from "@/hooks/useSolanaBalance";
+import { Typography } from "@/memechan-ui/Atoms/Typography";
 import { formatNumber } from "@/utils/formatNumber";
 import { Popover } from "@headlessui/react";
 import { useWallet } from "@solana/wallet-adapter-react";
@@ -60,10 +61,17 @@ export const ConnectWallet = (props: { account: UserContextType; disconnect: () 
                   <button
                     key={w.adapter.name}
                     onClick={() => connectWallet(w.adapter.name)}
-                    className="p-4 h-16 w-full mt-2 sm:rounded-sm border border-mono-400 shadow-light bg-mono-200 flex items-center font-bold hover:opacity-80"
+                    className="p-4 h-16 w-full mt-2 sm:rounded-sm border border-mono-400 shadow-light bg-mono-200 flex items-center justify-between font-bold hover:opacity-80"
                   >
-                    <img alt={w.adapter.name} width={24} className="mr-4" src={w.adapter.icon} />
-                    {w.adapter.name}
+                    <div className="flex items-center">
+                      <img alt={w.adapter.name} width={24} className="mr-4" src={w.adapter.icon} />
+                      {w.adapter.name}
+                    </div>
+                    {w.readyState === "Installed" && (
+                      <Typography variant="body" color="mono-500">
+                        Detected
+                      </Typography>
+                    )}
                   </button>
                 ))}
               </div>

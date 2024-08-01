@@ -3,7 +3,6 @@ import CustomDate from "@/components/custom-date";
 import { Typography } from "@/memechan-ui/Atoms/Typography";
 import { Card } from "@/memechan-ui/Molecules";
 import { CoinThreadWithParsedMessage } from "@/views/coin/coin.types";
-import { getSlicedAddress } from "@/views/coin/sidebar/holders/utils";
 import { handleAuthentication } from "@/views/create-coin/create-coin.utils";
 import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons/faEllipsisVertical";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -84,25 +83,26 @@ export function Comment({
 
   const isUsersComment = publicKey?.toString() === creator;
   const devsComment = coinCreator === creator;
-  const slicedAddress = getSlicedAddress(creator);
+  const slicedAddress = creator.slice(0, 4) + "..." + creator.slice(-4);
 
   return (
     <div className="flex flex-col gap-1 w-full" id={id}>
       <Card>
         <Card.Header>
-          <div className="flex justify-between items-center w-full leading-5">
+          <div className="flex justify-between items-center w-full leading-5 py-2">
             <div className="flex gap-2 items-center">
-              <FontAwesomeIcon icon={faEllipsisVertical} className="text-mono-600" />
+              <FontAwesomeIcon icon={faEllipsisVertical} width={3} className="text-mono-600" />
               <Link className="hover:underline" href={`/profile/${creator}`}>
                 <Typography variant="h4" color="green-100">
-                  {slicedAddress} {isUsersComment ? "(me)" : ""} {devsComment ? "(dev)" : ""}
+                  {slicedAddress}
+                  {isUsersComment ? "(me)" : ""} {devsComment ? "(dev)" : ""}
                 </Typography>
               </Link>
             </div>
             <div className="flex items-center text-right">
               <CustomDate creationDate={new Date(creationDate)} />
               <div className={classes["hover-underline"] + " text-[13px] font-normal leading-5 text-mono-500"}>
-                &nbsp;#{id}
+                &nbsp;#{id.slice(0, 4)}
               </div>
             </div>
           </div>
@@ -122,7 +122,7 @@ export function Comment({
           </div>
         </Card.Body>
         <Card.Footer>
-          <div className="flex justify-between w-full">
+          <div className="flex justify-between w-full items-center">
             <span>
               <Typography
                 color={isPostReplyDialogOpen ? "primary-100" : "mono-500"}
@@ -139,16 +139,16 @@ export function Comment({
                 {">>Reply"}
               </Typography>
             </span>
-            {replyTo ? (
+            {/* {replyTo ? (
               <a className="hover:underline" href={`#${replyTo}`}>
                 Reply
               </a>
             ) : (
               ""
-            )}
-            {liked ? (
-              <Typography variant="text-button" color="mono-500">
-                Like{" "}
+            )} */}
+            {!liked ? (
+              <Typography variant="text-button" color="mono-500" onClick={handleLikeEvent}>
+                Like
               </Typography>
             ) : (
               <div>
