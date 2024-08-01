@@ -56,7 +56,7 @@ export const Header = () => {
                 </Link>
               </div>
               <div className="flex items-center gap-2 ml-2">
-                <Search isSearchActive={isSearchActive} setIsSearchActive={setIsSearchActive} />
+                {/* <Search isSearchActive={isSearchActive} setIsSearchActive={setIsSearchActive} /> */}
                 <ProfileManagment account={account} disconnect={disconnect} />
               </div>
             </>
