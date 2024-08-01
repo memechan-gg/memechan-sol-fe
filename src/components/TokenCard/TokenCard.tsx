@@ -62,10 +62,14 @@ export function TokenCard({
   return (
     <div
       onClick={showOnClick ? () => handleCardClick() : undefined}
-      className={showOnClick ? "cursor-pointer hover:-translate-x-1px hover:translate-y-1px" : ""}
+      className={
+        showOnClick
+          ? "cursor-pointer hover:-translate-x-1px hover:translate-y-1px h-full min-h-[212px]"
+          : "h-full min-h-[212px]"
+      }
     >
       <Card
-        additionalStyles={`card-shadow card-shadow-hover ${showOnClick ? "hover:border-primary-100" : "hover:none"}`}
+        additionalStyles={`card-shadow card-shadow-hover h-full ${showOnClick ? "hover:border-primary-100" : "hover:none"}`}
       >
         <Card.Header>
           <div className="flex justify-between w-full">

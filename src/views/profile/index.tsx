@@ -154,9 +154,9 @@ export function Profile({ address, coin }: ProfileProps) {
         ) : tokens.length === 0 ? (
           <NoCoinsPage />
         ) : (
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 justify-center w-full">
+          <div className="grid grid-cols-1 gap-1 sm:grid-cols-2 lg:grid-cols-3 justify-center w-full">
             {tokens.map((token, index) => (
-              <div key={index} className="w-full lg:w-auto p-3 lg:p-0">
+              <div key={index} className="w-full lg:w-auto lg:p-0">
                 <TokenCard key={token.mint} token={token} />
               </div>
             ))}
