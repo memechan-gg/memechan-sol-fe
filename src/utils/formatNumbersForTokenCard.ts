@@ -8,7 +8,17 @@ interface Props {
 }
 
 export const formatNumberForTokenCard = ({ token }: Props) => {
-  if (!token?.quoteIn || !token?.quoteLimit || !token?.creationTime || !token?.holdersCount) return undefined;
+  if (
+    !token?.quoteIn ||
+    !token?.quoteLimit ||
+    !token?.creationTime ||
+    !token?.holdersCount ||
+    token.quoteIn > token.quoteLimit ||
+    token.quoteSymbol !== "SOL"
+  ) {
+    return undefined;
+  }
+
   if (token.quoteSymbol === "SOL") {
     return {
       progress: Number(token.quoteIn) / Number(token.quoteLimit) ?? undefined,
