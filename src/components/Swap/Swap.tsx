@@ -1,5 +1,6 @@
 import { MAX_SLIPPAGE, MIN_SLIPPAGE } from "@/config/config";
 import { useStakingPoolFromApi } from "@/hooks/staking/useStakingPoolFromApi";
+import { useSolanaPrice } from "@/hooks/useSolanaPrice";
 import { Button } from "@/memechan-ui/Atoms";
 import { SwapInput } from "@/memechan-ui/Atoms/Input";
 import TextInput from "@/memechan-ui/Atoms/Input/TextInput";
@@ -69,7 +70,8 @@ export const Swap = (props: SwapProps) => {
     livePoolId,
     stakingPoolFromApi,
   } = props;
-
+  const { data: solanaPriceInUSD } = useSolanaPrice();
+  console.log(inputAmount);
   const [variant, setVariant] = useState<"swap" | "claim">("swap");
   const [localSlippage, setLocalSlippage] = useState(slippage);
   const isVariantSwap = variant === "swap";
@@ -129,6 +131,8 @@ export const Swap = (props: SwapProps) => {
                   labelRight={
                     publicKey ? `👛 ${baseCurrency.coinBalance ?? 0} ${baseCurrency.currencyName}` : undefined
                   }
+                  showQuickInput
+                  usdPrice={solanaPriceInUSD?.price ? Number(inputAmount ?? 0) * solanaPriceInUSD.price : 0}
                 />
                 <div className="relative h-12">
                   <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 border-t border-mono-400"></div>
@@ -150,19 +154,24 @@ export const Swap = (props: SwapProps) => {
                   labelRight={
                     publicKey ? `👛 ${secondCurrency.coinBalance ?? 0} ${secondCurrency.currencyName}` : undefined
                   }
+                  usdPrice={solanaPriceInUSD?.price ? Number(inputAmount ?? 0) * solanaPriceInUSD.price : 0}
                 />
               </div>
               <div className="h-14">
                 <WithConnectedWallet
-                  variant="primary"
+                  variant={inputAmount ? "primary" : "disabled"}
                   className="mt-4 p-1 h-14"
                   disabled={swapButtonIsDisabled || isLoadingOutputAmount}
                   onClick={onSwap}
                   isLoading={isSwapping || isLoadingOutputAmount}
                 >
-                  <Typography variant="h4">
-                    {isLoadingOutputAmount ? "Calculating..." : isSwapping ? "Swapping..." : "Swap"}
-                  </Typography>
+                  {!inputAmount ? (
+                    <Typography variant="h4">Fill all required fields</Typography>
+                  ) : (
+                    <Typography variant="h4">
+                      {isLoadingOutputAmount ? "Calculating..." : isSwapping ? "Swapping..." : "Swap"}
+                    </Typography>
+                  )}
                 </WithConnectedWallet>
               </div>
             </>
