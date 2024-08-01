@@ -28,7 +28,7 @@ const UncontrolledTextInput = React.forwardRef<HTMLInputElement, InputProps>(
           <>
             {file ? (
               <div className="flex justify-between items-center primary-border rounded-sm w-full py-[18px] px-4">
-                <span className="text-regular flex truncate">
+                <span className="flex truncate">
                   <Typography>{file.name}</Typography>
                 </span>
                 {fieldName && resetField && (

@@ -19,8 +19,18 @@ export const PresaleCoinHolders = ({ poolAddress, coinMetadata, uniqueHoldersDat
   if (!uniqueHoldersData) {
     return (
       <div className="flex flex-col gap-1">
-        <div className="text-xs font-bold text-regular">Holders</div>
-        <div className="flex flex-col gap-1">{<div className="font-normal text-regular">Loading...</div>}</div>
+        <div className="text-xs font-bold">
+          <Typography variant="h4" color="mono-600">
+            Holders
+          </Typography>
+        </div>
+        <div className="flex flex-col gap-1">
+          {
+            <div>
+              <Typography variant="h4">Loading...</Typography>
+            </div>
+          }
+        </div>
       </div>
     );
   }

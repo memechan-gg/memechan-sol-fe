@@ -111,7 +111,7 @@ export function Home() {
         <Tabs tabs={tabs} onTabChange={onTabChange} activeTab={activeTab} />
       </div>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 justify-center w-full">
-        {isLoading && <Typography>Loading...</Typography>}
+        {isLoading && <Typography variant="h4">Loading...</Typography>}
         {isCoinsListExist &&
           tokenList.map((token, index) => (
             <TokenCard

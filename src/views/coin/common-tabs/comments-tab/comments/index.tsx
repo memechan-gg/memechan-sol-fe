@@ -1,3 +1,4 @@
+import { Typography } from "@/memechan-ui/Atoms/Typography";
 import { CoinThreadWithParsedMessage } from "@/views/coin/coin.types";
 import { useLikes } from "@/views/coin/hooks/useLikes";
 import { Comment } from "./comment/comment";
@@ -16,7 +17,11 @@ export const Comments = ({
   const { data: likesData, refetch: refetchLikes } = useLikes(coinType);
 
   if (!threads || threads.length === 0) {
-    return <div className="text-xs font-bold text-regular mb-[87%]">No comments yet.</div>;
+    return (
+      <div className="mb-[87%]">
+        <Typography variant="h4">No comments yet.</Typography>
+      </div>
+    );
   }
 
   return (

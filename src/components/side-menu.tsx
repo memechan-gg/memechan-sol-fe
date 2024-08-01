@@ -37,7 +37,7 @@ export default function SideMenu(props: { account: UserContextType; disconnect: 
                 <Link href={`/`}>
                   <div
                     role="button"
-                    className=" sm:mt-2 text-left bg-dark-background font-bold text-white w-full text-regular text-xs rounded flex items-center space-x-[12px] hover:opacity-80"
+                    className=" sm:mt-2 text-left bg-dark-background font-bold text-white w-full text-xs rounded flex items-center space-x-[12px] hover:opacity-80"
                   >
                     <span>📦</span>
                     <span>Home</span>
@@ -47,7 +47,7 @@ export default function SideMenu(props: { account: UserContextType; disconnect: 
                   <Link href={`/profile/${props.account.address}`}>
                     <div
                       role="button"
-                      className=" sm:mt-2 bg-dark-background font-bold text-white w-full text-regular text-xs text-left rounded flex items-center space-x-[12px] hover:opacity-80"
+                      className=" sm:mt-2 bg-dark-background font-bold text-white w-full text-xs text-left rounded flex items-center space-x-[12px] hover:opacity-80"
                     >
                       <span>🤡</span>
                       <span>Profile</span>
@@ -58,7 +58,7 @@ export default function SideMenu(props: { account: UserContextType; disconnect: 
                 <Link href={`/vesting`}>
                   <div
                     role="button"
-                    className=" sm:mt-2 bg-dark-background font-bold text-white w-full text-regular text-xs text-left rounded flex items-center space-x-[12px] hover:opacity-80"
+                    className=" sm:mt-2 bg-dark-background font-bold text-white w-full text-xs text-left rounded flex items-center space-x-[12px] hover:opacity-80"
                   >
                     <span>🪤</span>
                     <span>$CHAN vesting</span>
@@ -66,7 +66,7 @@ export default function SideMenu(props: { account: UserContextType; disconnect: 
                 </Link>
                 <Link
                   href="https://docs.memechan.gg/"
-                  className=" sm:mt-2 bg-dark-background font-bold text-white w-full text-regular text-xs text-left rounded flex items-center space-x-[12px] hover:opacity-80"
+                  className=" sm:mt-2 bg-dark-background font-bold text-white w-full text-xs text-left rounded flex items-center space-x-[12px] hover:opacity-80"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -76,7 +76,7 @@ export default function SideMenu(props: { account: UserContextType; disconnect: 
                 {connected && (
                   <button
                     onClick={() => props.disconnect()}
-                    className="sm:mt-2 bg-dark-background font-bold text-white w-full text-regular text-xs text-left rounded flex items-center space-x-[12px] hover:opacity-80"
+                    className="sm:mt-2 bg-dark-background font-bold text-white w-full text-xs text-left rounded flex items-center space-x-[12px] hover:opacity-80"
                   >
                     <span>🖕</span>
                     <span>Disconnect</span>

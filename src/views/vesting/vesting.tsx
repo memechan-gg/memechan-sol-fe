@@ -99,7 +99,7 @@ export const Vesting = () => {
     userIsEligible && new BigNumber(vesting.outstanding.toString()).div(10 ** CHAN_TOKEN_DECIMALS).toString();
 
   return (
-    <div className="flex text-regular justify-center items-center">
+    <div className="flex justify-center items-center">
       <div className="flex flex-col gap-8">
         <h1 className="max-xxs:text-center text-2xl font-semibold">$CHAN Vesting</h1>
         <div className="flex flex-col gap-1">
@@ -145,7 +145,7 @@ export const Vesting = () => {
               <input
                 id="amount-to-claim"
                 disabled={inputIsDisabled}
-                className="w-full bg-white text-xs font-bold text-regular p-2 rounded-lg"
+                className="w-full bg-white text-xs font-bold p-2 rounded-lg"
                 value={inputAmount}
                 onChange={(e) =>
                   handleSwapInputChange({

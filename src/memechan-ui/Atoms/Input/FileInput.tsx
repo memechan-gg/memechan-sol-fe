@@ -1,10 +1,7 @@
-import CloseIcon from "@/memechan-ui/icons/CloseIcon";
+import { faClose } from "@fortawesome/free-solid-svg-icons/faClose";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ChangeEvent, Dispatch, SetStateAction } from "react";
 import { Typography } from "../Typography";
-import { red } from "bn.js";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClose } from "@fortawesome/free-solid-svg-icons/faClose";
-import { colors } from "../../../../tailwind.config";
 
 interface Props {
   file: File | null;
@@ -17,14 +14,12 @@ const FileInput = ({ file, setFile }: Props) => {
     setFile(selectedFile);
   };
 
-   return (
+  return (
     <div className="flex flex-col flex-grow items-center justify-center gap-2 w-full">
       {file ? (
         <div className="flex justify-between items-center primary-border rounded-sm w-full py-[18px] px-4">
-          <span className="text-regular truncate">
-          <Typography>
-            {file.name}
-          </Typography>
+          <span className="truncate">
+            <Typography>{file.name}</Typography>
           </span>
           <button onClick={() => setFile(null)} className="text-xs flex">
             <FontAwesomeIcon icon={faClose} className="text-red-100" size="xl" />
@@ -32,8 +27,7 @@ const FileInput = ({ file, setFile }: Props) => {
         </div>
       ) : (
         <>
-          <label htmlFor="file-upload" className="hidden">
-          </label>
+          <label htmlFor="file-upload" className="hidden"></label>
           <input
             id="file-upload"
             type="file"
@@ -46,7 +40,9 @@ const FileInput = ({ file, setFile }: Props) => {
             htmlFor="file-upload"
             className="primary-border rounded-sm py-[17px] flex justify-center cursor-pointer w-full text-mono-500"
           >
-            <Typography align="center" color="mono-500">Attach file </Typography>
+            <Typography align="center" color="mono-500">
+              Attach file{" "}
+            </Typography>
           </label>
         </>
       )}

@@ -60,7 +60,7 @@ export const LiveCoinHolders = ({ coinMetadata, uniqueHoldersData, livePool }: L
               );
             })}
           {uniqueHoldersData && uniqueHoldersData.holders.length === 0 && <Typography>No holders yet.</Typography>}
-          {!uniqueHoldersData && <Typography>Loading...</Typography>}
+          {!uniqueHoldersData && <Typography variant="h4">Loading...</Typography>}
         </Card.Body>
       </Card>
     </div>
