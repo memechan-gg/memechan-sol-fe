@@ -160,8 +160,8 @@ input[type="number"] {
 .card-shadow {
   box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 0.25);
 }
-.card-shadow-hover {
-  box-shadow: 1px 1px 0px 0px rgba(0, 0, 0, 0.25);
+.card-shadow-hover:hover {
+  box-shadow: 2px 2px 0px 0px rgba(0, 0, 0, 0.25);
 }
 
 .line-clamp {
