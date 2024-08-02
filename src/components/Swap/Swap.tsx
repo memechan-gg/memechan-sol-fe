@@ -2,6 +2,7 @@ import { MAX_SLIPPAGE, MIN_SLIPPAGE } from "@/config/config";
 import { useStakingPoolFromApi } from "@/hooks/staking/useStakingPoolFromApi";
 import { useSolanaPrice } from "@/hooks/useSolanaPrice";
 import { Button } from "@/memechan-ui/Atoms";
+import { Divider } from "@/memechan-ui/Atoms/Divider/Divider";
 import { SwapInput } from "@/memechan-ui/Atoms/Input";
 import TextInput from "@/memechan-ui/Atoms/Input/TextInput";
 import { Typography } from "@/memechan-ui/Atoms/Typography";
@@ -14,13 +15,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Dialog } from "@reach/dialog";
 import { PublicKey } from "@solana/web3.js";
 import { ChangeEvent, useState } from "react";
+import { Oval } from "react-loader-spinner";
 import { WithConnectedWallet } from "../WithConnectedWallet";
-import { Claim } from "./Claim/Claim";
 
 interface SwapProps {
   variant: "LIVE" | "PRESALE";
   slippage: string;
   refresh: () => void;
+  isRefreshing: boolean;
   baseCurrency: {
     currencyName: string;
     currencyLogoUrl: string;
@@ -46,6 +48,7 @@ interface SwapProps {
   seedPoolAddress?: string;
   livePoolId?: string;
   tokenSymbol: string;
+  onClose?: () => void;
 }
 
 export const Swap = (props: SwapProps) => {
@@ -69,21 +72,21 @@ export const Swap = (props: SwapProps) => {
     seedPoolAddress,
     livePoolId,
     stakingPoolFromApi,
+    onClose,
+    isRefreshing,
   } = props;
   const { data: solanaPriceInUSD } = useSolanaPrice();
-  console.log(inputAmount);
   const [variant, setVariant] = useState<"swap" | "claim">("swap");
   const [localSlippage, setLocalSlippage] = useState(slippage);
   const isVariantSwap = variant === "swap";
 
   const [isOpen, setIsOpen] = useState(false);
-
   return (
     <>
       <Card additionalStyles="min-h-[392px] bg-mono-200">
         <Card.Header>
           <div className="flex justify-between w-full">
-            <div className="flex gap-1">
+            <div className="flex gap-1 items-center">
               <Typography variant="h4" onClick={() => setVariant(isVariantSwap ? "swap" : "claim")}>
                 {isVariantSwap ? "Swap" : "Claim"}
               </Typography>
@@ -101,11 +104,32 @@ export const Swap = (props: SwapProps) => {
               <Typography variant="text-button" color="mono-500" underline onClick={() => setIsOpen(true)}>
                 Slippage {slippage}%
               </Typography>
-              <Typography onClick={refresh}>🔄</Typography>
-              {/* <Divider vertical className="bg-mono-600" />
-                <Typography onClick={onCloseClick}>
-                  <FontAwesomeIcon icon={faClose} fontSize={16} />
-                </Typography> */}
+              {!isRefreshing ? (
+                <Typography className="leading-[13px] text-[10px] border-b-[1px] border-b-mono-500" onClick={refresh}>
+                  🔄
+                </Typography>
+              ) : (
+                <div>
+                  <Oval
+                    visible={true}
+                    height="15px"
+                    width="15px"
+                    color="#ffffff"
+                    ariaLabel="oval-loading"
+                    secondaryColor="#3979797e3e3e"
+                    wrapperStyle={{}}
+                    wrapperClass=""
+                  />
+                </div>
+              )}
+              {onClose && (
+                <>
+                  <Divider vertical className="bg-mono-500 ml-1" />
+                  <Typography onClick={onClose} className="pl-1 mt-[2px]">
+                    <FontAwesomeIcon icon={faClose} fontSize={20} />
+                  </Typography>
+                </>
+              )}
             </div>
           </div>
         </Card.Header>

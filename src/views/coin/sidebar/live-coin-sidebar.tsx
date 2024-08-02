@@ -5,7 +5,6 @@ import { LiveCoinSidebarProps } from "../coin.types";
 import { LiveCoinHolders } from "./holders/live-coin-holders";
 import { SidebarItem } from "./sidebar-item";
 import { StakingPool } from "./staking-pool/staking-pool";
-import { LiveCoinSwap } from "./swap/live-coin-swap";
 
 export function LiveCoinSidebar({
   coinMetadata,
@@ -25,15 +24,6 @@ export function LiveCoinSidebar({
     <div className="flex flex-col gap-y-3">
       <SidebarItem>
         <TokenCard key={coinMetadata.address} token={coinMetadata} />
-      </SidebarItem>
-      <SidebarItem>
-        <LiveCoinSwap
-          pool={pool}
-          tokenSymbol={coinMetadata.symbol}
-          memeImage={coinMetadata.image}
-          stakingPoolFromApi={stakingPoolFromApi}
-          seedPoolAddress={seedPoolData?.address}
-        />
       </SidebarItem>
       {ticketsData.isLoading
         ? "Loading..."
