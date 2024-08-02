@@ -110,8 +110,9 @@ export const SwapInput: React.FC<SwapInputProps> = ({
               }}
             />
             <div className="text-xs text-black-35 dark:text-white-35">
-              {usdPrice !== undefined && <Typography color="mono-500">${usdPrice.toFixed(2)}</Typography>}
-              <Typography color="mono-500"> </Typography>
+              {usdPrice !== 0 && usdPrice !== undefined && (
+                <Typography color="mono-500">${usdPrice.toFixed(2)}</Typography>
+              )}
             </div>
           </div>
         </span>

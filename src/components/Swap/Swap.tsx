@@ -12,6 +12,7 @@ import { handleSlippageInputChange } from "@/views/coin/sidebar/swap/utils";
 import { faClose } from "@fortawesome/free-solid-svg-icons/faClose";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Dialog } from "@reach/dialog";
+import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import { ChangeEvent, useState } from "react";
 import { WithConnectedWallet } from "../WithConnectedWallet";
@@ -71,10 +72,11 @@ export const Swap = (props: SwapProps) => {
     stakingPoolFromApi,
   } = props;
   const { data: solanaPriceInUSD } = useSolanaPrice();
-  console.log(inputAmount);
+
   const [variant, setVariant] = useState<"swap" | "claim">("swap");
   const [localSlippage, setLocalSlippage] = useState(slippage);
   const isVariantSwap = variant === "swap";
+  const { connected, signMessage } = useWallet();
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -158,21 +160,29 @@ export const Swap = (props: SwapProps) => {
                 />
               </div>
               <div className="h-14">
-                <WithConnectedWallet
-                  variant={inputAmount ? "primary" : "disabled"}
-                  className="mt-4 p-1 h-14"
-                  disabled={swapButtonIsDisabled || isLoadingOutputAmount}
-                  onClick={onSwap}
-                  isLoading={isSwapping || isLoadingOutputAmount}
-                >
-                  {!inputAmount ? (
-                    <Typography variant="h4">Fill all required fields</Typography>
-                  ) : (
-                    <Typography variant="h4">
-                      {isLoadingOutputAmount ? "Calculating..." : isSwapping ? "Swapping..." : "Swap"}
-                    </Typography>
-                  )}
-                </WithConnectedWallet>
+                {connected ? (
+                  <WithConnectedWallet
+                    variant={inputAmount ? "primary" : "disabled"}
+                    className="mt-4 p-1 h-14"
+                    disabled={swapButtonIsDisabled || isLoadingOutputAmount}
+                    onClick={onSwap}
+                    isLoading={isSwapping || isLoadingOutputAmount}
+                  >
+                    {!inputAmount ? (
+                      <Typography variant="h4">Fill all required fields</Typography>
+                    ) : (
+                      <Typography variant="h4">
+                        {isLoadingOutputAmount ? "Calculating..." : isSwapping ? "Swapping..." : "Swap"}
+                      </Typography>
+                    )}
+                  </WithConnectedWallet>
+                ) : (
+                  <div className="h-14 mt-4">
+                    <Button onClick={(e) => e.preventDefault()} variant="primary">
+                      Connect Wallet
+                    </Button>
+                  </div>
+                )}
               </div>
             </>
           )}
