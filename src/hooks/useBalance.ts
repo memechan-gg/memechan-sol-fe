@@ -6,7 +6,7 @@ import { useTokenAccounts } from "./useTokenAccounts";
 export const useBalance = (coin: string, decimals: number) => {
   const tokenData = useTokenAccounts();
 
-  const { data: solanaBalance, isLoading: isSolanaBalanceLoading } = useSolanaBalance();
+  const { data: solanaBalance, isLoading: isSolanaBalanceLoading, isRefetching } = useSolanaBalance();
 
   const balance =
     tokenData.data && getMintBalanceFromTokenAccounts({ mint: coin, tokenAccounts: tokenData.data, decimals });
@@ -15,5 +15,6 @@ export const useBalance = (coin: string, decimals: number) => {
     balance: coin === NATIVE_MINT_STRING ? solanaBalance + "" : balance?.formattedBalance,
     refetch: tokenData.refetch,
     isLoading: tokenData.isLoading || isSolanaBalanceLoading,
+    isRefetching: tokenData.isRefetching || isRefetching,
   };
 };

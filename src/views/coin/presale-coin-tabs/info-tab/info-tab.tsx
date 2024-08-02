@@ -1,4 +1,3 @@
-import { TICKETS_INTERVAL } from "@/config/config";
 import { usePresaleCoinUniqueHoldersFromBE } from "@/hooks/presale/usePresaleCoinUniqueHoldersFromBE";
 import { useTickets } from "@/hooks/useTickets";
 import { SeedPoolData } from "@/types/pool";
@@ -9,6 +8,7 @@ export function InfoTab({
   coinMetadata,
   pool,
   boundPoolClient,
+  ticketsData,
 }: {
   coinMetadata: SolanaToken;
   pool: SeedPoolData;
@@ -21,13 +21,8 @@ export function InfoTab({
         boundPoolInstance: BoundPoolClient;
         version: string;
       };
+  ticketsData: ReturnType<typeof useTickets>;
 }) {
-  const ticketsData = useTickets({
-    poolAddress: pool.address,
-    poolStatus: "PRESALE",
-    refreshInterval: TICKETS_INTERVAL,
-  });
-
   const { data: uniqueHoldersData } = usePresaleCoinUniqueHoldersFromBE(coinMetadata.address);
 
   return (

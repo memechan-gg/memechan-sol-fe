@@ -27,6 +27,8 @@ export const PresaleCoinSwap = ({
   pool,
   memeImage,
   boundPool,
+  onClose,
+  ticketsData,
   ticketsData: {
     freeIndexes,
     availableTicketsAmount,
@@ -336,6 +338,7 @@ export const PresaleCoinSwap = ({
       slippage={slippage}
       setSlippage={setSlippage}
       refresh={refresh}
+      isRefreshing={ticketsData.isRefetching}
       baseCurrency={baseCurrency}
       secondCurrency={secondCurrency}
       onInputChange={onInputChange}
@@ -351,6 +354,8 @@ export const PresaleCoinSwap = ({
       // stakingPoolFromApi={stakingPoolFromApi}
       // livePoolId={address}
       // seedPoolAddress={seedPoolAddress}
+      onClose={onClose}
+      tokenDecimals={coinToMeme ? memeChanQuoteTokenDecimals : MEMECHAN_MEME_TOKEN_DECIMALS}
     />
   );
 };

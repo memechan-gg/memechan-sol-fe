@@ -1,4 +1,5 @@
 import { TokenCard } from "@/components/TokenCard";
+import { useMedia } from "@/hooks/useMedia";
 import { timeSince } from "@/utils/timeSpents";
 import { PresaleCoinSidebarProps } from "../coin.types";
 import { PresaleCoinHolders } from "./holders/presale-coin-holders";
@@ -15,6 +16,7 @@ export function PresaleCoinSidebar({
 }: PresaleCoinSidebarProps) {
   const boundPool = boundPoolClient?.boundPoolInstance.poolObjectData;
   const isV2 = boundPoolClient.version === "V2";
+  const media = useMedia();
 
   const { progress, slerfIn, limit } = boundPool
     ? getBoundPoolProgress(boundPool, isV2)
@@ -42,15 +44,17 @@ export function PresaleCoinSidebar({
           showOnClick={false}
         />
       </SidebarItem>
-      <SidebarItem>
-        <PresaleCoinSwap
-          pool={pool}
-          tokenSymbol={coinMetadata.symbol}
-          boundPool={boundPool}
-          ticketsData={ticketsData}
-          memeImage={coinMetadata.image}
-        />
-      </SidebarItem>
+      {!media.isSmallDevice && (
+        <SidebarItem>
+          <PresaleCoinSwap
+            pool={pool}
+            tokenSymbol={coinMetadata.symbol}
+            boundPool={boundPool}
+            ticketsData={ticketsData}
+            memeImage={coinMetadata.image}
+          />
+        </SidebarItem>
+      )}
       <SidebarItem>
         <PresaleCoinHolders
           poolAddress={pool.address}

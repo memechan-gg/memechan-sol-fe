@@ -1,4 +1,5 @@
 import { ChangeEvent, useRef } from "react";
+import Skeleton from "react-loading-skeleton";
 import { Typography } from "../Typography";
 
 interface SwapInputProps {
@@ -14,6 +15,9 @@ interface SwapInputProps {
   label?: string;
   labelRight?: string;
   showQuickInput?: boolean;
+  baseCurrencyAmount?: number;
+  tokenDecimals?: number;
+  isRefreshing?: boolean;
 }
 
 export const SwapInput: React.FC<SwapInputProps> = ({
@@ -29,6 +33,9 @@ export const SwapInput: React.FC<SwapInputProps> = ({
   label,
   labelRight,
   showQuickInput = false,
+  baseCurrencyAmount,
+  tokenDecimals,
+  isRefreshing = false,
 }) => {
   // const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -46,10 +53,17 @@ export const SwapInput: React.FC<SwapInputProps> = ({
         target: inputRef.current,
         currentTarget: inputRef.current,
       } as ChangeEvent<HTMLInputElement>;
-      changeEvent.target.value = value.toString();
+
+      const baseAmount = (value * (baseCurrencyAmount ?? 0)) / 100;
+      const result = baseAmount.toString().split(".");
+      if (result[1] && tokenDecimals !== undefined) {
+        result[1] = result[1].slice(0, tokenDecimals);
+      }
+      changeEvent.target.value = result.join(".");
       setInputValue(changeEvent);
     }
   };
+  console.log(isRefreshing);
 
   return (
     <div>
@@ -88,27 +102,33 @@ export const SwapInput: React.FC<SwapInputProps> = ({
         </div>
         <span className="flex-1 text-right">
           <div className="flex flex-col text-right h-full">
-            <input
-              ref={inputRef}
-              inputMode="decimal"
-              autoComplete="off"
-              name="fromValue"
-              data-lpignore="true"
-              placeholder={placeholder}
-              className="h-full w-full size-4 leading-6 bg-transparent disabled:cursor-not-allowed disabled:opacity-100 disabled:text-black dark:text-white text-right font-bold dark:placeholder:text-white/25 outline-none"
-              type={type}
-              value={inputValue}
-              onChange={(e) => setInputValue?.(e)}
-              // onFocus={() => setIsFocused(true)}
-              // onBlur={() => setIsFocused(false)}
-              readOnly={isReadOnly}
-              disabled={disabled}
-              style={{
-                // Inline styles to remove the spinner
-                WebkitAppearance: "none",
-                MozAppearance: "textfield",
-              }}
-            />
+            {!isRefreshing ? (
+              <input
+                ref={inputRef}
+                inputMode="decimal"
+                autoComplete="off"
+                name="fromValue"
+                data-lpignore="true"
+                placeholder={placeholder}
+                className="h-full w-full size-4 leading-6 bg-transparent disabled:cursor-not-allowed disabled:opacity-100 disabled:text-black dark:text-white text-right font-bold dark:placeholder:text-white/25 outline-none"
+                type={type}
+                value={inputValue}
+                onChange={(e) => setInputValue?.(e)}
+                // onFocus={() => setIsFocused(true)}
+                // onBlur={() => setIsFocused(false)}
+                readOnly={isReadOnly}
+                disabled={disabled}
+                style={{
+                  // Inline styles to remove the spinner
+                  WebkitAppearance: "none",
+                  MozAppearance: "textfield",
+                }}
+              />
+            ) : (
+              <div>
+                <Skeleton count={1} height={"100%"} width={"50%"} baseColor="#3e3e3e" highlightColor="#979797" />
+              </div>
+            )}
             <div className="text-xs text-black-35 dark:text-white-35">
               {usdPrice !== 0 && usdPrice !== undefined && (
                 <Typography color="mono-500">${usdPrice.toFixed(2)}</Typography>
@@ -124,61 +144,61 @@ export const SwapInput: React.FC<SwapInputProps> = ({
           <div
             className="flex  justify-center items-center w-1/6 hover:bg-mono-300 active:bg-mono-400 h-full"
             onClick={() => {
-              quickInputClick(0.1);
+              quickInputClick(1);
             }}
           >
             <Typography variant="text-button" underline color="mono-500">
-              0.1
+              1%
             </Typography>
           </div>
           <div
             className="border-l border-mono-400 flex justify-center items-center w-1/6 h-full hover:bg-mono-300 active:bg-mono-400"
             onClick={() => {
-              quickInputClick(0.25);
-            }}
-          >
-            <Typography variant="text-button" underline color="mono-500">
-              0.25
-            </Typography>
-          </div>
-          <div
-            className="border-l border-mono-400 flex justify-center items-center w-1/6 hover:bg-mono-300 active:bg-mono-400 h-full"
-            onClick={() => {
-              quickInputClick(0.5);
-            }}
-          >
-            <Typography variant="text-button" underline color="mono-500">
-              0.5
-            </Typography>
-          </div>
-          <div
-            className="border-l border-mono-400 flex justify-center items-center w-1/6 hover:bg-mono-300 active:bg-mono-400 h-full"
-            onClick={() => {
-              quickInputClick(1);
-            }}
-          >
-            <Typography variant="text-button" underline color="mono-500">
-              1.0
-            </Typography>
-          </div>
-          <div
-            className="border-l border-mono-400 flex justify-center items-center w-1/6 hover:bg-mono-300 active:bg-mono-400 h-full"
-            onClick={() => {
-              quickInputClick(3);
-            }}
-          >
-            <Typography variant="text-button" underline color="mono-500">
-              3.0
-            </Typography>
-          </div>
-          <div
-            className="border-l border-mono-400 flex justify-center items-center w-1/6 hover:bg-mono-300 active:bg-mono-400 h-full"
-            onClick={() => {
               quickInputClick(5);
             }}
           >
             <Typography variant="text-button" underline color="mono-500">
-              5.0
+              5%
+            </Typography>
+          </div>
+          <div
+            className="border-l border-mono-400 flex justify-center items-center w-1/6 hover:bg-mono-300 active:bg-mono-400 h-full"
+            onClick={() => {
+              quickInputClick(10);
+            }}
+          >
+            <Typography variant="text-button" underline color="mono-500">
+              10%
+            </Typography>
+          </div>
+          <div
+            className="border-l border-mono-400 flex justify-center items-center w-1/6 hover:bg-mono-300 active:bg-mono-400 h-full"
+            onClick={() => {
+              quickInputClick(25);
+            }}
+          >
+            <Typography variant="text-button" underline color="mono-500">
+              25%
+            </Typography>
+          </div>
+          <div
+            className="border-l border-mono-400 flex justify-center items-center w-1/6 hover:bg-mono-300 active:bg-mono-400 h-full"
+            onClick={() => {
+              quickInputClick(50);
+            }}
+          >
+            <Typography variant="text-button" underline color="mono-500">
+              50%
+            </Typography>
+          </div>
+          <div
+            className="border-l border-mono-400 flex justify-center items-center w-1/6 hover:bg-mono-300 active:bg-mono-400 h-full"
+            onClick={() => {
+              quickInputClick(100);
+            }}
+          >
+            <Typography variant="text-button" underline color="mono-500">
+              100%
             </Typography>
           </div>
         </div>

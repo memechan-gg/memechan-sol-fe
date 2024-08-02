@@ -1,17 +1,21 @@
+import { TICKETS_INTERVAL } from "@/config/config";
 import { useBoundPoolClient } from "@/hooks/presale/useBoundPoolClient";
 import { useMedia } from "@/hooks/useMedia";
+import { useTickets } from "@/hooks/useTickets";
 import { Button } from "@/memechan-ui/Atoms";
 import { Tabs } from "@/memechan-ui/Atoms/Tabs";
 import TopBar from "@/memechan-ui/Atoms/TopBar/TopBar";
 import { Typography } from "@/memechan-ui/Atoms/Typography";
 import { SeedPoolData } from "@/types/pool";
 import { SolanaToken } from "@avernikoz/memechan-sol-sdk";
+import { Dialog } from "@reach/dialog";
 import { track } from "@vercel/analytics";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { CommentsTab } from "./common-tabs/comments-tab/comments-tab";
 import { ChartTab } from "./presale-coin-tabs/chart-tab/chart-tab";
 import { InfoTab } from "./presale-coin-tabs/info-tab/info-tab";
+import { PresaleCoinSwap } from "./sidebar/swap/presale-coin-swap";
 
 export const mobileTabs = ["Info", "Chart", "Comments"];
 export const desktopTabs = ["Chart", "Comments"];
@@ -28,6 +32,13 @@ export function PresaleCoin({
   const mediaQuery = useMedia();
   const router = useRouter();
   const { data: boundPoolClient, isFetching, isError, isLoading } = useBoundPoolClient(seedPoolData.address);
+  const ticketsData = useTickets({
+    poolAddress: seedPoolData.address,
+    poolStatus: "PRESALE",
+    refreshInterval: TICKETS_INTERVAL,
+  });
+
+  const [swapOpen, setSwapOpen] = useState(false);
 
   useEffect(() => {
     let intervalId: number | undefined;
@@ -83,7 +94,12 @@ export function PresaleCoin({
         <>
           <div className="w-full px-3">
             {tab === "Info" && (
-              <InfoTab coinMetadata={coinMetadata} pool={seedPoolData} boundPoolClient={boundPoolClient} />
+              <InfoTab
+                coinMetadata={coinMetadata}
+                pool={seedPoolData}
+                boundPoolClient={boundPoolClient}
+                ticketsData={ticketsData}
+              />
             )}
             {tab === "Comments" && (
               <CommentsTab coinAddress={coinMetadata.address} coinCreator={coinMetadata.creator} />
@@ -94,7 +110,13 @@ export function PresaleCoin({
           </div>
           <div className="pt-1 flex w-full">
             <div className="fixed w-[30%] h-12 bottom-[10.7%] right-[7%]">
-              <Button className="custom-outer-shadow" variant="primary">
+              <Button
+                className="custom-outer-shadow"
+                variant="primary"
+                onClick={() => {
+                  setSwapOpen(true);
+                }}
+              >
                 Buy / Claim
               </Button>
             </div>
@@ -109,6 +131,24 @@ export function PresaleCoin({
               <Tabs className="justify-between" tabs={mobileTabs} onTabChange={onTabChange} activeTab={tab} />
             </div>
           </div>
+          <Dialog
+            isOpen={swapOpen}
+            onDismiss={() => setSwapOpen(false)}
+            className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 backdrop-blur-[0.8px] z-50"
+          >
+            <div className="w-full px-2 max-h-full overflow-auto shadow-light">
+              <PresaleCoinSwap
+                pool={seedPoolData}
+                tokenSymbol={coinMetadata.symbol}
+                boundPool={boundPoolClient.boundPoolInstance.poolObjectData}
+                ticketsData={ticketsData}
+                memeImage={coinMetadata.image}
+                onClose={() => {
+                  setSwapOpen(false);
+                }}
+              />
+            </div>
+          </Dialog>
         </>
       ) : (
         <div className="grid grid-cols-3 gap-3 px-3 xl:px-0 w-full">
@@ -124,7 +164,12 @@ export function PresaleCoin({
             )}
           </div>
           <div className="col-span-1 flex flex-col gap-3">
-            <InfoTab coinMetadata={coinMetadata} pool={seedPoolData} boundPoolClient={boundPoolClient} />
+            <InfoTab
+              coinMetadata={coinMetadata}
+              ticketsData={ticketsData}
+              pool={seedPoolData}
+              boundPoolClient={boundPoolClient}
+            />
           </div>
         </div>
       )}
