@@ -1,15 +1,20 @@
+import { useSeedPool } from "@/hooks/presale/useSeedPool";
+import { useStakingPoolFromApi } from "@/hooks/staking/useStakingPoolFromApi";
 import { useMedia } from "@/hooks/useMedia";
 import { Button } from "@/memechan-ui/Atoms";
 import { Tabs } from "@/memechan-ui/Atoms/Tabs";
 import TopBar from "@/memechan-ui/Atoms/TopBar/TopBar";
 import { LivePoolData } from "@/types/pool";
 import { SolanaToken } from "@avernikoz/memechan-sol-sdk";
+import { Dialog } from "@reach/dialog";
 import { track } from "@vercel/analytics";
 import { useRouter } from "next/router";
+import { useState } from "react";
 import { CommentsTab } from "./common-tabs/comments-tab/comments-tab";
 import { ChartTab } from "./live-coin-tabs/chart-tab/chart-tab";
 import { InfoTab } from "./live-coin-tabs/info-tab/info-tab";
 import { desktopTabs, mobileTabs } from "./presale-coin";
+import { LiveCoinSwap } from "./sidebar/swap/live-coin-swap";
 
 export function LiveCoin({
   coinMetadata,
@@ -20,8 +25,11 @@ export function LiveCoin({
   livePoolData: LivePoolData;
   tab: string;
 }) {
+  const { data: stakingPoolFromApi } = useStakingPoolFromApi(coinMetadata.address);
+  const { data: seedPoolData } = useSeedPool(coinMetadata.address);
   const mediaQuery = useMedia();
   const router = useRouter();
+  const [swapOpen, setSwapOpen] = useState(false);
 
   const onTabChange = (tab: string) => {
     track("Live_SetTab", { status: tab });
@@ -41,7 +49,14 @@ export function LiveCoin({
       {mediaQuery.isSmallDevice ? (
         <>
           <div className="w-full px-3 ">
-            {tab === "Info" && <InfoTab coinMetadata={coinMetadata} pool={livePoolData} />}
+            {tab === "Info" && (
+              <InfoTab
+                coinMetadata={coinMetadata}
+                pool={livePoolData}
+                stakingPoolFromApi={stakingPoolFromApi}
+                seedPoolData={seedPoolData}
+              />
+            )}
             {tab === "Comments" && (
               <CommentsTab coinAddress={coinMetadata.address} coinCreator={coinMetadata.creator} />
             )}
@@ -49,7 +64,13 @@ export function LiveCoin({
           </div>
           <div className="pt-1 flex w-full">
             <div className="fixed w-[30%] h-12 bottom-[10.7%] right-[7%]">
-              <Button className="custom-outer-shadow" variant="primary">
+              <Button
+                className="custom-outer-shadow"
+                variant="primary"
+                onClick={() => {
+                  setSwapOpen(true);
+                }}
+              >
                 Buy / Claim
               </Button>
             </div>
@@ -64,6 +85,24 @@ export function LiveCoin({
               <Tabs className="justify-between" tabs={mobileTabs} onTabChange={onTabChange} activeTab={tab} />
             </div>
           </div>
+          <Dialog
+            isOpen={swapOpen}
+            onDismiss={() => setSwapOpen(false)}
+            className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 backdrop-blur-[0.8px] z-50"
+          >
+            <div className="w-full px-2 max-h-full overflow-auto shadow-light">
+              <LiveCoinSwap
+                pool={livePoolData}
+                tokenSymbol={coinMetadata.symbol}
+                memeImage={coinMetadata.image}
+                stakingPoolFromApi={stakingPoolFromApi}
+                seedPoolAddress={seedPoolData?.address}
+                onClose={() => {
+                  setSwapOpen(false);
+                }}
+              />
+            </div>
+          </Dialog>
         </>
       ) : (
         <div className="grid grid-cols-3 gap-3 px-3 xl:px-0 w-full">
@@ -77,7 +116,12 @@ export function LiveCoin({
             {tab === "Chart" && <ChartTab coinAddress={coinMetadata.address} livePoolDataId={livePoolData.id} />}
           </div>
           <div className="col-span-1 flex flex-col gap-3">
-            <InfoTab coinMetadata={coinMetadata} pool={livePoolData} />
+            <InfoTab
+              coinMetadata={coinMetadata}
+              pool={livePoolData}
+              stakingPoolFromApi={stakingPoolFromApi}
+              seedPoolData={seedPoolData}
+            />
           </div>
         </div>
       )}

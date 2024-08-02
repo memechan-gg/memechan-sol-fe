@@ -4,7 +4,14 @@ import { useSeedPool } from "@/hooks/presale/useSeedPool";
 import { useStakingPoolFromApi } from "@/hooks/staking/useStakingPoolFromApi";
 import { useTickets } from "@/hooks/useTickets";
 import { LivePoolData, SeedPoolData } from "@/types/pool";
-import { BoundPoolClient, BoundPoolClientV2, ParsedMemeTicket, SolanaToken, TokenInfo, getBoundPoolClientFromId } from "@avernikoz/memechan-sol-sdk";
+import {
+  BoundPoolClient,
+  BoundPoolClientV2,
+  ParsedMemeTicket,
+  SolanaToken,
+  TokenInfo,
+  getBoundPoolClientFromId,
+} from "@avernikoz/memechan-sol-sdk";
 
 type BoundPool = Awaited<ReturnType<typeof getBoundPoolClientFromId>>["boundPoolInstance"]["poolObjectData"] | null;
 
@@ -21,6 +28,7 @@ export type PresaleCoinSwapProps = {
   memeImage: string;
   livePoolAddress?: string;
   stakingPoolFromApi?: ReturnType<typeof useStakingPoolFromApi>["data"];
+  onClose?: () => void;
 };
 
 export type LiveCoinSwapProps = {
@@ -29,6 +37,7 @@ export type LiveCoinSwapProps = {
   memeImage: string;
   stakingPoolFromApi: ReturnType<typeof useStakingPoolFromApi>["data"];
   seedPoolAddress?: string;
+  onClose?: () => void;
 };
 
 export type SwapButtonProps = {

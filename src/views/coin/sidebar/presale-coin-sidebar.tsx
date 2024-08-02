@@ -43,15 +43,6 @@ export function PresaleCoinSidebar({
         />
       </SidebarItem>
       <SidebarItem>
-        <PresaleCoinSwap
-          pool={pool}
-          tokenSymbol={coinMetadata.symbol}
-          boundPool={boundPool}
-          ticketsData={ticketsData}
-          memeImage={coinMetadata.image}
-        />
-      </SidebarItem>
-      <SidebarItem>
         <PresaleCoinHolders
           poolAddress={pool.address}
           coinMetadata={coinMetadata}

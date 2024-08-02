@@ -26,6 +26,7 @@ export const LiveCoinSwap = ({
   memeImage,
   stakingPoolFromApi,
   seedPoolAddress,
+  onClose,
 }: LiveCoinSwapProps) => {
   const [coinToMeme, setCoinToMeme] = useState<boolean>(true);
   const [inputAmount, setInputAmount] = useState<string>("");
@@ -40,12 +41,14 @@ export const LiveCoinSwap = ({
     balance: coinBalance,
     isLoading: isBalanceLoading,
     refetch: coinBalanceRefetch,
+    isRefetching: coinBalanceRefetching,
   } = useBalance(tokenData.mint.toString(), tokenData.decimals);
 
   const {
     balance: memeBalance,
     isLoading: isMemeBalanceLoading,
     refetch: memeBalanceRefech,
+    isRefetching: memeBalanceRefetching,
   } = useBalance(tokenAddress, MEMECHAN_MEME_TOKEN_DECIMALS);
 
   const [baseCurrency, setBaseCurrency] = useState({
@@ -388,6 +391,7 @@ export const LiveCoinSwap = ({
       isSwapping={isSwapping}
       isLoadingOutputAmount={isLoadingOutputAmount}
       onSwap={onSwap}
+      isRefreshing={memeBalanceRefetching || coinBalanceRefetching}
       onReverseClick={onReverseClick}
       toReceive={toReceive}
       swapButtonIsDisabled={swapButtonIsDiabled}
@@ -395,6 +399,7 @@ export const LiveCoinSwap = ({
       livePoolId={address}
       seedPoolAddress={seedPoolAddress}
       tokenSymbol={tokenSymbol}
+      onClose={onClose}
     />
   );
 };

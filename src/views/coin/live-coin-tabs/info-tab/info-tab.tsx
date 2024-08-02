@@ -1,16 +1,10 @@
 import { useLiveCoinUniqueHoldersFromBE } from "@/hooks/live/useLiveCoinUniqueHoldersFromBE";
-import { useLiveMemePrice } from "@/hooks/live/useLiveMemePrice";
-import { useSeedPool } from "@/hooks/presale/useSeedPool";
-import { useStakingPoolFromApi } from "@/hooks/staking/useStakingPoolFromApi";
-import { useMemePriceFromBE } from "@/hooks/useMemePriceFromBE";
 import { LiveCoinSidebar } from "../../sidebar/live-coin-sidebar";
 
-export function InfoTab({ coinMetadata, pool }: any) {
-  const { data: price } = useMemePriceFromBE({ memeMint: coinMetadata.address, poolType: "livePool" });
-  const { data: stakingPoolFromApi } = useStakingPoolFromApi(coinMetadata.address);
+export function InfoTab({ coinMetadata, pool, stakingPoolFromApi, seedPoolData }: any) {
+  // const { data: price } = useMemePriceFromBE({ memeMint: coinMetadata.address, poolType: "livePool" });
   const { data: uniqueHoldersData } = useLiveCoinUniqueHoldersFromBE(coinMetadata.address, stakingPoolFromApi?.address);
-  const { data: seedPoolData } = useSeedPool(coinMetadata.address);
-  const { data: prices } = useLiveMemePrice(pool.id);
+  // const { data: prices } = useLiveMemePrice(pool.id);
 
   return (
     <LiveCoinSidebar

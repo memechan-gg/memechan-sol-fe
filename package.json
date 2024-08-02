@@ -47,6 +47,7 @@
     "react-dom": "^18",
     "react-hook-form": "^7.51.3",
     "react-hot-toast": "^2.4.1",
+    "react-loader-spinner": "^6.1.6",
     "react-loading-skeleton": "^3.4.0",
     "rpc-websockets": "^7.11.2",
     "tailwind-merge": "^2.3.0",
