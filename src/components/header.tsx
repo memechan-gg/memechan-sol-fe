@@ -24,7 +24,12 @@ export const Header = () => {
                 </Link>
                 <Link href="/create" className="flex-1">
                   <div className="w-full sm:w-[140px] h-[40px] justify-center text-center">
-                    <Button variant="primary">Create Memecoin</Button>
+                    <Button variant="primary" className="hidden sm:block">
+                      Create Memecoin
+                    </Button>
+                    <Button variant="primary" className="block sm:hidden">
+                      Create
+                    </Button>
                   </div>
                 </Link>
               </div>

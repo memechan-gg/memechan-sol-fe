@@ -10,7 +10,6 @@ import { SwapInput } from "@/memechan-ui/Atoms/Input";
 import UncontrolledTextInput from "@/memechan-ui/Atoms/Input/UncontrolledTextInput";
 import TopBar from "@/memechan-ui/Atoms/TopBar/TopBar";
 import { Typography } from "@/memechan-ui/Atoms/Typography";
-import DangerIcon from "@/memechan-ui/icons/DangerIcon";
 import DownArrowIcon from "@/memechan-ui/icons/DownArrowIcon";
 import UpArrowIcon from "@/memechan-ui/icons/UpArrowIcon";
 import { TOKEN_INFOS, sleep } from "@avernikoz/memechan-sol-sdk";
@@ -284,12 +283,11 @@ export function CreateCoin() {
                 </label>
                 <div className="h-32 max-h-32 ">
                   <textarea
-                    {...register("description", { required: true })}
+                    {...register("description", { required: false })}
                     placeholder="Description"
-                    className="text-[13px] focus-within:border-red-100 h-32 max-h-32 border border-mono-400 p-4 flex-1 outline-none bg-transparent placeholder:text-[13px] placeholder:font-normal placeholder:leading-5 placeholder-mono-500 w-full"
+                    className="text-[13px] h-32 max-h-32 border border-mono-400 p-4 flex-1 outline-none bg-transparent placeholder:text-[13px] placeholder:font-normal placeholder:leading-5 placeholder-mono-500 w-full"
                   />
                 </div>
-                {errors.description && <p className="text-xs text-red-500">Description is required</p>}
               </div>
             </div>
             <div className="">
@@ -372,7 +370,13 @@ export function CreateCoin() {
               // labelRight={publicKey ? `👛 ${baseCurrency.coinBalance ?? 0} ${baseCurrency.currencyName}` : undefined}
             />
             <div className="flex flex-col gap-1 mt-4">
-              {filledRequired ? (
+              {!connected || !publicKey || !signMessage ? (
+                <div className="h-14">
+                  <Button onClick={(e) => e.preventDefault()} variant="primary">
+                    Connect wallet
+                  </Button>
+                </div>
+              ) : filledRequired ? (
                 <div className="h-14">
                   <Button variant="primary" className="grid py-2">
                     {
@@ -394,7 +398,9 @@ export function CreateCoin() {
                 </div>
               )}
             </div>
-            <div className="border border-mono-400 mt-4 h-13 py-2 px-4 flex items-center">
+
+            {/* IN CASE THEY WANT IT BACK 
+             <div className="border border-mono-400 mt-4 h-13 py-2 px-4 flex items-center">
               <div className="flex  items-baseline">
                 <div className="  mr-4 flex align-baseline">
                   <DangerIcon size={13} fill="var(--color-yellow-100)" />
@@ -405,7 +411,7 @@ export function CreateCoin() {
                   </Typography>
                 </div>
               </div>
-            </div>
+            </div> */}
           </form>
         </div>
       </div>
