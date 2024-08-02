@@ -355,6 +355,7 @@ export const PresaleCoinSwap = ({
       // livePoolId={address}
       // seedPoolAddress={seedPoolAddress}
       onClose={onClose}
+      tokenDecimals={coinToMeme ? memeChanQuoteTokenDecimals : MEMECHAN_MEME_TOKEN_DECIMALS}
     />
   );
 };

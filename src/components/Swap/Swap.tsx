@@ -13,10 +13,12 @@ import { handleSlippageInputChange } from "@/views/coin/sidebar/swap/utils";
 import { faClose } from "@fortawesome/free-solid-svg-icons/faClose";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Dialog } from "@reach/dialog";
+import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import { ChangeEvent, useState } from "react";
 import { Oval } from "react-loader-spinner";
 import { WithConnectedWallet } from "../WithConnectedWallet";
+import { Claim } from "./Claim";
 
 interface SwapProps {
   variant: "LIVE" | "PRESALE";
@@ -49,6 +51,7 @@ interface SwapProps {
   livePoolId?: string;
   tokenSymbol: string;
   onClose?: () => void;
+  tokenDecimals: number;
 }
 
 export const Swap = (props: SwapProps) => {
@@ -74,11 +77,13 @@ export const Swap = (props: SwapProps) => {
     stakingPoolFromApi,
     onClose,
     isRefreshing,
+    tokenDecimals,
   } = props;
   const { data: solanaPriceInUSD } = useSolanaPrice();
   const [variant, setVariant] = useState<"swap" | "claim">("swap");
   const [localSlippage, setLocalSlippage] = useState(slippage);
   const isVariantSwap = variant === "swap";
+  const { connected } = useWallet();
 
   const [isOpen, setIsOpen] = useState(false);
   return (
@@ -155,8 +160,10 @@ export const Swap = (props: SwapProps) => {
                   labelRight={
                     publicKey ? `👛 ${baseCurrency.coinBalance ?? 0} ${baseCurrency.currencyName}` : undefined
                   }
-                  showQuickInput
+                  baseCurrencyAmount={baseCurrency.coinBalance}
+                  showQuickInput={connected}
                   usdPrice={solanaPriceInUSD?.price ? Number(inputAmount ?? 0) * solanaPriceInUSD.price : 0}
+                  tokenDecimals={tokenDecimals}
                 />
                 <div className="relative h-12">
                   <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 border-t border-mono-400"></div>
@@ -178,7 +185,8 @@ export const Swap = (props: SwapProps) => {
                   labelRight={
                     publicKey ? `👛 ${secondCurrency.coinBalance ?? 0} ${secondCurrency.currencyName}` : undefined
                   }
-                  usdPrice={solanaPriceInUSD?.price ? Number(inputAmount ?? 0) * solanaPriceInUSD.price : 0}
+                  isRefreshing={isLoadingOutputAmount}
+                  // usdPrice={solanaPriceInUSD?.price ? Number(inputAmount ?? 0) * solanaPriceInUSD.price : 0}
                 />
               </div>
               <div className="h-14">

@@ -400,6 +400,7 @@ export const LiveCoinSwap = ({
       seedPoolAddress={seedPoolAddress}
       tokenSymbol={tokenSymbol}
       onClose={onClose}
+      tokenDecimals={coinToMeme ? tokenData.decimals : MEMECHAN_MEME_TOKEN_DECIMALS}
     />
   );
 };
