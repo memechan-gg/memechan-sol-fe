@@ -366,7 +366,9 @@ export function CreateCoin() {
               currencyLogoUrl={baseCurrency.currencyLogoUrl}
               usdPrice={solanaPriceInUSD?.price ? Number(inputAmount ?? 0) * solanaPriceInUSD.price : 0}
               label="Be the very first person to buy your token"
-              showQuickInput
+              showQuickInput={connected}
+              baseCurrencyAmount={baseCurrency.coinBalance}
+              tokenDecimals={9}
               // labelRight={publicKey ? `👛 ${baseCurrency.coinBalance ?? 0} ${baseCurrency.currencyName}` : undefined}
             />
             <div className="flex flex-col gap-1 mt-4">
