@@ -1,4 +1,4 @@
-import { ChangeEvent, useRef, useState } from "react";
+import { ChangeEvent, useRef } from "react";
 import { Typography } from "../Typography";
 
 interface SwapInputProps {
@@ -30,15 +30,15 @@ export const SwapInput: React.FC<SwapInputProps> = ({
   labelRight,
   showQuickInput = false,
 }) => {
-  const [isFocused, setIsFocused] = useState(false);
+  // const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleFocus = () => {
-    if (!isReadOnly) {
-      setIsFocused(true);
-      inputRef.current?.focus();
-    }
-  };
+  // const handleFocus = () => {
+  //   if (!isReadOnly) {
+  //     setIsFocused(true);
+  //     inputRef.current?.focus();
+  //   }
+  // };
 
   const quickInputClick = (value: number) => {
     if (setInputValue && inputRef.current) {
@@ -70,8 +70,8 @@ export const SwapInput: React.FC<SwapInputProps> = ({
         )}
       </div>
       <div
-        onClick={handleFocus}
-        className={`flex custom-inner-shadow h-14 items-center px-3 py-1.5 rounded-tl-[2px] rounded-tr-[2px] ${isFocused && !isReadOnly ? "border border-primary-100" : "border border-mono-400"}`}
+        // onClick={handleFocus}
+        className={`flex custom-inner-shadow h-14 items-center px-3 py-1.5 rounded-tl-[2px] rounded-tr-[2px] border border-mono-400`}
       >
         <div className={`cursor-pointer mr-1 ${isReadOnly ? "cursor-default" : ""}`}>
           <span className="relative flex items-center gap-1.5">
@@ -99,8 +99,8 @@ export const SwapInput: React.FC<SwapInputProps> = ({
               type={type}
               value={inputValue}
               onChange={(e) => setInputValue?.(e)}
-              onFocus={() => setIsFocused(true)}
-              onBlur={() => setIsFocused(false)}
+              // onFocus={() => setIsFocused(true)}
+              // onBlur={() => setIsFocused(false)}
               readOnly={isReadOnly}
               disabled={disabled}
               style={{
@@ -131,7 +131,7 @@ export const SwapInput: React.FC<SwapInputProps> = ({
             </Typography>
           </div>
           <div
-            className="border-l border-mono-400 flex justify-center items-center w-1/6 h-full hover:bg-mono-300 active:bg-mono-400 h-full"
+            className="border-l border-mono-400 flex justify-center items-center w-1/6 h-full hover:bg-mono-300 active:bg-mono-400"
             onClick={() => {
               quickInputClick(0.25);
             }}
