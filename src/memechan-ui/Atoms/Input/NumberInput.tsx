@@ -8,9 +8,11 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
   setValue: (e: string) => void;
   value: string;
   placeholder?: string;
+  min?: number;
+  max?: number;
 }
 
-const TextInput = ({
+const NumberInput = ({
   startAdornment,
   endAdornment,
   startAdornmentClassName = "",
@@ -18,16 +20,20 @@ const TextInput = ({
   value,
   setValue,
   placeholder,
+  min,
+  max,
   ...rest
 }: Props) => {
   return (
     <div
-      className={`flex focus-within:border-red-100 items-center text-[13px] font-normal leading-5 text-mono-600 text-left hover:opacity-90 active:opacity-80 custom-inner-shadow rounded-tl-[2px] rounded-tr-[2px] placeholder:text-[13px] placeholder:font-normal placeholder:leading-5 border border-mono-400 p-4 flex-1 outline-none bg-transparent placeholder-mono-500 w-full ${rest.className}`}
+      className={`flex items-center text-[13px] font-normal leading-5 text-mono-600 text-left hover:opacity-90 active:opacity-80 custom-inner-shadow rounded-tl-[2px] rounded-tr-[2px] placeholder:text-[13px] placeholder:font-normal placeholder:leading-5 border border-mono-400 p-4 flex-1 outline-none bg-transparent placeholder-mono-500 w-full ${rest.className}`}
     >
       {startAdornment && <span className={`flex ${startAdornmentClassName}`}>{startAdornment}</span>}
       <input
+        min={min}
+        max={max}
         {...rest}
-        type="text"
+        type="number"
         value={value}
         onChange={(e) => setValue(e.target.value)}
         className="flex-1 outline-none bg-transparent placeholder-mono-500 text-[13px] leading-5"
@@ -38,4 +44,4 @@ const TextInput = ({
   );
 };
 
-export default TextInput;
+export default NumberInput;
