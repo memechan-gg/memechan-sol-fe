@@ -4,12 +4,11 @@ import { useSolanaPrice } from "@/hooks/useSolanaPrice";
 import { Button } from "@/memechan-ui/Atoms";
 import { Divider } from "@/memechan-ui/Atoms/Divider/Divider";
 import { SwapInput } from "@/memechan-ui/Atoms/Input";
-import TextInput from "@/memechan-ui/Atoms/Input/TextInput";
+import NumberInput from "@/memechan-ui/Atoms/Input/NumberInput";
 import { Typography } from "@/memechan-ui/Atoms/Typography";
 import DownArrowIcon from "@/memechan-ui/icons/DownArrowIcon";
 import UpArrowIcon from "@/memechan-ui/icons/UpArrowIcon";
 import { Card } from "@/memechan-ui/Molecules";
-import { handleSlippageInputChange } from "@/views/coin/sidebar/swap/utils";
 import { faClose } from "@fortawesome/free-solid-svg-icons/faClose";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Dialog } from "@reach/dialog";
@@ -86,6 +85,16 @@ export const Swap = (props: SwapProps) => {
   const { connected } = useWallet();
 
   const [isOpen, setIsOpen] = useState(false);
+  const handleSlippageChange = (value: string) => {
+    const decimalPattern = /^\d*\.?\d{0,2}$/;
+    if (
+      value === "" ||
+      (decimalPattern.test(value) && parseFloat(value) <= MAX_SLIPPAGE && parseFloat(value) >= MIN_SLIPPAGE)
+    ) {
+      setLocalSlippage(value);
+      setSlippage(value);
+    }
+  };
   return (
     <>
       <Card additionalStyles="min-h-[392px] bg-mono-200">
@@ -223,32 +232,26 @@ export const Swap = (props: SwapProps) => {
             </div>
           </Card.Header>
           <Card.Body>
-            <TextInput
+            <NumberInput
+              min={MIN_SLIPPAGE}
+              max={MAX_SLIPPAGE}
+              endAdornment="%"
+              endAdornmentClassName="w-5 h-5 text-mono-500"
               value={localSlippage}
-              setValue={setLocalSlippage}
-              onChange={(e) => setSlippage(e.target.value)}
+              setValue={handleSlippageChange}
             />
             <div className="h-12">
-              <Button
-                variant="primary"
-                className="mt-5"
-                onClick={() => {
-                  const e = { target: { value: slippage } } as any;
-                  handleSlippageInputChange({
-                    decimalPlaces: 2,
-                    e,
-                    setValue: setSlippage,
-                    max: MAX_SLIPPAGE,
-                    min: MIN_SLIPPAGE,
-                  });
-                  setSlippage(localSlippage);
-                  setIsOpen(false);
-                }}
-              >
-                <Typography variant="h4" color="mono-600">
-                  Save
-                </Typography>
-              </Button>
+              {localSlippage ? (
+                <Button variant="primary" className="mt-5" onClick={() => setIsOpen(false)}>
+                  <Typography variant="h4" color="mono-600">
+                    Save
+                  </Typography>
+                </Button>
+              ) : (
+                <div className="mt-5 h-12">
+                  <Button variant="disabled">Save</Button>
+                </div>
+              )}
             </div>
           </Card.Body>
         </Card>
