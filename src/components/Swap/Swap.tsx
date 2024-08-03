@@ -79,6 +79,7 @@ export const Swap = (props: SwapProps) => {
     tokenDecimals,
   } = props;
   const { data: solanaPriceInUSD } = useSolanaPrice();
+
   const [variant, setVariant] = useState<"swap" | "claim">("swap");
   const [localSlippage, setLocalSlippage] = useState(slippage);
   const isVariantSwap = variant === "swap";
@@ -199,21 +200,29 @@ export const Swap = (props: SwapProps) => {
                 />
               </div>
               <div className="h-14">
-                <WithConnectedWallet
-                  variant={inputAmount ? "primary" : "disabled"}
-                  className="mt-4 p-1 h-14"
-                  disabled={swapButtonIsDisabled || isLoadingOutputAmount}
-                  onClick={onSwap}
-                  isLoading={isSwapping || isLoadingOutputAmount}
-                >
-                  {!inputAmount ? (
-                    <Typography variant="h4">Fill all required fields</Typography>
-                  ) : (
-                    <Typography variant="h4">
-                      {isLoadingOutputAmount ? "Calculating..." : isSwapping ? "Swapping..." : "Swap"}
-                    </Typography>
-                  )}
-                </WithConnectedWallet>
+                {connected ? (
+                  <WithConnectedWallet
+                    variant={inputAmount ? "primary" : "disabled"}
+                    className="mt-4 p-1 h-14"
+                    disabled={swapButtonIsDisabled || isLoadingOutputAmount}
+                    onClick={onSwap}
+                    isLoading={isSwapping || isLoadingOutputAmount}
+                  >
+                    {!inputAmount ? (
+                      <Typography variant="h4">Fill all required fields</Typography>
+                    ) : (
+                      <Typography variant="h4">
+                        {isLoadingOutputAmount ? "Calculating..." : isSwapping ? "Swapping..." : "Swap"}
+                      </Typography>
+                    )}
+                  </WithConnectedWallet>
+                ) : (
+                  <div className="h-14 mt-4">
+                    <Button onClick={(e) => e.preventDefault()} variant="primary">
+                      Connect Wallet
+                    </Button>
+                  </div>
+                )}
               </div>
             </>
           )}
