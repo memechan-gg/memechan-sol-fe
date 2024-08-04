@@ -35,7 +35,7 @@ export const ConnectWallet = (props: { account: UserContextType; disconnect: () 
             <Popover.Button className="w-full focus-visible:outline-none h-full leading-none flex">
               <div
                 role="button"
-                className={`h-full w-full gap-y-[6px] text-primary-100 pl-2 text-[0.75rem] font-bold flex flex-col ${connected ? "items-start" : "items-center"} justify-center hover:bg-primary-100 hover:text-white transition-colors focus-visible:outline-none`}
+                className={`h-full w-full gap-y-[6px] text-primary-100 pl-2 text-[0.75rem] font-bold flex flex-col ${connected ? "items-start" : "items-center"} justify-center sm:hover:bg-primary-100 sm:hover:text-white transition-colors focus-visible:outline-none`}
               >
                 {connected ? (
                   <>
@@ -61,7 +61,7 @@ export const ConnectWallet = (props: { account: UserContextType; disconnect: () 
                   <button
                     key={w.adapter.name}
                     onClick={() => connectWallet(w.adapter.name)}
-                    className="p-4 h-16 w-full mt-2 sm:rounded-sm border border-mono-400 shadow-light bg-mono-200 flex items-center justify-between font-bold hover:opacity-80"
+                    className="p-4 h-16 w-full mt-2 sm:rounded-sm border border-mono-400 shadow-light bg-mono-200 flex items-center justify-between font-bold sm:hover:opacity-80"
                   >
                     <div className="flex items-center">
                       <img alt={w.adapter.name} width={24} className="mr-4" src={w.adapter.icon} />

@@ -128,7 +128,7 @@ export function PresaleCoin({
               </Button>
             </div>
             <div className="fixed bottom-0 bg-mono-200 border-t border-t-mono-400 h-15 w-screen px-3 justify-between">
-              <Tabs className="justify-between" tabs={mobileTabs} onTabChange={onTabChange} activeTab={tab} />
+              <Tabs className="justify-between" tabs={mobileTabs} onTabChange={onTabChange} activeTab={tab} immovable />
             </div>
           </div>
           <Dialog
@@ -153,8 +153,13 @@ export function PresaleCoin({
       ) : (
         <div className="grid grid-cols-3 gap-3 px-3 xl:px-0 w-full">
           <div className="col-span-2 flex flex-col gap-y-3">
-            <div className="bg-mono-400 py-1">
-              <Tabs tabs={desktopTabs} onTabChange={onTabChange} activeTab={tab} />
+            <div className="bg-mono-400">
+              <Tabs
+                className="justify-start items-center gap-x-6 ml-6"
+                tabs={desktopTabs}
+                onTabChange={onTabChange}
+                activeTab={tab}
+              />
             </div>
             {tab === "Comments" && (
               <CommentsTab coinAddress={coinMetadata.address} coinCreator={coinMetadata.creator} />

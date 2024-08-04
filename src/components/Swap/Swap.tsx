@@ -37,7 +37,6 @@ interface SwapProps {
   onInputChange: (e: ChangeEvent<HTMLInputElement>) => void;
   inputAmount: string;
   publicKey: PublicKey | null;
-
   isSwapping?: boolean;
   isLoadingOutputAmount?: boolean;
   onSwap: () => Promise<void>;
@@ -93,7 +92,6 @@ export const Swap = (props: SwapProps) => {
       (decimalPattern.test(value) && parseFloat(value) <= MAX_SLIPPAGE && parseFloat(value) >= MIN_SLIPPAGE)
     ) {
       setLocalSlippage(value);
-      setSlippage(value);
     }
   };
   return (
@@ -102,10 +100,9 @@ export const Swap = (props: SwapProps) => {
         <Card.Header>
           <div className="flex justify-between w-full">
             <div className="flex gap-1 items-center">
-              <Typography variant="h4" onClick={() => setVariant(isVariantSwap ? "swap" : "claim")}>
-                {isVariantSwap ? "Swap" : "Claim"}
-              </Typography>
-              {livePoolId && (
+              {/* onClick={() => setVariant(isVariantSwap ? "swap" : "claim")} */}
+              <Typography variant="h4">{isVariantSwap ? "Swap" : "Claim"}</Typography>
+              {/* {livePoolId && (
                 <Typography
                   variant="text-button"
                   underline
@@ -113,7 +110,7 @@ export const Swap = (props: SwapProps) => {
                 >
                   {isVariantSwap ? "Claim" : "Swap"}
                 </Typography>
-              )}
+              )} */}
             </div>
             <div className="flex items-center gap-2">
               <Typography variant="text-button" color="mono-500" underline onClick={() => setIsOpen(true)}>
@@ -174,12 +171,13 @@ export const Swap = (props: SwapProps) => {
                   showQuickInput={connected}
                   usdPrice={solanaPriceInUSD?.price ? Number(inputAmount ?? 0) * solanaPriceInUSD.price : 0}
                   tokenDecimals={tokenDecimals}
+                  quickInputNumber={baseCurrency.currencyName === "SOL"}
                 />
                 <div className="relative h-12">
                   <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 border-t border-mono-400"></div>
                   <div
                     onClick={onReverseClick}
-                    className={`absolute left-1/2 top-1/2 w-6 h-6 -translate-x-1/2 -translate-y-1/2  bg-mono-200 hover:bg-mono-300 cursor-pointer border-2 border-mono-400 rounded-sm flex justify-center items-center ${swapButtonIsDisabled && "cursor-not-allowed hover:bg-mono-200"}`}
+                    className={`absolute left-1/2 top-1/2 w-6 h-6 -translate-x-1/2 -translate-y-1/2  bg-mono-200 sm:hover:bg-mono-300 cursor-pointer border-2 border-mono-400 rounded-sm flex justify-center items-center ${swapButtonIsDisabled && "cursor-not-allowed sm:hover:bg-mono-200"}`}
                   >
                     <DownArrowIcon fill="#979797" />
                     <UpArrowIcon fill="#979797" />
@@ -199,45 +197,56 @@ export const Swap = (props: SwapProps) => {
                   // usdPrice={solanaPriceInUSD?.price ? Number(inputAmount ?? 0) * solanaPriceInUSD.price : 0}
                 />
               </div>
-              <div className="h-14">
-                {connected ? (
-                  <WithConnectedWallet
-                    variant={inputAmount ? "primary" : "disabled"}
-                    className="mt-4 p-1 h-14"
-                    disabled={swapButtonIsDisabled || isLoadingOutputAmount}
-                    onClick={onSwap}
-                    isLoading={isSwapping || isLoadingOutputAmount}
-                  >
-                    {!inputAmount ? (
-                      <Typography variant="h4">Fill all required fields</Typography>
-                    ) : (
-                      <Typography variant="h4">
-                        {isLoadingOutputAmount ? "Calculating..." : isSwapping ? "Swapping..." : "Swap"}
-                      </Typography>
-                    )}
-                  </WithConnectedWallet>
+
+              <WithConnectedWallet
+                variant={inputAmount && !isLoadingOutputAmount ? "primary" : "disabled"}
+                className="mt-4 p-1 h-14"
+                disabled={swapButtonIsDisabled || isLoadingOutputAmount}
+                onClick={onSwap}
+                isLoading={isSwapping || isLoadingOutputAmount}
+              >
+                {!inputAmount ? (
+                  <Typography variant="h4">Fill all required fields</Typography>
                 ) : (
-                  <div className="h-14 mt-4">
-                    <Button onClick={(e) => e.preventDefault()} variant="primary">
-                      Connect Wallet
-                    </Button>
-                  </div>
+                  <Typography variant="h4">
+                    {isLoadingOutputAmount
+                      ? "Loading..."
+                      : isSwapping
+                        ? "Swapping..."
+                        : +inputAmount > baseCurrency.coinBalance
+                          ? "Insufficient balance"
+                          : "Swap"}
+                  </Typography>
                 )}
-              </div>
+              </WithConnectedWallet>
             </>
           )}
         </Card.Body>
       </Card>
       <Dialog
         isOpen={isOpen}
-        onDismiss={() => setIsOpen(false)}
+        onDismiss={() => {
+          if (localSlippage === "") {
+            setSlippage("0");
+          }
+          setIsOpen(false);
+        }}
         className="fixed inset-0 flex items-center justify-center bg-mono-200 md:bg-[#19191957] md:backdrop-blur-[0.5px] md:z-50"
       >
         <Card additionalStyles="max-w-[409px]">
           <Card.Header>
             <div className="flex justify-between items-center w-full">
               <Typography>Slippage Preferences</Typography>
-              <FontAwesomeIcon className="cursor-pointer" icon={faClose} onClick={() => setIsOpen(false)} />
+              <FontAwesomeIcon
+                className="cursor-pointer"
+                icon={faClose}
+                onClick={() => {
+                  if (localSlippage === "") {
+                    setSlippage("0");
+                  }
+                  setIsOpen(false);
+                }}
+              />
             </div>
           </Card.Header>
           <Card.Body>
@@ -251,7 +260,18 @@ export const Swap = (props: SwapProps) => {
             />
             <div className="h-12">
               {localSlippage ? (
-                <Button variant="primary" className="mt-5" onClick={() => setIsOpen(false)}>
+                <Button
+                  variant="primary"
+                  className="mt-5"
+                  onClick={() => {
+                    if (localSlippage === "") {
+                      setSlippage("0");
+                    } else {
+                      setSlippage(localSlippage);
+                    }
+                    setIsOpen(false);
+                  }}
+                >
                   <Typography variant="h4" color="mono-600">
                     Save
                   </Typography>

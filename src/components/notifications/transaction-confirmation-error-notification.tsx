@@ -12,11 +12,11 @@ export const TransactionConfirmationErrorNotification = ({
 
   return (
     <span>
-      <a href={getExplorerTransactionLink(signature)} target="_blank" className="hover:underline text-blue">
+      <a href={getExplorerTransactionLink(signature)} target="_blank" className="sm:hover:underline text-blue">
         Transaction
       </a>{" "}
       was not confirmed in {timeoutInS} seconds. It is unknown if it succeeded or failed. Check{" "}
-      <a href={getExplorerTransactionLink(signature)} target="_blank" className="hover:underline text-blue">
+      <a href={getExplorerTransactionLink(signature)} target="_blank" className="sm:hover:underline text-blue">
         transaction
       </a>{" "}
       using the Solana Explorer.

@@ -63,7 +63,9 @@ export const PresaleCoinHolders = ({ poolAddress, coinMetadata, uniqueHoldersDat
                 </Typography>
               </a>
             </div>
-            <Typography color={userIsDev ? "yellow-100" : "mono-600"}>{userPercentage}%</Typography>
+            <Typography color={userIsDev || Number(userPercentage) > 5 ? "yellow-100" : "mono-600"}>
+              {userPercentage}%
+            </Typography>
           </div>
         )}
 
@@ -101,7 +103,9 @@ export const PresaleCoinHolders = ({ poolAddress, coinMetadata, uniqueHoldersDat
                     </Typography>
                   </a>
                 </div>
-                <Typography color={holderIsDev ? "yellow-100" : "mono-600"}>{percentage}%</Typography>
+                <Typography color={holderIsDev || Number(percentage) > 5 ? "yellow-100" : "mono-600"}>
+                  {percentage}%
+                </Typography>
               </div>
             );
           })}

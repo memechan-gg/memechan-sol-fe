@@ -13,7 +13,7 @@ export function CommentsTab({ coinAddress, coinCreator }: CommentsTabProps) {
       <PostReplyDialog isStatic updateThreads={updateThreads} coinType={coinAddress} />
       <Comments threads={threads} updateThreads={updateThreads} coinCreator={coinCreator} coinType={coinAddress} />
       {nextPageToken && (
-        <div onClick={loadMore} className="text-blue mt-2 cursor-pointer hover:underline w-fit">
+        <div onClick={loadMore} className="text-blue mt-2 cursor-pointer sm:hover:underline w-fit">
           Load more
         </div>
       )}

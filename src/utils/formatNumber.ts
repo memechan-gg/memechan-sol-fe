@@ -9,8 +9,7 @@
  * @param {number} decimalPlaces - The number of decimal places.
  * @returns {string} The formatted number as a string without trailing zeros.
  */
-export function 
-formatNumber(num: number, decimalPlaces: number): string {
+export function formatNumber(num: number, decimalPlaces: number): string {
   const fixedNum = num.toFixed(decimalPlaces);
 
   const formattedNum = parseFloat(fixedNum).toLocaleString(undefined, { maximumFractionDigits: decimalPlaces });
@@ -127,3 +126,10 @@ formatNumber(num: number, decimalPlaces: number): string {
 //     }).format(value);
 //   }
 // };
+
+export function formatSmallNumber(number: number, decimals: number) {
+  const expString = number.toExponential(decimals + 1);
+  const [coefficient, exponent] = expString.split("e");
+  const formattedCoefficient = `${coefficient.slice(0, 2)}${coefficient.slice(2)}`;
+  return `${formattedCoefficient}e${exponent}`;
+}

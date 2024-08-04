@@ -206,7 +206,7 @@ export const WithdrawFeesPopUp = ({
           <Typography variant="h4" color="mono-600">
             Withdraw Fees
           </Typography>
-          <FontAwesomeIcon icon={faXmark} color="#fff" className="hover:cursor-pointer" onClick={closePopUp} />
+          <FontAwesomeIcon icon={faXmark} color="#fff" className="sm:hover:cursor-pointer" onClick={closePopUp} />
         </div>
       </Card.Header>
       <Card.Body>
@@ -281,7 +281,7 @@ export const WithdrawFeesPopUp = ({
   /* <Button
   disabled={updateFeesButtonIsDisabled || isWithdrawLoading}
   onClick={updateFees}
-  className="w-full bg-regular bg-opacity-80 hover:bg-opacity-50 disabled:bg-opacity-50 disabled:cursor-not-allowed"
+  className="w-full bg-regular bg-opacity-80 sm:hover:bg-opacity-50 disabled:bg-opacity-50 disabled:cursor-not-allowed"
 >
   <div className="text-xs font-bold text-white">{isUpdateLoading ? "Loading..." : "Update Available Fees"}</div>
 </Button> */

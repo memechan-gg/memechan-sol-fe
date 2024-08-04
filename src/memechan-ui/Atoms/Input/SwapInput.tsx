@@ -18,6 +18,7 @@ interface SwapInputProps {
   baseCurrencyAmount?: number;
   tokenDecimals?: number;
   isRefreshing?: boolean;
+  quickInputNumber?: boolean;
 }
 
 export const SwapInput: React.FC<SwapInputProps> = ({
@@ -36,6 +37,7 @@ export const SwapInput: React.FC<SwapInputProps> = ({
   baseCurrencyAmount,
   tokenDecimals,
   isRefreshing = false,
+  quickInputNumber = false,
 }) => {
   // const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -47,13 +49,17 @@ export const SwapInput: React.FC<SwapInputProps> = ({
   //   }
   // };
 
-  const quickInputClick = (value: number) => {
+  const quickInputClick = (value: number, isPercentage: boolean) => {
     if (setInputValue && inputRef.current) {
       const changeEvent = {
         target: inputRef.current,
         currentTarget: inputRef.current,
       } as ChangeEvent<HTMLInputElement>;
-
+      if (!isPercentage) {
+        changeEvent.target.value = value.toString();
+        setInputValue(changeEvent);
+        return;
+      }
       const baseAmount = (value * (baseCurrencyAmount ?? 0)) / 100;
       const result = baseAmount.toString().split(".");
       if (result[1] && tokenDecimals !== undefined) {
@@ -63,8 +69,6 @@ export const SwapInput: React.FC<SwapInputProps> = ({
       setInputValue(changeEvent);
     }
   };
-  console.log(isRefreshing);
-
   return (
     <div>
       <div className="flex justify-between pb-1">
@@ -76,7 +80,12 @@ export const SwapInput: React.FC<SwapInputProps> = ({
           </label>
         )}
         {labelRight && (
-          <label htmlFor="fromValue">
+          <label
+            htmlFor="fromValue"
+            onClick={() => {
+              quickInputClick(100, true);
+            }}
+          >
             <Typography color="mono-500" variant="body">
               {labelRight}
             </Typography>
@@ -142,63 +151,63 @@ export const SwapInput: React.FC<SwapInputProps> = ({
           className={`flex cursor-pointer custom-inner-shadow h-9 items-center rounded-tl-[2px] rounded-tr-[2px] border border-mono-400 justify-between w-full`}
         >
           <div
-            className="flex  justify-center items-center w-1/6 hover:bg-mono-300 active:bg-mono-400 h-full"
+            className="flex  justify-center items-center w-1/6 sm:hover:bg-mono-300 active:bg-mono-400 h-full"
             onClick={() => {
-              quickInputClick(1);
+              quickInputClick(quickInputNumber ? 0.1 : 1, !quickInputNumber);
             }}
           >
             <Typography variant="text-button" underline color="mono-500">
-              1%
+              {quickInputNumber ? "0.1" : "1%"}
             </Typography>
           </div>
           <div
-            className="border-l border-mono-400 flex justify-center items-center w-1/6 h-full hover:bg-mono-300 active:bg-mono-400"
+            className="border-l border-mono-400 flex justify-center items-center w-1/6 h-full sm:hover:bg-mono-300 active:bg-mono-400"
             onClick={() => {
-              quickInputClick(5);
+              quickInputClick(quickInputNumber ? 0.25 : 5, !quickInputNumber);
             }}
           >
             <Typography variant="text-button" underline color="mono-500">
-              5%
+              {quickInputNumber ? "0.25" : "5%"}
             </Typography>
           </div>
           <div
-            className="border-l border-mono-400 flex justify-center items-center w-1/6 hover:bg-mono-300 active:bg-mono-400 h-full"
+            className="border-l border-mono-400 flex justify-center items-center w-1/6 sm:hover:bg-mono-300 active:bg-mono-400 h-full"
             onClick={() => {
-              quickInputClick(10);
+              quickInputClick(quickInputNumber ? 0.5 : 10, !quickInputNumber);
             }}
           >
             <Typography variant="text-button" underline color="mono-500">
-              10%
+              {quickInputNumber ? "0.5" : "10%"}
             </Typography>
           </div>
           <div
-            className="border-l border-mono-400 flex justify-center items-center w-1/6 hover:bg-mono-300 active:bg-mono-400 h-full"
+            className="border-l border-mono-400 flex justify-center items-center w-1/6 sm:hover:bg-mono-300 active:bg-mono-400 h-full"
             onClick={() => {
-              quickInputClick(25);
+              quickInputClick(quickInputNumber ? 1 : 25, !quickInputNumber);
             }}
           >
             <Typography variant="text-button" underline color="mono-500">
-              25%
+              {quickInputNumber ? "1.0" : "25%"}
             </Typography>
           </div>
           <div
-            className="border-l border-mono-400 flex justify-center items-center w-1/6 hover:bg-mono-300 active:bg-mono-400 h-full"
+            className="border-l border-mono-400 flex justify-center items-center w-1/6 sm:hover:bg-mono-300 active:bg-mono-400 h-full"
             onClick={() => {
-              quickInputClick(50);
+              quickInputClick(quickInputNumber ? 3 : 50, !quickInputNumber);
             }}
           >
             <Typography variant="text-button" underline color="mono-500">
-              50%
+              {quickInputNumber ? "3.0" : "50%"}
             </Typography>
           </div>
           <div
-            className="border-l border-mono-400 flex justify-center items-center w-1/6 hover:bg-mono-300 active:bg-mono-400 h-full"
+            className="border-l border-mono-400 flex justify-center items-center w-1/6 sm:hover:bg-mono-300 active:bg-mono-400 h-full"
             onClick={() => {
-              quickInputClick(100);
+              quickInputClick(quickInputNumber ? 5 : 100, !quickInputNumber);
             }}
           >
             <Typography variant="text-button" underline color="mono-500">
-              100%
+              {quickInputNumber ? "5.0" : "100%"}
             </Typography>
           </div>
         </div>

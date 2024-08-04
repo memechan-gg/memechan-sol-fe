@@ -69,6 +69,8 @@ export function PostReplyDialog({ isStatic, onClose, updateThreads, coinType, re
       track("Reply_Sent", trackObj);
 
       updateThreads();
+      setReplyText("");
+      toast.success("Reply posted successfully!");
 
       if (!isStatic) {
         onClose();
@@ -161,10 +163,10 @@ export function PostReplyDialog({ isStatic, onClose, updateThreads, coinType, re
             <button
               
               onClick={handleSendReply}
-              className="text-blue py-2 rounded-lg text-sm hover:underline"
+              className="text-blue py-2 rounded-lg text-sm sm:hover:underline"
             >
             </button>
-            <button onClick={onClose} className="text-regular text-sm hover:underline">
+            <button onClick={onClose} className="text-regular text-sm sm:hover:underline">
               Close
             </button>
           </div>

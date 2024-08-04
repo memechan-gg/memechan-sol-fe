@@ -1,9 +1,9 @@
-import Link from "next/link";
+import { Typography } from "@/memechan-ui/Atoms/Typography";
 import Image from "next/image";
+import Link from "next/link";
 import TelegramIcon from "../memechan-ui/icons/telegram-icon.svg";
 import TwitterIcon from "../memechan-ui/icons/twitter-icon.svg";
 import { Logo } from "./logo";
-import { Typography } from "@/memechan-ui/Atoms/Typography";
 
 export const Footer = () => (
   <footer className="hidden sm:block">
@@ -21,18 +21,25 @@ export const Footer = () => (
         <span className="flex cursor-default">
           <Typography color="mono-500"> all rights fucked up </Typography>
         </span>
-      
       </div>
       <div className="flex gap-6">
-        <Link
-          href="https://x.com/memechan_gg"
-        >
-          <Image width={24} height={24} src={TwitterIcon} alt="twitter" className="m-[6px] hover:opacity-80 hover:cursor-pointer"/>
+        <Link href="https://x.com/memechan_gg">
+          <Image
+            width={24}
+            height={24}
+            src={TwitterIcon}
+            alt="twitter"
+            className="m-[6px] sm:hover:opacity-80 sm:hover:cursor-pointer"
+          />
         </Link>
-        <Link
-          href="https://t.me/memechan_gg"
-        >
-          <Image width={24} height={24} src={TelegramIcon} alt="telegram" className="m-[6px] hover:opacity-80 hover:cursor-pointer"/>
+        <Link href="https://t.me/memechan_gg">
+          <Image
+            width={24}
+            height={24}
+            src={TelegramIcon}
+            alt="telegram"
+            className="m-[6px] sm:hover:opacity-80 sm:hover:cursor-pointer"
+          />
         </Link>
       </div>
     </div>

@@ -144,7 +144,7 @@ export const UnstakePopUp = ({
           <Typography variant="h4" color="mono-600">
             Unstake
           </Typography>
-          <FontAwesomeIcon icon={faXmark} color="#fff" className="hover:cursor-pointer" onClick={closePopUp} />
+          <FontAwesomeIcon icon={faXmark} color="#fff" className="sm:hover:cursor-pointer" onClick={closePopUp} />
         </div>
       </Card.Header>
       <Card.Body>

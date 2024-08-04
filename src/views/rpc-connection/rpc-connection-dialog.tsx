@@ -7,10 +7,10 @@ export const RpcConnectionDialog = () => {
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => setIsOpen(open)}>
-      <DialogTrigger className="sm:mt-2  w-full font-bold text-xs text-left hover:text-white">
+      <DialogTrigger className="w-full font-bold text-xs text-left sm:hover:text-white">
         <div
           role="button"
-          className=" bg-dark-background font-bold text-white w-full text-xs text-left hover:text-white rounded flex items-center space-x-[12px] hover:opacity-80"
+          className="sm:mt-2 bg-dark-background font-bold text-white w-full text-xs text-left sm:hover:text-white rounded flex items-center space-x-[12px] sm:hover:opacity-80 min-h-14 sm:min-h-12"
         >
           <span>🐓</span>
           <span>RPC Connection</span>
