@@ -13,7 +13,7 @@ export const LiveCoinHolders = ({ coinMetadata, uniqueHoldersData, livePool }: L
   const userIsDev = coinMetadata.creator === publicKey?.toString();
   return (
     <div className="flex flex-col gap-1">
-      <Card additionalStyles="hover:border-primary-100">
+      <Card additionalStyles="">
         <Card.Header>
           <Typography variant="h4" color="mono-600">
             Holders
@@ -30,7 +30,9 @@ export const LiveCoinHolders = ({ coinMetadata, uniqueHoldersData, livePool }: L
                   </Typography>
                 </a>
               </div>
-              <Typography color={userIsDev ? "yellow-100" : "mono-600"}>{userPercentage}%</Typography>
+              <Typography color={userIsDev || Number(userPercentage) > 5 ? "yellow-100" : "mono-600"}>
+                {userPercentage}%
+              </Typography>
             </div>
           )}
           {uniqueHoldersData &&
@@ -55,7 +57,9 @@ export const LiveCoinHolders = ({ coinMetadata, uniqueHoldersData, livePool }: L
                       </Typography>
                     </a>
                   </div>
-                  <Typography color={holderIsDev ? "yellow-100" : "mono-600"}>{percentage}%</Typography>
+                  <Typography color={holderIsDev || Number(percentage) > 5 ? "yellow-100" : "mono-600"}>
+                    {percentage}%
+                  </Typography>
                 </div>
               );
             })}

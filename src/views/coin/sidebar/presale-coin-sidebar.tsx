@@ -3,6 +3,7 @@ import { useMedia } from "@/hooks/useMedia";
 import { timeSince } from "@/utils/timeSpents";
 import { PresaleCoinSidebarProps } from "../coin.types";
 import { PresaleCoinHolders } from "./holders/presale-coin-holders";
+import { PresaleCoinInfo } from "./info/presale-coin-info";
 import { getBoundPoolProgress } from "./info/utils";
 import { SidebarItem } from "./sidebar-item";
 import { PresaleCoinSwap } from "./swap/presale-coin-swap";
@@ -55,6 +56,9 @@ export function PresaleCoinSidebar({
           />
         </SidebarItem>
       )}
+      <SidebarItem>
+        <PresaleCoinInfo boundPool={boundPool} metadata={coinMetadata} />
+      </SidebarItem>
       <SidebarItem>
         <PresaleCoinHolders
           poolAddress={pool.address}

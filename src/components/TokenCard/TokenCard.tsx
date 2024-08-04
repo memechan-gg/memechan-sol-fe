@@ -61,14 +61,10 @@ export function TokenCard({
   return (
     <div
       onClick={showOnClick ? () => handleCardClick() : undefined}
-      className={
-        showOnClick
-          ? "cursor-pointer hover:-translate-x-1px hover:translate-y-1px h-full min-h-[212px]"
-          : "h-full min-h-[212px]"
-      }
+      className={showOnClick ? "cursor-pointer h-full min-h-[212px]" : "h-full min-h-[212px]"}
     >
       <Card
-        additionalStyles={`card-shadow card-shadow-hover h-full ${showOnClick ? "hover:border-primary-100" : "hover:none"}`}
+        additionalStyles={`card-shadow card-shadow-hover h-full ${showOnClick ? "sm:hover:border-primary-100" : "sm:hover:none"}`}
       >
         <Card.Header>
           <div className="flex justify-between w-full">
@@ -126,7 +122,7 @@ export function TokenCard({
               className={`flex custom-inner-shadow h-9 items-center rounded-tl-[2px] rounded-tr-[2px] border border-mono-400 justify-between w-full`}
             >
               {Object.keys(socialLinks).map((key, index, array) => (
-                <div className="flex w-full hover:bg-mono-300 active:bg-mono-400 h-full" key={key}>
+                <div className="flex w-full sm:hover:bg-mono-300 active:bg-mono-400 h-full" key={key}>
                   <a
                     href={socialLinks[key as keyof typeof socialLinks] ?? undefined}
                     className="w-full h-full flex items-center justify-center"

@@ -29,29 +29,29 @@ export const InputAmountButtons = ({
 
   return (
     <div className="flex items-self-end gap-3 justify-self-end mr-1 font-bold">
-      <div className="text-regular hover:underline cursor-pointer" onClick={handleResetClick}>
+      <div className="text-regular sm:hover:underline cursor-pointer" onClick={handleResetClick}>
         reset
       </div>
       <div
-        className="text-regular hover:underline cursor-pointer"
+        className="text-regular sm:hover:underline cursor-pointer"
         onClick={() => handleInputAmountPercentButtonClick(25)}
       >
         25%
       </div>
       <div
-        className="text-regular hover:underline cursor-pointer"
+        className="text-regular sm:hover:underline cursor-pointer"
         onClick={() => handleInputAmountPercentButtonClick(50)}
       >
         50%
       </div>
       <div
-        className="text-regular hover:underline cursor-pointer"
+        className="text-regular sm:hover:underline cursor-pointer"
         onClick={() => handleInputAmountPercentButtonClick(75)}
       >
         75%
       </div>
       <div
-        className="text-regular hover:underline cursor-pointer"
+        className="text-regular sm:hover:underline cursor-pointer"
         onClick={() => handleInputAmountPercentButtonClick(100)}
       >
         max

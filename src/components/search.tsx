@@ -19,7 +19,7 @@ export const Search = ({
       {!isSearchActive && (
         <div className="w-10 h-10 border-primary-100">
           <Button
-            className="text-primary-100 hover:text-mono-600"
+            className="text-primary-100 sm:hover:text-mono-600"
             variant="secondary"
             onClick={() => setIsSearchActive(!isSearchActive)}
           >

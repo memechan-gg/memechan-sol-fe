@@ -1,28 +1,76 @@
-import { getTokenInfo } from "@/hooks/utils";
+import { Typography } from "@/memechan-ui/Atoms/Typography";
+import { Card } from "@/memechan-ui/Molecules";
+import { timeSince } from "@/utils/timeSpents";
+import Link from "next/link";
+import toast from "react-hot-toast";
 import { PresaleCoinInfoProps } from "../../coin.types";
-import { SocialLinks } from "./social-links/social-links";
-import { getBoundPoolProgress } from "./utils";
 
-export const PresaleCoinInfo = ({ metadata, boundPool, tokenInfo }: PresaleCoinInfoProps) => {
-  const { name, symbol, description, image, socialLinks } = metadata;
-
-  const quoteTokenInfo = getTokenInfo({ tokenAddress: tokenInfo.mint.toString() });
-
-  const isV2 = quoteTokenInfo.symbol === "SOL";
-
-  const poolIsMigratingToLive = boundPool?.locked || boundPool === null;
-
-  const { progress, slerfIn, limit } = boundPool
-    ? getBoundPoolProgress(boundPool, isV2)
-    : {
-        progress: "0",
-        slerfIn: "0",
-        limit: "0",
-      };
+export const PresaleCoinInfo = ({ metadata }: PresaleCoinInfoProps) => {
+  const { creator, address, creationTime } = metadata;
+  const handleCopy = (text: string) => {
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        toast.success("Copied to clipboard");
+      })
+      .catch((err) => {
+        console.error("Failed to copy: ", err);
+      });
+  };
 
   return (
-    <div className="flex flex-col gap-2">
-      <div className="flex flex-row gap-2">
+    <Card>
+      <Card.Header>
+        <Typography variant="h4" color="mono-600">
+          Info
+        </Typography>
+      </Card.Header>
+      <Card.Body additionalStyles="flex flex-col gap-y-2">
+        <div className="flex justify-between">
+          <Typography variant="body" color="mono-500">
+            Created
+          </Typography>
+          <Typography variant="body" color="mono-600">
+            {timeSince(creationTime)} ago
+          </Typography>
+        </div>
+        <div className="flex justify-between">
+          <Typography variant="body" color="mono-500">
+            Creator
+          </Typography>
+          <div className="flex gap-x-2 items-baseline">
+            <Link href={`/profile/${creator}`}>
+              <Typography variant="body" color="mono-600" underline>
+                {creator.slice(0, 4)}...{creator.slice(-4)}
+              </Typography>
+            </Link>
+            <Typography variant="body" color="primary-100" underline onClick={() => handleCopy(creator)}>
+              Copy
+            </Typography>
+          </div>
+        </div>
+        <div className="flex justify-between">
+          <Typography variant="body" color="mono-500">
+            CA
+          </Typography>
+          <div className="flex gap-x-2 items-baseline">
+            <a href={`https://solscan.io/token/${address}`} target="_blank">
+              <Typography variant="body" color="mono-600" underline>
+                {address.slice(0, 4)}...{address.slice(-4)}
+              </Typography>
+            </a>
+            <Typography variant="body" color="primary-100" underline onClick={() => handleCopy(address)}>
+              Copy
+            </Typography>
+          </div>
+        </div>
+      </Card.Body>
+    </Card>
+  );
+};
+
+{
+  /* <div className="flex flex-row gap-2">
         <img
           className="w-32 border border-regular h-32 rounded-lg object-cover object-center float-left"
           src={image}
@@ -66,7 +114,5 @@ export const PresaleCoinInfo = ({ metadata, boundPool, tokenInfo }: PresaleCoinI
             </div>
           </div>
         </div>
-      )}
-    </div>
-  );
-};
+      )} */
+}

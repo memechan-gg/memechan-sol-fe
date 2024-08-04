@@ -23,7 +23,7 @@ export const formatNumberForTokenCard = ({ token }: Props) => {
     return {
       progress: Number(token.quoteIn) / Number(token.quoteLimit) ?? undefined,
       totalQuoteAmount: parseChainValue(Number(token.quoteLimit), QUOTE_TOKEN_DECIMALS, 2) ?? undefined,
-      currentQuoteAmount: parseChainValue(Number(token.quoteIn), QUOTE_TOKEN_DECIMALS, 2) ?? undefined,
+      currentQuoteAmount: parseChainValue(Number(token.quoteIn), QUOTE_TOKEN_DECIMALS, 4) ?? undefined,
       participactsAmount: token.holdersCount?.toString() ?? "",
       timeFromCreation: timeSince(token.creationTime),
     };

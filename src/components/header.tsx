@@ -36,14 +36,14 @@ export const Header = () => {
               <div className="text-white font-bold gap-6 text-sm hidden px-2 items-center sm:flex flex-grow justify-center">
                 <Link href="/" className="font-bold text-center">
                   📦
-                  <Typography variant="h4" color="mono-600" className="ml-3 hover:text-primary-100">
+                  <Typography variant="h4" color="mono-600" className="ml-3 sm:hover:text-primary-100">
                     Home
                   </Typography>
                 </Link>
                 {account?.address && (
                   <Link href={`/profile/${account.address}`} className="text-center">
                     🤡{" "}
-                    <Typography variant="h4" color="mono-600" className="ml-3 hover:text-primary-100">
+                    <Typography variant="h4" color="mono-600" className="ml-3 sm:hover:text-primary-100">
                       Profile
                     </Typography>
                   </Link>
@@ -55,7 +55,7 @@ export const Header = () => {
                   rel="noopener noreferrer"
                 >
                   🤓{" "}
-                  <Typography variant="h4" color="mono-600" className="ml-3 hover:text-primary-100">
+                  <Typography variant="h4" color="mono-600" className="ml-3 sm:hover:text-primary-100">
                     Docs
                   </Typography>
                 </Link>

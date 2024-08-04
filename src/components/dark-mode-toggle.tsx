@@ -24,7 +24,7 @@ const DarkModeToggle = () => {
   return (
     <div className="hidden sm:flex justify-center lg:bg-transparent bg-board dark:bg-dark">
       <button
-        className="bg-title bg-opacity-15 items-center text-xs justify-center flex flex-row gap-2 font-bold text-regular px-4 py-2 rounded-lg transition-all duration-300 hover:bg-opacity-25"
+        className="bg-title bg-opacity-15 items-center text-xs justify-center flex flex-row gap-2 font-bold text-regular px-4 py-2 rounded-lg transition-all duration-300 sm:hover:bg-opacity-25"
         onClick={toggleTheme}
       >
         {theme === "dark" ? <SunIcon /> : <MoonIcon />}

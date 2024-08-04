@@ -7,6 +7,7 @@ import { LivePoolData, SeedPoolData } from "@/types/pool";
 import {
   BoundPoolClient,
   BoundPoolClientV2,
+  LivePoolVersioned,
   ParsedMemeTicket,
   SolanaToken,
   TokenInfo,
@@ -38,6 +39,7 @@ export type LiveCoinSwapProps = {
   stakingPoolFromApi: ReturnType<typeof useStakingPoolFromApi>["data"];
   seedPoolAddress?: string;
   onClose?: () => void;
+  livePoolClient?: LivePoolVersioned;
 };
 
 export type SwapButtonProps = {
@@ -84,14 +86,12 @@ export type LiveCoinHoldersProps = {
 
 export type LiveCoinInfoProps = {
   metadata: SolanaToken;
-  quoteMint: string;
-  livePoolAddress: string;
 };
 
 export type PresaleCoinInfoProps = {
   metadata: SolanaToken;
   boundPool?: BoundPool;
-  tokenInfo: TokenInfo;
+  tokenInfo?: TokenInfo;
 };
 
 export type UnstakeDialogProps = Omit<StakingPoolProps, "memeMint"> & {

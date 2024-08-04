@@ -1,6 +1,5 @@
 import { TransactionSentNotification } from "@/components/notifications/transaction-sent-notification";
 import { useConnection } from "@/context/ConnectionContext";
-import { useLivePoolClient } from "@/hooks/live/useLivePoolClient";
 import { useBalance } from "@/hooks/useBalance";
 import { useTokenAccounts } from "@/hooks/useTokenAccounts";
 import { getTokenInfo } from "@/hooks/utils";
@@ -27,6 +26,7 @@ export const LiveCoinSwap = ({
   stakingPoolFromApi,
   seedPoolAddress,
   onClose,
+  livePoolClient,
 }: LiveCoinSwapProps) => {
   const [coinToMeme, setCoinToMeme] = useState<boolean>(true);
   const [inputAmount, setInputAmount] = useState<string>("");
@@ -65,7 +65,6 @@ export const LiveCoinSwap = ({
 
   const { publicKey, sendTransaction, signTransaction } = useWallet();
   const { connection } = useConnection();
-  const { data: livePoolClient } = useLivePoolClient(address);
 
   const { data: tokenAccounts, refetch: refetchTokenAccounts } = useTokenAccounts();
 

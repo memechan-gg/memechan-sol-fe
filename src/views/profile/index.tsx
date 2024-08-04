@@ -4,6 +4,7 @@ import { useSolanaBalance } from "@/hooks/useSolanaBalance";
 import { Divider } from "@/memechan-ui/Atoms/Divider/Divider";
 import TopBar from "@/memechan-ui/Atoms/TopBar/TopBar";
 import { Typography } from "@/memechan-ui/Atoms/Typography";
+import { formatNumberForTokenCard } from "@/utils/formatNumbersForTokenCard";
 import { useEffect, useState } from "react";
 import { getSlicedAddressV2 } from "../coin/sidebar/holders/utils";
 import { NoCoinsPage } from "./no-coins-page";
@@ -133,7 +134,7 @@ export function Profile({ address, coin }: ProfileProps) {
                 src="/android-chrome-192x192.png"
                 alt="Profile Image"
               />
-              <div className="text-xs mt-4 cursor-pointer hover:underline">
+              <div className="text-xs mt-4 cursor-pointer sm:hover:underline">
                 <a target="_blank" rel="noreferrer" href={`https://solana.fm/address/${address}`}>
                   <Typography variant="h4">{slicedAddress}</Typography>
                 </a>
@@ -156,10 +157,15 @@ export function Profile({ address, coin }: ProfileProps) {
         ) : tokens.length === 0 ? (
           <NoCoinsPage />
         ) : (
-          <div className="grid grid-cols-1 gap-1 sm:grid-cols-2 lg:grid-cols-3 justify-center w-full">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 justify-center w-full">
             {tokens.map((token, index) => (
               <div key={index} className="w-full lg:w-auto lg:p-0">
-                <TokenCard key={token.mint} token={token} />
+                <TokenCard
+                  progressInfo={formatNumberForTokenCard({ token })}
+                  key={token.mint}
+                  token={token}
+                  showOnClick
+                />
               </div>
             ))}
           </div>

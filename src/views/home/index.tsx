@@ -107,15 +107,20 @@ export function Home() {
 
   return (
     <div className="flex flex-col items-center w-full min-w-80 px-3 pt-3 xl:px-0">
-      <div className="self-start ml-[-16px]">
-        <Tabs tabs={tabs} onTabChange={onTabChange} activeTab={activeTab} />
+      <div className="self-start w-full">
+        <Tabs
+          className="justify-start items-center gap-x-5 ml-[-5px]"
+          tabs={tabs}
+          onTabChange={onTabChange}
+          activeTab={activeTab}
+        />
       </div>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 justify-center w-full">
         {isLoading && <Typography variant="h4">Loading...</Typography>}
         {isCoinsListExist &&
           tokenList.map((token, index) => (
             <TokenCard
-              key={`${index}-${token.address}`}
+              key={`${token.address}`}
               progressInfo={formatNumberForTokenCard({ token })}
               token={token}
               showCheckmark
@@ -188,7 +193,7 @@ export function Home() {
 //             </div>
 //             <DialogFooter>
 //               <button
-//                 className="flex border border-regular text-regular hover:bg-regular hover:text-white font-bold py-2 px-4 rounded"
+//                 className="flex border border-regular text-regular sm:hover:bg-regular sm:hover:text-white font-bold py-2 px-4 rounded"
 //                 onClick={handleConfirm}
 //               >
 //                 Confirm
@@ -291,7 +296,7 @@ export function Home() {
 //                 (status === "all" && (presaleNextPageToken || liveNextPageToken))) && (
 //                 <div
 //                   onClick={loadMore}
-//                   className="text-regular font-xs flex justify-self-center mt-7 cursor-pointer hover:underline"
+//                   className="text-regular font-xs flex justify-self-center mt-7 cursor-pointer sm:hover:underline"
 //                 >
 //                   Load more
 //                 </div>

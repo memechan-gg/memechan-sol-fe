@@ -92,7 +92,7 @@ export function Comment({
           <div className="flex justify-between items-center w-full leading-5 py-2">
             <div className="flex gap-2 items-center">
               <FontAwesomeIcon icon={faEllipsisVertical} width={3} className="text-mono-600" />
-              <Link className="hover:underline" href={`/profile/${creator}`}>
+              <Link className="sm:hover:underline" href={`/profile/${creator}`}>
                 <Typography variant="h4" color="green-100">
                   {slicedAddress}
                   {isUsersComment ? "(me)" : ""} {devsComment ? "(dev)" : ""}
@@ -140,7 +140,7 @@ export function Comment({
               </Typography>
             </span>
             {/* {replyTo ? (
-              <a className="hover:underline" href={`#${replyTo}`}>
+              <a className="sm:hover:underline" href={`#${replyTo}`}>
                 Reply
               </a>
             ) : (

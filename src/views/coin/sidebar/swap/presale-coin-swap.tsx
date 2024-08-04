@@ -459,7 +459,7 @@ export const PresaleCoinSwap = ({
 //     <Button
 //       disabled={swapButtonIsDiabled}
 //       onClick={onSwap}
-//       className="w-full bg-regular bg-opacity-80 hover:bg-opacity-50 disabled:opacity-50"
+//       className="w-full bg-regular bg-opacity-80 sm:hover:bg-opacity-50 disabled:opacity-50"
 //     >
 //       <div className="text-xs font-bold text-white">
 //         {isLoadingOutputAmount || isSwapping ? "Loading..." : "Swap"}

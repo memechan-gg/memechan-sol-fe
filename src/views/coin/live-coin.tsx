@@ -41,6 +41,13 @@ export function LiveCoin({
       undefined,
       { shallow: true },
     );
+    if (mediaQuery.isSmallDevice) {
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: "instant",
+      });
+    }
   };
 
   return (
@@ -48,7 +55,7 @@ export function LiveCoin({
       <TopBar tokenAddress={coinMetadata.address} tokenSymbol={coinMetadata.symbol} />
       {mediaQuery.isSmallDevice ? (
         <>
-          <div className="w-full px-3 ">
+          <div className="w-full px-3">
             {tab === "Info" && (
               <InfoTab
                 coinMetadata={coinMetadata}
@@ -82,7 +89,7 @@ export function LiveCoin({
               </Button>
             </div>
             <div className="fixed bottom-0 bg-mono-200 border-t border-t-mono-400 h-15 w-screen px-3 justify-between">
-              <Tabs className="justify-between" tabs={mobileTabs} onTabChange={onTabChange} activeTab={tab} />
+              <Tabs className="justify-between" tabs={mobileTabs} onTabChange={onTabChange} activeTab={tab} immovable />
             </div>
           </div>
           <Dialog
@@ -107,8 +114,13 @@ export function LiveCoin({
       ) : (
         <div className="grid grid-cols-3 gap-3 px-3 xl:px-0 w-full">
           <div className="col-span-2 flex flex-col gap-y-3">
-            <div className="bg-mono-400 py-1">
-              <Tabs tabs={desktopTabs} onTabChange={onTabChange} activeTab={tab} />
+            <div className="bg-mono-400">
+              <Tabs
+                className="justify-start items-center gap-x-6 ml-6"
+                tabs={desktopTabs}
+                onTabChange={onTabChange}
+                activeTab={tab}
+              />
             </div>
             {tab === "Comments" && (
               <CommentsTab coinAddress={coinMetadata.address} coinCreator={coinMetadata.creator} />
@@ -134,7 +146,7 @@ export function LiveCoin({
     //         <div>
     //           <Link
     //             href={`/profile/${coinMetadata.address}/${coinMetadata.creator}`}
-    //             className="text-[11px] md:text-xs text-link hover:underline text-ellipsis"
+    //             className="text-[11px] md:text-xs text-link sm:hover:underline text-ellipsis"
     //           >
     //             {coinMetadata.creator}
     //           </Link>
