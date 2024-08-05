@@ -37,6 +37,7 @@ export const PresaleCoinSwap = ({
     refresh: refreshAvailableTickets,
   },
 }: PresaleCoinSwapProps) => {
+  const { connected } = useWallet();
   const [coinToMeme, setCoinToMeme] = useState<boolean>(true);
   const [inputAmount, setInputAmount] = useState<string>("");
   const [outputAmount, setOutputAmount] = useState<string | null>(null);
@@ -261,7 +262,7 @@ export const PresaleCoinSwap = ({
     updateOutputAmount,
   ]);
 
-  const swapButtonIsDiabled = isLoadingOutputAmount || isSwapping || outputAmount === null;
+  const swapButtonIsDiabled = isLoadingOutputAmount || isSwapping || (outputAmount === null && connected);
   const poolIsMigratingToLive = boundPool?.locked || boundPool === null;
   const refresh = useCallback(async () => {
     await refetchCoinBalance();

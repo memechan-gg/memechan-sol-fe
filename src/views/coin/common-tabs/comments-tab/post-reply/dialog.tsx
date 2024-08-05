@@ -1,4 +1,5 @@
 import { SocialApiInstance } from "@/common/solana";
+import { WithConnectedWallet } from "@/components/WithConnectedWallet";
 import { Button } from "@/memechan-ui/Atoms";
 import FileInput from "@/memechan-ui/Atoms/Input/FileInput";
 import TextInput from "@/memechan-ui/Atoms/Input/TextInput";
@@ -32,6 +33,7 @@ export function PostReplyDialog({ isStatic, onClose, updateThreads, coinType, re
   const { publicKey, signMessage } = useWallet();
   const [file, setFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { connected } = useWallet();
 
   const handleSendReply = useCallback(async () => {
     try {
@@ -135,14 +137,22 @@ export function PostReplyDialog({ isStatic, onClose, updateThreads, coinType, re
               />
               <div className="flex justify-between items-center gap-3">
                 <FileInput file={file} setFile={setFile} />
-                <Button
+                <WithConnectedWallet
+                  className="py-[18px] pr-0 pl-0 max-w-[181px]"
+                  variant="primary"
+                  onClick={handleSendReply}
+                  disabled={isLoading}
+                >
+                  {connected && isLoading ? "Loading..." : "Post"}
+                </WithConnectedWallet>
+                {/* <Button
                   className="py-[18px] pr-0 pl-0 max-w-[181px]"
                   variant="primary"
                   onClick={handleSendReply}
                   disabled={isLoading}
                 >
                   {isLoading ? "Loading..." : "Post"}
-                </Button>
+                </Button> */}
               </div>
             </div>
           </Card.Body>

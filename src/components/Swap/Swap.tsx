@@ -78,7 +78,6 @@ export const Swap = (props: SwapProps) => {
     tokenDecimals,
   } = props;
   const { data: solanaPriceInUSD } = useSolanaPrice();
-
   const [variant, setVariant] = useState<"swap" | "claim">("swap");
   const [localSlippage, setLocalSlippage] = useState(slippage);
   const isVariantSwap = variant === "swap";
@@ -177,7 +176,7 @@ export const Swap = (props: SwapProps) => {
                   <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 border-t border-mono-400"></div>
                   <div
                     onClick={onReverseClick}
-                    className={`absolute left-1/2 top-1/2 w-6 h-6 -translate-x-1/2 -translate-y-1/2  bg-mono-200 sm:hover:bg-mono-300 cursor-pointer border-2 border-mono-400 rounded-sm flex justify-center items-center ${swapButtonIsDisabled && "cursor-not-allowed sm:hover:bg-mono-200"}`}
+                    className={`absolute left-1/2 top-1/2 w-6 h-6 -translate-x-1/2 -translate-y-1/2  bg-mono-200 sm:hover:bg-mono-300 cursor-pointer border-2 border-mono-400 rounded-sm flex justify-center items-center ${swapButtonIsDisabled ? "cursor-not-allowed sm:hover:bg-mono-200" : ""}`}
                   >
                     <DownArrowIcon fill="#979797" />
                     <UpArrowIcon fill="#979797" />
@@ -199,7 +198,7 @@ export const Swap = (props: SwapProps) => {
               </div>
 
               <WithConnectedWallet
-                variant={inputAmount && !isLoadingOutputAmount ? "primary" : "disabled"}
+                variant={!connected ? "primary" : inputAmount && !isLoadingOutputAmount ? "primary" : "disabled"}
                 className="mt-4 p-1 h-14"
                 disabled={swapButtonIsDisabled || isLoadingOutputAmount}
                 onClick={onSwap}

@@ -28,6 +28,7 @@ export const LiveCoinSwap = ({
   onClose,
   livePoolClient,
 }: LiveCoinSwapProps) => {
+  const { connected } = useWallet();
   const [coinToMeme, setCoinToMeme] = useState<boolean>(true);
   const [inputAmount, setInputAmount] = useState<string>("");
   const [outputData, setOutputData] = useState<SwapMemeOutput | null>(null);
@@ -308,7 +309,7 @@ export const LiveCoinSwap = ({
     connection,
   ]);
 
-  const swapButtonIsDiabled = isLoadingOutputAmount || isSwapping || outputData === null;
+  const swapButtonIsDiabled = isLoadingOutputAmount || isSwapping || (outputData === null && connected);
 
   const onInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     handleSwapInputChange({

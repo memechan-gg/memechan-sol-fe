@@ -1,14 +1,12 @@
+import { Layout } from "@/components/layout";
+import { SolanaProvider } from "@/components/provider/solana";
+import { ConnectionProvider } from "@/context/ConnectionContext";
+import { PopupProvider } from "@/context/PopupContext";
+import { UserProvider } from "@/context/UserContext";
 import "@/styles/globals.css";
 import "@/styles/skeleton-chart-custom.css";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
-import "react-loading-skeleton/dist/skeleton.css";
-config.autoAddCss = false;
-
-import { Layout } from "@/components/layout";
-import { SolanaProvider } from "@/components/provider/solana";
-import { ConnectionProvider } from "@/context/ConnectionContext";
-import { UserProvider } from "@/context/UserContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Analytics } from "@vercel/analytics/react";
@@ -19,6 +17,8 @@ import type { AppProps } from "next/app";
 import Head from "next/head";
 import { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
+import "react-loading-skeleton/dist/skeleton.css";
+config.autoAddCss = false;
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -73,13 +73,15 @@ export default function App({ Component, pageProps }: AppProps) {
         <UserProvider>
           <QueryClientProvider client={queryClient}>
             <ConnectionProvider>
-              <ThemeProvider attribute="class" defaultTheme="dark">
-                <Layout>
-                  <Component {...pageProps} />
-                  <SpeedInsights />
-                  <Analytics />
-                </Layout>
-              </ThemeProvider>
+              <PopupProvider>
+                <ThemeProvider attribute="class" defaultTheme="dark">
+                  <Layout>
+                    <Component {...pageProps} />
+                    <SpeedInsights />
+                    <Analytics />
+                  </Layout>
+                </ThemeProvider>
+              </PopupProvider>
             </ConnectionProvider>
             {process.env.NODE_ENV === "development" && <ReactQueryDevtools initialIsOpen={false} />}
           </QueryClientProvider>
