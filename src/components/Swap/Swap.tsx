@@ -95,7 +95,7 @@ export const Swap = (props: SwapProps) => {
   };
   return (
     <>
-      <Card additionalStyles="min-h-[392px] bg-mono-200">
+      <Card additionalStyles=" bg-mono-200">
         <Card.Header>
           <div className="flex justify-between w-full">
             <div className="flex gap-1 items-center">
@@ -197,27 +197,33 @@ export const Swap = (props: SwapProps) => {
                 />
               </div>
 
-              <WithConnectedWallet
-                variant={!connected ? "primary" : inputAmount && !isLoadingOutputAmount ? "primary" : "disabled"}
-                className="mt-4 p-1 h-14"
-                disabled={swapButtonIsDisabled || isLoadingOutputAmount}
-                onClick={onSwap}
-                isLoading={isSwapping || isLoadingOutputAmount}
-              >
-                {!inputAmount ? (
-                  <Typography variant="h4">Fill all required fields</Typography>
-                ) : (
-                  <Typography variant="h4">
-                    {isLoadingOutputAmount
-                      ? "Loading..."
-                      : isSwapping
-                        ? "Swapping..."
-                        : +inputAmount > baseCurrency.coinBalance
-                          ? "Insufficient balance"
-                          : "Swap"}
-                  </Typography>
-                )}
-              </WithConnectedWallet>
+              <div className="h-14">
+                <WithConnectedWallet
+                  variant={!connected ? "primary" : inputAmount && !isLoadingOutputAmount ? "primary" : "disabled"}
+                  className="mt-4"
+                  disabled={swapButtonIsDisabled || isLoadingOutputAmount}
+                  onClick={onSwap}
+                  isLoading={isSwapping || isLoadingOutputAmount}
+                >
+                  {!inputAmount ? (
+                    <div className="h-14 flex items-center">
+                      <Typography variant="h4">{"Fill all required fields"}</Typography>
+                    </div>
+                  ) : (
+                    <div className="h-14 flex items-center">
+                      <Typography variant="h4">
+                        {isLoadingOutputAmount
+                          ? "Loading..."
+                          : isSwapping
+                            ? "Swapping..."
+                            : +inputAmount > baseCurrency.coinBalance
+                              ? "Insufficient balance"
+                              : "Swap"}
+                      </Typography>
+                    </div>
+                  )}
+                </WithConnectedWallet>
+              </div>
             </>
           )}
         </Card.Body>

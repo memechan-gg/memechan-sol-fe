@@ -10,7 +10,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
           <div className="flex flex-col items-center gap-2">{children}</div>
         </div>
       </main>
-      <div className=" hidden sm:block py-3 bottom-border w-screen -ml-3 xl:-ml-sideMargin"/>
+      <div className=" hidden sm:block py-3 bottom-border w-screen -ml-3 xl:-ml-sideMargin" />
       <Footer />
     </div>
   );
