@@ -213,8 +213,15 @@ export function CreateCoin() {
   const symbolInput = watch("symbol");
   const imageInput = watch("image");
   const filledRequired = nameInput && symbolInput && imageInput?.length;
+
   return (
     <div className="w-full flex flex-col items-center">
+      {/* <SuccessModal
+        onClick={() => {}}
+        headerText="Pepe successfully created"
+        buttonText="Share in Twitter"
+        bodyText="Congrats, you’ve successfully created your memecoin. Now let’s get it’s bonding curve completed. Let’s start with posting these news in your twitter."
+      ></SuccessModal> */}
       <TopBar rightIcon="/diamond.png" title={"Create Memecoin"}></TopBar>
       <div className="min-w-[345px] sm:max-w-[406px] custom-outer-shadow flex items-center justify-center border border-mono-400 rounded-sm m-4">
         <div className="w-full lg:max-w-3xl m-4 ">
