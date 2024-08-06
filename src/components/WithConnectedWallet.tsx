@@ -10,7 +10,14 @@ export const WithConnectedWallet = (props: ButtonProps) => {
 
   if (!account.address) {
     return (
-      <Button {...props} role="button" onClick={() => setIsPopupOpen(!isPopupOpen)}>
+      <Button
+        {...props}
+        role="button"
+        onClick={(e) => {
+          e.preventDefault();
+          setIsPopupOpen(!isPopupOpen);
+        }}
+      >
         <Typography variant="h4">Connect Wallet</Typography>
       </Button>
     );
