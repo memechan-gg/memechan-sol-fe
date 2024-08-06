@@ -191,3 +191,6 @@ input[type="number"] {
 .custom-outer-shadow {
   box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 0.25);
 }
+.no-shadow {
+  box-shadow: none !important;
+}
