@@ -24,7 +24,7 @@ export default function SideMenu(props: { account: UserContextType; disconnect: 
               <Popover.Button className="h-10 focus-visible:outline-none">
                 <div
                   role="button"
-                  className="h-10 text-primary-100 w-10 text-xs font-bold flex justify-evenly items-center bg-inherit sm:hover:bg-primary-100 sm:hover:text-white transition-colors focus-visible:outline-none"
+                  className="h-10 text-primary-100 w-10 text-xs font-bold flex justify-evenly items-center bg-inherit hover:bg-primary-100 hover:text-white transition-colors focus-visible:outline-none"
                 >
                   {isOpen ? (
                     <FontAwesomeIcon fontSize={16} icon={faClose} />

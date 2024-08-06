@@ -62,7 +62,7 @@ export const ConnectWallet = (props: { account: UserContextType; disconnect: () 
         <Link href={`/profile/${account.address}`}>
           <div
             role="button"
-            className={`h-full w-full min-w-[97px] text-primary-100 px-3 text-[0.75rem] font-bold flex flex-col ${connected ? "items-start" : "items-center"} justify-center sm:hover:bg-primary-100 sm:hover:text-white transition-colors focus-visible:outline-none`}
+            className={`h-full w-full min-w-[97px] text-primary-100 px-3 text-[0.75rem] font-bold flex flex-col ${connected ? "items-start" : "items-center"} justify-center hover:bg-primary-100 hover:text-white transition-colors focus-visible:outline-none`}
             ref={popoverButtonRef}
           >
             <>
@@ -78,7 +78,7 @@ export const ConnectWallet = (props: { account: UserContextType; disconnect: () 
       ) : (
         <div
           role="button"
-          className={`h-full w-full px-3 text-primary-100 text-[0.75rem] font-bold flex flex-col ${connected ? "items-start" : "items-center"} justify-center sm:hover:bg-primary-100 sm:hover:text-white transition-colors focus-visible:outline-none`}
+          className={`h-full w-full px-3 text-primary-100 text-[0.75rem] font-bold flex flex-col ${connected ? "items-start" : "items-center"} justify-center hover:bg-primary-100 hover:text-white transition-colors focus-visible:outline-none`}
           onClick={() => {
             isPopupOpen ? closePopup() : openPopup();
           }}
