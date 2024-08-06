@@ -167,7 +167,7 @@ export const Swap = (props: SwapProps) => {
                     publicKey ? `👛 ${baseCurrency.coinBalance ?? 0} ${baseCurrency.currencyName}` : undefined
                   }
                   baseCurrencyAmount={baseCurrency.coinBalance}
-                  showQuickInput={connected}
+                  showQuickInput={true}
                   usdPrice={solanaPriceInUSD?.price ? Number(inputAmount ?? 0) * solanaPriceInUSD.price : 0}
                   tokenDecimals={tokenDecimals}
                   quickInputNumber={baseCurrency.currencyName === "SOL"}

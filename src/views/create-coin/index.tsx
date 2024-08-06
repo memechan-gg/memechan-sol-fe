@@ -1,4 +1,5 @@
 import { TransactionSentNotification } from "@/components/notifications/transaction-sent-notification";
+import { WithConnectedWallet } from "@/components/WithConnectedWallet";
 import { useConnection } from "@/context/ConnectionContext";
 import { useBalance } from "@/hooks/useBalance";
 import { useSolanaBalance } from "@/hooks/useSolanaBalance";
@@ -223,7 +224,7 @@ export function CreateCoin() {
         bodyText="Congrats, you’ve successfully created your memecoin. Now let’s get it’s bonding curve completed. Let’s start with posting these news in your twitter."
       ></SuccessModal> */}
       <TopBar rightIcon="/diamond.png" title={"Create Memecoin"}></TopBar>
-      <div className="min-w-[345px] sm:max-w-[406px] custom-outer-shadow flex items-center justify-center border border-mono-400 rounded-sm m-4">
+      <div className="min-w-[345px] w-[-webkit-fill-available] sm:w-full sm:max-w-[406px] custom-outer-shadow flex items-center justify-center border border-mono-400 rounded-sm m-3 sm:mb-[-12px]">
         <div className="w-full lg:max-w-3xl m-4 ">
           <form onSubmit={onSubmit} className="flex flex-col ">
             <div className="flex flex-col gap-4">
@@ -373,17 +374,17 @@ export function CreateCoin() {
               currencyLogoUrl={baseCurrency.currencyLogoUrl}
               usdPrice={solanaPriceInUSD?.price ? Number(inputAmount ?? 0) * solanaPriceInUSD.price : 0}
               label="Be the very first person to buy your token"
-              showQuickInput={connected}
+              showQuickInput={true}
+              quickInputNumber
               baseCurrencyAmount={baseCurrency.coinBalance}
               tokenDecimals={9}
+
               // labelRight={publicKey ? `👛 ${baseCurrency.coinBalance ?? 0} ${baseCurrency.currencyName}` : undefined}
             />
             <div className="flex flex-col gap-1 mt-4">
               {!connected || !publicKey || !signMessage ? (
                 <div className="h-14">
-                  <Button onClick={(e) => e.preventDefault()} variant="primary">
-                    Connect wallet
-                  </Button>
+                  <WithConnectedWallet variant="primary" />
                 </div>
               ) : filledRequired ? (
                 <div className="h-14">
