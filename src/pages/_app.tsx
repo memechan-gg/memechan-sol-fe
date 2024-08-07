@@ -30,7 +30,6 @@ const queryClient = new QueryClient({
 });
 
 export default function App({ Component, pageProps }: AppProps) {
-  console.log(process.env.NODE_ENV);
   useEffect(() => {
     localStorage.setItem("theme", "dark");
   }, []);
