@@ -1,6 +1,9 @@
 import { TransactionSentNotification } from "@/components/notifications/transaction-sent-notification";
 import { useStakingPool } from "@/hooks/staking/useStakingPool";
 import { useStakingPoolClient } from "@/hooks/staking/useStakingPoolClient";
+import { useChanPrice } from "@/hooks/useChanPrice";
+import { useMemePriceFromBE } from "@/hooks/useMemePriceFromBE";
+import { useSolanaPrice } from "@/hooks/useSolanaPrice";
 import { Button } from "@/memechan-ui/Atoms";
 import { Divider } from "@/memechan-ui/Atoms/Divider/Divider";
 import { Typography } from "@/memechan-ui/Atoms/Typography";
@@ -12,8 +15,10 @@ import { useQuery } from "@tanstack/react-query";
 import { track } from "@vercel/analytics";
 import BigNumber from "bignumber.js";
 import { BN } from "bn.js";
+import { format, parse, roundToNearestMinutes } from "date-fns";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { Oval } from "react-loader-spinner";
 import Skeleton from "react-loading-skeleton";
 import { StakingPoolProps } from "../../coin.types";
 
@@ -26,7 +31,6 @@ export const StakingPool = ({
 }: StakingPoolProps) => {
   const { publicKey, sendTransaction } = useWallet();
   const { connection } = useConnection();
-
   const [memeAmount, setMemeAmount] = useState<string | null>(null);
   const [chanAmount, setChanAmount] = useState<string | null>(null);
   const [slerfAmount, setSlerfAmount] = useState<string | null>(null);
@@ -42,20 +46,26 @@ export const StakingPool = ({
     queryFn: () => stakingPoolClient?.getTokenInfo(),
     enabled: !!stakingPoolClient?.getTokenInfo,
   });
+  const { data: memePrice, isLoading: memePriceLoading } = useMemePriceFromBE({
+    memeMint: stakingPoolFromApi?.tokeAddress || "",
+    poolType: "livePool",
+  });
+  const { data: solanaPriceInUSD, isLoading: solPriceLoading } = useSolanaPrice();
+  const { data: chanPriceInUSD, isLoading: chanPriceLoading } = useChanPrice();
 
-  let cliffStartedTime: JSX.Element | string = <Skeleton width={35} />;
-  let startVestingTime: JSX.Element | string = <Skeleton width={35} />;
-  let endVestingTime: JSX.Element | string = <Skeleton width={35} />;
-  let cliffStartedTimeInMs: number = 0;
+  // let cliffStartedTime: string = undefined;
+  let startVestingTime: string | undefined = undefined;
+  let endVestingTime: string | undefined = undefined;
+  // let cliffStartedTimeInMs: number = 0;
   let startVestingTimeInMs: number = 0;
   let endVestingTimeInMs: number = 0;
 
   if (stakingPool) {
-    cliffStartedTimeInMs = new BigNumber(stakingPool.vestingConfig.startTs.toString()).multipliedBy(1000).toNumber();
+    // cliffStartedTimeInMs = new BigNumber(stakingPool.vestingConfig.startTs.toString()).multipliedBy(1000).toNumber();
     startVestingTimeInMs = new BigNumber(stakingPool.vestingConfig.cliffTs.toString()).multipliedBy(1000).toNumber();
     endVestingTimeInMs = new BigNumber(stakingPool.vestingConfig.endTs.toString()).multipliedBy(1000).toNumber();
 
-    cliffStartedTime = new Date(cliffStartedTimeInMs).toLocaleString();
+    // cliffStartedTime = new Date(cliffStartedTimeInMs).toLocaleString();
     startVestingTime = new Date(startVestingTimeInMs).toLocaleString();
     endVestingTime = new Date(endVestingTimeInMs).toLocaleString();
   }
@@ -129,14 +139,16 @@ export const StakingPool = ({
       setIsLoading(false);
     }
   }, [
-    sendTransaction,
-    availableAmountToUnstake,
-    livePoolAddress,
     publicKey,
+    availableAmountToUnstake,
     stakingPoolClient,
+    startVestingTimeInMs,
+    tokenSymbol,
     tickets,
-    connection,
+    livePoolAddress,
     refetchTickets,
+    sendTransaction,
+    connection,
   ]);
 
   useEffect(() => {
@@ -242,90 +254,232 @@ export const StakingPool = ({
   const updateFeesButtonIsDisabled =
     memeAmount === null || slerfAmount === null || chanAmount === null || isUpdateLoading;
 
+  function formatDates(dateStr1: string, dateStr2: string) {
+    function parseRoundAndFormat(dateStr: string) {
+      const date = parse(dateStr, "dd/MM/yyyy, HH:mm:ss", new Date());
+      const roundedDate = roundToNearestMinutes(date, { nearestTo: 1 });
+      return format(roundedDate, "dd MMM, HH:mm");
+    }
+
+    const formattedDate1 = parseRoundAndFormat(dateStr1);
+    const formattedDate2 = parseRoundAndFormat(dateStr2);
+
+    return `${formattedDate1} - ${formattedDate2}`;
+  }
+
   return (
     <div className="flex flex-col">
-      {/* <div className="flex w-full border-mono-400 border p-2 gap-4 pr-4 pl-3">
-        <div className="text-[10px] mt-[2px]">⚠️</div>
-        <div>
-          <Typography variant="body" color="yellow-100">
-            Presale is ongoing still. Vesting and revenue sharing will start once the token goes live.
-          </Typography>
-        </div>
-      </div> */}
       <div className="flex flex-col">
-        <div className="flex justify-between mt-4">
+        <div className="flex justify-between mt-4 items-center text-end">
+          <Typography variant="body" color="mono-500">
+            Vesting Period
+          </Typography>
+          <div>
+            <Typography variant="body" color="mono-600">
+              {startVestingTime && endVestingTime ? (
+                <div>{formatDates(startVestingTime, endVestingTime)}</div>
+              ) : (
+                <Skeleton width={35} baseColor="#242424" highlightColor="#353535" />
+              )}
+            </Typography>
+          </div>
+        </div>
+        <div className="flex justify-between mt-2 items-center text-end">
           <Typography variant="body" color="mono-500">
             Staked Amount
           </Typography>
           <div>
             <Typography variant="body" color="mono-600">
-              69,420 {tokenSymbol}
+              {stakedAmount ? (
+                <div>
+                  {Number(stakedAmount).toLocaleString()} <span className="!normal-case">{tokenSymbol}</span>
+                </div>
+              ) : (
+                <div>
+                  <Oval
+                    visible={true}
+                    height="10px"
+                    width="10px"
+                    color="#ffffff"
+                    ariaLabel="oval-loading"
+                    secondaryColor="#3979797e3e3e"
+                    wrapperStyle={{}}
+                    wrapperClass=""
+                  />
+                </div>
+              )}
             </Typography>{" "}
             <Typography variant="body" color="mono-500">
-              / $13.42
+              {"/ "}
+              {stakedAmount && !memePriceLoading && memePrice ? (
+                <span>${Math.round(Number(stakedAmount) * (+memePrice * 100)) / 100}</span>
+              ) : (
+                <Skeleton width={45} baseColor="#3e3e3e" highlightColor="#979797" />
+              )}
             </Typography>
           </div>
         </div>
-        <div className="flex justify-between mt-2">
+        <div className="flex justify-between mt-2 items-center text-end">
           <Typography variant="body" color="mono-500">
             Claimable Amount
           </Typography>
           <div>
             <Typography variant="body" color="mono-600">
-              0 {tokenSymbol}
+              {availableAmountToUnstake ? (
+                <span>
+                  {Number(availableAmountToUnstake).toLocaleString()}{" "}
+                  <span className="!normal-case">{tokenSymbol}</span>
+                </span>
+              ) : (
+                <div>
+                  <Oval
+                    visible={true}
+                    height="10px"
+                    width="10px"
+                    color="#ffffff"
+                    ariaLabel="oval-loading"
+                    secondaryColor="#3979797e3e3e"
+                    wrapperStyle={{}}
+                    wrapperClass=""
+                  />
+                </div>
+              )}
             </Typography>{" "}
             <Typography variant="body" color="mono-500">
-              / $0.00
+              {"/ "}
+              {availableAmountToUnstake && !memePriceLoading && memePrice ? (
+                <span>${Math.round(Number(availableAmountToUnstake) * (+memePrice * 100)) / 100}</span>
+              ) : (
+                <Skeleton width={45} baseColor="#3e3e3e" highlightColor="#979797" />
+              )}
             </Typography>
           </div>
         </div>
         <Divider vertical={false} className="mt-4"></Divider>
-        <div className="flex justify-between mt-4">
+        <div className="flex justify-between mt-4 items-center text-end">
           <Typography variant="body" color="mono-500">
-            {tokenSymbol} Fees Earned
+            {tokenSymbol} Unclaimed Fees
           </Typography>
           <div>
             <Typography variant="body" color="mono-600">
-              0 {tokenSymbol}
+              {memeAmount ? (
+                Number(memeAmount).toLocaleString(undefined, {
+                  maximumFractionDigits: MEMECHAN_MEME_TOKEN_DECIMALS,
+                }) +
+                " " +
+                tokenSymbol
+              ) : (
+                <div>
+                  <Oval
+                    visible={true}
+                    height="10px"
+                    width="10px"
+                    color="#ffffff"
+                    ariaLabel="oval-loading"
+                    secondaryColor="#3979797e3e3e"
+                    wrapperStyle={{}}
+                    wrapperClass=""
+                  />
+                </div>
+              )}
             </Typography>{" "}
             <Typography variant="body" color="mono-500">
-              / $0.00
+              {"/ "}
+              {memeAmount && !memePriceLoading && memePrice ? (
+                <span>${Math.round(Number(memeAmount) * (+memePrice * 100)) / 100}</span>
+              ) : (
+                <Skeleton width={45} baseColor="#3e3e3e" highlightColor="#979797" />
+              )}
             </Typography>
           </div>
         </div>
-        <div className="flex justify-between mt-2">
+        <div className="flex justify-between mt-2 items-center text-end">
           <Typography variant="body" color="mono-500">
-            SOL Fees Earned
+            SOL Unclaimed Fees
           </Typography>
           <div>
             <Typography variant="body" color="mono-600">
-              0 SOL
+              {slerfAmount && tokenInfo ? (
+                Number(slerfAmount).toLocaleString(undefined, {
+                  maximumFractionDigits: tokenInfo.decimals,
+                }) + " SOL"
+              ) : (
+                <div>
+                  <Oval
+                    visible={true}
+                    height="10px"
+                    width="10px"
+                    color="#ffffff"
+                    ariaLabel="oval-loading"
+                    secondaryColor="#3979797e3e3e"
+                    wrapperStyle={{}}
+                    wrapperClass=""
+                  />
+                </div>
+              )}
             </Typography>{" "}
             <Typography variant="body" color="mono-500">
-              / $0.00
+              {"/ "}
+              {slerfAmount && !solPriceLoading && solanaPriceInUSD ? (
+                <span>${Math.round(Number(slerfAmount) * (solanaPriceInUSD.price * 100)) / 100}</span>
+              ) : (
+                <Skeleton width={45} baseColor="#3e3e3e" highlightColor="#979797" />
+              )}
             </Typography>
           </div>
         </div>
-        <div className="flex justify-between mt-2">
+        <div className="flex justify-between mt-2 items-center text-end">
           <Typography variant="body" color="mono-500">
-            CHAN Fees Earned
+            CHAN Unclaimed Fees
           </Typography>
           <div>
             <Typography variant="body" color="mono-600">
-              0 CHAN
+              {chanAmount && tokenInfo ? (
+                Number(chanAmount).toLocaleString(undefined, {
+                  maximumFractionDigits: CHAN_TOKEN_DECIMALS,
+                }) + " CHAN"
+              ) : (
+                <div>
+                  <Oval
+                    visible={true}
+                    height="10px"
+                    width="10px"
+                    color="#ffffff"
+                    ariaLabel="oval-loading"
+                    secondaryColor="#3979797e3e3e"
+                    wrapperStyle={{}}
+                    wrapperClass=""
+                  />
+                </div>
+              )}
             </Typography>{" "}
             <Typography variant="body" color="mono-500">
-              / $0.00
+              {"/ "}
+              {chanAmount && !chanPriceLoading && chanPriceInUSD ? (
+                <span>${Math.round(Number(chanAmount) * (chanPriceInUSD.price * 100)) / 100}</span>
+              ) : (
+                <Skeleton width={45} baseColor="#3e3e3e" highlightColor="#979797" />
+              )}
             </Typography>
           </div>
         </div>
         <div className="flex justify-between mt-4 gap-3">
-          <Button variant="primary" className="px-2 py-5">
+          <Button
+            variant={unstakeButtonIsDisabled ? "disabled" : "primary"}
+            className="px-2 py-5 disabled:bg-opacity-50 disabled:cursor-not-allowed"
+            disabled={unstakeButtonIsDisabled}
+            onClick={unstake}
+          >
             <Typography variant="h4" color="mono-600">
               Unstake
             </Typography>
           </Button>
-          <Button variant="secondary" className="px-2 py-5">
+          <Button
+            variant={withdrawFeesButtonIsDisabled || updateFeesButtonIsDisabled ? "disabled" : "secondary"}
+            className="px-2 py-5 disabled:bg-opacity-50 disabled:cursor-not-allowed"
+            disabled={withdrawFeesButtonIsDisabled || updateFeesButtonIsDisabled}
+            onClick={withdrawFees}
+          >
             <Typography variant="h4" color="mono-600">
               Claim Fees
             </Typography>
