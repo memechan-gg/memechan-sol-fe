@@ -24,8 +24,6 @@ export function LiveCoinSidebar({
   });
   const media = useMedia();
   const { data: livePoolClient } = useLivePoolClient(pool.id);
-  console.log(livePoolClient);
-  console.log(stakingPoolFromApi);
 
   return (
     <div className="flex flex-col gap-y-3">
@@ -60,7 +58,12 @@ export function LiveCoinSidebar({
             </SidebarItem>
           )} */}
       <SidebarItem>
-        <LiveCoinInfo metadata={coinMetadata} />
+        <LiveCoinInfo
+          metadata={coinMetadata}
+          stakingPoolFromApi={stakingPoolFromApi}
+          livePool={pool}
+          livePoolClient={livePoolClient}
+        />
       </SidebarItem>
       <SidebarItem>
         <LiveCoinHolders coinMetadata={coinMetadata} uniqueHoldersData={uniqueHoldersData} livePool={pool} />

@@ -1,12 +1,17 @@
+import { useStakingPool } from "@/hooks/staking/useStakingPool";
 import { Typography } from "@/memechan-ui/Atoms/Typography";
 import { Card } from "@/memechan-ui/Molecules";
-import { timeSince } from "@/utils/timeSpents";
+import { timeSince, timeSinceExpanded } from "@/utils/timeSpents";
+import BigNumber from "bignumber.js";
+import { format, parse, roundToNearestMinutes } from "date-fns";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import Skeleton from "react-loading-skeleton";
 import { LiveCoinInfoProps } from "../../coin.types";
 
-export const LiveCoinInfo = ({ metadata }: LiveCoinInfoProps) => {
-  const { creator, address, creationTime } = metadata;
+export const LiveCoinInfo = ({ metadata, stakingPoolFromApi, livePool }: LiveCoinInfoProps) => {
+  const { data: stakingPool } = useStakingPool(stakingPoolFromApi?.address);
+  const { creator, address, creationTime, symbol } = metadata;
   const handleCopy = (text: string) => {
     navigator.clipboard
       .writeText(text)
@@ -17,6 +22,36 @@ export const LiveCoinInfo = ({ metadata }: LiveCoinInfoProps) => {
         console.error("Failed to copy: ", err);
       });
   };
+  let startVestingTime: string | undefined = undefined;
+  let endVestingTime: string | undefined = undefined;
+  let startVestingTimeInMs: number = 0;
+  let endVestingTimeInMs: number = 0;
+
+  if (stakingPool) {
+    startVestingTimeInMs = new BigNumber(stakingPool.vestingConfig.cliffTs.toString()).multipliedBy(1000).toNumber();
+    endVestingTimeInMs = new BigNumber(stakingPool.vestingConfig.endTs.toString()).multipliedBy(1000).toNumber();
+    startVestingTime = new Date(startVestingTimeInMs).toLocaleString();
+    endVestingTime = new Date(endVestingTimeInMs).toLocaleString();
+  }
+
+  function formatDates(dateStr1: string, dateStr2: string) {
+    function parseRoundAndFormat(dateStr: string) {
+      const date = parse(dateStr, "dd/MM/yyyy, HH:mm:ss", new Date());
+      const roundedDate = roundToNearestMinutes(date, { nearestTo: 1 });
+
+      try {
+        return format(roundedDate, "dd MMM, HH:mm");
+      } catch (e) {
+        return undefined;
+      }
+    }
+
+    const formattedDate1 = parseRoundAndFormat(dateStr1);
+    const formattedDate2 = parseRoundAndFormat(dateStr2);
+    if (!formattedDate1 || !formattedDate2) return undefined;
+
+    return `${formattedDate1} - ${formattedDate2}`;
+  }
 
   return (
     <Card>
@@ -25,8 +60,8 @@ export const LiveCoinInfo = ({ metadata }: LiveCoinInfoProps) => {
           Info
         </Typography>
       </Card.Header>
-      <Card.Body additionalStyles="flex flex-col gap-y-2">
-        <div className="flex justify-between">
+      <Card.Body additionalStyles="flex flex-col gap-y-2 mt-1">
+        <div className="flex justify-between items-center">
           <Typography variant="body" color="mono-500">
             Created
           </Typography>
@@ -34,7 +69,31 @@ export const LiveCoinInfo = ({ metadata }: LiveCoinInfoProps) => {
             {timeSince(creationTime)} ago
           </Typography>
         </div>
-        <div className="flex justify-between">
+        <div className="flex justify-between items-center mt-1">
+          <Typography variant="body" color="mono-500">
+            Bonding curve completed
+          </Typography>
+          <Typography variant="body" color="mono-600">
+            within {timeSinceExpanded(creationTime)}
+          </Typography>
+        </div>
+        {startVestingTime && endVestingTime && formatDates(startVestingTime, endVestingTime) && (
+          <div className="flex justify-between items-center text-end mt-1">
+            <Typography variant="body" color="mono-500">
+              Vesting Period
+            </Typography>
+            <div>
+              <Typography variant="body" color="mono-600">
+                {startVestingTime && endVestingTime && formatDates(startVestingTime, endVestingTime) ? (
+                  <div>{formatDates(startVestingTime, endVestingTime)}</div>
+                ) : (
+                  <Skeleton width={35} baseColor="#3e3e3e" highlightColor="#979797" />
+                )}
+              </Typography>
+            </div>
+          </div>
+        )}
+        <div className="flex justify-between items-center">
           <Typography variant="body" color="mono-500">
             Creator
           </Typography>
@@ -49,7 +108,22 @@ export const LiveCoinInfo = ({ metadata }: LiveCoinInfoProps) => {
             </Typography>
           </div>
         </div>
-        <div className="flex justify-between">
+        <div className="flex justify-between items-center">
+          <Typography variant="body" color="mono-500">
+            Pool
+          </Typography>
+          <div className="flex gap-x-2 items-baseline">
+            <a href={`https://app.meteora.ag/pools/${livePool.id}`} target="_blank">
+              <Typography variant="body" color="mono-600" underline>
+                {livePool.id.slice(0, 4)}...{livePool.id.slice(-4)}
+              </Typography>
+            </a>
+            <Typography variant="body" color="primary-100" underline onClick={() => handleCopy(livePool.id)}>
+              Copy
+            </Typography>
+          </div>
+        </div>
+        <div className="flex justify-between items-center">
           <Typography variant="body" color="mono-500">
             CA
           </Typography>

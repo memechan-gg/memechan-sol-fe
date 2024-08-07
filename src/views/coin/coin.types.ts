@@ -86,6 +86,9 @@ export type LiveCoinHoldersProps = {
 
 export type LiveCoinInfoProps = {
   metadata: SolanaToken;
+  stakingPoolFromApi: ReturnType<typeof useStakingPoolFromApi>["data"];
+  livePool: LivePoolData;
+  livePoolClient?: LivePoolVersioned;
 };
 
 export type PresaleCoinInfoProps = {
