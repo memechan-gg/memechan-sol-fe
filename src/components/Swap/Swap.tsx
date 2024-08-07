@@ -268,7 +268,15 @@ export const Swap = (props: SwapProps) => {
 
               <div className="h-14">
                 <WithConnectedWallet
-                  variant={!connected ? "primary" : inputAmount && !isLoadingOutputAmount ? "primary" : "disabled"}
+                  variant={
+                    !connected
+                      ? "primary"
+                      : inputAmount && !isLoadingOutputAmount
+                        ? +inputAmount > baseCurrency.coinBalance
+                          ? "disabled"
+                          : "primary"
+                        : "disabled"
+                  }
                   className="mt-4"
                   disabled={swapButtonIsDisabled || isLoadingOutputAmount}
                   onClick={onSwap}
@@ -282,15 +290,13 @@ export const Swap = (props: SwapProps) => {
                     </div>
                   ) : (
                     <div className="h-14 flex items-center">
-                      <Typography variant="h4">
-                        {isLoadingOutputAmount
-                          ? "Loading..."
-                          : isSwapping
-                            ? "Swapping..."
-                            : +inputAmount > baseCurrency.coinBalance
-                              ? "Insufficient balance"
-                              : "Swap"}
-                      </Typography>
+                      {inputAmount && +inputAmount > baseCurrency.coinBalance ? (
+                        <Typography variant="h4">{"Insufficient balance"}</Typography>
+                      ) : (
+                        <Typography variant="h4">
+                          {isLoadingOutputAmount ? "Loading..." : isSwapping ? "Swapping..." : "Swap"}
+                        </Typography>
+                      )}
                     </div>
                   )}
                 </WithConnectedWallet>
