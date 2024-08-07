@@ -64,7 +64,7 @@ export function TokenCard({
       className={showOnClick ? "cursor-pointer h-full min-h-[212px]" : "h-full min-h-[212px]"}
     >
       <Card
-        additionalStyles={`card-shadow card-shadow-hover h-full ${showOnClick ? "sm:hover:border-primary-100" : "sm:hover:none"}`}
+        additionalStyles={`card-shadow bg-mono-200 h-full ${showOnClick ? "sm:hover:border-primary-100" : "sm:hover:none"}`}
       >
         <Card.Header>
           <div className="flex justify-between w-full">

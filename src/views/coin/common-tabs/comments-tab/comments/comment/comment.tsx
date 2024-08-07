@@ -40,7 +40,6 @@ export function Comment({
   const [isPostReplyDialogOpen, setIsPostReplyDialogOpen] = useState(false);
 
   const { publicKey, signMessage } = useWallet();
-
   useEffect(() => {
     setLiked(isLiked);
   }, [isLiked]);
@@ -107,7 +106,7 @@ export function Comment({
             </div>
           </div>
         </Card.Header>
-        <Card.Body>
+        <Card.Body additionalStyles="px-[18px]">
           <div className="flex flex-col sm:flex-row gap-4 sm:gap-3">
             {image && (
               <div className="flex-1">
@@ -118,7 +117,15 @@ export function Comment({
                 />
               </div>
             )}
-            {<Typography className="flex-1">{message}</Typography>}
+
+            <div className="flex flex-col">
+              {replyTo && (
+                <Typography underline variant="text-button" color="primary-100" className="mb-2">
+                  {">>"}#{replyTo}
+                </Typography>
+              )}
+              <Typography>{message}</Typography>
+            </div>
           </div>
         </Card.Body>
         <Card.Footer>
@@ -139,13 +146,6 @@ export function Comment({
                 {">>Reply"}
               </Typography>
             </span>
-            {/* {replyTo ? (
-              <a className="sm:hover:underline" href={`#${replyTo}`}>
-                Reply
-              </a>
-            ) : (
-              ""
-            )} */}
             {!liked ? (
               <Typography variant="text-button" color="mono-500" onClick={handleLikeEvent}>
                 Like
