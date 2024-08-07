@@ -53,8 +53,6 @@ export const LiveCoinSwap = ({
     refetch: memeBalanceRefech,
     isRefetching: memeBalanceRefetching,
   } = useBalance(tokenAddress, MEMECHAN_MEME_TOKEN_DECIMALS);
-  console.log(memePrice);
-  console.log(+(memePrice || "0") * +inputAmount);
 
   const [baseCurrency, setBaseCurrency] = useState({
     currencyName: "SOL",

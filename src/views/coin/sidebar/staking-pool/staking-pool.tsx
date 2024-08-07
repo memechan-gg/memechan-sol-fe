@@ -279,7 +279,7 @@ export const StakingPool = ({
               {startVestingTime && endVestingTime ? (
                 <div>{formatDates(startVestingTime, endVestingTime)}</div>
               ) : (
-                <Skeleton width={35} baseColor="#242424" highlightColor="#353535" />
+                <Skeleton width={35} baseColor="#3e3e3e" highlightColor="#979797" />
               )}
             </Typography>
           </div>

@@ -1,12 +1,27 @@
+import { getTokenInfo } from "@/hooks/utils";
 import { Typography } from "@/memechan-ui/Atoms/Typography";
 import { Card } from "@/memechan-ui/Molecules";
 import { timeSince } from "@/utils/timeSpents";
+import { MEME_TOKEN_DECIMALS } from "@avernikoz/memechan-sol-sdk";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import Skeleton from "react-loading-skeleton";
 import { PresaleCoinInfoProps } from "../../coin.types";
+import { getBoundPoolProgress } from "./utils";
 
-export const PresaleCoinInfo = ({ metadata }: PresaleCoinInfoProps) => {
-  const { creator, address, creationTime } = metadata;
+export const PresaleCoinInfo = ({ metadata, boundPool, tokenInfo }: PresaleCoinInfoProps) => {
+  const { creator, address, creationTime, symbol } = metadata;
+  const quoteTokenInfo = getTokenInfo({ tokenAddress: tokenInfo?.mint.toString() || address });
+
+  const isV2 = quoteTokenInfo.symbol === "SOL";
+  const pooledMemeCoin = Number(boundPool?.memeReserve.toJSON().tokens) / MEME_TOKEN_DECIMALS;
+  const { slerfIn, limit } = boundPool
+    ? getBoundPoolProgress(boundPool, isV2)
+    : {
+        slerfIn: "0",
+        limit: "0",
+      };
+
   const handleCopy = (text: string) => {
     navigator.clipboard
       .writeText(text)
@@ -26,12 +41,34 @@ export const PresaleCoinInfo = ({ metadata }: PresaleCoinInfoProps) => {
         </Typography>
       </Card.Header>
       <Card.Body additionalStyles="flex flex-col gap-y-2">
-        <div className="flex justify-between">
+        <div className="flex justify-between items-center">
           <Typography variant="body" color="mono-500">
             Created
           </Typography>
           <Typography variant="body" color="mono-600">
             {timeSince(creationTime)} ago
+          </Typography>
+        </div>
+        <div className="flex justify-between items-center mt-1">
+          <Typography variant="body" color="mono-500">
+            Pooled SLORK
+          </Typography>
+          <Typography variant="body" color="mono-600">
+            {pooledMemeCoin ? (
+              <div>
+                {pooledMemeCoin} {symbol}
+              </div>
+            ) : (
+              <Skeleton width={35} baseColor="#3e3e3e" highlightColor="#979797" />
+            )}
+          </Typography>
+        </div>
+        <div className="flex justify-between items-center mt-1">
+          <Typography variant="body" color="mono-500">
+            Pooled SOL
+          </Typography>
+          <Typography variant="body" color="mono-600">
+            {slerfIn ? <div>{slerfIn} SOL</div> : <Skeleton width={35} baseColor="#3e3e3e" highlightColor="#979797" />}
           </Typography>
         </div>
         <div className="flex justify-between">

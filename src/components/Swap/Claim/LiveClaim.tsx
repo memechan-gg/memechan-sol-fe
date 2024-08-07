@@ -17,7 +17,7 @@ export const LiveClaim = (props: LiveClaimProps) => {
   return ticketsData.isLoading ? (
     "Loading..."
   ) : ticketsData.tickets.length > 0 &&
-    (ticketsData.stakedAmount !== "0" || ticketsData.unavailableTicketsAmount !== "0") &&
+    (ticketsData.stakedAmount !== "0.000001" || ticketsData.unavailableTicketsAmount !== "0") &&
     livePoolId ? (
     <div>
       <StakingPool
@@ -31,7 +31,9 @@ export const LiveClaim = (props: LiveClaimProps) => {
     <div>
       <div>
         <Typography variant="body" color="mono-600">
-          You claimed all your presale funds, dumbass
+          {ticketsData.stakedAmount === "0.000001"
+            ? "You claimed all your presale funds, dumbass"
+            : "You haven’t participated in presale, dummy"}
         </Typography>
       </div>
       <img className="mt-2" src="/NoClaimImage.png" alt="Nothing to claim"></img>
