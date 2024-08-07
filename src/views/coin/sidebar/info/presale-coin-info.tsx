@@ -51,7 +51,7 @@ export const PresaleCoinInfo = ({ metadata, boundPool, tokenInfo }: PresaleCoinI
         </div>
         <div className="flex justify-between items-center mt-1">
           <Typography variant="body" color="mono-500">
-            Pooled SLORK
+            Pooled {symbol}
           </Typography>
           <Typography variant="body" color="mono-600">
             {pooledMemeCoin ? (

@@ -109,7 +109,7 @@ export function Comment({
         <Card.Body additionalStyles="px-[18px]">
           <div className="flex flex-col sm:flex-row gap-4 sm:gap-3">
             {image && (
-              <div className="flex-1">
+              <div className={`flex ${message ? "w-2/3" : "w-full"}`}>
                 <img
                   src={image}
                   alt="picture"
@@ -118,14 +118,16 @@ export function Comment({
               </div>
             )}
 
-            <div className="flex flex-col">
-              {replyTo && (
-                <Typography underline variant="text-button" color="primary-100" className="mb-2">
-                  {">>"}#{replyTo}
-                </Typography>
-              )}
-              <Typography>{message}</Typography>
-            </div>
+            {message && (
+              <div className="flex flex-col w-1/3">
+                {replyTo && (
+                  <Typography underline variant="text-button" color="primary-100" className="mb-2">
+                    {">>"}#{replyTo}
+                  </Typography>
+                )}
+                <Typography>{message}</Typography>
+              </div>
+            )}
           </div>
         </Card.Body>
         <Card.Footer>

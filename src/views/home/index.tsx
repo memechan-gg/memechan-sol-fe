@@ -7,6 +7,7 @@ import { Dialog } from "@reach/dialog";
 import { track } from "@vercel/analytics";
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
+import { Oval } from "react-loader-spinner";
 import { useCoinApi } from "./hooks/useCoinApi";
 
 const tabs = ["New", "Rising", "Live"];
@@ -120,10 +121,23 @@ export function Home() {
           activeTab={activeTab}
         />
       </div>
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 justify-center w-full">
-        {isLoading && <Typography variant="h4">Loading...</Typography>}
-        {isCoinsListExist &&
-          tokenList.map((token, index) => (
+      {isLoading && (
+        <div className="flex justify-center items-center w-full h-full">
+          <Oval
+            visible={true}
+            height="75px"
+            width="75px"
+            color="#3e3e3e"
+            ariaLabel="oval-loading"
+            secondaryColor="#979797"
+            wrapperStyle={{}}
+            wrapperClass=""
+          />
+        </div>
+      )}
+      {isCoinsListExist && (
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 justify-center w-full">
+          {tokenList.map((token, index) => (
             <TokenCard
               key={`${token.address}`}
               progressInfo={formatNumberForTokenCard({ token })}
@@ -132,8 +146,9 @@ export function Home() {
               showOnClick
             />
           ))}
-        {isCoinsListEmpty && <Typography>No memecoins yet</Typography>}
-      </div>
+          {isCoinsListEmpty && <Typography>No memecoins yet</Typography>}
+        </div>
+      )}
     </div>
   );
 }

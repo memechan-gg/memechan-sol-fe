@@ -3,6 +3,7 @@ import { useMedia } from "@/hooks/useMedia";
 import { useTickets } from "@/hooks/useTickets";
 import { Typography } from "@/memechan-ui/Atoms/Typography";
 import { StakingPool } from "@/views/coin/sidebar/staking-pool/staking-pool";
+import { Oval } from "react-loader-spinner";
 import { LiveClaimProps } from "./types";
 
 export const LiveClaim = (props: LiveClaimProps) => {
@@ -15,7 +16,18 @@ export const LiveClaim = (props: LiveClaimProps) => {
     livePoolAddress: livePoolId,
   });
   return ticketsData.isLoading ? (
-    "Loading..."
+    <div className="flex justify-center items-center min-h-[320px]">
+      <Oval
+        visible={true}
+        height="50px"
+        width="50px"
+        color="#3e3e3e"
+        ariaLabel="oval-loading"
+        secondaryColor="#979797"
+        wrapperStyle={{}}
+        wrapperClass=""
+      />
+    </div>
   ) : ticketsData.tickets.length > 0 &&
     (ticketsData.stakedAmount !== "0.000001" || ticketsData.unavailableTicketsAmount !== "0") &&
     livePoolId ? (

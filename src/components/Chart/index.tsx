@@ -43,7 +43,7 @@ export const Chart = (settingsProps: PropsSettings) => {
   return (
     <div
       id="tv-wrapper"
-      className={`h-[300px] md:h-[500px] mb-[62.5%] custom-outer-shadow w-full flex items-center justify-center`}
+      className={`h-[450px] md:h-[500px] mb-[18.5%] custom-outer-shadow w-full flex items-center justify-center`}
     >
       {!isLoaded && (
         <div className="w-full h-full">

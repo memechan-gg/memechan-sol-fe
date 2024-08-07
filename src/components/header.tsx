@@ -1,3 +1,4 @@
+import { usePopup } from "@/context/PopupContext";
 import { useUser } from "@/context/UserContext";
 import { Button } from "@/memechan-ui/Atoms/Button";
 import { Typography } from "@/memechan-ui/Atoms/Typography";
@@ -10,6 +11,7 @@ import { Search } from "./search";
 
 export const Header = () => {
   const account = useUser();
+  const { openPopup, isPopupOpen } = usePopup();
   const { disconnect } = useWallet();
   const [isSearchActive, setIsSearchActive] = useState(false);
   return (
@@ -34,27 +36,39 @@ export const Header = () => {
                 </Link>
               </div>
               <div className="text-white font-bold gap-6 text-sm hidden px-2 items-center sm:flex flex-grow justify-center">
-                <Link href="/" className="font-bold text-center">
+                <Link href="/" className="font-bold text-center sm:hover:text-primary-100">
                   📦
                   <Typography variant="h4" color="mono-600" className="ml-3 sm:hover:text-primary-100">
                     Home
                   </Typography>
                 </Link>
-                {account?.address && (
-                  <Link href={`/profile/${account.address}`} className="text-center">
-                    🤡{" "}
+                {account?.address ? (
+                  <Link href={`/profile/${account.address}`} className="text-center sm:hover:text-primary-100">
+                    🤡
                     <Typography variant="h4" color="mono-600" className="ml-3 sm:hover:text-primary-100">
                       Profile
                     </Typography>
                   </Link>
+                ) : (
+                  <div
+                    onClick={() => {
+                      openPopup();
+                    }}
+                    className="text-center sm:hover:text-primary-100"
+                  >
+                    🤡
+                    <Typography variant="h4" color="mono-600" className="ml-3 sm:hover:text-primary-100">
+                      Profile
+                    </Typography>
+                  </div>
                 )}
                 <Link
                   href="https://docs.memechan.gg/"
-                  className="text-center"
+                  className="text-center sm:hover:text-primary-100"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  🤓{" "}
+                  🤓
                   <Typography variant="h4" color="mono-600" className="ml-3 sm:hover:text-primary-100">
                     Docs
                   </Typography>

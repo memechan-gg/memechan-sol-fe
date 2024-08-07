@@ -2,11 +2,16 @@ import { Dialog, DialogTrigger } from "@/components/dialog";
 import { useState } from "react";
 import { RpcConnectionPopUp } from "./rpc-connection-pop-up";
 
-export const RpcConnectionDialog = () => {
+export const RpcConnectionDialog = ({ onClick }: { onClick: () => void }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => setIsOpen(open)}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        setIsOpen(open);
+      }}
+    >
       <DialogTrigger className="w-full font-bold text-xs text-left sm:hover:text-white">
         <div
           role="button"

@@ -21,7 +21,7 @@ export const formatNumberForTokenCard = ({ token }: Props) => {
 
   if (token.quoteSymbol === "SOL") {
     return {
-      progress: Number(token.quoteIn) / Number(token.quoteLimit) ?? undefined,
+      progress: (Number(token.quoteIn) / Number(token.quoteLimit)) * 100 ?? undefined,
       totalQuoteAmount: parseChainValue(Number(token.quoteLimit), QUOTE_TOKEN_DECIMALS, 2) ?? undefined,
       currentQuoteAmount: parseChainValue(Number(token.quoteIn), QUOTE_TOKEN_DECIMALS, 4) ?? undefined,
       participactsAmount: token.holdersCount?.toString() ?? "",

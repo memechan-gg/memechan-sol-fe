@@ -17,7 +17,7 @@ export default function SideMenu(props: { account: UserContextType; disconnect: 
   return (
     <div className="sm:relative focus-visible:outline-none">
       <Popover>
-        {({ open }) => {
+        {({ open, close }) => {
           setIsOpen(open);
           return (
             <>
@@ -34,7 +34,12 @@ export default function SideMenu(props: { account: UserContextType; disconnect: 
                 </div>
               </Popover.Button>
               <Popover.Panel className="w-[99.6%] justify-between mr-px h-screen sm:h-fit sm:w-[177px] pb-[66px] pt-[45px]  pl-8 pr-[104px] sm:p-6 sm:pb-4 sm:pt-2 sm:pr-2 flex flex-col gap-4 sm:gap-x-8 sm:gap-y-1 sm:rounded-sm border border-mono-400 bg-mono-100 shadow-light top-16 sm:top-12 absolute z-10 right-0">
-                <Link href={`/`}>
+                <Link
+                  href={`/`}
+                  onClick={() => {
+                    close();
+                  }}
+                >
                   <div
                     role="button"
                     className=" min-h-14 hover:cursor-pointer sm:mt-2 text-left font-bold text-white w-full text-xs rounded flex items-center space-x-[12px] h-full  sm:min-h-12 sm:hover:opacity-80"
@@ -44,7 +49,12 @@ export default function SideMenu(props: { account: UserContextType; disconnect: 
                   </div>
                 </Link>
                 {connected && (
-                  <Link href={`/profile/${props.account.address}`}>
+                  <Link
+                    href={`/profile/${props.account.address}`}
+                    onClick={() => {
+                      close();
+                    }}
+                  >
                     <div
                       role="button"
                       className="min-h-14 hover:cursor-pointer sm:mt-2 font-bold text-white w-full text-xs text-left rounded flex h-full items-center space-x-[12px] sm:min-h-12 sm:hover:opacity-80"
@@ -55,9 +65,18 @@ export default function SideMenu(props: { account: UserContextType; disconnect: 
                   </Link>
                 )}
                 <div className="">
-                  <RpcConnectionDialog />
+                  <RpcConnectionDialog
+                    onClick={() => {
+                      close();
+                    }}
+                  />
                 </div>
-                <Link href={`/vesting`}>
+                <Link
+                  href={`/vesting`}
+                  onClick={() => {
+                    close();
+                  }}
+                >
                   <div
                     role="button"
                     className="min-h-14 hover:cursor-pointer sm:mt-2 font-bold text-white w-full text-xs text-left rounded flex  items-center space-x-[12px]  sm:min-h-12 sm:hover:opacity-80"
@@ -71,13 +90,19 @@ export default function SideMenu(props: { account: UserContextType; disconnect: 
                   className="min-h-14 hover:cursor-pointer sm:mt-2 font-bold text-white w-full text-xs text-left rounded flex items-center space-x-[12px] sm:min-h-12 sm:hover:opacity-80"
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => {
+                    close();
+                  }}
                 >
                   <span>🤓</span>
                   <span>Docs</span>
                 </Link>
                 {connected && (
                   <button
-                    onClick={() => props.disconnect()}
+                    onClick={() => {
+                      props.disconnect();
+                      close();
+                    }}
                     className="min-h-14 hover:cursor-pointer sm:mt-2 font-bold text-white w-full text-xs text-left rounded flex  items-center space-x-[12px] sm:min-h-12 sm:hover:opacity-80"
                   >
                     <span>🖕</span>

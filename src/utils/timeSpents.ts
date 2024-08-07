@@ -28,19 +28,19 @@ export function timeSinceExpanded(timestamp: number) {
   const elapsed = now - timestamp;
 
   const units = [
-    { label: "year(s)", milliseconds: 31557600000 },
-    { label: "month(s)", milliseconds: 2629800000 },
-    { label: "week(s)", milliseconds: 604800000 },
-    { label: "day(s)", milliseconds: 86400000 },
-    { label: "hour(s)", milliseconds: 3600000 },
-    { label: "minute(s)", milliseconds: 60000 },
-    { label: "second(s)", milliseconds: 1000 },
+    { label: "year", milliseconds: 31557600000 },
+    { label: "month", milliseconds: 2629800000 },
+    { label: "week", milliseconds: 604800000 },
+    { label: "day", milliseconds: 86400000 },
+    { label: "hour", milliseconds: 3600000 },
+    { label: "minute", milliseconds: 60000 },
+    { label: "second", milliseconds: 1000 },
   ];
 
   for (const unit of units) {
     const interval = Math.floor(elapsed / unit.milliseconds);
     if (interval >= 1) {
-      return `${interval}${unit.label}`;
+      return `${interval} ${unit.label}`;
     }
   }
   return "just now";

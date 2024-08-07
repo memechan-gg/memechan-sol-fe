@@ -39,7 +39,8 @@ export const ConnectWallet = (props: { account: UserContextType; disconnect: () 
         popoverRef.current &&
         !popoverRef.current.contains(event.target as Node | null) &&
         !popoverButtonRef.current?.contains(event.target as Node | null) &&
-        !target.textContent?.includes("Connect Wallet")
+        !target.textContent?.includes("Connect Wallet") &&
+        !target.textContent?.includes("Profile")
       ) {
         closePopup();
       }
