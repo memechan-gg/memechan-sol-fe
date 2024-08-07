@@ -43,6 +43,10 @@ export function CreateCoin() {
     formState: { errors },
   } = useForm<ICreateForm>();
   const { publicKey, connected, signMessage, sendTransaction } = useWallet();
+  const [isChecked, setIsChecked] = useState(false);
+  const handleChange = () => {
+    setIsChecked(!isChecked);
+  };
   const { isPopupOpen, setIsPopupOpen } = usePopup();
   const [state, setState] = useState<CreateCoinState>("idle");
   const router = useRouter();
@@ -124,6 +128,10 @@ export function CreateCoin() {
       });
 
       setState("create_bonding_and_meme");
+
+      toast(() => <span>Coin is created</span>);
+
+      if (!createPoolTransaction) return;
       // Pool and meme creation
       const signature = await sendTransaction(createPoolTransaction, connection, {
         maxRetries: 3,
@@ -464,6 +472,15 @@ export function CreateCoin() {
                   </Button>
                 </div>
               )}
+              <div className="flex items-center mt-2">
+                <input
+                  type="checkbox"
+                  checked={isChecked}
+                  onChange={handleChange}
+                  className="w-6 h-6 text-blue-600 form-checkbox"
+                />
+                <Typography variant="body" className="ml-2">Create for free as chan user</Typography>
+              </div>
             </div>
 
             {/* IN CASE THEY WANT IT BACK 
