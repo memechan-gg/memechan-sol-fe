@@ -7,7 +7,6 @@ import { LiveCoinSidebarProps } from "../coin.types";
 import { LiveCoinHolders } from "./holders/live-coin-holders";
 import { LiveCoinInfo } from "./info/live-coin-info";
 import { SidebarItem } from "./sidebar-item";
-import { StakingPool } from "./staking-pool/staking-pool";
 import { LiveCoinSwap } from "./swap/live-coin-swap";
 
 export function LiveCoinSidebar({
@@ -25,11 +24,13 @@ export function LiveCoinSidebar({
   });
   const media = useMedia();
   const { data: livePoolClient } = useLivePoolClient(pool.id);
+  console.log(livePoolClient);
+  console.log(stakingPoolFromApi);
 
   return (
     <div className="flex flex-col gap-y-3">
       <SidebarItem>
-        <TokenCard key={coinMetadata.address} token={coinMetadata} />
+        <TokenCard key={coinMetadata.address} token={coinMetadata} showLinks showCheckmark />
       </SidebarItem>
       {!media.isSmallDevice && (
         <SidebarItem>
@@ -43,7 +44,7 @@ export function LiveCoinSidebar({
           />
         </SidebarItem>
       )}
-      {ticketsData.isLoading
+      {/* {ticketsData.isLoading
         ? "Loading..."
         : ticketsData.tickets.length > 0 &&
           (ticketsData.stakedAmount !== "0.000001" || ticketsData.unavailableTicketsAmount !== "0") && (
@@ -57,7 +58,7 @@ export function LiveCoinSidebar({
                 />
               }
             </SidebarItem>
-          )}
+          )} */}
       <SidebarItem>
         <LiveCoinInfo metadata={coinMetadata} />
       </SidebarItem>

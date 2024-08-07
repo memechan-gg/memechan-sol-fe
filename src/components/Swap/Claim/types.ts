@@ -7,6 +7,10 @@ export interface LiveClaimProps {
   tokenSymbol: string;
 }
 
+export interface PresaleClaimProps {
+  tokenSymbol: string;
+}
+
 export interface ClaimProps extends LiveClaimProps {
   variant: "LIVE" | "PRESALE";
 }

@@ -4,6 +4,7 @@ import { Swap } from "@/components/Swap";
 import { useConnection } from "@/context/ConnectionContext";
 import { useBoundPoolClient } from "@/hooks/presale/useBoundPoolClient";
 import { useBalance } from "@/hooks/useBalance";
+import { useMemePriceFromBE } from "@/hooks/useMemePriceFromBE";
 import { useSolanaBalance } from "@/hooks/useSolanaBalance";
 import { getTokenInfo } from "@/hooks/utils";
 import { GetSwapOutputAmountParams, GetSwapTransactionParams } from "@/types/hooks";
@@ -52,6 +53,12 @@ export const PresaleCoinSwap = ({
   const tokenInfo = boundPoolClient?.boundPoolInstance.quoteTokenMint
     ? getTokenInfo({ tokenAddress: boundPoolClient.boundPoolInstance.quoteTokenMint, variant: "publicKey" })
     : null;
+
+  const { data: memePrice } = useMemePriceFromBE({
+    memeMint: boundPool?.memeReserve.mint.toBase58() || "",
+    poolType: "seedPool",
+  });
+
   const memeChanQuoteMint = tokenInfo?.mint || "";
   const memeChanQuoteTokenDecimals = tokenInfo?.decimals || 6;
 
@@ -357,6 +364,7 @@ export const PresaleCoinSwap = ({
       // seedPoolAddress={seedPoolAddress}
       onClose={onClose}
       tokenDecimals={coinToMeme ? memeChanQuoteTokenDecimals : MEMECHAN_MEME_TOKEN_DECIMALS}
+      memePrice={memePrice}
     />
   );
 };

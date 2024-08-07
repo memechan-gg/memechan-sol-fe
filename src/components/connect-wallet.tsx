@@ -59,7 +59,6 @@ export const ConnectWallet = (props: { account: UserContextType; disconnect: () 
         role="button"
         className={`h-full w-full gap-y-[6px] text-primary-100 pl-2 text-[0.75rem] font-bold flex flex-col ${connected ? "items-start" : "items-center"} justify-center sm:hover:bg-primary-100 sm:hover:text-white transition-colors focus-visible:outline-none`}
         onClick={(e) => {
-          console.log(isPopupOpen);
           isPopupOpen ? closePopup() : openPopup();
         }}
         ref={popoverButtonRef}
