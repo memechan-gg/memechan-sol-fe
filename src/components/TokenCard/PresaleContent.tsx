@@ -15,7 +15,7 @@ interface Props {
 export const PresaleContent = ({ token, progressInfo }: Props) => {
   return (
     <>
-      <div className="flex flex-col text-sm text-white mt-2">
+      <div className="flex flex-col text-sm text-white mt-[14px]">
         {progressInfo && (
           <div className="w-full flex flex-row items-start text-xs-custom text-mono-500 overflow-hidden justify-between">
             <div className="flex flex-row gap-x-2">

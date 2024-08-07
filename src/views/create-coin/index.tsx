@@ -1,6 +1,5 @@
 import { TransactionSentNotification } from "@/components/notifications/transaction-sent-notification";
 import SuccessModal from "@/components/successModal";
-import { WithConnectedWallet } from "@/components/WithConnectedWallet";
 import { useConnection } from "@/context/ConnectionContext";
 import { usePopup } from "@/context/PopupContext";
 import { useBalance } from "@/hooks/useBalance";
@@ -217,7 +216,7 @@ export function CreateCoin() {
   const nameInput = watch("name");
   const symbolInput = watch("symbol");
   const imageInput = watch("image");
-  const filledRequired = nameInput && symbolInput && imageInput?.length;
+  const filledRequired = nameInput && symbolInput && imageInput?.length && inputAmount;
 
   return (
     <div className="w-full flex flex-col items-center">
@@ -440,17 +439,23 @@ export function CreateCoin() {
                 </div>
               ) : filledRequired ? (
                 <div className="h-14">
-                  <Button variant="primary" className="grid py-2">
-                    {
+                  {+inputAmount > baseCurrency.coinBalance ? (
+                    <Button variant="disabled" className="grid py-2">
+                      <Typography variant="h4"> Insufficient balance</Typography>
+                    </Button>
+                  ) : (
+                    <Button variant="primary" className="grid py-2">
                       {
-                        idle: "Create Now",
-                        sign: "Signing Message...",
-                        ipfs: "Uploading Image...",
-                        create_bonding_and_meme: "Creating Bonding Curve Pool and memecoin...",
-                      }[state]
-                    }
-                    <Typography variant="caption">0.02 SOL to deploy</Typography>
-                  </Button>
+                        {
+                          idle: "Create Now",
+                          sign: "Signing Message...",
+                          ipfs: "Uploading Image...",
+                          create_bonding_and_meme: "Creating Bonding Curve Pool and memecoin...",
+                        }[state]
+                      }
+                      <Typography variant="caption">0.02 SOL to deploy</Typography>
+                    </Button>
+                  )}
                 </div>
               ) : (
                 <div className="h-14 bg-mono-400">

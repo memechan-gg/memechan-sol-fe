@@ -86,20 +86,24 @@ export default function SideMenu(props: { account: UserContextType; disconnect: 
                 )}
                 <div className="bottom-border w-[145px] mt-4" />
                 <div className="flex gap-12 sm:gap-4 align-middle items-center mb-12 sm:mb-0">
-                  <Image
-                    width={24}
-                    height={24}
-                    src={TwitterIcon}
-                    alt="twitter"
-                    className="m-[6px] sm:p-1 sm:mx-[2px] sm:my-0 sm:hover:opacity-80 sm:hover:cursor-pointer min-h-14 sm:min-h-12"
-                  />
-                  <Image
-                    width={24}
-                    height={24}
-                    src={TelegramIcon}
-                    alt="telegram"
-                    className="m-[6px] sm:p-1 sm:mx-[2px] sm:my-0 sm:hover:opacity-80 sm:hover:cursor-pointer min-h-14  sm:min-h-12"
-                  />
+                  <a href="https://x.com/memechan_gg" target="_blank" rel="noopener noreferrer">
+                    <Image
+                      width={24}
+                      height={24}
+                      src={TwitterIcon}
+                      alt="twitter"
+                      className="m-[6px] sm:p-1 sm:mx-[2px] sm:my-0 sm:hover:opacity-80 sm:hover:cursor-pointer min-h-14 sm:min-h-12"
+                    />
+                  </a>
+                  <a href="https://t.me/memechan_gg" target="_blank" rel="noopener noreferrer">
+                    <Image
+                      width={24}
+                      height={24}
+                      src={TelegramIcon}
+                      alt="telegram"
+                      className="m-[6px] sm:p-1 sm:mx-[2px] sm:my-0 sm:hover:opacity-80 sm:hover:cursor-pointer min-h-14  sm:min-h-12"
+                    />
+                  </a>
                 </div>
               </Popover.Panel>
             </>
