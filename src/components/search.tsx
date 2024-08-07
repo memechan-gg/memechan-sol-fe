@@ -3,17 +3,20 @@ import TextInput from "@/memechan-ui/Atoms/Input/TextInput";
 import { faClose } from "@fortawesome/free-solid-svg-icons/faClose";
 import { faSearch } from "@fortawesome/free-solid-svg-icons/faSearch";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { colors } from "../../tailwind.config";
 
 export const Search = ({
   isSearchActive,
   setIsSearchActive,
+  setSearch,
+  search,
 }: {
   isSearchActive: boolean;
   setIsSearchActive: Dispatch<SetStateAction<boolean>>;
+  setSearch: Dispatch<SetStateAction<string>>;
+  search: string;
 }) => {
-  const [search, setSearch] = useState("");
   return (
     <div>
       {!isSearchActive && (
@@ -40,7 +43,14 @@ export const Search = ({
           }
           endAdornment={
             <span className="cursor-pointer flex">
-              <FontAwesomeIcon icon={faClose} size="lg" onClick={() => setIsSearchActive(false)} />
+              <FontAwesomeIcon
+                icon={faClose}
+                size="lg"
+                onClick={() => {
+                  setSearch("");
+                  setIsSearchActive(false);
+                }}
+              />
             </span>
           }
           className="py-2.5 h-10 pl-3 pr-4 rounded-sm pink-border"
