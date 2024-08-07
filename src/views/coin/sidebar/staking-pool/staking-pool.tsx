@@ -258,11 +258,17 @@ export const StakingPool = ({
     function parseRoundAndFormat(dateStr: string) {
       const date = parse(dateStr, "dd/MM/yyyy, HH:mm:ss", new Date());
       const roundedDate = roundToNearestMinutes(date, { nearestTo: 1 });
-      return format(roundedDate, "dd MMM, HH:mm");
+
+      try {
+        return format(roundedDate, "dd MMM, HH:mm");
+      } catch (e) {
+        return undefined;
+      }
     }
 
     const formattedDate1 = parseRoundAndFormat(dateStr1);
     const formattedDate2 = parseRoundAndFormat(dateStr2);
+    if (!formattedDate1 || !formattedDate2) return undefined;
 
     return `${formattedDate1} - ${formattedDate2}`;
   }
@@ -270,20 +276,22 @@ export const StakingPool = ({
   return (
     <div className="flex flex-col">
       <div className="flex flex-col">
-        <div className="flex justify-between mt-4 items-center text-end">
-          <Typography variant="body" color="mono-500">
-            Vesting Period
-          </Typography>
-          <div>
-            <Typography variant="body" color="mono-600">
-              {startVestingTime && endVestingTime ? (
-                <div>{formatDates(startVestingTime, endVestingTime)}</div>
-              ) : (
-                <Skeleton width={35} baseColor="#3e3e3e" highlightColor="#979797" />
-              )}
+        {startVestingTime && endVestingTime && formatDates(startVestingTime, endVestingTime) && (
+          <div className="flex justify-between mt-4 items-center text-end">
+            <Typography variant="body" color="mono-500">
+              Vesting Period
             </Typography>
+            <div>
+              <Typography variant="body" color="mono-600">
+                {startVestingTime && endVestingTime ? (
+                  <div>{formatDates(startVestingTime, endVestingTime)}</div>
+                ) : (
+                  <Skeleton width={35} baseColor="#3e3e3e" highlightColor="#979797" />
+                )}
+              </Typography>
+            </div>
           </div>
-        </div>
+        )}
         <div className="flex justify-between mt-2 items-center text-end">
           <Typography variant="body" color="mono-500">
             Staked Amount

@@ -38,11 +38,17 @@ export const LiveCoinInfo = ({ metadata, stakingPoolFromApi, livePool }: LiveCoi
     function parseRoundAndFormat(dateStr: string) {
       const date = parse(dateStr, "dd/MM/yyyy, HH:mm:ss", new Date());
       const roundedDate = roundToNearestMinutes(date, { nearestTo: 1 });
-      return format(roundedDate, "dd MMM, HH:mm");
+
+      try {
+        return format(roundedDate, "dd MMM, HH:mm");
+      } catch (e) {
+        return undefined;
+      }
     }
 
     const formattedDate1 = parseRoundAndFormat(dateStr1);
     const formattedDate2 = parseRoundAndFormat(dateStr2);
+    if (!formattedDate1 || !formattedDate2) return undefined;
 
     return `${formattedDate1} - ${formattedDate2}`;
   }
@@ -71,20 +77,22 @@ export const LiveCoinInfo = ({ metadata, stakingPoolFromApi, livePool }: LiveCoi
             within {timeSinceExpanded(creationTime)}
           </Typography>
         </div>
-        <div className="flex justify-between items-center text-end mt-1">
-          <Typography variant="body" color="mono-500">
-            Vesting Period
-          </Typography>
-          <div>
-            <Typography variant="body" color="mono-600">
-              {startVestingTime && endVestingTime ? (
-                <div>{formatDates(startVestingTime, endVestingTime)}</div>
-              ) : (
-                <Skeleton width={35} baseColor="#3e3e3e" highlightColor="#979797" />
-              )}
+        {startVestingTime && endVestingTime && formatDates(startVestingTime, endVestingTime) && (
+          <div className="flex justify-between items-center text-end mt-1">
+            <Typography variant="body" color="mono-500">
+              Vesting Period
             </Typography>
+            <div>
+              <Typography variant="body" color="mono-600">
+                {startVestingTime && endVestingTime && formatDates(startVestingTime, endVestingTime) ? (
+                  <div>{formatDates(startVestingTime, endVestingTime)}</div>
+                ) : (
+                  <Skeleton width={35} baseColor="#3e3e3e" highlightColor="#979797" />
+                )}
+              </Typography>
+            </div>
           </div>
-        </div>
+        )}
         <div className="flex justify-between items-center">
           <Typography variant="body" color="mono-500">
             Creator
