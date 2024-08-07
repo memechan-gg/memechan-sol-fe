@@ -1,6 +1,6 @@
 import { TokenCard } from "@/components/TokenCard";
 import { useMedia } from "@/hooks/useMedia";
-import { timeSince } from "@/utils/timeSpents";
+import { formatNumberForTokenCard } from "@/utils/formatNumbersForTokenCard";
 import { PresaleCoinSidebarProps } from "../coin.types";
 import { PresaleCoinHolders } from "./holders/presale-coin-holders";
 import { PresaleCoinInfo } from "./info/presale-coin-info";
@@ -35,13 +35,7 @@ export function PresaleCoinSidebar({
           token={coinMetadata}
           showLinks
           showCheckmark
-          progressInfo={{
-            progress: Number(progress),
-            totalQuoteAmount: limit,
-            currentQuoteAmount: slerfIn,
-            participactsAmount: uniqueHoldersData?.holders.length.toString() ?? "0",
-            timeFromCreation: timeSince(coinMetadata.creationTime),
-          }}
+          progressInfo={formatNumberForTokenCard({ token: coinMetadata })}
           showOnClick={false}
         />
       </SidebarItem>

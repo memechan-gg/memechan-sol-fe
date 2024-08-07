@@ -5,7 +5,7 @@ import { Button } from "@/memechan-ui/Atoms";
 import { Typography } from "@/memechan-ui/Atoms/Typography";
 
 export const WithConnectedWallet = (props: ButtonProps) => {
-  const { isPopupOpen, openPopup, closePopup, setIsPopupOpen } = usePopup();
+  const { isPopupOpen, setIsPopupOpen } = usePopup();
   const account = useUser();
 
   if (!account.address) {

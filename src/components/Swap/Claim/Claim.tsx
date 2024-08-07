@@ -5,5 +5,5 @@ import { ClaimProps } from "./types";
 export const Claim = (props: ClaimProps) => {
   const { variant } = props;
 
-  return variant === "LIVE" ? <LiveClaim {...props} /> : <PresaleClaim />;
+  return variant === "LIVE" ? <LiveClaim {...props} /> : <PresaleClaim tokenSymbol={props.tokenSymbol} />;
 };

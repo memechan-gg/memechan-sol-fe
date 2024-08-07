@@ -2,6 +2,7 @@ import { TransactionSentNotification } from "@/components/notifications/transact
 import SuccessModal from "@/components/successModal";
 import { WithConnectedWallet } from "@/components/WithConnectedWallet";
 import { useConnection } from "@/context/ConnectionContext";
+import { usePopup } from "@/context/PopupContext";
 import { useBalance } from "@/hooks/useBalance";
 import { useSolanaBalance } from "@/hooks/useSolanaBalance";
 import { useSolanaPrice } from "@/hooks/useSolanaPrice";
@@ -43,6 +44,7 @@ export function CreateCoin() {
     formState: { errors },
   } = useForm<ICreateForm>();
   const { publicKey, connected, signMessage, sendTransaction } = useWallet();
+  const { isPopupOpen, setIsPopupOpen } = usePopup();
   const [state, setState] = useState<CreateCoinState>("idle");
   const router = useRouter();
   const [inputAmount, setInputAmount] = useState<string>("0");
@@ -426,7 +428,15 @@ export function CreateCoin() {
             <div className="flex flex-col gap-1 mt-4">
               {!connected || !publicKey || !signMessage ? (
                 <div className="h-14">
-                  <WithConnectedWallet variant="primary" />
+                  <Button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setIsPopupOpen(!isPopupOpen);
+                    }}
+                    variant="primary"
+                  >
+                    Connect Wallet
+                  </Button>
                 </div>
               ) : filledRequired ? (
                 <div className="h-14">

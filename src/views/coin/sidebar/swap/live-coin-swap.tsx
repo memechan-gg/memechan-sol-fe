@@ -6,6 +6,7 @@ import { getTokenInfo } from "@/hooks/utils";
 // import SwapInput from "@/memechan-ui/Atoms/Input/SwapInput";
 import { Swap } from "@/components/Swap";
 import { QUOTE_TOKEN_DECIMALS } from "@/constants/constants";
+import { useMemePriceFromBE } from "@/hooks/useMemePriceFromBE";
 import { useSolanaBalance } from "@/hooks/useSolanaBalance";
 import { GetLiveSwapTransactionParams, GetSwapOutputAmountParams } from "@/types/hooks";
 import { parseChainValue } from "@/utils/parseChainValue";
@@ -45,6 +46,7 @@ export const LiveCoinSwap = ({
     isRefetching: coinBalanceRefetching,
   } = useBalance(tokenData.mint.toString(), tokenData.decimals);
 
+  const { data: memePrice } = useMemePriceFromBE({ memeMint: tokenAddress, poolType: "livePool" });
   const {
     balance: memeBalance,
     isLoading: isMemeBalanceLoading,
@@ -401,6 +403,7 @@ export const LiveCoinSwap = ({
       tokenSymbol={tokenSymbol}
       onClose={onClose}
       tokenDecimals={coinToMeme ? tokenData.decimals : MEMECHAN_MEME_TOKEN_DECIMALS}
+      memePrice={memePrice}
     />
   );
 };

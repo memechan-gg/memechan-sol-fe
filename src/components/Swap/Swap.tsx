@@ -16,6 +16,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Dialog } from "@reach/dialog";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
+import BigNumber from "bignumber.js";
 import { ChangeEvent, useState } from "react";
 import { Oval } from "react-loader-spinner";
 import SuccessModal from "../successModal";
@@ -53,6 +54,7 @@ interface SwapProps {
   tokenSymbol: string;
   onClose?: () => void;
   tokenDecimals: number;
+  memePrice?: string;
 }
 
 export const Swap = (props: SwapProps) => {
@@ -79,6 +81,7 @@ export const Swap = (props: SwapProps) => {
     onClose,
     isRefreshing,
     tokenDecimals,
+    memePrice,
   } = props;
   const { data: solanaPriceInUSD } = useSolanaPrice();
   const [variant, setVariant] = useState<"swap" | "claim">("swap");
@@ -96,6 +99,17 @@ export const Swap = (props: SwapProps) => {
     ) {
       setLocalSlippage(value);
     }
+  };
+
+  const getUSDPrice = (currecyName: string, amount: string) => {
+    if (currecyName === "SOL") {
+      if (!solanaPriceInUSD?.price) return undefined;
+      return Number(amount) * solanaPriceInUSD.price;
+    }
+    if (!memePrice || !amount || amount === "0") return undefined;
+    const cleanAmount = amount.replace(/,/g, "");
+    const result = new BigNumber(memePrice).multipliedBy(new BigNumber(cleanAmount));
+    return result.toNumber();
   };
   return (
     <>
@@ -144,18 +158,26 @@ export const Swap = (props: SwapProps) => {
       <Card additionalStyles=" bg-mono-200">
         <Card.Header>
           <div className="flex justify-between w-full">
-            <div className="flex gap-1 items-center">
-              {/* onClick={() => setVariant(isVariantSwap ? "swap" : "claim")} */}
-              <Typography variant="h4">{isVariantSwap ? "Swap" : "Claim"}</Typography>
-              {/* {livePoolId && (
-                <Typography
-                  variant="text-button"
-                  underline
-                  onClick={() => setVariant(isVariantSwap ? "claim" : "swap")}
-                >
-                  {isVariantSwap ? "Claim" : "Swap"}
-                </Typography>
-              )} */}
+            <div className="flex gap-2 items-center">
+              {variant === "swap" ? (
+                <>
+                  <Typography color="mono-600" variant="h4">
+                    Swap
+                  </Typography>
+                  <Typography variant="text-button" color="mono-500" underline onClick={() => setVariant("claim")}>
+                    Claim
+                  </Typography>
+                </>
+              ) : (
+                <>
+                  <Typography color="mono-500" onClick={() => setVariant("swap")} variant="text-button" underline>
+                    Swap
+                  </Typography>
+                  <Typography variant="h4" color="mono-600">
+                    Claim
+                  </Typography>
+                </>
+              )}
             </div>
             <div className="flex items-center gap-2">
               <Typography variant="text-button" color="mono-500" underline onClick={() => setIsOpen(true)}>
@@ -235,6 +257,7 @@ export const Swap = (props: SwapProps) => {
                   currencyLogoUrl={secondCurrency.currencyLogoUrl}
                   label="Receive"
                   isReadOnly
+                  usdPrice={getUSDPrice(secondCurrency.currencyName, toReceive)}
                   labelRight={
                     publicKey ? `👛 ${secondCurrency.coinBalance ?? 0} ${secondCurrency.currencyName}` : undefined
                   }
