@@ -4,7 +4,9 @@ import { useSolanaPrice } from "@/hooks/useSolanaPrice";
 import { Button } from "@/memechan-ui/Atoms";
 import { Divider } from "@/memechan-ui/Atoms/Divider/Divider";
 import { SwapInput } from "@/memechan-ui/Atoms/Input";
+import FileInput from "@/memechan-ui/Atoms/Input/FileInput";
 import NumberInput from "@/memechan-ui/Atoms/Input/NumberInput";
+import TextInput from "@/memechan-ui/Atoms/Input/TextInput";
 import { Typography } from "@/memechan-ui/Atoms/Typography";
 import DownArrowIcon from "@/memechan-ui/icons/DownArrowIcon";
 import UpArrowIcon from "@/memechan-ui/icons/UpArrowIcon";
@@ -17,6 +19,7 @@ import { PublicKey } from "@solana/web3.js";
 import BigNumber from "bignumber.js";
 import { ChangeEvent, useState } from "react";
 import { Oval } from "react-loader-spinner";
+import SuccessModal from "../successModal";
 import { WithConnectedWallet } from "../WithConnectedWallet";
 import { Claim } from "./Claim";
 
@@ -85,6 +88,7 @@ export const Swap = (props: SwapProps) => {
   const [localSlippage, setLocalSlippage] = useState(slippage);
   const isVariantSwap = variant === "swap";
   const { connected } = useWallet();
+  const [successModalOpened, setSuccessModalOpened] = useState<boolean>(false);
 
   const [isOpen, setIsOpen] = useState(false);
   const handleSlippageChange = (value: string) => {
@@ -109,7 +113,49 @@ export const Swap = (props: SwapProps) => {
   };
   return (
     <>
-      <Card additionalStyles="min-h-[392px] bg-mono-200">
+      {successModalOpened && (
+        <SuccessModal
+          headerText="Successfully purchased WCHAN"
+          bodyText="You’re now a WCHAN presale participant! Once it goes live your tokens vesting is started. You’ll be able to claim them hourly within 1 week on “Claim” section or keep them staked to earn trading fees share."
+          setSuccessModalOpened={setSuccessModalOpened}
+        >
+          <Card additionalStyles="mt-3 no-shadow">
+            <Card.Header>
+              <div>
+                <Typography variant="h4" color="mono-600">
+                  Post a comment about your purchase
+                </Typography>
+              </div>
+            </Card.Header>
+            <Card.Body>
+              {/* TODO ALDIN HANDLE POSTING COMMENT */}
+
+              <div className="flex flex-col gap-3">
+                <TextInput
+                  value={"aaa"}
+                  setValue={(e) => console.log(e)}
+                  placeholder="Comment"
+                  className="primary-border p-[15px] custom-inner-shadow rounded-b-none"
+                />
+                <div className="flex justify-between items-center gap-3">
+                  <FileInput file={{} as File} setFile={(e) => console.log(e)} />
+                  <Button
+                    className="py-[18px] pr-0 pl-0 max-w-[181px]"
+                    variant="primary"
+                    // onClick={handleSendReply}
+                    // disabled={isLoading}
+                  >
+                    Post
+                    {/* {isLoading ? "Loading..." : "Post"} */}
+                  </Button>
+                </div>
+              </div>
+            </Card.Body>
+          </Card>
+        </SuccessModal>
+      )}
+
+      <Card additionalStyles=" bg-mono-200">
         <Card.Header>
           <div className="flex justify-between w-full">
             <div className="flex gap-2 items-center">
@@ -189,8 +235,8 @@ export const Swap = (props: SwapProps) => {
                     publicKey ? `👛 ${baseCurrency.coinBalance ?? 0} ${baseCurrency.currencyName}` : undefined
                   }
                   baseCurrencyAmount={baseCurrency.coinBalance}
-                  showQuickInput={connected}
-                  usdPrice={getUSDPrice(baseCurrency.currencyName, inputAmount)}
+                  showQuickInput={true}
+                  usdPrice={solanaPriceInUSD?.price ? Number(inputAmount ?? 0) * solanaPriceInUSD.price : 0}
                   tokenDecimals={tokenDecimals}
                   quickInputNumber={baseCurrency.currencyName === "SOL"}
                 />
@@ -220,27 +266,35 @@ export const Swap = (props: SwapProps) => {
                 />
               </div>
 
-              <WithConnectedWallet
-                variant={!connected ? "primary" : inputAmount && !isLoadingOutputAmount ? "primary" : "disabled"}
-                className="mt-4 p-1 h-14"
-                disabled={swapButtonIsDisabled || isLoadingOutputAmount}
-                onClick={onSwap}
-                isLoading={isSwapping || isLoadingOutputAmount}
-              >
-                {!inputAmount ? (
-                  <Typography variant="h4">Fill all required fields</Typography>
-                ) : (
-                  <Typography variant="h4">
-                    {isLoadingOutputAmount
-                      ? "Loading..."
-                      : isSwapping
-                        ? "Swapping..."
-                        : +inputAmount > baseCurrency.coinBalance
-                          ? "Insufficient balance"
-                          : "Swap"}
-                  </Typography>
-                )}
-              </WithConnectedWallet>
+              <div className="h-14">
+                <WithConnectedWallet
+                  variant={!connected ? "primary" : inputAmount && !isLoadingOutputAmount ? "primary" : "disabled"}
+                  className="mt-4"
+                  disabled={swapButtonIsDisabled || isLoadingOutputAmount}
+                  onClick={onSwap}
+                  isLoading={isSwapping || isLoadingOutputAmount}
+                >
+                  {!inputAmount ? (
+                    <div className="h-14 flex items-center">
+                      <Button variant="disabled" className="cursor-not-allowed">
+                        <Typography variant="h4">{"Fill all required fields"}</Typography>
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="h-14 flex items-center">
+                      <Typography variant="h4">
+                        {isLoadingOutputAmount
+                          ? "Loading..."
+                          : isSwapping
+                            ? "Swapping..."
+                            : +inputAmount > baseCurrency.coinBalance
+                              ? "Insufficient balance"
+                              : "Swap"}
+                      </Typography>
+                    </div>
+                  )}
+                </WithConnectedWallet>
+              </div>
             </>
           )}
         </Card.Body>

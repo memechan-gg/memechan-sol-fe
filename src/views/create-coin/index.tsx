@@ -1,4 +1,6 @@
 import { TransactionSentNotification } from "@/components/notifications/transaction-sent-notification";
+import SuccessModal from "@/components/successModal";
+import { WithConnectedWallet } from "@/components/WithConnectedWallet";
 import { useConnection } from "@/context/ConnectionContext";
 import { usePopup } from "@/context/PopupContext";
 import { useBalance } from "@/hooks/useBalance";
@@ -21,6 +23,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import TwitterIcon from "../../memechan-ui/icons/TwitterIcon";
 import { CreateCoinState, ICreateForm } from "./create-coin.types";
 import {
   createCoinOnBE,
@@ -50,7 +53,7 @@ export function CreateCoin() {
   const { balance: solanaAmount } = useBalance(TOKEN_INFOS["WSOL"].mint.toString(), TOKEN_INFOS["WSOL"].decimals);
   const { data: solanaBalance } = useSolanaBalance();
   const { data: solanaPriceInUSD } = useSolanaPrice();
-
+  const [successModalOpened, setSuccessModalOpened] = useState<boolean>(false);
   const baseCurrency = {
     currencyName: "SOL",
     currencyLogoUrl: "/tokens/solana.png",
@@ -215,10 +218,57 @@ export function CreateCoin() {
   const symbolInput = watch("symbol");
   const imageInput = watch("image");
   const filledRequired = nameInput && symbolInput && imageInput?.length;
+
   return (
     <div className="w-full flex flex-col items-center">
+      {successModalOpened && (
+        <SuccessModal
+          setSuccessModalOpened={setSuccessModalOpened}
+          headerText="Pepe successfully created"
+          bodyText="Congrats, you’ve successfully created your memecoin. Now let’s get it’s bonding curve completed. Let’s start with posting these news in your twitter."
+        >
+          <Divider />
+          {/* TODO ALDIN ADD TRANSACTION AND CA */}
+          <div className="flex flex-col">
+            <div className="flex justify-between">
+              <Typography variant="body" color="mono-500">
+                Transaction
+              </Typography>
+              <div>
+                <Typography variant="text-button" underline>
+                  fU1K...YsIF
+                </Typography>
+                <Typography variant="text-button" className="ml-3" underline color="primary-100">
+                  Coppy
+                </Typography>
+              </div>
+            </div>
+            <div className="flex justify-between">
+              <Typography variant="body" color="mono-500">
+                CA
+              </Typography>
+              <div>
+                <Typography variant="text-button" underline>
+                  fU1K...YsIF
+                </Typography>
+                <Typography variant="text-button" className="ml-3" underline color="primary-100">
+                  Coppy
+                </Typography>
+              </div>
+            </div>
+          </div>
+          <div className="mt-[15px] h-14">
+            <Button variant="primary" className="flex items-center justify-center">
+              <TwitterIcon size={16} />
+              <span className="ml-2 flex items-center">
+                <Typography variant="h4">Share in Twitter</Typography>
+              </span>
+            </Button>
+          </div>
+        </SuccessModal>
+      )}
       <TopBar rightIcon="/diamond.png" title={"Create Memecoin"}></TopBar>
-      <div className="min-w-[345px] sm:max-w-[406px] custom-outer-shadow flex items-center justify-center border border-mono-400 rounded-sm m-4">
+      <div className="min-w-[345px] w-[-webkit-fill-available] sm:w-full sm:max-w-[406px] custom-outer-shadow flex items-center justify-center border border-mono-400 rounded-sm m-3 sm:mb-[-12px]">
         <div className="w-full lg:max-w-3xl m-4 ">
           <form onSubmit={onSubmit} className="flex flex-col ">
             <div className="flex flex-col gap-4">
@@ -368,10 +418,11 @@ export function CreateCoin() {
               currencyLogoUrl={baseCurrency.currencyLogoUrl}
               usdPrice={solanaPriceInUSD?.price ? Number(inputAmount ?? 0) * solanaPriceInUSD.price : 0}
               label="Be the very first person to buy your token"
-              showQuickInput={connected}
+              showQuickInput={true}
+              quickInputNumber
               baseCurrencyAmount={baseCurrency.coinBalance}
               tokenDecimals={9}
-              quickInputNumber
+
               // labelRight={publicKey ? `👛 ${baseCurrency.coinBalance ?? 0} ${baseCurrency.currencyName}` : undefined}
             />
             <div className="flex flex-col gap-1 mt-4">
