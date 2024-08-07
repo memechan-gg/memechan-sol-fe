@@ -236,7 +236,7 @@ export const Swap = (props: SwapProps) => {
                   }
                   baseCurrencyAmount={baseCurrency.coinBalance}
                   showQuickInput={true}
-                  usdPrice={solanaPriceInUSD?.price ? Number(inputAmount ?? 0) * solanaPriceInUSD.price : 0}
+                  usdPrice={getUSDPrice(baseCurrency.currencyName, inputAmount)}
                   tokenDecimals={tokenDecimals}
                   quickInputNumber={baseCurrency.currencyName === "SOL"}
                 />

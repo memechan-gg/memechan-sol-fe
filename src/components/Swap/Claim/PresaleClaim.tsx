@@ -1,3 +1,4 @@
+import { useMedia } from "@/hooks/useMedia";
 import { Button } from "@/memechan-ui/Atoms";
 import { Divider } from "@/memechan-ui/Atoms/Divider/Divider";
 import { Typography } from "@/memechan-ui/Atoms/Typography";
@@ -7,6 +8,7 @@ import { PresaleClaimProps } from "./types";
 
 export const PresaleClaim = (props: PresaleClaimProps) => {
   const { tokenSymbol } = props;
+  const media = useMedia();
   const [isConfirmed, setIsConfirmed] = useState<boolean>(() => {
     return !!Boolean(Cookies.get("isClaimConfirmed"));
   });
@@ -53,7 +55,7 @@ export const PresaleClaim = (props: PresaleClaimProps) => {
             </div>
           </div>
           <div className="flex flex-col">
-            <div className="flex justify-between mt-4">
+            <div className="flex justify-between mt-4 items-center text-end">
               <Typography variant="body" color="mono-500">
                 Staked Amount
               </Typography>
@@ -66,7 +68,7 @@ export const PresaleClaim = (props: PresaleClaimProps) => {
                 </Typography>
               </div>
             </div>
-            <div className="flex justify-between mt-2">
+            <div className="flex justify-between mt-2 items-center text-end">
               <Typography variant="body" color="mono-500">
                 Claimable Amount
               </Typography>
@@ -80,7 +82,7 @@ export const PresaleClaim = (props: PresaleClaimProps) => {
               </div>
             </div>
             <Divider vertical={false} className="mt-4"></Divider>
-            <div className="flex justify-between mt-4">
+            <div className="flex justify-between mt-4 items-center text-end">
               <Typography variant="body" color="mono-500">
                 {tokenSymbol} Fees Earned
               </Typography>
@@ -93,7 +95,7 @@ export const PresaleClaim = (props: PresaleClaimProps) => {
                 </Typography>
               </div>
             </div>
-            <div className="flex justify-between mt-2">
+            <div className="flex justify-between mt-2 items-center text-end">
               <Typography variant="body" color="mono-500">
                 SOL Fees Earned
               </Typography>
@@ -106,7 +108,7 @@ export const PresaleClaim = (props: PresaleClaimProps) => {
                 </Typography>
               </div>
             </div>
-            <div className="flex justify-between mt-2">
+            <div className="flex justify-between mt-2 items-center text-end">
               <Typography variant="body" color="mono-500">
                 CHAN Fees Earned
               </Typography>
@@ -119,14 +121,14 @@ export const PresaleClaim = (props: PresaleClaimProps) => {
                 </Typography>
               </div>
             </div>
-            <div className="flex justify-between mt-4 gap-3">
-              <Button disabled variant="disabled" className="px-2 py-5">
-                <Typography variant="h4" color="mono-600">
+            <div className="flex justify-between mt-4 gap-3 items-center">
+              <Button disabled variant="disabled" className="min-h-14">
+                <Typography variant="h4" color="mono-600" className="text-center">
                   Nothing to Unstake
                 </Typography>
               </Button>
-              <Button disabled variant="disabled" className="px-2 py-5">
-                <Typography variant="h4" color="mono-600">
+              <Button disabled variant="disabled" className="min-h-14">
+                <Typography variant="h4" color="mono-600" className="text-center">
                   No fees to claim
                 </Typography>
               </Button>

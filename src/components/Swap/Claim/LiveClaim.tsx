@@ -17,7 +17,7 @@ export const LiveClaim = (props: LiveClaimProps) => {
   return ticketsData.isLoading ? (
     "Loading..."
   ) : ticketsData.tickets.length > 0 &&
-    (ticketsData.stakedAmount !== "0.000001" || ticketsData.unavailableTicketsAmount !== "0") &&
+    (ticketsData.stakedAmount !== "0" || ticketsData.unavailableTicketsAmount !== "0") &&
     livePoolId ? (
     <div>
       <StakingPool
@@ -41,11 +41,11 @@ export const LiveClaim = (props: LiveClaimProps) => {
         </Typography>
       </div>
       <div>
-        <div className="flex justify-between mt-4">
+        <div className="flex justify-between mt-4 items-center text-end">
           <Typography variant="body" color="mono-500">
             {tokenSymbol} Fees Distributed
           </Typography>
-          <div className={`${media.isExstraSmallDevice ? "grid" : ""}`}>
+          <div className={`${media.isExtraSmallDevice ? "grid" : ""}`}>
             <Typography variant="body" color="mono-600">
               420,000 {tokenSymbol}
             </Typography>{" "}
@@ -54,7 +54,7 @@ export const LiveClaim = (props: LiveClaimProps) => {
             </Typography>
           </div>
         </div>
-        <div className="flex justify-between mt-2">
+        <div className="flex justify-between mt-2 items-center text-end">
           <Typography variant="body" color="mono-500">
             SOL Fees Distributed
           </Typography>
@@ -67,7 +67,7 @@ export const LiveClaim = (props: LiveClaimProps) => {
             </Typography>
           </div>
         </div>
-        <div className="flex justify-between mt-2">
+        <div className="flex justify-between mt-2 items-center text-end">
           <Typography variant="body" color="mono-500">
             CHAN Fees Distributed
           </Typography>
