@@ -52,23 +52,29 @@ export function LiveCoin({
 
   return (
     <>
-      <TopBar tokenAddress={coinMetadata.address} tokenSymbol={coinMetadata.symbol} />
+      <TopBar tokenAddress={coinMetadata.address} tokenSymbol={coinMetadata.symbol} rightIcon={coinMetadata.image} />
       {mediaQuery.isSmallDevice ? (
         <>
-          <div className="w-full px-3">
-            {tab === "Info" && (
+          {tab === "Info" && (
+            <div className="w-full px-3">
               <InfoTab
                 coinMetadata={coinMetadata}
                 pool={livePoolData}
                 stakingPoolFromApi={stakingPoolFromApi}
                 seedPoolData={seedPoolData}
               />
-            )}
-            {tab === "Comments" && (
-              <CommentsTab coinAddress={coinMetadata.address} coinCreator={coinMetadata.creator} />
-            )}
-            {tab === "Chart" && <ChartTab coinAddress={coinMetadata.address} livePoolDataId={livePoolData.id} />}
-          </div>
+            </div>
+          )}
+          {tab === "Comments" && (
+            <div className="w-full px-3">
+              <CommentsTab coinAddress={coinMetadata.address} coinCreator={coinMetadata.creator} />{" "}
+            </div>
+          )}
+          {tab === "Chart" && (
+            <div className="w-full">
+              <ChartTab coinAddress={coinMetadata.address} livePoolDataId={livePoolData.id} />{" "}
+            </div>
+          )}
           <div className="pt-1 flex w-full">
             <div className="fixed w-[30%] h-12 bottom-[10.7%] right-[7%]">
               <Button
@@ -88,14 +94,14 @@ export function LiveCoin({
                 <img src="/memechan-button.png" alt="Memechan Button" className="w-full h-12" />
               </Button>
             </div>
-            <div className="fixed bottom-0 bg-mono-200 border-t border-t-mono-400 h-15 w-screen px-3 justify-between">
+            <div className="fixed bottom-0 bg-mono-200 border-t border-t-mono-400 h-15 w-screen px-3 justify-between z-50">
               <Tabs className="justify-between" tabs={mobileTabs} onTabChange={onTabChange} activeTab={tab} immovable />
             </div>
           </div>
           <Dialog
             isOpen={swapOpen}
             onDismiss={() => setSwapOpen(false)}
-            className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 backdrop-blur-[0.8px] z-50"
+            className="fixed inset-0 flex items-end justify-end pb-20 bg-black bg-opacity-30 backdrop-blur-[0.8px] z-40"
           >
             <div className="w-full px-2 max-h-full overflow-auto shadow-light">
               <LiveCoinSwap
@@ -114,9 +120,9 @@ export function LiveCoin({
       ) : (
         <div className="grid grid-cols-3 gap-3 px-3 xl:px-0 w-full">
           <div className="col-span-2 flex flex-col gap-y-3">
-            <div className="bg-mono-400">
+            <div className="flex justify-start">
               <Tabs
-                className="justify-start items-center gap-x-6 ml-6"
+                className="justify-start items-center gap-x-6"
                 tabs={desktopTabs}
                 onTabChange={onTabChange}
                 activeTab={tab}

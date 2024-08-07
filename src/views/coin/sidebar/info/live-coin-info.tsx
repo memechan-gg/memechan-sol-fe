@@ -87,7 +87,7 @@ export const LiveCoinInfo = ({ metadata, stakingPoolFromApi, livePool }: LiveCoi
                 {startVestingTime && endVestingTime && formatDates(startVestingTime, endVestingTime) ? (
                   <div>{formatDates(startVestingTime, endVestingTime)}</div>
                 ) : (
-                  <Skeleton width={35} baseColor="#3e3e3e" highlightColor="#979797" />
+                  <Skeleton width={35} baseColor="#ac8383" highlightColor="#979797" />
                 )}
               </Typography>
             </div>

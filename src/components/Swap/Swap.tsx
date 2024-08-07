@@ -193,9 +193,9 @@ export const Swap = (props: SwapProps) => {
                     visible={true}
                     height="15px"
                     width="15px"
-                    color="#ffffff"
+                    color="#3e3e3e"
                     ariaLabel="oval-loading"
-                    secondaryColor="#3979797e3e3e"
+                    secondaryColor="#979797"
                     wrapperStyle={{}}
                     wrapperClass=""
                   />
@@ -246,8 +246,8 @@ export const Swap = (props: SwapProps) => {
                     onClick={onReverseClick}
                     className={`absolute left-1/2 top-1/2 w-6 h-6 -translate-x-1/2 -translate-y-1/2  bg-mono-200 sm:hover:bg-mono-300 cursor-pointer border-2 border-mono-400 rounded-sm flex justify-center items-center ${swapButtonIsDisabled ? "cursor-not-allowed sm:hover:bg-mono-200" : ""}`}
                   >
-                    <DownArrowIcon fill="#979797" />
-                    <UpArrowIcon fill="#979797" />
+                    <DownArrowIcon fill="#979797" size={12} />
+                    <UpArrowIcon fill="#979797" size={12} />
                   </div>
                 </div>
                 <SwapInput

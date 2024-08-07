@@ -21,7 +21,7 @@ export function ChartTab({ coinAddress, livePoolDataId }: ChartTabProps) {
           src={`https://dexscreener.com/solana/${livePoolDataId}?embed=1&theme=dark&trades=0&info=0&interval=5`}
         />
       )}
-      <div className="m-[12%] h-10 flex justify-center items-center gap-3 sm:m-5">
+      <div className="m-[10.5%] h-10 flex justify-center items-center gap-3 sm:m-5">
         <Button variant="primary" onClick={() => setSelectedChart("birdeye")}>
           Birdeye.so
         </Button>

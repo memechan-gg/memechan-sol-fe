@@ -57,7 +57,7 @@ export function TokenCard({
     if (!string) return "";
     return string.charAt(0).toUpperCase() + string.slice(1);
   };
-
+  console.log(socialLinks);
   return (
     <div
       onClick={showOnClick ? () => handleCardClick() : undefined}
@@ -121,21 +121,24 @@ export function TokenCard({
             <div
               className={`flex custom-inner-shadow h-9 items-center rounded-tl-[2px] rounded-tr-[2px] border border-mono-400 justify-between w-full`}
             >
-              {Object.keys(socialLinks).map((key, index, array) => (
-                <div className="flex w-full sm:hover:bg-mono-300 active:bg-mono-400 h-full" key={key}>
-                  <a
-                    href={socialLinks[key as keyof typeof socialLinks] ?? undefined}
-                    className="w-full h-full flex items-center justify-center"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Typography variant="text-button" color="mono-500" underline>
-                      {capitalizeFirstLetter(key)}
-                    </Typography>
-                  </a>
-                  {array.length !== index + 1 && <Divider vertical />}
-                </div>
-              ))}
+              {Object.keys(socialLinks).map(
+                (key, index, array) =>
+                  socialLinks[key as keyof typeof socialLinks] !== "" && (
+                    <div className="flex w-full sm:hover:bg-mono-300 active:bg-mono-400 h-full" key={key}>
+                      <a
+                        href={socialLinks[key as keyof typeof socialLinks] ?? undefined}
+                        className="w-full h-full flex items-center justify-center"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Typography variant="text-button" color="mono-500" underline>
+                          {capitalizeFirstLetter(key)}
+                        </Typography>
+                      </a>
+                      {array.length !== index + 1 && <Divider vertical />}
+                    </div>
+                  ),
+              )}
             </div>
           )}
         </Card.Body>

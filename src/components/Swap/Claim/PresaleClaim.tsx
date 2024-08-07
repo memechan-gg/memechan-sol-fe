@@ -16,8 +16,8 @@ export const PresaleClaim = (props: PresaleClaimProps) => {
   return (
     <>
       {!isConfirmed ? (
-        <div className="flex flex-col">
-          <Typography variant="h4" color="mono-600" className="mt-7">
+        <div className="flex flex-col justify-center py-7">
+          <Typography variant="h4" color="mono-600" className="">
             Read this carefully and don’t be silly in our telegram
           </Typography>
           <ul className="list-inside list-disc pl-0">
