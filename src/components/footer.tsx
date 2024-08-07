@@ -23,7 +23,7 @@ export const Footer = () => (
         </span>
       </div>
       <div className="flex gap-6">
-        <Link href="https://x.com/memechan_gg">
+        <a href="https://x.com/memechan_gg" target="_blank" rel="noopener noreferrer">
           <Image
             width={24}
             height={24}
@@ -31,8 +31,8 @@ export const Footer = () => (
             alt="twitter"
             className="m-[6px] sm:hover:opacity-80 sm:hover:cursor-pointer"
           />
-        </Link>
-        <Link href="https://t.me/memechan_gg">
+        </a>
+        <a href="https://t.me/memechan_gg" target="_blank" rel="noopener noreferrer">
           <Image
             width={24}
             height={24}
@@ -40,7 +40,7 @@ export const Footer = () => (
             alt="telegram"
             className="m-[6px] sm:hover:opacity-80 sm:hover:cursor-pointer"
           />
-        </Link>
+        </a>
       </div>
     </div>
   </footer>

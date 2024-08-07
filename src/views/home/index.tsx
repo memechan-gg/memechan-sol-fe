@@ -25,6 +25,11 @@ export function Home() {
     loadMore,
   } = useCoinApi();
 
+  useEffect(() => {
+    setStatus("pre_sale");
+    setSortBy("creation_time");
+  }, [setSortBy, setStatus]);
+
   const isLoading = tokenList === null;
   const isCoinsListExist = tokenList !== null && tokenList.length > 0;
   const isCoinsListEmpty = tokenList !== null && tokenList.length === 0;

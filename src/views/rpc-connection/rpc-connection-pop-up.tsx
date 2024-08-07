@@ -71,11 +71,11 @@ export const RpcConnectionPopUp = () => {
             <FontAwesomeIcon icon={faClose} size="lg" onClick={() => setIsDialogOpen(false)} />
           </span>
         </div>
-        <div className="mt-4 flex flex-col gap-2.5">
+        <div className="mt-6 mx-4 flex flex-col gap-2.5">
           {CONNECTION_OPTIONS.map((option, index) => (
             <>
               <Typography variant="body" color="mono-600">
-                <div className="px-4">
+                <div>
                   <RadioButton
                     key={option.id}
                     id={option.id}
@@ -84,12 +84,12 @@ export const RpcConnectionPopUp = () => {
                     selectedValue={selectedRpcConnection}
                     onChange={setSelectedRpcConnection}
                   />
-                  {index < CONNECTION_OPTIONS.length - 1 && <Divider />}
+                  {index < CONNECTION_OPTIONS.length - 1 && <Divider className="mt-5" />}
                 </div>
               </Typography>
             </>
           ))}
-          <div className="px-4 mt-2">
+          <div className=" mt-2">
             <UncontrolledTextInput
               type="url"
               value={customRpcUrl}
@@ -97,7 +97,7 @@ export const RpcConnectionPopUp = () => {
               placeholder="https://my-rpc.com"
             />
           </div>
-          <div className="px-4 mt-4 mb-4">
+          <div className="mt-2 mb-4 h-12">
             <Button variant="primary" onClick={handleSave}>
               Save
             </Button>
