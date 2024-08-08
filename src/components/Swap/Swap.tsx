@@ -271,11 +271,13 @@ export const Swap = (props: SwapProps) => {
                   variant={
                     !connected
                       ? "primary"
-                      : inputAmount && !isLoadingOutputAmount
-                        ? +inputAmount > baseCurrency.coinBalance
-                          ? "disabled"
-                          : "primary"
-                        : "disabled"
+                      : isSwapping
+                        ? "disabled"
+                        : inputAmount && !isLoadingOutputAmount
+                          ? +inputAmount > baseCurrency.coinBalance
+                            ? "disabled"
+                            : "primary"
+                          : "disabled"
                   }
                   className="mt-4"
                   disabled={swapButtonIsDisabled || isLoadingOutputAmount}
@@ -285,12 +287,12 @@ export const Swap = (props: SwapProps) => {
                   {!inputAmount ? (
                     <div className="h-14 flex items-center">
                       <Button variant="disabled" className="cursor-not-allowed">
-                        <Typography variant="h4">{"Fill all required fields"}</Typography>
+                        <Typography variant="h4">{"Enter an Amount"}</Typography>
                       </Button>
                     </div>
                   ) : (
                     <div className="h-14 flex items-center">
-                      {inputAmount && +inputAmount > baseCurrency.coinBalance ? (
+                      {inputAmount && +inputAmount > baseCurrency.coinBalance && !isLoadingOutputAmount ? (
                         <Typography variant="h4">{"Insufficient balance"}</Typography>
                       ) : (
                         <Typography variant="h4">
