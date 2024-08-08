@@ -16,6 +16,7 @@ import TwitterIcon from "../memechan-ui/icons/twitter-icon.svg";
 export default function SideMenu(props: { account: UserContextType; disconnect: () => Promise<void> }) {
   const { connected } = useWallet();
   const { theme } = useTheme();
+
   const [isOpen, setIsOpen] = useState(false);
   return (
     <div className="sm:relative focus-visible:outline-none">
@@ -45,10 +46,10 @@ export default function SideMenu(props: { account: UserContextType; disconnect: 
                 >
                   <div
                     role="button"
-                    className=" min-h-14 hover:cursor-pointer sm:mt-2 text-left font-bold text-white w-full text-xs rounded flex items-center space-x-[12px] h-full  sm:min-h-12 sm:hover:opacity-80"
+                    className=" min-h-14 hover:cursor-pointer sm:mt-2 text-left font-bold w-full text-xs rounded flex items-center space-x-[12px] h-full  sm:min-h-12 sm:hover:opacity-80"
                   >
                     <span>📦</span>
-                    <span>Home</span>
+                    <span className={theme === "light" ? "mono-400" : "white"}>Home</span>
                   </div>
                 </Link>
                 {connected && (
@@ -60,10 +61,10 @@ export default function SideMenu(props: { account: UserContextType; disconnect: 
                   >
                     <div
                       role="button"
-                      className="min-h-14 hover:cursor-pointer sm:mt-2 font-bold text-white w-full text-xs text-left rounded flex h-full items-center space-x-[12px] sm:min-h-12 sm:hover:opacity-80"
+                      className="min-h-14 hover:cursor-pointer sm:mt-2 font-bold  w-full text-xs text-left rounded flex h-full items-center space-x-[12px] sm:min-h-12 sm:hover:opacity-80"
                     >
                       <span>🤡</span>
-                      <span>Profile</span>
+                      <span className={theme === "light" ? "mono-400" : "white"}>Profile</span>
                     </div>
                   </Link>
                 )}
@@ -82,15 +83,15 @@ export default function SideMenu(props: { account: UserContextType; disconnect: 
                 >
                   <div
                     role="button"
-                    className="min-h-14 hover:cursor-pointer sm:mt-2 font-bold text-white w-full text-xs text-left rounded flex  items-center space-x-[12px]  sm:min-h-12 sm:hover:opacity-80"
+                    className="min-h-14 hover:cursor-pointer sm:mt-2 font-bold  w-full text-xs text-left rounded flex  items-center space-x-[12px]  sm:min-h-12 sm:hover:opacity-80"
                   >
                     <span>🪤</span>
-                    <span>$CHAN vesting</span>
+                    <span className={theme === "light" ? "mono-400" : "white"}>$CHAN vesting</span>
                   </div>
                 </Link>
                 <Link
                   href="https://docs.memechan.gg/"
-                  className="min-h-14 hover:cursor-pointer sm:mt-2 font-bold text-white w-full text-xs text-left rounded flex items-center space-x-[12px] sm:min-h-12 sm:hover:opacity-80"
+                  className="min-h-14 hover:cursor-pointer sm:mt-2 font-bold  w-full text-xs text-left rounded flex items-center space-x-[12px] sm:min-h-12 sm:hover:opacity-80"
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => {
@@ -98,7 +99,7 @@ export default function SideMenu(props: { account: UserContextType; disconnect: 
                   }}
                 >
                   <span>🤓</span>
-                  <span>Docs</span>
+                  <span className={theme === "light" ? "mono-400" : "white"}>Docs</span>
                 </Link>
                 {connected && (
                   <button
@@ -106,10 +107,10 @@ export default function SideMenu(props: { account: UserContextType; disconnect: 
                       props.disconnect();
                       close();
                     }}
-                    className="min-h-14 hover:cursor-pointer sm:mt-2 font-bold text-white w-full text-xs text-left rounded flex  items-center space-x-[12px] sm:min-h-12 sm:hover:opacity-80"
+                    className="min-h-14 hover:cursor-pointer sm:mt-2 font-bold w-full text-xs text-left rounded flex  items-center space-x-[12px] sm:min-h-12 sm:hover:opacity-80"
                   >
                     <span>🖕</span>
-                    <span>Disconnect</span>
+                    <span className={theme === "light" ? "mono-400" : "white"}>Disconnect</span>
                   </button>
                 )}
                 <div className="bottom-border w-full" />
