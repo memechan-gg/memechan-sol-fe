@@ -4,6 +4,7 @@ import { Card } from "@/memechan-ui/Molecules";
 import { timeSince, timeSinceExpanded } from "@/utils/timeSpents";
 import BigNumber from "bignumber.js";
 import { format, parse, roundToNearestMinutes } from "date-fns";
+import { useTheme } from "next-themes";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import Skeleton from "react-loading-skeleton";
@@ -12,6 +13,7 @@ import { LiveCoinInfoProps } from "../../coin.types";
 export const LiveCoinInfo = ({ metadata, stakingPoolFromApi, livePool }: LiveCoinInfoProps) => {
   const { data: stakingPool } = useStakingPool(stakingPoolFromApi?.address);
   const { creator, address, creationTime, symbol } = metadata;
+  const { theme } = useTheme();
   const handleCopy = (text: string) => {
     navigator.clipboard
       .writeText(text)
@@ -56,7 +58,7 @@ export const LiveCoinInfo = ({ metadata, stakingPoolFromApi, livePool }: LiveCoi
   return (
     <Card>
       <Card.Header>
-        <Typography variant="h4" color="mono-600">
+        <Typography variant="h4" color={theme === "light" ? "mono-200" : "mono-500"}>
           Info
         </Typography>
       </Card.Header>

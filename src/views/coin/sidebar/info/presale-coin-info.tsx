@@ -3,6 +3,7 @@ import { Typography } from "@/memechan-ui/Atoms/Typography";
 import { Card } from "@/memechan-ui/Molecules";
 import { timeSince } from "@/utils/timeSpents";
 import { MEME_TOKEN_DECIMALS } from "@avernikoz/memechan-sol-sdk";
+import { useTheme } from "next-themes";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import Skeleton from "react-loading-skeleton";
@@ -12,7 +13,7 @@ import { getBoundPoolProgress } from "./utils";
 export const PresaleCoinInfo = ({ metadata, boundPool, tokenInfo }: PresaleCoinInfoProps) => {
   const { creator, address, creationTime, symbol } = metadata;
   const quoteTokenInfo = getTokenInfo({ tokenAddress: tokenInfo?.mint.toString() || address });
-
+  const { theme } = useTheme();
   const isV2 = quoteTokenInfo.symbol === "SOL";
   const pooledMemeCoin = Number(boundPool?.memeReserve.toJSON().tokens) / MEME_TOKEN_DECIMALS;
   const { slerfIn, limit } = boundPool
@@ -36,7 +37,7 @@ export const PresaleCoinInfo = ({ metadata, boundPool, tokenInfo }: PresaleCoinI
   return (
     <Card>
       <Card.Header>
-        <Typography variant="h4" color="mono-600">
+        <Typography variant="h4" color={theme === "light" ? "mono-200" : "mono-600"}>
           Info
         </Typography>
       </Card.Header>
