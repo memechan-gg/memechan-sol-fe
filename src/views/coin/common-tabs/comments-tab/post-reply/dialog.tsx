@@ -8,6 +8,7 @@ import { CoinThreadParsedMessage } from "@/views/coin/coin.types";
 import { handleAuthentication, uploadImageToIPFS } from "@/views/create-coin/create-coin.utils";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { track } from "@vercel/analytics";
+import { useTheme } from "next-themes";
 import { useCallback, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -33,6 +34,7 @@ export function PostReplyDialog({ isStatic, onClose, updateThreads, coinType, re
   const [file, setFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { connected } = useWallet();
+  const { theme } = useTheme();
 
   const handleSendReply = useCallback(async () => {
     try {
@@ -90,7 +92,7 @@ export function PostReplyDialog({ isStatic, onClose, updateThreads, coinType, re
         <Card>
           <Card.Header>
             <div>
-              <Typography variant="h4" color="mono-600">
+              <Typography variant="h4" color={theme === "light" ? "mono-200" : "mono-600"}>
                 Post a comment
               </Typography>
             </div>
@@ -121,7 +123,7 @@ export function PostReplyDialog({ isStatic, onClose, updateThreads, coinType, re
         <Card>
           <Card.Header>
             <div>
-              <Typography variant="h4" color="mono-600">
+              <Typography variant="h4" color={theme === "light" ? "mono-200" : "mono-600"}>
                 Post a comment
               </Typography>
             </div>

@@ -7,6 +7,7 @@ import { handleAuthentication } from "@/views/create-coin/create-coin.utils";
 import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons/faEllipsisVertical";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useWallet } from "@solana/wallet-adapter-react";
+import { useTheme } from "next-themes";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -38,7 +39,7 @@ export function Comment({
   const [liked, setLiked] = useState(isLiked);
   const [likesCount, setLikesCount] = useState(likeCounter);
   const [isPostReplyDialogOpen, setIsPostReplyDialogOpen] = useState(false);
-
+  const { theme } = useTheme();
   const { publicKey, signMessage } = useWallet();
   useEffect(() => {
     setLiked(isLiked);
@@ -90,7 +91,12 @@ export function Comment({
         <Card.Header>
           <div className="flex justify-between items-center w-full leading-5 py-2">
             <div className="flex gap-2 items-center">
-              <FontAwesomeIcon icon={faEllipsisVertical} width={3} className="text-mono-600" />
+              <FontAwesomeIcon
+                icon={faEllipsisVertical}
+                width={3}
+                color="white"
+                className={theme === "light" ? "text:mono-200" : "text:mono-600"}
+              />
               <Link className="sm:hover:underline" href={`/profile/${creator}`}>
                 <Typography variant="h4" color="green-100">
                   {slicedAddress}
@@ -100,7 +106,12 @@ export function Comment({
             </div>
             <div className="flex items-center text-right">
               <CustomDate creationDate={new Date(creationDate)} />
-              <div className={classes["hover-underline"] + " text-[13px] font-normal leading-5 text-mono-500"}>
+              <div
+                className={
+                  classes["hover-underline"] +
+                  ` text-[13px] font-normal leading-5 ${theme === "light" ? "text-mono-200" : "text-mono-500"}`
+                }
+              >
                 &nbsp;#{id.slice(0, 4)}
               </div>
             </div>
@@ -134,7 +145,15 @@ export function Comment({
           <div className="flex justify-between w-full items-center">
             <span>
               <Typography
-                color={isPostReplyDialogOpen ? "primary-100" : "mono-500"}
+                color={
+                  isPostReplyDialogOpen
+                    ? theme === "light"
+                      ? "mono-200"
+                      : "primary-100"
+                    : theme === "light"
+                      ? "mono-200"
+                      : "mono-500"
+                }
                 variant="text-button"
                 underline={true}
                 onClick={() => {
@@ -149,12 +168,16 @@ export function Comment({
               </Typography>
             </span>
             {!liked ? (
-              <Typography variant="text-button" color="mono-500" onClick={handleLikeEvent}>
+              <Typography
+                variant="text-button"
+                color={theme === "light" ? "mono-200" : "mono-600"}
+                onClick={handleLikeEvent}
+              >
                 Like
               </Typography>
             ) : (
               <div>
-                <Typography variant="text-button" color="primary-100">
+                <Typography variant="text-button" color={theme === "light" ? "mono-200" : "primary-100"}>
                   Liked ({likesCount})
                 </Typography>
               </div>
