@@ -109,7 +109,7 @@ export function TokenCard({
                 <div className="text-white text-sm">
                   <div className="line-clamp">
                     <span className=" text-mono-500">{">> "}</span>
-                    {description}
+                    <Typography color="mono-600">{description}</Typography>
                   </div>
                 </div>
               </div>
