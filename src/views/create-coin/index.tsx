@@ -44,9 +44,11 @@ export function CreateCoin() {
   } = useForm<ICreateForm>();
   const { publicKey, connected, signMessage, sendTransaction } = useWallet();
   const [isChecked, setIsChecked] = useState(false);
+
   const handleChange = () => {
-    setIsChecked(!isChecked);
+    setIsChecked((prevState) => !prevState);
   };
+
   const { isPopupOpen, setIsPopupOpen } = usePopup();
   const [state, setState] = useState<CreateCoinState>("idle");
   const router = useRouter();
@@ -125,6 +127,7 @@ export function CreateCoin() {
         publicKey,
         inputAmount: inputAmountIsSpecified ? inputAmount : undefined,
         client: memechanClientV2,
+        checked: isChecked,
       });
 
       setState("create_bonding_and_meme");
@@ -479,7 +482,9 @@ export function CreateCoin() {
                   onChange={handleChange}
                   className="w-6 h-6 text-blue-600 form-checkbox"
                 />
-                <Typography variant="body" className="ml-2">Create for free as chan user</Typography>
+                <Typography variant="body" className="ml-2">
+                  Create for free as chan user
+                </Typography>
               </div>
             </div>
 
