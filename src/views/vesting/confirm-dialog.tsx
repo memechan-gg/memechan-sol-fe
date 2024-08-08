@@ -25,7 +25,7 @@ export const ConfirmVestingClaimDialog = ({
     <Dialog open={isOpen} onOpenChange={(open) => setIsOpen(open)}>
       <DialogTrigger className="w-fit">
         <Button
-          className="max-xxs:self-center bg-regular bg-opacity-80 hover:bg-opacity-50 text-xs font-bold text-white mt-4 disabled:opacity-50"
+          className="max-xxs:self-center bg-regular bg-opacity-80 sm:hover:bg-opacity-50 text-xs font-bold text-white mt-4 disabled:opacity-50"
           disabled={claimButtonIsDisabled}
         >
           {isClaiming ? "Claiming..." : "Claim"}
@@ -45,11 +45,11 @@ export const ConfirmVestingClaimDialog = ({
               setIsOpen(false);
               claim();
             }}
-            className="w-full bg-regular bg-opacity-80 hover:bg-opacity-50"
+            className="w-full bg-regular bg-opacity-80 sm:hover:bg-opacity-50"
           >
             <span className="text-xs font-bold text-white">yes, I&apos;m sure</span>
           </Button>
-          <Button onClick={() => setIsOpen(false)} className="w-full bg-regular bg-opacity-80 hover:bg-opacity-50">
+          <Button onClick={() => setIsOpen(false)} className="w-full bg-regular bg-opacity-80 sm:hover:bg-opacity-50">
             <span className="text-xs font-bold text-white">no, I&apos;ll keep making profit</span>
           </Button>
         </DialogFooter>

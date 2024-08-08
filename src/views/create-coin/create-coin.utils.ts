@@ -59,7 +59,7 @@ export async function createMemeCoinAndPool({
   ipfsUrl: string;
   inputAmount?: string;
   client: MemechanClientV2;
-  checked: boolean;
+  checked?: boolean;
 }) {
   let result: CreateBoundPoolTransactionResponse = {} as any;
   if (checked) {
@@ -115,7 +115,6 @@ export async function createMemeCoinAndPool({
           : undefined,
     });
   }
-
   const buffer = Buffer.from(result.serializedTransactionBase64, "base64");
   const createPoolTransaction = VersionedTransaction.deserialize(buffer);
 

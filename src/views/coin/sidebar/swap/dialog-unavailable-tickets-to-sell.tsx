@@ -12,7 +12,7 @@ export const UnavailableTicketsToSellDialog = ({
   return (
     <Dialog>
       <DialogTrigger>
-        <Button className="w-full bg-regular bg-opacity-80 hover:bg-opacity-50">
+        <Button className="w-full bg-regular bg-opacity-80 sm:hover:bg-opacity-50">
           <div className="text-xs font-bold text-white">Locked Tickets</div>
         </Button>
       </DialogTrigger>
@@ -28,7 +28,7 @@ export const UnavailableTicketsToSellDialog = ({
             return (
               <div key={index} className="flex justify-between flex-row gap-2 text-xs font-bold text-regular">
                 <a target="_blank" href={memeTicketLink}>
-                  <span className="hover:underline font-bold">
+                  <span className="sm:hover:underline font-bold">
                     {index + 1}. {ticket.id.toString().slice(0, 5)}...{ticket.id.toString().slice(-3)}
                   </span>
                 </a>

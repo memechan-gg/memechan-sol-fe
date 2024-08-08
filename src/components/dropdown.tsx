@@ -28,7 +28,7 @@ export function Dropdown({
               onClick={() => {
                 onItemChange(item);
               }}
-              className="bg-white text-regular text-xs text-left p-2 hover:bg-regular hover:text-white"
+              className="bg-white text-regular text-xs text-left p-2 sm:hover:bg-regular sm:hover:text-white"
             >
               {item.split("_").join(" ")}
             </div>

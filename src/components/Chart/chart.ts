@@ -46,7 +46,7 @@ export function createWidgetOptions(
     enabled_features: ["move_logo_to_main_pane", "use_localstorage_for_settings"],
     fullscreen: false,
     autosize: true,
-    toolbar_bg: "#404040",
+    toolbar_bg: "#3e3e3e",
     auto_save_delay: 2,
     theme: "dark",
     debug: false,

@@ -1,9 +1,16 @@
-import { Button } from "@/components/button";
-import { DialogContent, DialogHeader, DialogTitle } from "@/components/dialog";
+// import Button from "@/components/button";
 import { RadioButton } from "@/components/radio-button";
 import { MEMECHAN_RPC_ENDPOINT } from "@/config/config";
 import { useConnection } from "@/context/ConnectionContext";
+import { Button } from "@/memechan-ui/Atoms";
+import { Divider } from "@/memechan-ui/Atoms/Divider/Divider";
+import UncontrolledTextInput from "@/memechan-ui/Atoms/Input/UncontrolledTextInput";
+import { Typography } from "@/memechan-ui/Atoms/Typography";
+import { faClose } from "@fortawesome/free-solid-svg-icons/faClose";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Dialog } from "@reach/dialog";
 import { track } from "@vercel/analytics";
+import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -16,7 +23,7 @@ export const RpcConnectionPopUp = () => {
   const { setRpcEndpoint } = useConnection();
   const [selectedRpcConnection, setSelectedRpcConnection] = useState<string>("memechan");
   const [customRpcUrl, setCustomRpcUrl] = useState<string>("");
-
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(true);
   useEffect(() => {
     const savedRpcEndpoint = typeof window !== "undefined" && localStorage.getItem("rpc-endpoint");
     if (savedRpcEndpoint && savedRpcEndpoint !== MEMECHAN_RPC_ENDPOINT) {
@@ -51,39 +58,55 @@ export const RpcConnectionPopUp = () => {
       toast.success("Your RPC is currently set to Memechan RPC Pool");
     }
   };
-
+  const { theme } = useTheme();
   return (
-    <DialogContent>
-      <DialogHeader>
-        <DialogTitle className="text-regular mb-4">RPC Connection</DialogTitle>
-        <div className="text-regular flex flex-col gap-2.5">
-          {CONNECTION_OPTIONS.map((option) => (
-            <RadioButton
-              key={option.id}
-              id={option.id}
-              name="rpc-connection"
-              label={option.label}
-              selectedValue={selectedRpcConnection}
-              onChange={setSelectedRpcConnection}
-            />
+    <Dialog
+      isOpen={isDialogOpen}
+      onDismiss={() => setIsDialogOpen(false)}
+      className="  fixed inset-0 flex items-center justify-center   bg-[#19191957]  backdrop-blur-[0.5px]  z-50"
+    >
+      <div className=" mx-3 sm:mx-auto w-full max-w-[406px] h-fit border border-mono-400 custom-outer-shadow bg-mono-200 flex flex-col">
+        <div className=" px-4 h-8 flex items-center justify-between bg-mono-400">
+          <Typography variant="h4" color={theme === "light" ? "mono-200" : "mono-600"}>
+            RPC Connection
+          </Typography>
+          <span className="cursor-pointer flex">
+            <FontAwesomeIcon icon={faClose} size="lg" onClick={() => setIsDialogOpen(false)} color="#FFFFFF" />
+          </span>
+        </div>
+        <div className="mt-6 mx-4 flex flex-col gap-2.5">
+          {CONNECTION_OPTIONS.map((option, index) => (
+            <>
+              <Typography variant="body" color="mono-600">
+                <div>
+                  <RadioButton
+                    key={option.id}
+                    id={option.id}
+                    name="rpc-connection"
+                    label={option.label}
+                    selectedValue={selectedRpcConnection}
+                    onChange={setSelectedRpcConnection}
+                  />
+                  {index < CONNECTION_OPTIONS.length - 1 && <Divider className="mt-5" />}
+                </div>
+              </Typography>
+            </>
           ))}
-          {selectedRpcConnection === "custom" && (
-            <input
-              className="border w-[200px] border-regular rounded-lg p-1 mt-1 text-sm focus:border-regular focus:outline-none"
+          <div className=" mt-2">
+            <UncontrolledTextInput
               type="url"
               value={customRpcUrl}
               onChange={(e) => setCustomRpcUrl(e.target.value)}
               placeholder="https://my-rpc.com"
             />
-          )}
-          <Button
-            className="w-20 bg-regular bg-opacity-80 hover:bg-opacity-50 text-xs font-bold text-white mt-2.5"
-            onClick={handleSave}
-          >
-            Save
-          </Button>
+          </div>
+          <div className="mt-2 mb-4 h-12">
+            <Button variant="primary" onClick={handleSave}>
+              Save
+            </Button>
+          </div>
         </div>
-      </DialogHeader>
-    </DialogContent>
+      </div>
+    </Dialog>
   );
 };

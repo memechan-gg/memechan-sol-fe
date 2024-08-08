@@ -1,12 +1,15 @@
-import { Button } from "@/components/button";
-import { DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/dialog";
 import { TransactionSentNotification } from "@/components/notifications/transaction-sent-notification";
 import { useConnection } from "@/context/ConnectionContext";
 import { useStakingPool } from "@/hooks/staking/useStakingPool";
 import { useStakingPoolClient } from "@/hooks/staking/useStakingPoolClient";
+import { Button } from "@/memechan-ui/Atoms";
+import { Typography } from "@/memechan-ui/Atoms/Typography";
+import { Card } from "@/memechan-ui/Molecules";
 import { confirmTransaction } from "@/utils/confirmTransaction";
 import { UnstakeDialogProps } from "@/views/coin/coin.types";
 import { MEMECHAN_MEME_TOKEN_DECIMALS } from "@avernikoz/memechan-sol-sdk";
+import { faXmark } from "@fortawesome/free-solid-svg-icons/faXmark";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import { track } from "@vercel/analytics";
@@ -21,13 +24,14 @@ export const UnstakePopUp = ({
   livePoolAddress,
   ticketsData: { tickets, stakedAmount, refresh: refetchTickets },
   stakingPoolFromApi,
+  closePopUp,
 }: UnstakeDialogProps) => {
   const [availableAmountToUnstake, setAvailableAmountToUnstake] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const { publicKey, sendTransaction } = useWallet();
   const { connection } = useConnection();
-  const stakingPool = useStakingPool(stakingPoolFromApi?.address);
+  const { data: stakingPool } = useStakingPool(stakingPoolFromApi?.address);
   const { data: stakingPoolClient } = useStakingPoolClient(stakingPoolFromApi?.address);
 
   let cliffStartedTime: JSX.Element | string = <Skeleton width={35} />;
@@ -134,43 +138,59 @@ export const UnstakePopUp = ({
     availableAmountToUnstake === null || isLoading || new BigNumber(availableAmountToUnstake).isZero();
 
   return (
-    <DialogContent>
-      <DialogHeader>
-        <DialogTitle className="text-regular mb-2">Unstake</DialogTitle>
-        <DialogDescription className="text-regular">
-          <div>
-            Unstake your staked memecoins from the staking pool. Once you unstake you cannot earn fees and stake back
-            anymore.
+    <Card>
+      <Card.Header>
+        <div className="flex items-center justify-between w-full">
+          <Typography variant="h4" color="mono-600">
+            Unstake
+          </Typography>
+          <FontAwesomeIcon icon={faXmark} color="#fff" className="sm:hover:cursor-pointer" onClick={closePopUp} />
+        </div>
+      </Card.Header>
+      <Card.Body>
+        <Typography variant="body">
+          {" "}
+          Unstake your staked memecoins from the staking pool. Once you unstake you cannot earn fees and stake back
+          anymore.{" "}
+        </Typography>
+        <div>
+          <Typography variant="body" className="mt-5">
+            Cliff period started at: {cliffStartedTime}
+          </Typography>
+        </div>
+        <div>
+          <Typography variant="body" className="block">
+            Vesting period starts at: {startVestingTime}
+          </Typography>
+        </div>
+        <div>
+          <Typography variant="body">Vesting period ends at: {endVestingTime}</Typography>
+        </div>
+        <div className="mt-5 flex w-full flex-col gap-1">
+          <div className="text-xs font-bold text-mono-500">
+            Locked amount:{" "}
+            {availableAmountToUnstake !== null &&
+              BigNumber(stakedAmount).minus(availableAmountToUnstake).toNumber().toLocaleString()}
+            {availableAmountToUnstake === null && <Skeleton width={35} />}{" "}
+            <span className="!normal-case">{tokenSymbol}</span>
           </div>
-          <div className="text-xs font-bold text-regular mt-4">Cliff period started at: {cliffStartedTime}</div>
-          <div className="text-xs font-bold text-regular">Vesting period starts at: {startVestingTime}</div>
-          <div className="text-xs font-bold text-regular">Vesting period ends at: {endVestingTime}</div>
-        </DialogDescription>
-      </DialogHeader>
-      <div className="flex w-full flex-col gap-1">
-        <div className="text-xs font-bold text-regular">
-          Locked amount:{" "}
-          {availableAmountToUnstake !== null &&
-            BigNumber(stakedAmount).minus(availableAmountToUnstake).toNumber().toLocaleString()}
-          {availableAmountToUnstake === null && <Skeleton width={35} />}{" "}
-          <span className="!normal-case">{tokenSymbol}</span>
+          <div className="text-xs font-bold text-mono-500">
+            Unstakable amount:{" "}
+            {availableAmountToUnstake ? Number(availableAmountToUnstake).toLocaleString() : <Skeleton width={35} />}{" "}
+            <span className="!normal-case">{tokenSymbol}</span>
+          </div>
         </div>
-        <div className="text-xs font-bold text-regular">
-          Unstakable amount:{" "}
-          {availableAmountToUnstake ? Number(availableAmountToUnstake).toLocaleString() : <Skeleton width={35} />}{" "}
-          <span className="!normal-case">{tokenSymbol}</span>
+        <div className="flex w-full flex-col gap-1">
+          <Button
+            disabled={unstakeButtonIsDisabled}
+            onClick={unstake}
+            variant="primary"
+            className="mt-5 w-full disabled:bg-opacity-50 disabled:cursor-not-allowed"
+          >
+            <span className="text-xs font-bold text-white">Unstake</span>
+          </Button>
         </div>
-      </div>
-      <div className="flex w-full flex-col gap-1"></div>
-      <DialogFooter>
-        <Button
-          disabled={unstakeButtonIsDisabled}
-          onClick={unstake}
-          className="w-full bg-regular bg-opacity-80 hover:bg-opacity-50 disabled:bg-opacity-50 disabled:cursor-not-allowed"
-        >
-          <span className="text-xs font-bold text-white">Unstake</span>
-        </Button>
-      </DialogFooter>
-    </DialogContent>
+      </Card.Body>
+    </Card>
   );
 };

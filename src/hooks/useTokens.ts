@@ -1,5 +1,5 @@
 import { TokenApiInstance } from "@/common/solana";
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 
 const fetchAllTokens = async () => {
   try {
@@ -26,7 +26,5 @@ const fetchAllTokens = async () => {
 };
 
 export function useTokens() {
-  const { data: tokens } = useSWR("all-tokens", fetchAllTokens);
-
-  return tokens;
+  return useQuery({ queryKey: ["all-tokens"], queryFn: fetchAllTokens });
 }

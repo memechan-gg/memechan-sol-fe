@@ -9,20 +9,8 @@
 }
 
 body {
-  background: #fdd8b2;
+  background: var(--color-mono-100);
   min-height: 100vh;
-}
-
-.dark body {
-  background: #121212;
-}
-
-.gradient-bg {
-  background: linear-gradient(180deg, #fdd8b2 0%, #fff9f2 50.52%, #fdf1e6 100%);
-}
-
-.dark .gradient-bg {
-  background: linear-gradient(180deg, #222 0%, #444 50.52%, #666 100%);
 }
 
 body,
@@ -34,6 +22,89 @@ a {
   color: inherit;
   text-decoration: none;
 }
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield; /* Firefox */
+}
+
+:root {
+  --color-text-regular: #800000;
+  --color-mono-100: #fed8b3;
+  --color-mono-200: #ffffff;
+  --color-mono-300: #8f867d;
+  --color-mono-400: #800000;
+  --color-mono-500: #222222;
+  --color-mono-600: #141414;
+  --color-primary-100: #7f0002;
+  --color-primary-200: #93231e;
+  --color-primary-300: #a8453b;
+  --color-primary-400: #bc6857;
+  --color-primary-500: #d18a74;
+  --color-primary-600: #e5ad90;
+  --color-yellow-100: #d4cb19;
+  --color-yellow-200: #b7b019;
+  --color-yellow-300: #9a951a;
+  --color-yellow-400: #7e7a1c;
+  --color-yellow-500: #615f1e;
+  --color-yellow-600: #454420;
+  --color-green-100: #179a58;
+  --color-green-200: #1a8750;
+  --color-green-300: #1a7447;
+  --color-green-400: #1c603e;
+  --color-green-500: #1e4d36;
+  --color-green-600: #203a2d;
+  --color-red-100: #fb7070;
+  --color-red-200: #d96465;
+  --color-red-300: #b65757;
+  --color-red-400: #934b4b;
+  --color-red-500: #703e3e;
+  --color-red-600: #4d3232;
+}
+
+.dark {
+  --color-text-regular: #800000;
+  --color-mono-100: #222222;
+  --color-mono-200: #242424;
+  --color-mono-300: #353535;
+  --color-mono-400: #3e3e3e;
+  --color-mono-500: #979797;
+  --color-mono-600: #ffffff;
+  --color-primary-100: #f95292;
+  --color-primary-200: #d74a80;
+  --color-primary-300: #b4446e;
+  --color-primary-400: #933b5c;
+  --color-primary-500: #6f344b;
+  --color-primary-600: #4c2d38;
+  --color-yellow-100: #d4cb19;
+  --color-yellow-200: #b7b019;
+  --color-yellow-300: #9a951a;
+  --color-yellow-400: #7e7a1c;
+  --color-yellow-500: #615f1e;
+  --color-yellow-600: #454420;
+  --color-green-100: #179a58;
+  --color-green-200: #1a8750;
+  --color-green-300: #1a7447;
+  --color-green-400: #1c603e;
+  --color-green-500: #1e4d36;
+  --color-green-600: #203a2d;
+  --color-red-100: #fb7070;
+  --color-red-200: #d96465;
+  --color-red-300: #b65757;
+  --color-red-400: #934b4b;
+  --color-red-500: #703e3e;
+  --color-red-600: #4d3232;
+}
+
+.gradient-bg {
+  background: linear-gradient(180deg, #222 0%, #444 50.52%, #666 100%);
+}
+
 /* width */
 ::-webkit-scrollbar {
   width: 10px;
@@ -45,10 +116,6 @@ a {
   border-radius: 0.5rem;
   background: transparent;
   transition: all 300ms ease-in-out;
-}
-
-/* Track on hover */
-.dark ::-webkit-scrollbar-track:hover {
   background: #444;
 }
 
@@ -59,14 +126,74 @@ a {
   border: 5px solid transparent;
 }
 
-.dark ::-webkit-scrollbar-thumb {
-  background: #bbb;
+.primary-btn {
+  background-color: #f95292;
 }
 
-:root {
-  --color-text-regular: #800000;
+.pink-border {
+  border: #f95292 solid 1px;
 }
 
-.dark {
-  --color-text-regular: #d1d5db;
+.bottom-border {
+  border-bottom: 1px #3e3e3e solid;
+}
+
+.primary-border {
+  border: 1px #3e3e3e solid;
+}
+
+.card-bg {
+  background: "#242424";
+}
+
+.text-xs-custom {
+  font-size: 13px;
+  line-height: 1rem /* 16px */;
+}
+
+.text-gradient-gold {
+  background: linear-gradient(to right, #b9a727, #e4f149, #be8e46);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.card-shadow {
+  box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 0.25);
+}
+
+@media (min-width: 640px) {
+  .card-shadow:hover {
+    box-shadow: 2px 2px 0px 0px rgba(0, 0, 0, 0.25);
+  }
+}
+
+.line-clamp {
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* number of lines to show */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.menu-icon {
+  fill: #f95292;
+  stroke: #f95292;
+  transition:
+    fill 0.3s,
+    stroke 0.3s;
+}
+
+.menu-icon:hover {
+  fill: white !important;
+  stroke: white !important;
+}
+.custom-inner-shadow {
+  box-shadow:
+    inset 2px 0 0.5px -1px rgba(0, 0, 0, 0.25),
+    inset 0 2px 0.5px -1px rgba(0, 0, 0, 0.25);
+}
+.custom-outer-shadow {
+  box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 0.25);
+}
+.no-shadow {
+  box-shadow: none !important;
 }

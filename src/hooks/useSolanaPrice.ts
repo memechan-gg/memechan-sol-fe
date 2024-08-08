@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 
 export type PriceData = {
   chainId: "solana";
@@ -14,24 +13,12 @@ const fetchSolanaPrice = async () => {
     const response = await fetch("https://price.jup.ag/v6/price?ids=SOL");
     const priceData = await response.json();
 
-    return priceData.data.SOL.price as number;
+    return priceData.data.SOL as PriceData;
   } catch (e) {
     console.error("[fetchSolanafPrice] Cannot fetch the SLERF price:", e);
   }
 };
 
 export function useSolanaPrice() {
-  const [price, setPrice] = useState<number | null>(null);
-
-  const { data: fetchedPrice } = useSWR("solana-price", fetchSolanaPrice, {
-    refreshInterval: 15000,
-    revalidateIfStale: false,
-    revalidateOnFocus: false,
-  });
-
-  useEffect(() => {
-    if (fetchedPrice) setPrice(fetchedPrice);
-  }, [fetchedPrice]);
-
-  return price;
+  return useQuery({ queryKey: ["solana-price"], queryFn: fetchSolanaPrice });
 }

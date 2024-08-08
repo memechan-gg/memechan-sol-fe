@@ -4,7 +4,15 @@ import { useSeedPool } from "@/hooks/presale/useSeedPool";
 import { useStakingPoolFromApi } from "@/hooks/staking/useStakingPoolFromApi";
 import { useTickets } from "@/hooks/useTickets";
 import { LivePoolData, SeedPoolData } from "@/types/pool";
-import { ParsedMemeTicket, SolanaToken, TokenInfo, getBoundPoolClientFromId } from "@avernikoz/memechan-sol-sdk";
+import {
+  BoundPoolClient,
+  BoundPoolClientV2,
+  LivePoolVersioned,
+  ParsedMemeTicket,
+  SolanaToken,
+  TokenInfo,
+  getBoundPoolClientFromId,
+} from "@avernikoz/memechan-sol-sdk";
 
 type BoundPool = Awaited<ReturnType<typeof getBoundPoolClientFromId>>["boundPoolInstance"]["poolObjectData"] | null;
 
@@ -18,11 +26,20 @@ export type PresaleCoinSwapProps = {
   pool: SeedPoolData;
   boundPool?: BoundPool;
   ticketsData: ReturnType<typeof useTickets>;
+  memeImage: string;
+  livePoolAddress?: string;
+  stakingPoolFromApi?: ReturnType<typeof useStakingPoolFromApi>["data"];
+  onClose?: () => void;
 };
 
 export type LiveCoinSwapProps = {
   tokenSymbol: string;
   pool: LivePoolData;
+  memeImage: string;
+  stakingPoolFromApi: ReturnType<typeof useStakingPoolFromApi>["data"];
+  seedPoolAddress?: string;
+  onClose?: () => void;
+  livePoolClient?: LivePoolVersioned;
 };
 
 export type SwapButtonProps = {
@@ -34,44 +51,55 @@ export type SwapButtonProps = {
 export type PresaleCoinSidebarProps = {
   coinMetadata: SolanaToken;
   pool: SeedPoolData;
-  uniqueHoldersData: ReturnType<typeof usePresaleCoinUniqueHoldersFromBE>;
+  uniqueHoldersData: ReturnType<typeof usePresaleCoinUniqueHoldersFromBE>["data"];
   ticketsData: ReturnType<typeof useTickets>;
+  boundPoolClient:
+    | {
+        boundPoolInstance: BoundPoolClientV2;
+        version: string;
+      }
+    | {
+        boundPoolInstance: BoundPoolClient;
+        version: string;
+      };
 };
 
 export type LiveCoinSidebarProps = {
   pool: LivePoolData;
   coinMetadata: SolanaToken;
-  uniqueHoldersData: ReturnType<typeof useLiveCoinUniqueHoldersFromBE>;
-  seedPoolData: ReturnType<typeof useSeedPool>;
-  stakingPoolFromApi: ReturnType<typeof useStakingPoolFromApi>;
+  uniqueHoldersData: ReturnType<typeof useLiveCoinUniqueHoldersFromBE>["data"];
+  seedPoolData: ReturnType<typeof useSeedPool>["data"];
+  stakingPoolFromApi: ReturnType<typeof useStakingPoolFromApi>["data"];
 };
 
 export type HoldersProps = {
   poolAddress: string;
   coinMetadata: SolanaToken;
-  uniqueHoldersData: ReturnType<typeof usePresaleCoinUniqueHoldersFromBE>;
+  uniqueHoldersData: ReturnType<typeof usePresaleCoinUniqueHoldersFromBE>["data"];
 };
 
 export type LiveCoinHoldersProps = {
   coinMetadata: SolanaToken;
-  uniqueHoldersData: ReturnType<typeof useLiveCoinUniqueHoldersFromBE>;
+  uniqueHoldersData: ReturnType<typeof useLiveCoinUniqueHoldersFromBE>["data"];
   livePool: LivePoolData;
 };
 
 export type LiveCoinInfoProps = {
   metadata: SolanaToken;
-  quoteMint: string;
-  livePoolAddress: string;
+  stakingPoolFromApi: ReturnType<typeof useStakingPoolFromApi>["data"];
+  livePool: LivePoolData;
+  livePoolClient?: LivePoolVersioned;
 };
 
 export type PresaleCoinInfoProps = {
   metadata: SolanaToken;
   boundPool?: BoundPool;
-  tokenInfo: TokenInfo;
+  tokenInfo?: TokenInfo;
 };
 
 export type UnstakeDialogProps = Omit<StakingPoolProps, "memeMint"> & {
-  stakingPoolFromApi: ReturnType<typeof useStakingPoolFromApi>;
+  stakingPoolFromApi: ReturnType<typeof useStakingPoolFromApi>["data"];
+  closePopUp?: () => void;
 };
 
 export type WithdrawFeesDialogProps = UnstakeDialogProps;
@@ -80,7 +108,7 @@ export type StakingPoolProps = {
   tokenSymbol: string;
   livePoolAddress: string;
   ticketsData: ReturnType<typeof useTickets>;
-  stakingPoolFromApi: ReturnType<typeof useStakingPoolFromApi>;
+  stakingPoolFromApi: ReturnType<typeof useStakingPoolFromApi>["data"];
 };
 
 export type CoinThread = {

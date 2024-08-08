@@ -1,34 +1,48 @@
-import { useBoundPoolClient } from "@/hooks/presale/useBoundPoolClient";
-import { getTokenInfo } from "@/hooks/utils";
+import { TokenCard } from "@/components/TokenCard";
+import { useMedia } from "@/hooks/useMedia";
+import { formatNumberForTokenCard } from "@/utils/formatNumbersForTokenCard";
 import { PresaleCoinSidebarProps } from "../coin.types";
 import { PresaleCoinHolders } from "./holders/presale-coin-holders";
 import { PresaleCoinInfo } from "./info/presale-coin-info";
 import { SidebarItem } from "./sidebar-item";
 import { PresaleCoinSwap } from "./swap/presale-coin-swap";
 
-export function PresaleCoinSidebar({ pool, coinMetadata, uniqueHoldersData, ticketsData }: PresaleCoinSidebarProps) {
-  const { data: boundPoolClient } = useBoundPoolClient(pool.address);
-
+export function PresaleCoinSidebar({
+  pool,
+  coinMetadata,
+  uniqueHoldersData,
+  ticketsData,
+  boundPoolClient,
+}: PresaleCoinSidebarProps) {
   const boundPool = boundPoolClient?.boundPoolInstance.poolObjectData;
+  const media = useMedia();
 
-  const tokenInfo = boundPool?.quoteReserve.mint
-    ? getTokenInfo({ tokenAddress: boundPool?.quoteReserve.mint.toString() })
-    : undefined;
   return (
-    <>
+    <div className="flex flex-col gap-y-3">
       <SidebarItem>
-        <PresaleCoinSwap
-          pool={pool}
-          tokenSymbol={coinMetadata.symbol}
-          boundPool={boundPool}
-          ticketsData={ticketsData}
+        <TokenCard
+          key={coinMetadata.address}
+          token={coinMetadata}
+          showLinks
+          showCheckmark
+          progressInfo={formatNumberForTokenCard({ token: coinMetadata })}
+          showOnClick={false}
         />
       </SidebarItem>
-      {tokenInfo && (
+      {!media.isSmallDevice && (
         <SidebarItem>
-          <PresaleCoinInfo metadata={coinMetadata} boundPool={boundPool} tokenInfo={tokenInfo} />
+          <PresaleCoinSwap
+            pool={pool}
+            tokenSymbol={coinMetadata.symbol}
+            boundPool={boundPool}
+            ticketsData={ticketsData}
+            memeImage={coinMetadata.image}
+          />
         </SidebarItem>
       )}
+      <SidebarItem>
+        <PresaleCoinInfo boundPool={boundPool} metadata={coinMetadata} />
+      </SidebarItem>
       <SidebarItem>
         <PresaleCoinHolders
           poolAddress={pool.address}
@@ -36,6 +50,6 @@ export function PresaleCoinSidebar({ pool, coinMetadata, uniqueHoldersData, tick
           uniqueHoldersData={uniqueHoldersData}
         />
       </SidebarItem>
-    </>
+    </div>
   );
 }

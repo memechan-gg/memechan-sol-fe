@@ -1,7 +1,7 @@
 import { useConnection } from "@/context/ConnectionContext";
 import { MemechanClient, MemechanClientV2, getLivePoolClientFromId } from "@avernikoz/memechan-sol-sdk";
 import { PublicKey } from "@solana/web3.js";
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 
 const fetchLivePoolClient = async (poolAddress: string, client: MemechanClient, clientV2: MemechanClientV2) => {
   try {
@@ -14,12 +14,10 @@ const fetchLivePoolClient = async (poolAddress: string, client: MemechanClient, 
 
 export function useLivePoolClient(poolAddress?: string | null) {
   const { memechanClient, memechanClientV2 } = useConnection();
-
-  const { data } = useSWR(
-    poolAddress ? [`live-pool-client-${poolAddress}`, poolAddress, memechanClient, memechanClientV2] : null,
-    ([_, pool, memechanClient, memechanClientV2]) => fetchLivePoolClient(pool, memechanClient, memechanClientV2),
-    { revalidateIfStale: false, revalidateOnFocus: false },
-  );
-
-  return data;
+  return useQuery({
+    queryKey: ["live-pool-client", poolAddress],
+    queryFn: () => (poolAddress ? fetchLivePoolClient(poolAddress, memechanClient, memechanClientV2) : undefined),
+    enabled: !!poolAddress,
+    staleTime: Infinity,
+  });
 }

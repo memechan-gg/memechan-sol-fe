@@ -2,7 +2,7 @@ import { LIVE_POOL_PRICE_INTERVAL } from "@/config/config";
 import { useConnection } from "@/context/ConnectionContext";
 import { MemechanClient, MemechanClientV2, getLivePoolClientFromId } from "@avernikoz/memechan-sol-sdk";
 import { Connection, PublicKey } from "@solana/web3.js";
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 import { useSlerfPrice } from "../useSlerfPrice";
 import { useSolanaPrice } from "../useSolanaPrice";
 
@@ -17,15 +17,11 @@ const fetchLiveMemePrice = async (
   try {
     const pool = await getLivePoolClientFromId(new PublicKey(livePoolAddress), client, clientV2);
 
-    const prices = await pool.livePool.getMemePrice({
+    const prices = pool.livePool.getMemePrice({
       connection,
       poolAddress: livePoolAddress,
       quotePriceInUsd: pool.version === "V2" ? solPrice : slerfPriceInUsd,
     });
-
-    if (pool.version === "V2") {
-      prices.priceInUsd = (+prices.priceInUsd / 10_000).toString();
-    }
 
     return prices;
   } catch (e) {
@@ -33,18 +29,27 @@ const fetchLiveMemePrice = async (
   }
 };
 
-export function useLiveMemePrice(poolAddress?: string, enabled: boolean = true) {
-  const slerfPrice = useSlerfPrice();
-  const solanaPrice = useSolanaPrice();
+export function useLiveMemePrice(poolAddress: string) {
+  const { data: slerfData } = useSlerfPrice();
+  const { data: solanaData } = useSolanaPrice();
 
   const { memechanClient, memechanClientV2, connection } = useConnection();
 
-  return useSWR(
-    slerfPrice && solanaPrice && poolAddress && enabled
-      ? [`price-${poolAddress}`, slerfPrice, poolAddress, memechanClient, memechanClientV2, connection, solanaPrice]
-      : null,
-    ([url, price, poolAddress, memechanClient, memechanClientV2, connection, solPrice]) =>
-      fetchLiveMemePrice(price, poolAddress, memechanClient, memechanClientV2, connection, solPrice),
-    { refreshInterval: LIVE_POOL_PRICE_INTERVAL, revalidateIfStale: false, revalidateOnFocus: false },
-  );
+  return useQuery({
+    queryKey: ["price", poolAddress],
+    queryFn: () => {
+      if (slerfData?.price && solanaData?.price) {
+        return fetchLiveMemePrice(
+          slerfData.price,
+          poolAddress,
+          memechanClient,
+          memechanClientV2,
+          connection,
+          solanaData.price,
+        );
+      }
+    },
+    refetchInterval: LIVE_POOL_PRICE_INTERVAL,
+    enabled: !!(slerfData?.price && solanaData?.price),
+  });
 }

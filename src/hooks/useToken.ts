@@ -1,6 +1,6 @@
 import { TokenApiInstance } from "@/common/solana";
 import { TOKEN_INTERVAL } from "@/config/config";
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 
 const fetchToken = async (tokenAddress: string) => {
   try {
@@ -23,11 +23,10 @@ const fetchToken = async (tokenAddress: string) => {
 };
 
 export function useToken(tokenAddress: string) {
-  const { data: token, isLoading } = useSWR(
-    [`token-${tokenAddress}`, tokenAddress],
-    ([url, token]) => fetchToken(token),
-    { refreshInterval: TOKEN_INTERVAL, revalidateIfStale: false, revalidateOnFocus: false },
-  );
-
-  return { token, isLoading };
+  return useQuery({
+    queryKey: ["token", tokenAddress],
+    queryFn: () => fetchToken(tokenAddress),
+    refetchInterval: TOKEN_INTERVAL,
+    staleTime: Infinity,
+  });
 }

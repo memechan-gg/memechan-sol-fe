@@ -1,6 +1,6 @@
 import { SocialApiInstance } from "@/common/solana";
 import { useWallet } from "@solana/wallet-adapter-react";
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 
 const fetchLikes = async (walletAddress: string, memeMint: string) => {
   try {
@@ -14,12 +14,10 @@ const fetchLikes = async (walletAddress: string, memeMint: string) => {
 
 export const useLikes = (memeMint: string) => {
   const { publicKey } = useWallet();
-
-  const { data, mutate } = useSWR(
-    publicKey ? [`likes-${memeMint}`, publicKey.toString(), memeMint] : null,
-    ([url, user, meme]) => fetchLikes(user, meme),
-    { revalidateIfStale: false, revalidateOnFocus: false },
-  );
-
-  return { likesData: data?.result, refetch: mutate };
+  return useQuery({
+    queryKey: ["likes", memeMint, publicKey],
+    queryFn: () => (memeMint && publicKey ? fetchLikes(publicKey.toString(), memeMint) : undefined),
+    enabled: !!(publicKey && memeMint),
+    staleTime: Infinity,
+  });
 };

@@ -1,3 +1,4 @@
+import { useMedia } from "@/hooks/useMedia";
 import { useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import { ApiClient } from "./api-client";
@@ -15,6 +16,7 @@ export const settings: EnvSettings = {
 };
 
 export const Chart = (settingsProps: PropsSettings) => {
+  const media = useMedia();
   const mergedSettings = {
     ...settings,
     ...settingsProps,
@@ -28,7 +30,13 @@ export const Chart = (settingsProps: PropsSettings) => {
 
     const client = new ApiClient(mergedSettings);
     const chartFeed = new ChartFeed(client, mergedSettings);
-    const widgetOptions = createWidgetOptions(mergedSettings.symbol, "5" as ResolutionString, chartFeed, "tv-wrapper");
+    const widgetOptions = createWidgetOptions(
+      mergedSettings.symbol,
+      "5" as ResolutionString,
+      chartFeed,
+      "tv-wrapper",
+      media.isSmallDevice,
+    );
 
     const chartWidget = new ChartWidget(widgetOptions);
 
@@ -41,7 +49,10 @@ export const Chart = (settingsProps: PropsSettings) => {
   }, [...Object.values(settingsProps)]);
 
   return (
-    <div id="tv-wrapper" style={{ height: "38rem" }} className={`w-full flex items-center justify-center`}>
+    <div
+      id="tv-wrapper"
+      className={`h-[450px] md:h-[500px] mb-[18.5%] custom-outer-shadow w-full flex items-center justify-center`}
+    >
       {!isLoaded && (
         <div className="w-full h-full">
           <Skeleton width="100%" height="100%" className="skeleton-custom" />
