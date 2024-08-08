@@ -1,6 +1,6 @@
 import { formatNumber } from "@/utils/formatNumber";
 
-type CoinItemProps = { image: string; name: string; marketCap: number };
+type CoinItemProps = { image: string; name: string; marketCap: number; mint: string };
 
 export const CoinItem = ({ image, name, marketCap }: CoinItemProps) => {
   return (
