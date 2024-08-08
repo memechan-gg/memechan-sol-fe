@@ -2,9 +2,10 @@ export interface CheckboxProps {
   checked: boolean;
   onChange: (e: any) => void;
   label?: string;
+  children?: any;
 }
 
-const Checkbox = ({ checked, onChange, label }: CheckboxProps) => {
+const Checkbox = ({ checked, onChange, label, children }: CheckboxProps) => {
   const checkboxClass = `w-3 h-3 p-0.5 rounded-sm border border-[1px] flex items-center justify-center transition-all duration-300 ${
     checked ? "bg-primary-100 border-primary-100" : "border-primary-100 bg-mono-600"
   }`;
@@ -39,6 +40,16 @@ const Checkbox = ({ checked, onChange, label }: CheckboxProps) => {
         )}
       </div>
       {label && <span className={`select-none ${checked ? "text-mono-100" : "text-mono-600"}`}>{label}</span>}
+      {
+        <div
+          className="flex items-center"
+          onClick={(event) => {
+            onChange(event);
+          }}
+        >
+          {children}
+        </div>
+      }
     </label>
   );
 };

@@ -184,7 +184,12 @@ export const Swap = (props: SwapProps) => {
                 Slippage {slippage}%
               </Typography>
               {!isRefreshing ? (
-                <Typography className="leading-[13px] text-[10px] border-b-[1px] border-b-mono-500" onClick={refresh}>
+                <Typography
+                  className="leading-[13px] text-[10px] border-b-[1px] border-b-mono-500"
+                  onClick={() => {
+                    refresh();
+                  }}
+                >
                   🔄
                 </Typography>
               ) : (

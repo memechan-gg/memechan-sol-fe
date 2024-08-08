@@ -57,7 +57,6 @@ export function TokenCard({
     if (!string) return "";
     return string.charAt(0).toUpperCase() + string.slice(1);
   };
-  console.log(socialLinks);
   return (
     <div
       onClick={showOnClick ? () => handleCardClick() : undefined}

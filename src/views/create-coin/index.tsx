@@ -7,6 +7,7 @@ import { useSolanaBalance } from "@/hooks/useSolanaBalance";
 import { useSolanaPrice } from "@/hooks/useSolanaPrice";
 import { useTargetConfig } from "@/hooks/useTargetConfig";
 import { Button } from "@/memechan-ui/Atoms";
+import Checkbox from "@/memechan-ui/Atoms/CheckBox/CheckBox";
 import { Divider } from "@/memechan-ui/Atoms/Divider/Divider";
 import { SwapInput } from "@/memechan-ui/Atoms/Input";
 import UncontrolledTextInput from "@/memechan-ui/Atoms/Input/UncontrolledTextInput";
@@ -45,15 +46,15 @@ export function CreateCoin() {
   const { publicKey, connected, signMessage, sendTransaction } = useWallet();
   const [isChecked, setIsChecked] = useState(false);
 
-  const handleChange = () => {
-    setIsChecked((prevState) => !prevState);
-  };
-
   const { isPopupOpen, setIsPopupOpen } = usePopup();
   const [state, setState] = useState<CreateCoinState>("idle");
   const router = useRouter();
   const [inputAmount, setInputAmount] = useState<string>("0");
   const { solanaThresholdAmount } = useTargetConfig();
+  const handleChange = () => {
+    setIsChecked((prevState) => !prevState);
+    setInputAmount("0");
+  };
   const [hasMoreOptions, setHasMoreOptions] = useState(true);
   const { balance: solanaAmount } = useBalance(TOKEN_INFOS["WSOL"].mint.toString(), TOKEN_INFOS["WSOL"].decimals);
   const { data: solanaBalance } = useSolanaBalance();
@@ -427,12 +428,16 @@ export function CreateCoin() {
               placeholder="0.00"
               currencyLogoUrl={baseCurrency.currencyLogoUrl}
               usdPrice={solanaPriceInUSD?.price ? Number(inputAmount ?? 0) * solanaPriceInUSD.price : 0}
-              label="Be the very first person to buy your token"
+              label={
+                !isChecked
+                  ? "Be the very first person to buy your token"
+                  : "You can't buy tokens if free creation is selected"
+              }
               showQuickInput={true}
               quickInputNumber
+              disabled={isChecked}
               baseCurrencyAmount={baseCurrency.coinBalance}
               tokenDecimals={9}
-
               // labelRight={publicKey ? `👛 ${baseCurrency.coinBalance ?? 0} ${baseCurrency.currencyName}` : undefined}
             />
             <div className="flex flex-col gap-1 mt-4">
@@ -485,9 +490,15 @@ export function CreateCoin() {
                 <Typography variant="body" className="ml-2">
                   Create for free as chan user
                 </Typography>
+                <div className="flex items-center mt-2 border-mono-400 border p-4">
+                  <Checkbox checked={isChecked} onChange={handleChange}>
+                    <Typography variant="body" className="ml-2" color={isChecked ? "primary-100" : "mono-600"}>
+                      Create for free without wallet
+                    </Typography>
+                  </Checkbox>
+                </div>
               </div>
             </div>
-
             {/* IN CASE THEY WANT IT BACK 
              <div className="border border-mono-400 mt-4 h-13 py-2 px-4 flex items-center">
               <div className="flex  items-baseline">

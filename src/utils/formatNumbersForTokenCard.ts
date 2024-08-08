@@ -13,7 +13,7 @@ export const formatNumberForTokenCard = ({ token }: Props) => {
     !token?.quoteLimit ||
     !token?.creationTime ||
     !token?.holdersCount ||
-    token.quoteIn > token.quoteLimit ||
+    +token.quoteIn > +token.quoteLimit ||
     token.quoteSymbol !== "SOL"
   ) {
     return undefined;

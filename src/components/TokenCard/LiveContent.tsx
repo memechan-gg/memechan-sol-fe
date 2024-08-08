@@ -16,7 +16,7 @@ export const LiveContent = ({ token }: Props) => {
       </div>
       <div className="flex gap-1 flex-col items-start">
         <span className="text-[13px] text-mono-500 font-light leading-[16px]">Holders</span>
-        <span className="text-white font-bold text-[13px] leading-[16px]">{holdersCount}</span>
+        <span className="text-white font-bold text-[13px] leading-[16px]">{holdersCount || 0}</span>
       </div>
       <div className="flex gap-1 flex-col items-start">
         <span className="text-[13px] text-mono-500 font-light leading-[16px]">Age</span>

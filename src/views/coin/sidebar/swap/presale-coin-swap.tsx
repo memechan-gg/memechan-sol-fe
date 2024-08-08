@@ -16,6 +16,7 @@ import {
   MEMECHAN_MEME_TOKEN_DECIMALS,
 } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
+import { useQueryClient } from "@tanstack/react-query";
 import { track } from "@vercel/analytics";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -39,6 +40,7 @@ export const PresaleCoinSwap = ({
   },
 }: PresaleCoinSwapProps) => {
   const { connected } = useWallet();
+  const queryClient = useQueryClient();
   const [coinToMeme, setCoinToMeme] = useState<boolean>(true);
   const [inputAmount, setInputAmount] = useState<string>("");
   const [outputAmount, setOutputAmount] = useState<string | null>(null);
@@ -158,6 +160,14 @@ export const PresaleCoinSwap = ({
     return () => clearTimeout(timeoutId);
   }, [updateOutputAmount]);
 
+  const refresh = useCallback(async () => {
+
+    await refetchCoinBalance();
+    await refreshAvailableTickets();
+    await queryClient.invalidateQueries({ queryKey: ["bound-pool-client", pool.address] });
+    // await memeBalanceRefech();
+  }, [pool.address, queryClient, refetchCoinBalance, refreshAvailableTickets]);
+
   const onSwap = useCallback(async () => {
     if (!publicKey || !outputAmount || !coinBalance) return;
 
@@ -208,6 +218,7 @@ export const PresaleCoinSwap = ({
         const swapSucceeded = await confirmTransaction({ connection, signature });
         if (!swapSucceeded) return;
 
+        console.log("success");
         track("Swap_Success", swapTrackObj);
 
         await ChartApiInstance.updatePrice({ address: pool.address, type: "seedPool" }).catch((e) => {
@@ -250,32 +261,30 @@ export const PresaleCoinSwap = ({
       refreshAvailableTickets();
       refetchCoinBalance();
       updateOutputAmount();
+      refresh();
       setIsSwapping(false);
     }
   }, [
-    availableTicketsAmount,
-    coinBalance,
-    getSwapTransaction,
-    inputAmount,
-    outputAmount,
     publicKey,
-    sendTransaction,
-    coinToMeme,
+    outputAmount,
+    coinBalance,
+    inputAmount,
     slippage,
-    refetchCoinBalance,
-    refreshAvailableTickets,
-    pool.address,
+    coinToMeme,
+    availableTicketsAmount,
+    getSwapTransaction,
+    sendTransaction,
     connection,
+    pool.address,
+    refreshAvailableTickets,
+    refetchCoinBalance,
     updateOutputAmount,
+    refresh,
   ]);
 
   const swapButtonIsDiabled = isLoadingOutputAmount || isSwapping || (outputAmount === null && connected);
   const poolIsMigratingToLive = boundPool?.locked || boundPool === null;
-  const refresh = useCallback(async () => {
-    await refetchCoinBalance();
-    await refreshAvailableTickets();
-    // await memeBalanceRefech();
-  }, [refetchCoinBalance, refreshAvailableTickets]);
+
   const { data: solanaBalance } = useSolanaBalance();
 
   const [baseCurrency, setBaseCurrency] = useState({
