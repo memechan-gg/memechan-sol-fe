@@ -1,8 +1,11 @@
+import { useTheme } from "next-themes";
+
 interface CustomDateProps {
   creationDate: Date;
 }
 
 const CustomDate = ({ creationDate }: CustomDateProps) => {
+  const { theme } = useTheme();
   const formatDate = (date: Date): string => {
     const twoDigit = (num: number) => num.toString().padStart(2, "0");
 
@@ -20,7 +23,11 @@ const CustomDate = ({ creationDate }: CustomDateProps) => {
 
   const formattedDateTime = formatDate(new Date(creationDate));
 
-  return <p className="text-[13px] font-normal leading-5 text-mono-500">{formattedDateTime}</p>;
+  return (
+    <p className={`text-[13px] font-normal leading-5 ${theme === "light" ? "text-mono-200" : "text-mono-500"}`}>
+      {formattedDateTime}
+    </p>
+  );
 };
 
 export default CustomDate;
