@@ -97,7 +97,9 @@ export const ConnectWallet = (props: { account: UserContextType; disconnect: () 
           ref={popoverRef}
         >
           <div className="flex justify-between mb-1">
-            <h1 className="text-white font-bold my-5 text-2xl leading-9">Connect Wallet</h1>
+            <h1 className={`${theme === "light" ? "text-mono-500" : "text-white"} font-bold my-5 text-2xl leading-9`}>
+              Connect Wallet
+            </h1>
             <Image src={SolanaIcon} alt="solana" />
           </div>
           <div>

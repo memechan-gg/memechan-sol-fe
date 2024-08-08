@@ -1,14 +1,14 @@
-import { useMedia } from "@/hooks/useMedia";
 import { Button } from "@/memechan-ui/Atoms";
 import { Divider } from "@/memechan-ui/Atoms/Divider/Divider";
 import { Typography } from "@/memechan-ui/Atoms/Typography";
 import Cookies from "js-cookie";
+import { useTheme } from "next-themes";
 import { useState } from "react";
 import { PresaleClaimProps } from "./types";
 
 export const PresaleClaim = (props: PresaleClaimProps) => {
   const { tokenSymbol } = props;
-  const media = useMedia();
+  const { theme } = useTheme();
   const [isConfirmed, setIsConfirmed] = useState<boolean>(() => {
     return !!Boolean(Cookies.get("isClaimConfirmed"));
   });
@@ -49,7 +49,7 @@ export const PresaleClaim = (props: PresaleClaimProps) => {
           <div className="flex w-full border-mono-400 border p-2 gap-4 pr-4 pl-3">
             <div className="text-[10px] mt-[2px]">⚠️</div>
             <div>
-              <Typography variant="body" color="yellow-100">
+              <Typography variant="body" color={theme === "light" ? "yellow-500" : "yellow-100"}>
                 Presale is ongoing still. Vesting and revenue sharing will start once the token goes live.
               </Typography>
             </div>
@@ -123,12 +123,12 @@ export const PresaleClaim = (props: PresaleClaimProps) => {
             </div>
             <div className="flex justify-between mt-4 gap-3 items-center">
               <Button disabled variant="disabled" className="min-h-14">
-                <Typography variant="h4" color="mono-600" className="text-center">
+                <Typography variant="h4" color={theme === "light" ? "mono-200" : "mono-600"} className="text-center">
                   Nothing to Unstake
                 </Typography>
               </Button>
               <Button disabled variant="disabled" className="min-h-14">
-                <Typography variant="h4" color="mono-600" className="text-center">
+                <Typography variant="h4" color={theme === "light" ? "mono-200" : "mono-600"} className="text-center">
                   No fees to claim
                 </Typography>
               </Button>

@@ -19,6 +19,7 @@ import { TOKEN_INFOS, sleep } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { track } from "@vercel/analytics";
 import BigNumber from "bignumber.js";
+import { useTheme } from "next-themes";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -45,6 +46,7 @@ export function CreateCoin() {
   } = useForm<ICreateForm>();
   const { publicKey, connected, signMessage, sendTransaction } = useWallet();
   const [isChecked, setIsChecked] = useState(false);
+  const { theme } = useTheme();
 
   const { isPopupOpen, setIsPopupOpen } = usePopup();
   const [state, setState] = useState<CreateCoinState>("idle");
@@ -476,7 +478,9 @@ export function CreateCoin() {
               ) : (
                 <div className="h-14 bg-mono-400">
                   <Button variant="disabled" disabled>
-                    <Typography variant="h4">Fill required fields to create memecoin</Typography>
+                    <Typography variant="h4" color={theme === "light" ? "mono-200" : "mono-600"}>
+                      Fill required fields to create memecoin
+                    </Typography>
                   </Button>
                 </div>
               )}
