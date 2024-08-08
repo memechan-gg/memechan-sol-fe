@@ -17,7 +17,6 @@ interface HolderProps {
 export const PresaleCoinHolders = ({ poolAddress, coinMetadata, uniqueHoldersData }: HoldersProps) => {
   const { publicKey } = useWallet();
   const { theme } = useTheme();
-
   if (!uniqueHoldersData) {
     return (
       <div className="flex flex-col gap-1">
