@@ -50,17 +50,17 @@ export const Header = () => {
                     </Link>
                   </Typography>
                 ) : (
-                  <Typography variant="h4" color="mono-600" className="ml-6 sm:hover:text-primary-100">
-                    <div
-                      onClick={() => {
-                        openPopup();
-                      }}
-                      className="text-center"
-                    >
+                  <div
+                    onClick={() => {
+                      openPopup();
+                    }}
+                    className="text-center"
+                  >
+                    <Typography variant="h4" color="mono-600" className="ml-6 sm:hover:text-primary-100">
                       <span className="mr-3">🤡</span>
                       Profile
-                    </div>
-                  </Typography>
+                    </Typography>
+                  </div>
                 )}
                 <Typography variant="h4" color="mono-600" className="ml-6 sm:hover:text-primary-100">
                   <Link href="https://docs.memechan.gg/" target="_blank" rel="noopener noreferrer">
