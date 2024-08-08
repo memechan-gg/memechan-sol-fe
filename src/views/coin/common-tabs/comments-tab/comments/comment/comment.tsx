@@ -119,7 +119,7 @@ export function Comment({
             )}
 
             {message && (
-              <div className="flex flex-col w-1/3">
+              <div className="flex flex-col break-words w-full">
                 {replyTo && (
                   <Typography underline variant="text-button" color="primary-100" className="mb-2">
                     {">>"}#{replyTo}

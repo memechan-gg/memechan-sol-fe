@@ -39,8 +39,8 @@ export const Typography: React.FC<Props> = ({
   }`;
 
   return (
-    <span className={classString + " " + className} onClick={(e) => onClick?.(e)}>
+    <p className={classString + " " + className} onClick={(e) => onClick?.(e)}>
       {children}
-    </span>
+    </p>
   );
 };
