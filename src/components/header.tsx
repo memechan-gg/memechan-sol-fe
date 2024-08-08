@@ -35,46 +35,41 @@ export const Header = () => {
                   </div>
                 </Link>
               </div>
-              <div className="text-white font-bold gap-6 text-sm hidden px-2 items-center sm:flex flex-grow justify-center">
-                <Link href="/" className="font-bold text-center sm:hover:text-primary-100">
-                  📦
-                  <Typography variant="h4" color="mono-600" className="ml-3 sm:hover:text-primary-100">
+              <div className="text-white font-bold  text-sm hidden px-2 items-center sm:flex flex-grow justify-center">
+                <Typography variant="h4" color="mono-600" className=" sm:hover:text-primary-100">
+                  <Link href="/">
+                    <span className="mr-3">📦</span>
                     Home
-                  </Typography>
-                </Link>
-                {account?.address ? (
-                  <Link href={`/profile/${account.address}`} className="text-center sm:hover:text-primary-100">
-                    🤡
-                    <Typography variant="h4" color="mono-600" className="ml-3 sm:hover:text-primary-100">
-                      Profile
-                    </Typography>
                   </Link>
-                ) : (
-                  <div
-                    onClick={() => {
-                      openPopup();
-                    }}
-                    className="text-center sm:hover:text-primary-100"
-                  >
-                    🤡
-                    <Typography variant="h4" color="mono-600" className="ml-3 sm:hover:text-primary-100">
+                </Typography>
+                {account?.address ? (
+                  <Typography variant="h4" color="mono-600" className="ml-6 sm:hover:text-primary-100">
+                    <Link href={`/profile/${account.address}`}>
+                      <span className="mr-3">🤡</span>
                       Profile
-                    </Typography>
-                  </div>
-                )}
-                <Link
-                  href="https://docs.memechan.gg/"
-                  className="text-center sm:hover:text-primary-100"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  🤓
-                  <Typography variant="h4" color="mono-600" className="ml-3 sm:hover:text-primary-100">
-                    Docs
+                    </Link>
                   </Typography>
-                </Link>
+                ) : (
+                  <Typography variant="h4" color="mono-600" className="ml-6 sm:hover:text-primary-100">
+                    <div
+                      onClick={() => {
+                        openPopup();
+                      }}
+                      className="text-center"
+                    >
+                      <span className="mr-3">🤡</span>
+                      Profile
+                    </div>
+                  </Typography>
+                )}
+                <Typography variant="h4" color="mono-600" className="ml-6 sm:hover:text-primary-100">
+                  <Link href="https://docs.memechan.gg/" target="_blank" rel="noopener noreferrer">
+                    <span className="mr-3">🤓</span>
+                    Docs
+                  </Link>
+                </Typography>
               </div>
-              <div className="flex items-center gap-2 ml-2">
+              <div className="flex items-center gap-2 ml-2 sm:ml-0">
                 {/* <Search isSearchActive={isSearchActive} setIsSearchActive={setIsSearchActive} /> */}
                 <ProfileManagment account={account} disconnect={disconnect} />
               </div>
