@@ -16,7 +16,7 @@ export const LiveClaim = (props: LiveClaimProps) => {
     livePoolAddress: livePoolId,
   });
   return ticketsData.isLoading ? (
-    <div className="flex justify-center items-center min-h-[320px]">
+    <div className="flex justify-center items-center min-h-[325px]">
       <Oval
         visible={true}
         height="50px"
@@ -40,7 +40,7 @@ export const LiveClaim = (props: LiveClaimProps) => {
       />
     </div>
   ) : (
-    <div>
+    <div className="min-h-[325px]">
       <div>
         <Typography variant="body" color="mono-600">
           {ticketsData.stakedAmount === "0.000001"
@@ -48,13 +48,13 @@ export const LiveClaim = (props: LiveClaimProps) => {
             : "You haven’t participated in presale, dummy"}
         </Typography>
       </div>
-      <img className="mt-2" src="/NoClaimImage.png" alt="Nothing to claim"></img>
-      <div className="mt-4">
+      <img className="mt-4" src="/NoClaimImage.png" alt="Nothing to claim"></img>
+      {/* <div className="mt-4">
         <Typography variant="h4" color="mono-600">
           But here’s what you could earn if you did:
         </Typography>
-      </div>
-      <div>
+      </div> */}
+      {/* <div>
         <div className="flex justify-between mt-4 items-center text-end">
           <Typography variant="body" color="mono-500">
             {tokenSymbol} Fees Distributed
@@ -94,7 +94,7 @@ export const LiveClaim = (props: LiveClaimProps) => {
             </Typography>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

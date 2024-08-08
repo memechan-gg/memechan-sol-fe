@@ -5,6 +5,7 @@ import { Divider } from "@/memechan-ui/Atoms/Divider/Divider";
 import TopBar from "@/memechan-ui/Atoms/TopBar/TopBar";
 import { Typography } from "@/memechan-ui/Atoms/Typography";
 import { formatNumberForTokenCard } from "@/utils/formatNumbersForTokenCard";
+import { useWallet } from "@solana/wallet-adapter-react";
 import { useEffect, useState } from "react";
 import { getSlicedAddressV2 } from "../coin/sidebar/holders/utils";
 import { NoCoinsPage } from "./no-coins-page";
@@ -39,6 +40,7 @@ export function Profile({ address, coin }: ProfileProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { data: solanaBalance } = useSolanaBalance();
   const slicedAddress = address ? getSlicedAddressV2(address) : null;
+  const { publicKey } = useWallet();
 
   useEffect(() => {
     const fetchTokens = async () => {
@@ -155,7 +157,7 @@ export function Profile({ address, coin }: ProfileProps) {
         ) : error ? (
           <div className="text-red-500">{error}</div>
         ) : tokens.length === 0 ? (
-          <NoCoinsPage />
+          <NoCoinsPage isMyPage={publicKey?.toBase58() === address} />
         ) : (
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 justify-center w-full">
             {tokens.map((token, index) => (

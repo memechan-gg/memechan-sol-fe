@@ -1,7 +1,8 @@
 import { Typography } from "@/memechan-ui/Atoms/Typography";
 import SquareDotsMenu from "@/memechan-ui/icons/SquareDotsMenu";
+import Link from "next/link";
 
-export const NoCoinsPage = () => {
+export const NoCoinsPage = ({ isMyPage }: { isMyPage: boolean }) => {
   return (
     <div className="w-full mx-3 rounded-tl-sm rounded-tr-sm border border-solid border-mono-400">
       <div className="bg-mono-400 h-8 p-4 flex justify-between items-center">
@@ -24,17 +25,25 @@ export const NoCoinsPage = () => {
             What are you even doing here?
           </Typography>
           <div className="mb-4">
-            <Typography variant="h4">{"You haven't bought ANYTHING yet, you retard."}</Typography>
+            <Typography variant="h4">
+              {isMyPage
+                ? "You haven't bought ANYTHING yet, you retard."
+                : "This user hasn't bought anything yet, you retard."}
+            </Typography>
           </div>
           <Typography variant="body" color="mono-600">
-            {"But when you are you'll be able to manage your holdings here!"}
+            {isMyPage
+              ? "But when you are you'll be able to manage your holdings here!"
+              : "But when they do you'll be able to see it here!"}
           </Typography>
         </div>
       </div>
       <div className="bg-mono-400 hidden h-8 px-4 sm:flex justify-between items-center">
-        <Typography underline variant="text-button" color="mono-500">
-          {" >>Buy Now"}
-        </Typography>
+        <Link href="/">
+          <Typography underline variant="text-button" color="mono-500">
+            {" >>Buy Now"}
+          </Typography>
+        </Link>
       </div>
     </div>
   );
