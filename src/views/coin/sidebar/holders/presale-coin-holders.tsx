@@ -21,7 +21,7 @@ export const PresaleCoinHolders = ({ poolAddress, coinMetadata, uniqueHoldersDat
     return (
       <div className="flex flex-col gap-1">
         <div className="text-xs font-bold">
-          <Typography variant="h4" color="mono-600">
+          <Typography variant="h4" color={theme === "light" ? "mono-200" : "mono-600"}>
             Holders
           </Typography>
         </div>
@@ -49,7 +49,7 @@ export const PresaleCoinHolders = ({ poolAddress, coinMetadata, uniqueHoldersDat
   return (
     <Card>
       <Card.Header>
-        <Typography variant="h4" color={theme === "light" ? "mono-200" : "mono-600"}>
+        <Typography variant="h4" color="mono-600">
           Holders
         </Typography>
       </Card.Header>

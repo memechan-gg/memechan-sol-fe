@@ -58,7 +58,7 @@ export const LiveCoinInfo = ({ metadata, stakingPoolFromApi, livePool }: LiveCoi
   return (
     <Card>
       <Card.Header>
-        <Typography variant="h4" color={theme === "light" ? "mono-200" : "mono-500"}>
+        <Typography variant="h4" color={theme === "light" ? "mono-200" : "mono-600"}>
           Info
         </Typography>
       </Card.Header>

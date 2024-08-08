@@ -10,6 +10,7 @@ import { faClose } from "@fortawesome/free-solid-svg-icons/faClose";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Dialog } from "@reach/dialog";
 import { track } from "@vercel/analytics";
+import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -57,7 +58,7 @@ export const RpcConnectionPopUp = () => {
       toast.success("Your RPC is currently set to Memechan RPC Pool");
     }
   };
-
+  const { theme } = useTheme();
   return (
     <Dialog
       isOpen={isDialogOpen}
@@ -66,9 +67,11 @@ export const RpcConnectionPopUp = () => {
     >
       <div className=" mx-3 sm:mx-auto w-full max-w-[406px] h-fit border border-mono-400 custom-outer-shadow bg-mono-200 flex flex-col">
         <div className=" px-4 h-8 flex items-center justify-between bg-mono-400">
-          <Typography variant="h4">RPC Connection</Typography>
+          <Typography variant="h4" color={theme === "light" ? "mono-200" : "mono-600"}>
+            RPC Connection
+          </Typography>
           <span className="cursor-pointer flex">
-            <FontAwesomeIcon icon={faClose} size="lg" onClick={() => setIsDialogOpen(false)} />
+            <FontAwesomeIcon icon={faClose} size="lg" onClick={() => setIsDialogOpen(false)} color="#FFFFFF" />
           </span>
         </div>
         <div className="mt-6 mx-4 flex flex-col gap-2.5">
