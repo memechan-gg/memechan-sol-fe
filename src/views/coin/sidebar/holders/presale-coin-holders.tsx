@@ -49,7 +49,7 @@ export const PresaleCoinHolders = ({ poolAddress, coinMetadata, uniqueHoldersDat
   return (
     <Card>
       <Card.Header>
-        <Typography variant="h4" color="mono-600">
+        <Typography variant="h4" color={theme === "light" ? "mono-200" : "mono-600"}>
           Holders
         </Typography>
       </Card.Header>
