@@ -23,6 +23,7 @@ interface TokenCardProps {
   showLinks?: boolean;
   showCheckmark?: boolean;
   showOnClick?: boolean;
+  disableContent?: boolean;
 }
 
 export function TokenCard({
@@ -31,6 +32,7 @@ export function TokenCard({
   showLinks = false,
   showCheckmark = false,
   showOnClick = false,
+  disableContent,
 }: TokenCardProps) {
   const { name, address, image, symbol, description, status, socialLinks } = token;
   const router = useRouter();
@@ -110,7 +112,7 @@ export function TokenCard({
                 </div>
               </div>
             </div>
-            {status === "PRESALE" ? (
+            {disableContent ? null : status === "PRESALE" ? (
               <PresaleContent token={token} progressInfo={progressInfo} />
             ) : (
               <LiveContent token={token} />

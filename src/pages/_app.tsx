@@ -18,6 +18,7 @@ import Head from "next/head";
 import { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 import "react-loading-skeleton/dist/skeleton.css";
+import { RecoilRoot } from "recoil";
 config.autoAddCss = false;
 
 const queryClient = new QueryClient({
@@ -69,25 +70,27 @@ export default function App({ Component, pageProps }: AppProps) {
         <meta name="twitter:creator" content="@memechan" />
       </Head>
       <NextProgress options={{ showSpinner: false }} />
-      <SolanaProvider>
-        <UserProvider>
-          <QueryClientProvider client={queryClient}>
-            <ConnectionProvider>
-              <PopupProvider>
-                <ThemeProvider attribute="class" defaultTheme="dark">
-                  <Layout>
-                    <Component {...pageProps} />
-                    <SpeedInsights />
-                    <Analytics />
-                  </Layout>
-                </ThemeProvider>
-              </PopupProvider>
-            </ConnectionProvider>
-            {process.env.NODE_ENV === "development" && <ReactQueryDevtools initialIsOpen={false} />}
-          </QueryClientProvider>
-          <Toaster position="bottom-right" />
-        </UserProvider>
-      </SolanaProvider>
+      <RecoilRoot>
+        <SolanaProvider>
+          <UserProvider>
+            <QueryClientProvider client={queryClient}>
+              <ConnectionProvider>
+                <PopupProvider>
+                  <ThemeProvider attribute="class" defaultTheme="dark">
+                    <Layout>
+                      <Component {...pageProps} />
+                      <SpeedInsights />
+                      <Analytics />
+                    </Layout>
+                  </ThemeProvider>
+                </PopupProvider>
+              </ConnectionProvider>
+              {process.env.NODE_ENV === "development" && <ReactQueryDevtools initialIsOpen={false} />}
+            </QueryClientProvider>
+            <Toaster position="bottom-right" />
+          </UserProvider>
+        </SolanaProvider>
+      </RecoilRoot>
     </>
   );
 }

@@ -1,3 +1,4 @@
+import { searchAtom } from "@/atoms";
 import { usePopup } from "@/context/PopupContext";
 import { useUser } from "@/context/UserContext";
 import { Button } from "@/memechan-ui/Atoms/Button";
@@ -5,14 +6,16 @@ import { Typography } from "@/memechan-ui/Atoms/Typography";
 import { useWallet } from "@solana/wallet-adapter-react";
 import Link from "next/link";
 import { useState } from "react";
+import { useRecoilState } from "recoil";
 import { Logo } from "./logo";
 import { ProfileManagment } from "./profile-management";
 import { Search } from "./search";
 
 export const Header = () => {
   const account = useUser();
-  const { openPopup, isPopupOpen } = usePopup();
+  const { openPopup } = usePopup();
   const { disconnect } = useWallet();
+  const [search, setSearch] = useRecoilState(searchAtom);
   const [isSearchActive, setIsSearchActive] = useState(false);
   return (
     <header className="fixed top-0 left-0 w-full max-w-[1240px] m-auto right-0 bg-dark z-10 bg-mono-100">
@@ -70,7 +73,12 @@ export const Header = () => {
                 </Typography>
               </div>
               <div className="flex items-center gap-2 ml-2 sm:ml-0">
-                {/* <Search isSearchActive={isSearchActive} setIsSearchActive={setIsSearchActive} /> */}
+                <Search
+                  isSearchActive={isSearchActive}
+                  setIsSearchActive={setIsSearchActive}
+                  search={search}
+                  setSearch={setSearch}
+                />
                 <ProfileManagment account={account} disconnect={disconnect} />
               </div>
             </>
@@ -80,7 +88,12 @@ export const Header = () => {
                 <Logo />
               </Link>
               <div className="flex-grow ml-3">
-                <Search isSearchActive={isSearchActive} setIsSearchActive={setIsSearchActive} />
+                <Search
+                  isSearchActive={isSearchActive}
+                  setIsSearchActive={setIsSearchActive}
+                  search={search}
+                  setSearch={setSearch}
+                />
               </div>
             </div>
           )}
