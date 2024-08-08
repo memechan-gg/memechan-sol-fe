@@ -28,7 +28,7 @@ const ThemeSwitcher = () => {
   if (!mounted) return null;
 
   return (
-    <div className="relative flex bg-mono-300 p-1 rounded-sm max-w-fit gap-x-1">
+    <div className={`relative flex p-1 rounded-sm max-w-fit gap-x-1 ${theme === "light" ? "" : "bg-mono-300"}`}>
       <motion.div
         className="absolute bg-mono-400 rounded-sm"
         initial={false}
