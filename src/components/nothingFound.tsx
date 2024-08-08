@@ -1,6 +1,7 @@
 import { Typography } from "@/memechan-ui/Atoms/Typography";
 import SquareDotsMenu from "@/memechan-ui/icons/SquareDotsMenu";
 import { Card } from "@/memechan-ui/Molecules";
+import { useTheme } from "next-themes";
 import { Dispatch, SetStateAction } from "react";
 
 export interface NothingFoundProps {
@@ -13,6 +14,8 @@ export interface NothingFoundProps {
 }
 
 const NothingFound = ({ headerText, bodyText, children, setNothingFoundModalOpened, onClick }: NothingFoundProps) => {
+  const { theme } = useTheme();
+
   return (
     <div className=" w-full flex items-center justify-center ">
       <div className="rounded-tl-[2px] border-[1px] border-solid border-mono-400 bg-white w-full">
@@ -23,7 +26,7 @@ const NothingFound = ({ headerText, bodyText, children, setNothingFoundModalOpen
               {headerText}
             </Typography>
           </div>
-          <Typography color="mono-500">Sup</Typography>
+          <Typography color={theme === "light" ? "mono-200" : "mono-500"}>Sup</Typography>
         </div>
         <Card.Body additionalStyles="p-[14px]">
           <div className="sm:flex ">

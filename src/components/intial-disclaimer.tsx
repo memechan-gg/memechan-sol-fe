@@ -1,6 +1,7 @@
 import { Button } from "@/memechan-ui/Atoms/Button";
 import { Typography } from "@/memechan-ui/Atoms/Typography";
 import SquareDotsMenu from "@/memechan-ui/icons/SquareDotsMenu";
+import { useTheme } from "next-themes";
 import Image from "next/image";
 
 export interface InitialDisclaimerProps {
@@ -8,6 +9,7 @@ export interface InitialDisclaimerProps {
 }
 
 const InitialDisclaimer = ({ onConfirm }: InitialDisclaimerProps) => {
+  const { theme } = useTheme();
   return (
     <div className="rounded-tl-[2px] border-[1px] border-solid border-mono-400">
       <div className="bg-mono-400 p-[5px] px-[10px] flex justify-between items-center">
@@ -17,7 +19,7 @@ const InitialDisclaimer = ({ onConfirm }: InitialDisclaimerProps) => {
             Disclaimer
           </Typography>
         </div>
-        <Typography variant="body" color="mono-500">
+        <Typography variant="body" color={theme === "light" ? "mono-200" : "mono-500"}>
           Sup
         </Typography>
       </div>
