@@ -1,4 +1,5 @@
 import { UserContextType } from "@/context/UserContext";
+import ThemeSwitcher from "@/memechan-ui/Atoms/ThemeSwitcher/ThemeSwitcher";
 import { RpcConnectionDialog } from "@/views/rpc-connection/rpc-connection-dialog";
 import { faClose } from "@fortawesome/free-solid-svg-icons/faClose";
 import { faEllipsisV } from "@fortawesome/free-solid-svg-icons/faEllipsisV";
@@ -14,6 +15,7 @@ import TwitterIcon from "../memechan-ui/icons/twitter-icon.svg";
 export default function SideMenu(props: { account: UserContextType; disconnect: () => Promise<void> }) {
   const { connected } = useWallet();
   const [isOpen, setIsOpen] = useState(false);
+  const [theme, setTheme] = useState<"light" | "dark">("light");
   return (
     <div className="sm:relative focus-visible:outline-none">
       <Popover>
@@ -33,7 +35,7 @@ export default function SideMenu(props: { account: UserContextType; disconnect: 
                   )}
                 </div>
               </Popover.Button>
-              <Popover.Panel className="w-[99.6%] justify-between mr-px h-screen sm:h-fit sm:w-[177px] pb-[66px] pt-[45px]  pl-8 pr-[104px] sm:p-6 sm:pb-4 sm:pt-2 sm:pr-2 flex flex-col gap-4 sm:gap-x-8 sm:gap-y-1 sm:rounded-sm border border-mono-400 bg-mono-100 shadow-light top-16 sm:top-12 absolute z-10 right-0">
+              <Popover.Panel className="w-[99.6%] sm:justify-between mr-px h-screen sm:h-fit sm:w-[177px] pb-[66px] pt-[45px]  pl-8 pr-[104px] sm:p-6 sm:pb-4 sm:pt-2 sm:pr-2 flex flex-col gap-4 sm:gap-x-8 sm:gap-y-1 sm:rounded-sm border border-mono-400 bg-mono-100 shadow-light top-16 sm:top-12 absolute z-10 right-0">
                 <Link
                   href={`/`}
                   onClick={() => {
@@ -109,8 +111,8 @@ export default function SideMenu(props: { account: UserContextType; disconnect: 
                     <span>Disconnect</span>
                   </button>
                 )}
-                <div className="bottom-border w-[145px] mt-4" />
-                <div className="flex gap-12 sm:gap-4 align-middle items-center mb-12 sm:mb-0">
+                <div className="bottom-border w-full" />
+                <div className="flex gap-12 sm:gap-4 align-middle items-center sm:mb-0">
                   <a href="https://x.com/memechan_gg" target="_blank" rel="noopener noreferrer">
                     <Image
                       width={24}
@@ -129,6 +131,15 @@ export default function SideMenu(props: { account: UserContextType; disconnect: 
                       className="m-[6px] sm:p-1 sm:mx-[2px] sm:my-0 sm:hover:opacity-80 sm:hover:cursor-pointer min-h-14  sm:min-h-12"
                     />
                   </a>
+                </div>
+                <div className="bottom-border w-full" />
+                <div className="mt-6 sm:mt-2">
+                  <ThemeSwitcher
+                    activeTheme={theme}
+                    onClick={(string) => {
+                      setTheme(string);
+                    }}
+                  />
                 </div>
               </Popover.Panel>
             </>
