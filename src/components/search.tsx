@@ -3,6 +3,7 @@ import TextInput from "@/memechan-ui/Atoms/Input/TextInput";
 import { faClose } from "@fortawesome/free-solid-svg-icons/faClose";
 import { faSearch } from "@fortawesome/free-solid-svg-icons/faSearch";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useTheme } from "next-themes";
 import { Dispatch, SetStateAction } from "react";
 import { colors } from "../../tailwind.config";
 
@@ -17,12 +18,14 @@ export const Search = ({
   setSearch: Dispatch<SetStateAction<string>>;
   search: string;
 }) => {
+  const { theme } = useTheme();
+
   return (
     <div>
       {!isSearchActive && (
         <div className="w-10 h-10 border-primary-100">
           <Button
-            className="text-primary-100 sm:hover:text-mono-600"
+            className={`${theme === "light" ? "text-primary-100 hover:text-mono-200 active:text-mono-200" : "text-primary-100 sm:hover:text-mono-600"}`}
             variant="secondary"
             onClick={() => setIsSearchActive(!isSearchActive)}
           >

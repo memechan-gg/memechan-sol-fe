@@ -5,6 +5,7 @@ import { Typography } from "@/memechan-ui/Atoms/Typography";
 import { formatNumber } from "@/utils/formatNumber";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { track } from "@vercel/analytics";
+import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef } from "react";
@@ -12,6 +13,7 @@ import SolanaIcon from "../memechan-ui/icons/solana-icon.svg";
 
 export const ConnectWallet = (props: { account: UserContextType; disconnect: () => Promise<void> }) => {
   const { select, wallets, connected } = useWallet();
+  const { theme } = useTheme();
   const { isPopupOpen, openPopup, closePopup } = usePopup();
   const { data: solanaBalance } = useSolanaBalance();
   const popoverRef = useRef<HTMLDivElement>(null);
@@ -63,7 +65,7 @@ export const ConnectWallet = (props: { account: UserContextType; disconnect: () 
         <Link href={`/profile/${account.address}`}>
           <div
             role="button"
-            className={`h-full w-full min-w-[97px] text-primary-100 px-3 text-[0.75rem] font-bold flex flex-col ${connected ? "items-start" : "items-center"} justify-center hover:bg-primary-100 hover:text-white transition-colors focus-visible:outline-none`}
+            className={`h-full w-full min-w-[97px] text-primary-100 px-3 text-[0.75rem] font-bold flex flex-col ${connected ? "items-start" : "items-center"} justify-center hover:bg-primary-100 hover:text-white ${theme === "light" ? "text-primary-100 hover:text-mono-200 active:text-mono-200" : ""} transition-colors focus-visible:outline-none`}
             ref={popoverButtonRef}
           >
             <>
@@ -79,7 +81,7 @@ export const ConnectWallet = (props: { account: UserContextType; disconnect: () 
       ) : (
         <div
           role="button"
-          className={`h-full w-full px-3 text-primary-100 text-[0.75rem] font-bold flex flex-col ${connected ? "items-start" : "items-center"} justify-center hover:bg-primary-100 hover:text-white transition-colors focus-visible:outline-none`}
+          className={`h-full w-full px-3 text-primary-100 text-[0.75rem] font-bold flex flex-col ${connected ? "items-start" : "items-center"} justify-center hover:bg-primary-100  hover:text-white transition-colors focus-visible:outline-none`}
           onClick={() => {
             isPopupOpen ? closePopup() : openPopup();
           }}

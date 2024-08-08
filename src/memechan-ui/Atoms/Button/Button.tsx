@@ -1,5 +1,6 @@
 import { faSpinner } from "@fortawesome/free-solid-svg-icons/faSpinner";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useTheme } from "next-themes";
 import React, { ReactNode } from "react";
 
 export type ButtonVariant = "primary" | "secondary" | "regular" | "text" | "contained" | "disabled";
@@ -28,11 +29,10 @@ export const Button = ({
   isLoading,
   ...rest
 }: ButtonProps) => {
+  const { theme } = useTheme();
   const buttonStyles: ButtonVariantMap = {
-    primary:
-      "text-white h-full cursor-pointer w-full bg-primary-100 justify-center text-xs leading-5 font-bold text-mono-600 p-2 pl-4 pr-4 rounded-sm hover:bg-primary-300 active:bg-primary-400 focus:outline-none",
-    secondary:
-      "bg-mono-100 h-10 cursor-pointer w-full justify-center border border-primary-100 rounded text-xs gap-2 font-bold text-mono-600 hover:bg-primary-200 active:bg-primary-300 focus:outline-none",
+    primary: `text-white h-full cursor-pointer w-full bg-primary-100 justify-center text-xs leading-5 font-bold ${theme === "light" ? "text-mono-200" : "text-mono-600"} p-2 pl-4 pr-4 rounded-sm hover:bg-primary-300 active:bg-primary-400 focus:outline-none`,
+    secondary: `bg-mono-100 h-10 cursor-pointer w-full justify-center border border-primary-100 rounded text-xs gap-2 font-bold  ${theme === "light" ? "text-primary-100 hover:text-mono-200" : "text-mono-600"} hover:bg-primary-200 active:bg-primary-300 focus:outline-none`,
     regular:
       "bg-primary-100 text-xs cursor-pointer w-full justify-center flex-row gap-2 font-bold text-regular hover:bg-primary-200 active:bg-primary-300 focus:outline-none",
     text: "bg-primary-100 text-xs cursor-pointer justify-center flex-row gap-2 font-bold text-regular hover:bg-primary-200 active:bg-primary-300 focus:outline-none",

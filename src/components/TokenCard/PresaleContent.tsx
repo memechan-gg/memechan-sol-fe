@@ -1,6 +1,7 @@
 import { Typography } from "@/memechan-ui/Atoms/Typography";
 import { parseChainValue } from "@/utils/parseChainValue";
 import { SolanaToken } from "@avernikoz/memechan-sol-sdk";
+import { useTheme } from "next-themes";
 interface Props {
   token: SolanaToken;
   progressInfo?: {
@@ -13,6 +14,7 @@ interface Props {
 }
 
 export const PresaleContent = ({ token, progressInfo }: Props) => {
+  const { theme } = useTheme();
   return (
     <>
       <div className="flex flex-col text-sm text-white mt-[14px]">
@@ -60,7 +62,7 @@ export const PresaleContent = ({ token, progressInfo }: Props) => {
                   marginLeft: `${progressInfo?.progress}%`,
                 }}
               >
-                <Typography variant="h4" color="mono-400">
+                <Typography variant="h4" color={theme === "light" ? "mono-300" : "mono-400"}>
                   {"#".repeat(100)}
                 </Typography>
               </div>

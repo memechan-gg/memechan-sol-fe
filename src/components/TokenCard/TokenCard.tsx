@@ -5,6 +5,7 @@ import { Divider } from "@/memechan-ui/Atoms/Divider/Divider";
 import { Typography } from "@/memechan-ui/Atoms/Typography";
 import { Card } from "@/memechan-ui/Molecules";
 import { SolanaToken } from "@avernikoz/memechan-sol-sdk";
+import { useTheme } from "next-themes";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { ImageComponent } from "../image-component";
@@ -34,6 +35,7 @@ export function TokenCard({
   showOnClick = false,
   disableContent,
 }: TokenCardProps) {
+  const { theme } = useTheme();
   const { name, address, image, symbol, description, status, socialLinks } = token;
   const router = useRouter();
   const media = useMedia();
@@ -69,7 +71,7 @@ export function TokenCard({
       >
         <Card.Header>
           <div className="flex justify-between w-full">
-            <div className="flex text-left gap-2 min-w-40 mr-2">
+            <div className="flex text-left gap-2 min-w-40 mr-2 items-center justify-center">
               {showCheckmark && (
                 <Checkbox
                   checked={isChecked}
@@ -85,12 +87,12 @@ export function TokenCard({
                 </Typography>
               </div>
               <div className="flex w-2/4">
-                <Typography variant="body" truncate>
+                <Typography variant="body" color={theme === "light" ? "mono-200" : "mono-600"} truncate>
                   {symbol}
                 </Typography>
               </div>
             </div>
-            <Typography variant="h4" color="primary-100">
+            <Typography variant="h4" color={theme === "light" ? "mono-200" : "primary-100"}>
               [{status === "LIVE" ? "Live" : status === "PRESALE" ? "Presale" : "Unknown Status"}]
             </Typography>
           </div>

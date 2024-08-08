@@ -4,6 +4,7 @@ import { useUser } from "@/context/UserContext";
 import { Button } from "@/memechan-ui/Atoms/Button";
 import { Typography } from "@/memechan-ui/Atoms/Typography";
 import { useWallet } from "@solana/wallet-adapter-react";
+import { useTheme } from "next-themes";
 import Link from "next/link";
 import { useState } from "react";
 import { useRecoilState } from "recoil";
@@ -17,6 +18,7 @@ export const Header = () => {
   const { disconnect } = useWallet();
   const [search, setSearch] = useRecoilState(searchAtom);
   const [isSearchActive, setIsSearchActive] = useState(false);
+
   return (
     <header className="fixed top-0 left-0 w-full max-w-[1240px] m-auto right-0 bg-dark z-10 bg-mono-100">
       <div className=" bottom-border px-3 xl:px-0">
@@ -39,7 +41,7 @@ export const Header = () => {
                 </Link>
               </div>
               <div className="text-white font-bold  text-sm hidden px-2 items-center sm:flex flex-grow justify-center">
-                <Typography variant="h4" color="mono-600" className=" sm:hover:text-primary-100">
+                <Typography variant="h4" color={"mono-600"} className={`sm:hover:text-primary-100`}>
                   <Link href="/">
                     <span className="mr-3">📦</span>
                     Home
