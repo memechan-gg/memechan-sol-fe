@@ -35,18 +35,18 @@ input[type="number"] {
 
 :root {
   --color-text-regular: #800000;
-  --color-mono-100: #222222;
-  --color-mono-200: #242424;
-  --color-mono-300: #353535;
-  --color-mono-400: #3e3e3e;
-  --color-mono-500: #979797;
-  --color-mono-600: #ffffff;
-  --color-primary-100: #f95292;
-  --color-primary-200: #d74a80;
-  --color-primary-300: #b4446e;
-  --color-primary-400: #933b5c;
-  --color-primary-500: #6f344b;
-  --color-primary-600: #4c2d38;
+  --color-mono-100: #fed8b3;
+  --color-mono-200: #ffffff;
+  --color-mono-300: #8f867d;
+  --color-mono-400: #800000;
+  --color-mono-500: #222222;
+  --color-mono-600: #141414;
+  --color-primary-100: #7f0002;
+  --color-primary-200: #93231e;
+  --color-primary-300: #a8453b;
+  --color-primary-400: #bc6857;
+  --color-primary-500: #d18a74;
+  --color-primary-600: #e5ad90;
   --color-yellow-100: #d4cb19;
   --color-yellow-200: #b7b019;
   --color-yellow-300: #9a951a;

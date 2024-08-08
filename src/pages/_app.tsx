@@ -15,7 +15,6 @@ import NextProgress from "next-progress";
 import { ThemeProvider } from "next-themes";
 import type { AppProps } from "next/app";
 import Head from "next/head";
-import { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 import "react-loading-skeleton/dist/skeleton.css";
 import { RecoilRoot } from "recoil";
@@ -31,9 +30,6 @@ const queryClient = new QueryClient({
 });
 
 export default function App({ Component, pageProps }: AppProps) {
-  useEffect(() => {
-    localStorage.setItem("theme", "dark");
-  }, []);
   return (
     <>
       <Head>
@@ -76,7 +72,7 @@ export default function App({ Component, pageProps }: AppProps) {
             <QueryClientProvider client={queryClient}>
               <ConnectionProvider>
                 <PopupProvider>
-                  <ThemeProvider attribute="class" defaultTheme="dark">
+                  <ThemeProvider attribute="class" defaultTheme="dark" value={{ light: "light", dark: "dark" }}>
                     <Layout>
                       <Component {...pageProps} />
                       <SpeedInsights />
