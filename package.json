@@ -39,6 +39,7 @@
     "bignumber.js": "^9.1.2",
     "bn.js": "^5.2.1",
     "clsx": "^2.1.1",
+    "framer-motion": "^11.3.24",
     "js-cookie": "^3.0.5",
     "next": "14.2.2",
     "next-progress": "^2.3.1",
