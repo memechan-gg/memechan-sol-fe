@@ -56,7 +56,7 @@ export const Search = ({
               />
             </span>
           }
-          className="py-2.5 h-10 pl-3 pr-4 rounded-sm pink-border"
+          className={`py-2.5 h-10 pl-3 pr-4 rounded-sm ${theme === "dark" ? "pink-border" : ""}`}
         />
       )}
     </div>

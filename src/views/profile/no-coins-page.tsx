@@ -1,8 +1,10 @@
 import { Typography } from "@/memechan-ui/Atoms/Typography";
 import SquareDotsMenu from "@/memechan-ui/icons/SquareDotsMenu";
+import { useTheme } from "next-themes";
 import Link from "next/link";
 
 export const NoCoinsPage = ({ isMyPage }: { isMyPage: boolean }) => {
+  const { theme } = useTheme();
   return (
     <div className="w-full mx-3 rounded-tl-sm rounded-tr-sm border border-solid border-mono-400">
       <div className="bg-mono-400 h-8 p-4 flex justify-between items-center">
@@ -12,7 +14,7 @@ export const NoCoinsPage = ({ isMyPage }: { isMyPage: boolean }) => {
             Memchan dev
           </Typography>
         </div>
-        <Typography variant="body" color="mono-500">
+        <Typography variant="body" color={theme === "light" ? "mono-200" : "mono-500"}>
           Now
         </Typography>
       </div>
@@ -40,7 +42,7 @@ export const NoCoinsPage = ({ isMyPage }: { isMyPage: boolean }) => {
       </div>
       <div className="bg-mono-400 hidden h-8 px-4 sm:flex justify-between items-center">
         <Link href="/">
-          <Typography underline variant="text-button" color="mono-500">
+          <Typography underline variant="text-button" color={theme === "light" ? "mono-200" : "mono-500"}>
             {" >>Buy Now"}
           </Typography>
         </Link>
