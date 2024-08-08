@@ -101,7 +101,7 @@ export function LiveCoin({
           <Dialog
             isOpen={swapOpen}
             onDismiss={() => setSwapOpen(false)}
-            className="fixed inset-0 flex items-end justify-end pb-20 bg-black bg-opacity-30 backdrop-blur-[0.8px] z-40"
+            className="fixed inset-0 flex items-center justify-center pb-20 bg-black bg-opacity-30 backdrop-blur-[0.8px] z-40"
           >
             <div className="w-full px-2 max-h-full overflow-auto shadow-light">
               <LiveCoinSwap

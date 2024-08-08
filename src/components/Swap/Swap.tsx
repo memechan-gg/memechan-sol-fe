@@ -129,7 +129,6 @@ export const Swap = (props: SwapProps) => {
             </Card.Header>
             <Card.Body>
               {/* TODO ALDIN HANDLE POSTING COMMENT */}
-
               <div className="flex flex-col gap-3">
                 <TextInput
                   value={"aaa"}

@@ -138,7 +138,7 @@ export function PresaleCoin({
           <Dialog
             isOpen={swapOpen}
             onDismiss={() => setSwapOpen(false)}
-            className="fixed inset-0 flex items-end justify-end pb-20 bg-black bg-opacity-30 backdrop-blur-[0.8px] z-40"
+            className="fixed inset-0 flex items-center justify-center pb-20 bg-black bg-opacity-30 backdrop-blur-[0.8px] z-40"
           >
             <div className="w-full px-2 max-h-full overflow-auto shadow-light">
               <PresaleCoinSwap
@@ -156,7 +156,7 @@ export function PresaleCoin({
         </>
       ) : (
         <div className="grid grid-cols-3 gap-3 px-3 xl:px-0 w-full">
-          <div className="col-span-2 flex flex-col gap-y-3">
+          <div className="col-span-2 flex flex-col gap-y-2">
             <div className="flex justify-start">
               <Tabs
                 className="justify-start items-center gap-x-6"
