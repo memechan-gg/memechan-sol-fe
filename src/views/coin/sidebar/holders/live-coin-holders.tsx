@@ -1,12 +1,13 @@
 import { Typography } from "@/memechan-ui/Atoms/Typography";
 import { Card } from "@/memechan-ui/Molecules";
 import { useWallet } from "@solana/wallet-adapter-react";
+import { useTheme } from "next-themes";
 import { LiveCoinHoldersProps } from "../../coin.types";
 import { getSlicedAddress } from "./utils";
 
 export const LiveCoinHolders = ({ coinMetadata, uniqueHoldersData, livePool }: LiveCoinHoldersProps) => {
   const { publicKey } = useWallet();
-
+  const { theme } = useTheme();
   const userHoldings = uniqueHoldersData?.holders.find(({ address }) => publicKey?.toString() === address);
   const userPercentage = userHoldings?.tokenAmountInPercentage.toFixed(2);
   const userSlicedAddress = publicKey ? getSlicedAddress(publicKey) : null;
@@ -15,7 +16,7 @@ export const LiveCoinHolders = ({ coinMetadata, uniqueHoldersData, livePool }: L
     <div className="flex flex-col gap-1">
       <Card additionalStyles="">
         <Card.Header>
-          <Typography variant="h4" color="mono-600">
+          <Typography variant="h4" color={theme === "light" ? "mono-200" : "mono-600"}>
             Holders
           </Typography>
         </Card.Header>
