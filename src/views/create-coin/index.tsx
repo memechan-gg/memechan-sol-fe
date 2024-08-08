@@ -123,7 +123,7 @@ export function CreateCoin() {
       setState("ipfs");
       let ipfsUrl = await uploadImageToIPFS(data.image[0]);
       validateCoinParamsWithImage(data, ipfsUrl);
-
+      console.log("before s");
       const { createPoolTransaction, memeMint } = await createMemeCoinAndPool({
         data,
         ipfsUrl,
@@ -132,13 +132,18 @@ export function CreateCoin() {
         client: memechanClientV2,
         checked: isChecked,
       });
-
+      console.log("after s");
       setState("create_bonding_and_meme");
 
       toast(() => <span>Coin is created</span>);
 
       if (!createPoolTransaction) return;
       // Pool and meme creation
+      toast(() => <span>Coin is created</span>);
+      console.log("createPoolTransaction");
+      console.log(createPoolTransaction);
+      if (!createPoolTransaction) return;
+
       const signature = await sendTransaction(createPoolTransaction, connection, {
         maxRetries: 3,
         skipPreflight: true,
