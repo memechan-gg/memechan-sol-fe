@@ -17,6 +17,7 @@ import { Dialog } from "@reach/dialog";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import BigNumber from "bignumber.js";
+import { useTheme } from "next-themes";
 import { ChangeEvent, useState } from "react";
 import { Oval } from "react-loader-spinner";
 import SuccessModal from "../successModal";
@@ -89,6 +90,7 @@ export const Swap = (props: SwapProps) => {
   const isVariantSwap = variant === "swap";
   const { connected } = useWallet();
   const [successModalOpened, setSuccessModalOpened] = useState<boolean>(false);
+  const { theme } = useTheme();
 
   const [isOpen, setIsOpen] = useState(false);
   const handleSlippageChange = (value: string) => {
@@ -160,31 +162,48 @@ export const Swap = (props: SwapProps) => {
             <div className="flex gap-2 items-center">
               {variant === "swap" ? (
                 <>
-                  <Typography color="mono-600" variant="h4">
+                  <Typography color={theme === "light" ? "mono-200" : "mono-600"} variant="h4">
                     Swap
                   </Typography>
-                  <Typography variant="text-button" color="mono-500" underline onClick={() => setVariant("claim")}>
+                  <Typography
+                    variant="text-button"
+                    color={theme === "light" ? "mono-200" : "mono-500"}
+                    underline
+                    onClick={() => setVariant("claim")}
+                  >
                     Claim
                   </Typography>
                 </>
               ) : (
                 <>
-                  <Typography color="mono-500" onClick={() => setVariant("swap")} variant="text-button" underline>
+                  <Typography
+                    color={theme === "light" ? "mono-200" : "mono-500"}
+                    onClick={() => setVariant("swap")}
+                    variant="text-button"
+                    underline
+                  >
                     Swap
                   </Typography>
-                  <Typography variant="h4" color="mono-600">
+                  <Typography variant="h4" color={theme === "light" ? "mono-200" : "mono-600"}>
                     Claim
                   </Typography>
                 </>
               )}
             </div>
             <div className="flex items-center gap-2">
-              <Typography variant="text-button" color="mono-500" underline onClick={() => setIsOpen(true)}>
+              <Typography
+                variant="text-button"
+                color={theme === "light" ? "mono-200" : "mono-500"}
+                underline
+                onClick={() => setIsOpen(true)}
+              >
                 Slippage {slippage}%
               </Typography>
               {!isRefreshing ? (
                 <Typography
-                  className="leading-[13px] text-[10px] border-b-[1px] border-b-mono-500"
+                  className={`leading-[13px] text-[10px] border-b-[1px] ${
+                    theme === "light" ? "border-b-mono-200" : "border-b-mono-500"
+                  }`}
                   onClick={() => {
                     refresh();
                   }}
@@ -291,7 +310,9 @@ export const Swap = (props: SwapProps) => {
                   {!inputAmount ? (
                     <div className="h-14 flex items-center">
                       <Button variant="disabled" className="cursor-not-allowed">
-                        <Typography variant="h4">{"Enter an Amount"}</Typography>
+                        <Typography variant="h4" color={theme === "light" ? "mono-200" : "mono-600"}>
+                          {"Enter an Amount"}
+                        </Typography>
                       </Button>
                     </div>
                   ) : (
