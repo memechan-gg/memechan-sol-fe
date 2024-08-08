@@ -37,7 +37,7 @@ export const Button = ({
       "bg-primary-100 text-xs cursor-pointer w-full justify-center flex-row gap-2 font-bold text-regular hover:bg-primary-200 active:bg-primary-300 focus:outline-none",
     text: "bg-primary-100 text-xs cursor-pointer justify-center flex-row gap-2 font-bold text-regular hover:bg-primary-200 active:bg-primary-300 focus:outline-none",
     contained: "w-full h-full cursor-pointer rounded-sm bg-mono-600 text-primary-100",
-    disabled: `w-full h-full rounded-sm bg-mono-400 justify-center cursor-not-allowed ${theme === "light" ? "text-mono-200" : ''}'`,
+    disabled: `w-full h-full rounded-sm bg-mono-400 justify-center cursor-not-allowed ${theme === "light" ? "disabled:text-mono-200 text-mono-200" : ""}'`,
   };
 
   return (
