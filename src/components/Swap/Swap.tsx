@@ -226,9 +226,9 @@ export const Swap = (props: SwapProps) => {
               )}
               {onClose && (
                 <>
-                  <Divider vertical className="bg-mono-500 ml-1" />
+                  <Divider vertical className={`ml-1 ${theme === "light" ? "bg-mono-200" : "bg-mono-500"}`} />
                   <Typography onClick={onClose} className="pl-1 mt-[2px]">
-                    <FontAwesomeIcon icon={faClose} fontSize={20} />
+                    <FontAwesomeIcon icon={faClose} color="white" fontSize={20} />
                   </Typography>
                 </>
               )}
