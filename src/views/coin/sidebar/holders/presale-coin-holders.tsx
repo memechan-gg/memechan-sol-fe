@@ -3,6 +3,7 @@ import { Card } from "@/memechan-ui/Molecules";
 import { ConvertedHolderItem } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
+import { useTheme } from "next-themes";
 import { HoldersProps } from "../../coin.types";
 import { getSlicedAddress } from "./utils";
 
@@ -15,7 +16,7 @@ interface HolderProps {
 
 export const PresaleCoinHolders = ({ poolAddress, coinMetadata, uniqueHoldersData }: HoldersProps) => {
   const { publicKey } = useWallet();
-
+  const { theme } = useTheme();
   if (!uniqueHoldersData) {
     return (
       <div className="flex flex-col gap-1">
@@ -48,7 +49,7 @@ export const PresaleCoinHolders = ({ poolAddress, coinMetadata, uniqueHoldersDat
   return (
     <Card>
       <Card.Header>
-        <Typography variant="h4" color="mono-600">
+        <Typography variant="h4" color={theme === "light" ? "mono-200" : "mono-600"}>
           Holders
         </Typography>
       </Card.Header>
