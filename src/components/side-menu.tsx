@@ -6,6 +6,7 @@ import { faEllipsisV } from "@fortawesome/free-solid-svg-icons/faEllipsisV";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Popover } from "@headlessui/react";
 import { useWallet } from "@solana/wallet-adapter-react";
+import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -14,8 +15,8 @@ import TwitterIcon from "../memechan-ui/icons/twitter-icon.svg";
 
 export default function SideMenu(props: { account: UserContextType; disconnect: () => Promise<void> }) {
   const { connected } = useWallet();
+  const { theme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
-  const [theme, setTheme] = useState<"light" | "dark">("light");
   return (
     <div className="sm:relative focus-visible:outline-none">
       <Popover>
@@ -26,7 +27,7 @@ export default function SideMenu(props: { account: UserContextType; disconnect: 
               <Popover.Button className="h-10 focus-visible:outline-none">
                 <div
                   role="button"
-                  className="h-10 text-primary-100 w-10 text-xs font-bold flex justify-evenly items-center bg-inherit hover:bg-primary-100 hover:text-white transition-colors focus-visible:outline-none"
+                  className={`h-10 text-primary-100 w-10 text-xs font-bold flex justify-evenly items-center bg-inherit hover:bg-primary-100 hover:text-white transition-colors focus-visible:outline-none ${theme === "light" ? "text-primary-100 hover:text-mono-200 active:text-mono-200" : ""}`}
                 >
                   {isOpen ? (
                     <FontAwesomeIcon fontSize={16} icon={faClose} />
@@ -134,12 +135,7 @@ export default function SideMenu(props: { account: UserContextType; disconnect: 
                 </div>
                 <div className="bottom-border w-full" />
                 <div className="mt-6 sm:mt-2">
-                  <ThemeSwitcher
-                    activeTheme={theme}
-                    onClick={(string) => {
-                      setTheme(string);
-                    }}
-                  />
+                  <ThemeSwitcher />
                 </div>
               </Popover.Panel>
             </>

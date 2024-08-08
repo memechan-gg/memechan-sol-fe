@@ -480,23 +480,12 @@ export function CreateCoin() {
                   </Button>
                 </div>
               )}
-              <div className="flex items-center mt-2">
-                <input
-                  type="checkbox"
-                  checked={isChecked}
-                  onChange={handleChange}
-                  className="w-6 h-6 text-blue-600 form-checkbox"
-                />
-                <Typography variant="body" className="ml-2">
-                  Create for free as chan user
-                </Typography>
-                <div className="flex items-center mt-2 border-mono-400 border p-4">
-                  <Checkbox checked={isChecked} onChange={handleChange}>
-                    <Typography variant="body" className="ml-2" color={isChecked ? "primary-100" : "mono-600"}>
-                      Create for free without wallet
-                    </Typography>
-                  </Checkbox>
-                </div>
+              <div className="flex items-center mt-2 border-mono-400 border p-4 w-full">
+                <Checkbox checked={isChecked} onChange={handleChange}>
+                  <Typography variant="body" className="ml-2" color={isChecked ? "primary-100" : "mono-600"}>
+                    Create for free without wallet
+                  </Typography>
+                </Checkbox>
               </div>
             </div>
             {/* IN CASE THEY WANT IT BACK 
