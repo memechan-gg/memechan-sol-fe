@@ -8,7 +8,7 @@ import { LiveClaimProps } from "./types";
 
 export const LiveClaim = (props: LiveClaimProps) => {
   const media = useMedia();
-  const { seedPoolAddress, livePoolId, stakingPoolFromApi, tokenSymbol } = props;
+  const { seedPoolAddress, livePoolId, stakingPoolFromApi, tokenSymbol, quoteTokenInfo } = props;
   const ticketsData = useTickets({
     poolAddress: seedPoolAddress,
     poolStatus: "LIVE",
@@ -37,6 +37,7 @@ export const LiveClaim = (props: LiveClaimProps) => {
         livePoolAddress={livePoolId}
         ticketsData={ticketsData}
         stakingPoolFromApi={stakingPoolFromApi}
+        quoteTokenInfo={quoteTokenInfo}
       />
     </div>
   ) : (

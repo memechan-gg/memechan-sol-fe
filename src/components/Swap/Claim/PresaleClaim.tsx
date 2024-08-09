@@ -7,12 +7,11 @@ import { useState } from "react";
 import { PresaleClaimProps } from "./types";
 
 export const PresaleClaim = (props: PresaleClaimProps) => {
-  const { tokenSymbol } = props;
+  const { tokenSymbol, quoteTokenInfo } = props;
   const { theme } = useTheme();
   const [isConfirmed, setIsConfirmed] = useState<boolean>(() => {
     return !!Boolean(Cookies.get("isClaimConfirmed"));
   });
-
   return (
     <>
       {!isConfirmed ? (
@@ -97,11 +96,11 @@ export const PresaleClaim = (props: PresaleClaimProps) => {
             </div>
             <div className="flex justify-between mt-2 items-center text-end">
               <Typography variant="body" color="mono-500">
-                SOL Fees Earned
+                {quoteTokenInfo?.symbol || "SOL"} Fees Earned
               </Typography>
               <div>
                 <Typography variant="body" color="mono-600">
-                  0 SOL
+                  0 {quoteTokenInfo?.symbol || "SOL"}
                 </Typography>{" "}
                 <Typography variant="body" color="mono-500">
                   / $0.00
