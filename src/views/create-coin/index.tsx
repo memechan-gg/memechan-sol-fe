@@ -496,6 +496,9 @@ export function CreateCoin() {
                   </Typography>
                 </Checkbox>
               </div>
+              <div className="w-full">
+                <img src={"/short-banner.png"} alt="banner" className="w-full mt-2" />
+              </div>
             </div>
             {/* IN CASE THEY WANT IT BACK 
              <div className="border border-mono-400 mt-4 h-13 py-2 px-4 flex items-center">
