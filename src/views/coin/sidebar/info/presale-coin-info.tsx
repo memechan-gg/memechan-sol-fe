@@ -12,9 +12,13 @@ import { getBoundPoolProgress } from "./utils";
 
 export const PresaleCoinInfo = ({ metadata, boundPool, tokenInfo }: PresaleCoinInfoProps) => {
   const { creator, address, creationTime, symbol } = metadata;
-  const quoteTokenInfo = getTokenInfo({ tokenAddress: tokenInfo?.mint.toString() || address });
+  const memeTokenInfo = getTokenInfo({ tokenAddress: tokenInfo?.mint.toString() || address });
+  const quoteTokenInfo = getTokenInfo({
+    tokenAddress: boundPool?.quoteReserve.toJSON().mint || metadata.quoteMint || "",
+    variant: "string",
+  });
   const { theme } = useTheme();
-  const isV2 = quoteTokenInfo.symbol === "SOL";
+  const isV2 = memeTokenInfo.symbol === "SOL";
   const pooledMemeCoin = Number(boundPool?.memeReserve.toJSON().tokens) / MEME_TOKEN_DECIMALS;
   const { slerfIn, limit } = boundPool
     ? getBoundPoolProgress(boundPool, isV2)
@@ -66,10 +70,16 @@ export const PresaleCoinInfo = ({ metadata, boundPool, tokenInfo }: PresaleCoinI
         </div>
         <div className="flex justify-between items-center mt-1">
           <Typography variant="body" color="mono-500">
-            Pooled SOL
+            Pooled {quoteTokenInfo?.symbol || "SOL"}
           </Typography>
           <Typography variant="body" color="mono-600">
-            {slerfIn ? <div>{slerfIn} SOL</div> : <Skeleton width={35} baseColor="#3e3e3e" highlightColor="#979797" />}
+            {slerfIn ? (
+              <div>
+                {slerfIn} {quoteTokenInfo?.symbol || "SOL"}
+              </div>
+            ) : (
+              <Skeleton width={35} baseColor="#3e3e3e" highlightColor="#979797" />
+            )}
           </Typography>
         </div>
         <div className="flex justify-between">

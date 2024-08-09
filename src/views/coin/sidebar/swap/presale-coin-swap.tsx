@@ -5,7 +5,9 @@ import { useConnection } from "@/context/ConnectionContext";
 import { useBoundPoolClient } from "@/hooks/presale/useBoundPoolClient";
 import { useBalance } from "@/hooks/useBalance";
 import { useMemePriceFromBE } from "@/hooks/useMemePriceFromBE";
+import { useSlerfPrice } from "@/hooks/useSlerfPrice";
 import { useSolanaBalance } from "@/hooks/useSolanaBalance";
+import { useSolanaPrice } from "@/hooks/useSolanaPrice";
 import { getTokenInfo } from "@/hooks/utils";
 import { GetSwapOutputAmountParams, GetSwapTransactionParams } from "@/types/hooks";
 import { confirmTransaction } from "@/utils/confirmTransaction";
@@ -52,7 +54,7 @@ export const PresaleCoinSwap = ({
   const { connection } = useConnection();
   const { data: boundPoolClient } = useBoundPoolClient(pool.address);
 
-  const tokenInfo = boundPoolClient?.boundPoolInstance.quoteTokenMint
+  const quoteTokenInfo = boundPoolClient?.boundPoolInstance.quoteTokenMint
     ? getTokenInfo({ tokenAddress: boundPoolClient.boundPoolInstance.quoteTokenMint, variant: "publicKey" })
     : null;
 
@@ -61,8 +63,11 @@ export const PresaleCoinSwap = ({
     poolType: "seedPool",
   });
 
-  const memeChanQuoteMint = tokenInfo?.mint || "";
-  const memeChanQuoteTokenDecimals = tokenInfo?.decimals || 6;
+  const { data: solanaPrice } = useSolanaPrice();
+  const { data: slerfPrice } = useSlerfPrice();
+
+  const memeChanQuoteMint = quoteTokenInfo?.mint || "";
+  const memeChanQuoteTokenDecimals = quoteTokenInfo?.decimals || 6;
 
   const { balance: coinBalance, refetch: refetchCoinBalance } = useBalance(
     memeChanQuoteMint.toString(),
@@ -161,7 +166,6 @@ export const PresaleCoinSwap = ({
   }, [updateOutputAmount]);
 
   const refresh = useCallback(async () => {
-
     await refetchCoinBalance();
     await refreshAvailableTickets();
     await queryClient.invalidateQueries({ queryKey: ["bound-pool-client", pool.address] });
@@ -286,11 +290,12 @@ export const PresaleCoinSwap = ({
   const poolIsMigratingToLive = boundPool?.locked || boundPool === null;
 
   const { data: solanaBalance } = useSolanaBalance();
-
+  const { balance: slerfBalance } = useBalance(quoteTokenInfo?.mint.toBase58() || "", quoteTokenInfo?.decimals || 0);
   const [baseCurrency, setBaseCurrency] = useState({
-    currencyName: "SOL",
-    currencyLogoUrl: "/tokens/solana.png",
-    coinBalance: solanaBalance ?? 0,
+    currencyName: quoteTokenInfo?.symbol || "SOL",
+    currencyLogoUrl:
+      (quoteTokenInfo?.symbol === "SOL" ? "/tokens/solana.png" : "/tokens/slerf.png") || "/tokens/solana.png",
+    coinBalance: (quoteTokenInfo?.symbol === "SOL" ? solanaBalance : +(slerfBalance || "0")) || 0,
   });
 
   const [secondCurrency, setSecondCurrency] = useState({
@@ -329,16 +334,19 @@ export const PresaleCoinSwap = ({
       setBaseCurrency((prevState) => ({ ...prevState, coinBalance: solanaBalance ?? 0 }));
       // setMountedSolana(true);
     }
-    if (secondCurrency.currencyName !== "SOL") {
+    if (baseCurrency.currencyName === "SLERF") {
+      setBaseCurrency((prevState) => ({ ...prevState, coinBalance: +(slerfBalance || "0") }));
+    }
+    if (secondCurrency.currencyName !== "SOL" && secondCurrency.currencyName !== "SLERF") {
       setSecondCurrency((prevState) => ({
         ...prevState,
         coinBalance: +(availableTicketsAmount ?? 0),
       }));
     }
-  }, [baseCurrency.currencyName, availableTicketsAmount, secondCurrency.currencyName, solanaBalance]);
+  }, [baseCurrency.currencyName, availableTicketsAmount, secondCurrency.currencyName, solanaBalance, slerfBalance]);
 
   useEffect(() => {
-    if (baseCurrency.currencyName !== "SOL") {
+    if (baseCurrency.currencyName !== "SOL" && baseCurrency.currencyName !== "SLERF") {
       // setMountedSolana(true);
       setBaseCurrency((prevState) => ({
         ...prevState,
@@ -348,7 +356,11 @@ export const PresaleCoinSwap = ({
     if (secondCurrency.currencyName === "SOL") {
       setSecondCurrency((prevState) => ({ ...prevState, coinBalance: solanaBalance ?? 0 }));
     }
-  }, [availableTicketsAmount, baseCurrency.currencyName, secondCurrency.currencyName, solanaBalance]);
+    if (secondCurrency.currencyName === "SLERF") {
+      setSecondCurrency((prevState) => ({ ...prevState, coinBalance: +(slerfBalance ?? "0") }));
+    }
+  }, [availableTicketsAmount, baseCurrency.currencyName, secondCurrency.currencyName, slerfBalance, solanaBalance]);
+
   return (
     <Swap
       variant="PRESALE"
@@ -374,6 +386,8 @@ export const PresaleCoinSwap = ({
       onClose={onClose}
       tokenDecimals={coinToMeme ? memeChanQuoteTokenDecimals : MEMECHAN_MEME_TOKEN_DECIMALS}
       memePrice={memePrice}
+      quotePrice={quoteTokenInfo?.symbol === "SOL" ? solanaPrice : slerfPrice}
+      quoteTokenInfo={quoteTokenInfo}
     />
   );
 };
@@ -392,7 +406,7 @@ export const PresaleCoinSwap = ({
 //       <SwapButton coinToMeme={!coinToMeme} onClick={() => setCoinToMeme(false)} label="Sell" />
 //     </div>
 //     <div className="flex w-full flex-col gap-1">
-//       {tokenInfo?.mint && (
+//       {quoteTokenInfo?.mint && (
 //         <InputAmountTitle
 //           memeBalance={availableTicketsAmount}
 //           setInputAmount={setInputAmount}
@@ -400,7 +414,7 @@ export const PresaleCoinSwap = ({
 //           coinBalance={coinBalance}
 //           coinToMeme={coinToMeme}
 //           tokenSymbol={tokenSymbol}
-//           quoteMint={tokenInfo.mint.toString()}
+//           quoteMint={quoteTokenInfo.mint.toString()}
 //         />
 //       )}
 //       <input
@@ -419,7 +433,7 @@ export const PresaleCoinSwap = ({
 //       />
 //       {coinToMeme && (
 //         <div className="text-xs font-bold text-regular">
-//           available {tokenInfo?.displayName + " "}
+//           available {quoteTokenInfo?.displayName + " "}
 //           {publicKey && coinBalance
 //             ? Number(coinBalance).toLocaleString(undefined, {
 //                 maximumFractionDigits: memeChanQuoteTokenDecimals,
@@ -442,7 +456,7 @@ export const PresaleCoinSwap = ({
 //           {coinToMeme ? (
 //             <span>{tokenSymbol} tickets to receive: loading...</span>
 //           ) : (
-//             <span>{tokenInfo?.displayName} to receive: loading...</span>
+//             <span>{quoteTokenInfo?.displayName} to receive: loading...</span>
 //           )}
 //         </div>
 //       )}
@@ -450,7 +464,7 @@ export const PresaleCoinSwap = ({
 //         <div className="text-xs font-bold text-regular">
 //           {coinToMeme
 //             ? `${tokenSymbol} tickets to receive: ${parseChainValue(Number(outputAmount), 0, 6)}`
-//             : `${tokenInfo?.displayName} to receive: ${parseChainValue(Number(outputAmount), 0, 12)}`}
+//             : `${quoteTokenInfo?.displayName} to receive: ${parseChainValue(Number(outputAmount), 0, 12)}`}
 //         </div>
 //       )}
 //     </div>

@@ -26,6 +26,7 @@ export const StakingPool = ({
   tokenSymbol,
   livePoolAddress,
   ticketsData,
+  quoteTokenInfo,
   stakingPoolFromApi,
   ticketsData: { tickets, stakedAmount, refresh: refetchTickets },
 }: StakingPoolProps) => {
@@ -403,14 +404,16 @@ export const StakingPool = ({
         </div>
         <div className="flex justify-between mt-2 items-center text-end">
           <Typography variant="body" color="mono-500">
-            SOL Unclaimed Fees
+            {quoteTokenInfo?.symbol || "SOL"} Unclaimed Fees
           </Typography>
           <div>
             <Typography variant="body" color="mono-600">
               {slerfAmount && tokenInfo ? (
                 Number(slerfAmount).toLocaleString(undefined, {
                   maximumFractionDigits: tokenInfo.decimals,
-                }) + " SOL"
+                }) +
+                  " " +
+                  quoteTokenInfo?.symbol || "SOL"
               ) : (
                 <div>
                   <Oval

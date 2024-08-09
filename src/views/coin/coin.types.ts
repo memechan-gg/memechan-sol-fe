@@ -109,6 +109,7 @@ export type StakingPoolProps = {
   livePoolAddress: string;
   ticketsData: ReturnType<typeof useTickets>;
   stakingPoolFromApi: ReturnType<typeof useStakingPoolFromApi>["data"];
+  quoteTokenInfo?: TokenInfo | null;
 };
 
 export type CoinThread = {

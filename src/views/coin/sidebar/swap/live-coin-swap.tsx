@@ -7,7 +7,9 @@ import { getTokenInfo } from "@/hooks/utils";
 import { Swap } from "@/components/Swap";
 import { QUOTE_TOKEN_DECIMALS } from "@/constants/constants";
 import { useMemePriceFromBE } from "@/hooks/useMemePriceFromBE";
+import { useSlerfPrice } from "@/hooks/useSlerfPrice";
 import { useSolanaBalance } from "@/hooks/useSolanaBalance";
+import { useSolanaPrice } from "@/hooks/useSolanaPrice";
 import { GetLiveSwapTransactionParams, GetSwapOutputAmountParams } from "@/types/hooks";
 import { parseChainValue } from "@/utils/parseChainValue";
 import { MEMECHAN_MEME_TOKEN_DECIMALS, SwapMemeOutput, buildTxs } from "@avernikoz/memechan-sol-sdk";
@@ -38,15 +40,17 @@ export const LiveCoinSwap = ({
   const [isSwapping, setIsSwapping] = useState<boolean>(false);
   const { data: solanaBalance } = useSolanaBalance();
   // const [refetchBalanceIncrement, setRefetchBalanceIncrement] = useState(0);
-  const tokenData = getTokenInfo({ variant: "string", tokenAddress: quoteMint });
+  const quoteTokenInfo = getTokenInfo({ variant: "string", tokenAddress: quoteMint });
   const {
     balance: coinBalance,
     isLoading: isBalanceLoading,
     refetch: coinBalanceRefetch,
     isRefetching: coinBalanceRefetching,
-  } = useBalance(tokenData.mint.toString(), tokenData.decimals);
+  } = useBalance(quoteTokenInfo.mint.toString(), quoteTokenInfo.decimals);
 
   const { data: memePrice } = useMemePriceFromBE({ memeMint: tokenAddress, poolType: "livePool" });
+  const { data: solanaPrice } = useSolanaPrice();
+  const { data: slerfPrice } = useSlerfPrice();
   const {
     balance: memeBalance,
     isLoading: isMemeBalanceLoading,
@@ -54,10 +58,12 @@ export const LiveCoinSwap = ({
     isRefetching: memeBalanceRefetching,
   } = useBalance(tokenAddress, MEMECHAN_MEME_TOKEN_DECIMALS);
 
+  const { balance: slerfBalance } = useBalance(quoteTokenInfo?.mint.toBase58() || "", quoteTokenInfo?.decimals || 0);
   const [baseCurrency, setBaseCurrency] = useState({
-    currencyName: "SOL",
-    currencyLogoUrl: "/tokens/solana.png",
-    coinBalance: solanaBalance ?? 0,
+    currencyName: quoteTokenInfo?.symbol || "SOL",
+    currencyLogoUrl:
+      (quoteTokenInfo?.symbol === "SOL" ? "/tokens/solana.png" : "/tokens/slerf.png") || "/tokens/solana.png",
+    coinBalance: (quoteTokenInfo?.symbol === "SOL" ? solanaBalance : +(slerfBalance || "0")) || 0,
   });
 
   const [secondCurrency, setSecondCurrency] = useState({
@@ -315,7 +321,7 @@ export const LiveCoinSwap = ({
 
   const onInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     handleSwapInputChange({
-      decimalPlaces: coinToMeme ? tokenData.decimals : MEMECHAN_MEME_TOKEN_DECIMALS,
+      decimalPlaces: coinToMeme ? quoteTokenInfo.decimals : MEMECHAN_MEME_TOKEN_DECIMALS,
       e,
       setValue: setInputAmount,
     });
@@ -336,13 +342,13 @@ export const LiveCoinSwap = ({
 
   let toReceive = "0";
 
-  if (tokenData.symbol === "SOL" && outputData) {
+  if (quoteTokenInfo.symbol === "SOL" && outputData) {
     if (coinToMeme) {
       toReceive = parseChainValue(Number(outputData.minAmountOut.toString()), MEMECHAN_MEME_TOKEN_DECIMALS, 6);
     } else {
       toReceive = parseChainValue(Number(outputData.minAmountOut.toString()), QUOTE_TOKEN_DECIMALS, 12);
     }
-  } else if (tokenData.symbol !== "SOL" && outputData) {
+  } else if (quoteTokenInfo.symbol !== "SOL" && outputData) {
     if (coinToMeme) {
       toReceive = parseChainValue(Number(+outputData.minAmountOut.toExact()), 0, 2);
     } else {
@@ -358,16 +364,19 @@ export const LiveCoinSwap = ({
       setBaseCurrency((prevState) => ({ ...prevState, coinBalance: solanaBalance ?? 0 }));
       // setMountedSolana(true);
     }
-    if (secondCurrency.currencyName !== "SOL") {
+    if (baseCurrency.currencyName === "SLERF") {
+      setBaseCurrency((prevState) => ({ ...prevState, coinBalance: +(slerfBalance || "0") }));
+    }
+    if (secondCurrency.currencyName !== "SOL" && secondCurrency.currencyName !== "SLERF") {
       setSecondCurrency((prevState) => ({
         ...prevState,
         coinBalance: +(memeBalance ?? 0),
       }));
     }
-  }, [baseCurrency.currencyName, memeBalance, mountedSolana, secondCurrency.currencyName, solanaBalance]);
+  }, [baseCurrency.currencyName, memeBalance, mountedSolana, secondCurrency.currencyName, slerfBalance, solanaBalance]);
 
   useEffect(() => {
-    if (baseCurrency.currencyName !== "SOL") {
+    if (baseCurrency.currencyName !== "SOL" && baseCurrency.currencyName !== "SLERF") {
       // setMountedSolana(true);
       setBaseCurrency((prevState) => ({
         ...prevState,
@@ -377,7 +386,10 @@ export const LiveCoinSwap = ({
     if (secondCurrency.currencyName === "SOL") {
       setSecondCurrency((prevState) => ({ ...prevState, coinBalance: solanaBalance ?? 0 }));
     }
-  }, [baseCurrency.currencyName, memeBalance, mountedSolana, secondCurrency.currencyName, solanaBalance]);
+    if (secondCurrency.currencyName === "SLERF") {
+      setSecondCurrency((prevState) => ({ ...prevState, coinBalance: +(slerfBalance ?? "0") }));
+    }
+  }, [baseCurrency.currencyName, memeBalance, mountedSolana, secondCurrency.currencyName, slerfBalance, solanaBalance]);
   // const submitButtonDisabled = swapButtonIsDiabled || isLoadingOutputAmount
   return (
     <Swap
@@ -402,8 +414,10 @@ export const LiveCoinSwap = ({
       seedPoolAddress={seedPoolAddress}
       tokenSymbol={tokenSymbol}
       onClose={onClose}
-      tokenDecimals={coinToMeme ? tokenData.decimals : MEMECHAN_MEME_TOKEN_DECIMALS}
+      tokenDecimals={coinToMeme ? quoteTokenInfo.decimals : MEMECHAN_MEME_TOKEN_DECIMALS}
       memePrice={memePrice}
+      quotePrice={quoteTokenInfo?.symbol === "SOL" ? solanaPrice : slerfPrice}
+      quoteTokenInfo={quoteTokenInfo}
     />
   );
 };
