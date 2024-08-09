@@ -316,11 +316,13 @@ export const Swap = (props: SwapProps) => {
                       </Button>
                     </div>
                   ) : (
-                    <div className="h-14 flex items-center">
+                    <div className={`h-14 flex items-center ${theme === "light" ? "w-full justify-center" : ""}`}>
                       {inputAmount && +inputAmount > baseCurrency.coinBalance && !isLoadingOutputAmount ? (
-                        <Typography variant="h4">{"Insufficient balance"}</Typography>
+                        <Typography variant="h4" color={theme === "light" ? "mono-200" : "mono-600"}>
+                          {"Insufficient balance"}
+                        </Typography>
                       ) : (
-                        <Typography variant="h4">
+                        <Typography variant="h4" color={theme === "light" ? "mono-200" : "mono-600"}>
                           {isLoadingOutputAmount ? "Loading..." : isSwapping ? "Swapping..." : "Swap"}
                         </Typography>
                       )}
