@@ -1,6 +1,6 @@
 import { MAX_SLIPPAGE, MIN_SLIPPAGE } from "@/config/config";
 import { useStakingPoolFromApi } from "@/hooks/staking/useStakingPoolFromApi";
-import { useSolanaPrice } from "@/hooks/useSolanaPrice";
+import { PriceData } from "@/hooks/useSolanaPrice";
 import { Button } from "@/memechan-ui/Atoms";
 import { Divider } from "@/memechan-ui/Atoms/Divider/Divider";
 import { SwapInput } from "@/memechan-ui/Atoms/Input";
@@ -11,6 +11,7 @@ import { Typography } from "@/memechan-ui/Atoms/Typography";
 import DownArrowIcon from "@/memechan-ui/icons/DownArrowIcon";
 import UpArrowIcon from "@/memechan-ui/icons/UpArrowIcon";
 import { Card } from "@/memechan-ui/Molecules";
+import { TokenInfo } from "@avernikoz/memechan-sol-sdk";
 import { faClose } from "@fortawesome/free-solid-svg-icons/faClose";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Dialog } from "@reach/dialog";
@@ -55,7 +56,9 @@ interface SwapProps {
   tokenSymbol: string;
   onClose?: () => void;
   tokenDecimals: number;
+  quotePrice?: PriceData;
   memePrice?: string;
+  quoteTokenInfo?: TokenInfo | null;
 }
 
 export const Swap = (props: SwapProps) => {
@@ -83,8 +86,9 @@ export const Swap = (props: SwapProps) => {
     isRefreshing,
     tokenDecimals,
     memePrice,
+    quotePrice,
+    quoteTokenInfo,
   } = props;
-  const { data: solanaPriceInUSD } = useSolanaPrice();
   const [variant, setVariant] = useState<"swap" | "claim">("swap");
   const [localSlippage, setLocalSlippage] = useState(slippage);
   const isVariantSwap = variant === "swap";
@@ -104,15 +108,16 @@ export const Swap = (props: SwapProps) => {
   };
 
   const getUSDPrice = (currecyName: string, amount: string) => {
-    if (currecyName === "SOL") {
-      if (!solanaPriceInUSD?.price) return undefined;
-      return Number(amount) * solanaPriceInUSD.price;
+    if (currecyName === "SOL" || currecyName === "SLERF") {
+      if (!quotePrice?.price) return undefined;
+      return Number(amount) * quotePrice.price;
     }
     if (!memePrice || !amount || amount === "0") return undefined;
     const cleanAmount = amount.replace(/,/g, "");
     const result = new BigNumber(memePrice).multipliedBy(new BigNumber(cleanAmount));
     return result.toNumber();
   };
+
   return (
     <>
       {successModalOpened && (
@@ -243,6 +248,7 @@ export const Swap = (props: SwapProps) => {
               livePoolId={livePoolId}
               stakingPoolFromApi={stakingPoolFromApi}
               tokenSymbol={tokenSymbol}
+              quoteTokenInfo={quoteTokenInfo}
             />
           ) : (
             <>
@@ -285,7 +291,7 @@ export const Swap = (props: SwapProps) => {
                     publicKey ? `👛 ${secondCurrency.coinBalance ?? 0} ${secondCurrency.currencyName}` : undefined
                   }
                   isRefreshing={isLoadingOutputAmount}
-                  // usdPrice={solanaPriceInUSD?.price ? Number(inputAmount ?? 0) * solanaPriceInUSD.price : 0}
+                  // usdPrice={quotePrice?.price ? Number(inputAmount ?? 0) * quotePrice.price : 0}
                 />
               </div>
 
@@ -316,7 +322,7 @@ export const Swap = (props: SwapProps) => {
                       </Button>
                     </div>
                   ) : (
-                    <div className={`h-14 flex items-center ${theme === "light" ? "w-full justify-center" : ""}`}>
+                    <div className={`h-14 flex items-center`}>
                       {inputAmount && +inputAmount > baseCurrency.coinBalance && !isLoadingOutputAmount ? (
                         <Typography variant="h4" color={theme === "light" ? "mono-200" : "mono-600"}>
                           {"Insufficient balance"}

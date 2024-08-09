@@ -1,3 +1,4 @@
+import { useTheme } from "next-themes";
 import { ChangeEvent, useRef } from "react";
 import Skeleton from "react-loading-skeleton";
 import { Typography } from "../Typography";
@@ -41,6 +42,7 @@ export const SwapInput: React.FC<SwapInputProps> = ({
 }) => {
   // const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const { theme } = useTheme();
 
   // const handleFocus = () => {
   //   if (!isReadOnly) {
@@ -135,7 +137,13 @@ export const SwapInput: React.FC<SwapInputProps> = ({
               />
             ) : (
               <div>
-                <Skeleton count={1} height={"100%"} width={"50%"} baseColor="#3e3e3e" highlightColor="#979797" />
+                <Skeleton
+                  count={1}
+                  height={"100%"}
+                  width={"50%"}
+                  baseColor={theme === "light" ? "#bc6857" : "#3e3e3e"}
+                  highlightColor={theme === "light" ? "#e5ad90" : "#979797"}
+                />
               </div>
             )}
             <div className="text-xs text-black-35 dark:text-white-35">

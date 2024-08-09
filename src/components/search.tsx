@@ -4,7 +4,7 @@ import { faClose } from "@fortawesome/free-solid-svg-icons/faClose";
 import { faSearch } from "@fortawesome/free-solid-svg-icons/faSearch";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useTheme } from "next-themes";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef } from "react";
 import { colors } from "../../tailwind.config";
 
 export const Search = ({
@@ -19,23 +19,35 @@ export const Search = ({
   search: string;
 }) => {
   const { theme } = useTheme();
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (isSearchActive && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isSearchActive]);
 
   return (
     <div>
       {!isSearchActive && (
         <div className="w-10 h-10 border-primary-100">
           <Button
-            className={`${theme === "light" ? "text-primary-100 hover:text-mono-200 active:text-mono-200" : "text-primary-100 sm:hover:text-mono-600"}`}
+            className={`${
+              theme === "light"
+                ? "text-primary-100 hover:text-mono-200 active:text-mono-200"
+                : "text-primary-100 sm:hover:text-mono-600"
+            }`}
             variant="secondary"
             onClick={() => setIsSearchActive(!isSearchActive)}
           >
-            <FontAwesomeIcon icon={faSearch} onClick={() => setIsSearchActive(false)} />
+            <FontAwesomeIcon icon={faSearch} />
           </Button>
         </div>
       )}
 
       {isSearchActive && (
         <TextInput
+          ref={inputRef}
           value={search}
           placeholder="Search"
           setValue={setSearch}

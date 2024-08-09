@@ -14,6 +14,7 @@ import { PresaleContent } from "./PresaleContent";
 
 interface TokenCardProps {
   token: SolanaToken;
+  onClick?: () => void;
   progressInfo?: {
     progress?: number;
     totalQuoteAmount?: string;
@@ -29,6 +30,7 @@ interface TokenCardProps {
 
 export function TokenCard({
   token,
+  onClick,
   progressInfo,
   showLinks = false,
   showCheckmark = false,
@@ -55,6 +57,7 @@ export function TokenCard({
       undefined,
       { shallow: true },
     );
+    if (onClick) onClick();
   };
 
   const capitalizeFirstLetter = (string: string) => {
@@ -106,10 +109,12 @@ export function TokenCard({
                 altText={`${name} Image`}
               />
               <div className="ml-4 flex-1 min-w-0">
-                <div className="text-white text-sm">
-                  <div className="line-clamp">
-                    <span className=" text-mono-500">{">> "}</span>
-                    <Typography color="mono-600">{description}</Typography>
+                <div className="text-black text-sm">
+                  <div className={showOnClick ? "line-clamp" : ""}>
+                    <div className="text-mono-600">
+                      <span className=" text-mono-500">{">> "}</span>
+                      {description}
+                    </div>
                   </div>
                 </div>
               </div>

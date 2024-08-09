@@ -16,6 +16,7 @@ import { track } from "@vercel/analytics";
 import BigNumber from "bignumber.js";
 import { BN } from "bn.js";
 import { format, parse, roundToNearestMinutes } from "date-fns";
+import { useTheme } from "next-themes";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Oval } from "react-loader-spinner";
@@ -26,9 +27,11 @@ export const StakingPool = ({
   tokenSymbol,
   livePoolAddress,
   ticketsData,
+  quoteTokenInfo,
   stakingPoolFromApi,
   ticketsData: { tickets, stakedAmount, refresh: refetchTickets },
 }: StakingPoolProps) => {
+  const { theme } = useTheme();
   const { publicKey, sendTransaction } = useWallet();
   const { connection } = useConnection();
   const [memeAmount, setMemeAmount] = useState<string | null>(null);
@@ -286,7 +289,11 @@ export const StakingPool = ({
                 {startVestingTime && endVestingTime ? (
                   <div>{formatDates(startVestingTime, endVestingTime)}</div>
                 ) : (
-                  <Skeleton width={35} baseColor="#3e3e3e" highlightColor="#979797" />
+                  <Skeleton
+                    width={35}
+                    baseColor={theme === "light" ? "#bc6857" : "#3e3e3e"}
+                    highlightColor={theme === "light" ? "#e5ad90" : "#979797"}
+                  />
                 )}
               </Typography>
             </div>
@@ -322,7 +329,11 @@ export const StakingPool = ({
               {stakedAmount && !memePriceLoading && memePrice ? (
                 <span>${Math.round(Number(stakedAmount) * (+memePrice * 100)) / 100}</span>
               ) : (
-                <Skeleton width={45} baseColor="#3e3e3e" highlightColor="#979797" />
+                <Skeleton
+                  width={45}
+                  baseColor={theme === "light" ? "#bc6857" : "#3e3e3e"}
+                  highlightColor={theme === "light" ? "#e5ad90" : "#979797"}
+                />
               )}
             </Typography>
           </div>
@@ -358,7 +369,11 @@ export const StakingPool = ({
               {availableAmountToUnstake && !memePriceLoading && memePrice ? (
                 <span>${Math.round(Number(availableAmountToUnstake) * (+memePrice * 100)) / 100}</span>
               ) : (
-                <Skeleton width={45} baseColor="#3e3e3e" highlightColor="#979797" />
+                <Skeleton
+                  width={45}
+                  baseColor={theme === "light" ? "#bc6857" : "#3e3e3e"}
+                  highlightColor={theme === "light" ? "#e5ad90" : "#979797"}
+                />
               )}
             </Typography>
           </div>
@@ -396,21 +411,27 @@ export const StakingPool = ({
               {memeAmount && !memePriceLoading && memePrice ? (
                 <span>${Math.round(Number(memeAmount) * (+memePrice * 100)) / 100}</span>
               ) : (
-                <Skeleton width={45} baseColor="#3e3e3e" highlightColor="#979797" />
+                <Skeleton
+                  width={45}
+                  baseColor={theme === "light" ? "#bc6857" : "#3e3e3e"}
+                  highlightColor={theme === "light" ? "#e5ad90" : "#979797"}
+                />
               )}
             </Typography>
           </div>
         </div>
         <div className="flex justify-between mt-2 items-center text-end">
           <Typography variant="body" color="mono-500">
-            SOL Unclaimed Fees
+            {quoteTokenInfo?.symbol || "SOL"} Unclaimed Fees
           </Typography>
           <div>
             <Typography variant="body" color="mono-600">
               {slerfAmount && tokenInfo ? (
                 Number(slerfAmount).toLocaleString(undefined, {
                   maximumFractionDigits: tokenInfo.decimals,
-                }) + " SOL"
+                }) +
+                  " " +
+                  quoteTokenInfo?.symbol || "SOL"
               ) : (
                 <div>
                   <Oval
@@ -431,7 +452,11 @@ export const StakingPool = ({
               {slerfAmount && !solPriceLoading && solanaPriceInUSD ? (
                 <span>${Math.round(Number(slerfAmount) * (solanaPriceInUSD.price * 100)) / 100}</span>
               ) : (
-                <Skeleton width={45} baseColor="#3e3e3e" highlightColor="#979797" />
+                <Skeleton
+                  width={45}
+                  baseColor={theme === "light" ? "#bc6857" : "#3e3e3e"}
+                  highlightColor={theme === "light" ? "#e5ad90" : "#979797"}
+                />
               )}
             </Typography>
           </div>
@@ -466,7 +491,11 @@ export const StakingPool = ({
               {chanAmount && !chanPriceLoading && chanPriceInUSD ? (
                 <span>${Math.round(Number(chanAmount) * (chanPriceInUSD.price * 100)) / 100}</span>
               ) : (
-                <Skeleton width={45} baseColor="#3e3e3e" highlightColor="#979797" />
+                <Skeleton
+                  width={45}
+                  baseColor={theme === "light" ? "#bc6857" : "#3e3e3e"}
+                  highlightColor={theme === "light" ? "#e5ad90" : "#979797"}
+                />
               )}
             </Typography>
           </div>
