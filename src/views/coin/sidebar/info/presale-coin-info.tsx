@@ -64,7 +64,11 @@ export const PresaleCoinInfo = ({ metadata, boundPool, tokenInfo }: PresaleCoinI
                 {pooledMemeCoin} {symbol}
               </div>
             ) : (
-              <Skeleton width={35} baseColor="#3e3e3e" highlightColor="#979797" />
+              <Skeleton
+                width={35}
+                baseColor={theme === "light" ? "#bc6857" : "#3e3e3e"}
+                highlightColor={theme === "light" ? "#e5ad90" : "#979797"}
+              />
             )}
           </Typography>
         </div>
@@ -78,7 +82,11 @@ export const PresaleCoinInfo = ({ metadata, boundPool, tokenInfo }: PresaleCoinI
                 {slerfIn} {quoteTokenInfo?.symbol || "SOL"}
               </div>
             ) : (
-              <Skeleton width={35} baseColor="#3e3e3e" highlightColor="#979797" />
+              <Skeleton
+                width={35}
+                baseColor={theme === "light" ? "#bc6857" : "#3e3e3e"}
+                highlightColor={theme === "light" ? "#e5ad90" : "#979797"}
+              />
             )}
           </Typography>
         </div>
