@@ -6,7 +6,7 @@ import { formatNumberForTokenCard } from "@/utils/formatNumbersForTokenCard";
 import { Dialog } from "@reach/dialog";
 import { track } from "@vercel/analytics";
 import Cookies from "js-cookie";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Oval } from "react-loader-spinner";
 import { useCoinApi } from "./hooks/useCoinApi";
 
@@ -26,12 +26,29 @@ export function Home() {
     loadMore,
   } = useCoinApi();
 
+  const observer = useRef<IntersectionObserver | null>(null);
+
+  const isLoading = tokenList === null;
+  const sentinelRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      if (isLoading) return;
+      if (observer.current) observer.current.disconnect();
+
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) {
+          loadMore();
+        }
+      });
+
+      if (node) observer.current.observe(node);
+    },
+    [isLoading, loadMore],
+  );
   useEffect(() => {
     setStatus("pre_sale");
     setSortBy("creation_time");
   }, [setSortBy, setStatus]);
 
-  const isLoading = tokenList === null;
   const isCoinsListExist = tokenList !== null && tokenList.length > 0;
   const isCoinsListEmpty = tokenList !== null && tokenList.length === 0;
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(true);
@@ -149,182 +166,7 @@ export function Home() {
           {isCoinsListEmpty && <Typography>No memecoins yet</Typography>}
         </div>
       )}
+      <div ref={sentinelRef} className="w-full h-10" />
     </div>
   );
 }
-
-// export function Homee() {
-//   const {
-//     items: tokenList,
-//     status,
-//     setStatus,
-//     sortBy,
-//     setSortBy,
-//     direction,
-//     setDirection,
-//     liveNextPageToken,
-//     presaleNextPageToken,
-//     loadMore,
-//   } = useCoinApi();
-
-//   const isLoading = tokenList === null;
-//   const isCoinsListExist = tokenList !== null && tokenList.length > 0;
-//   const isCoinsListEmpty = tokenList !== null && tokenList.length === 0;
-//   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(true);
-//   const [isConfirmed, setIsConfirmed] = useState<boolean>(false);
-//   const [isMounted, setIsMounted] = useState<boolean>(false);
-//   const router = useRouter();
-
-//   useEffect(() => {
-//     setIsMounted(true);
-//     const confirmed = Cookies.get("isConfirmed");
-//     if (confirmed === "true") {
-//       setIsConfirmed(true);
-//       setIsDialogOpen(false);
-//     }
-//   }, []);
-
-//   const onCreateMemecoinClick = () => {
-//     track("CreateMemecoin", { placement: "NoticeBoardMainPage" });
-//   };
-
-//   const handleConfirm = () => {
-//     setIsConfirmed(true);
-//     setIsDialogOpen(false);
-//     Cookies.set("isConfirmed", "true", { expires: 365 });
-//   };
-
-//   if (!isMounted) {
-//     return <div>Loading...</div>;
-//   }
-
-//   return (
-//     <>
-//       {!isConfirmed && (
-//         <Dialog open={isDialogOpen} onOpenChange={() => {}}>
-//           <DialogContent>
-//             <DialogHeader>
-//               <DialogTitle className="text-xl text-regular text-center mb-5">Disclaimer</DialogTitle>
-//             </DialogHeader>
-//             <div className="text-regular text-justify mb-1">
-//               I confirm that I am a citizen of Afghanistan, Benin, China, Crimea region, Cuba, Iran, Iraq, Syria, USA,
-//               Vatican City, or for use by any person in any country or jurisdiction where such distribution or use would
-//               be contrary to local law or regulation.
-//             </div>
-//             <DialogFooter>
-//               <button
-//                 className="flex border border-regular text-regular sm:hover:bg-regular sm:hover:text-white font-bold py-2 px-4 rounded"
-//                 onClick={handleConfirm}
-//               >
-//                 Confirm
-//               </button>
-//             </DialogFooter>
-//           </DialogContent>
-//         </Dialog>
-//       )}
-//       {isConfirmed && (
-//         <>
-//           <NoticeBoard title="create memecoin">
-//             <div className="flex flex-col gap-2">
-//               <div className="lowercase">
-//                 Create your own memecoin with a few clicks. No coding or liquidity required.
-//               </div>
-//               <div>
-//                 <Link href={"/create"} onClick={onCreateMemecoinClick}>
-//                   <button className="bg-regular text-white font-bold p-2 rounded-lg lowercase">create memecoin</button>
-//                 </Link>
-//               </div>
-//             </div>
-//           </NoticeBoard>
-//           <ThreadBoard
-//             title="memecoins"
-//             titleChildren={
-//               <div className="flex flex-row gap-1 text-xs">
-//                 {status !== null ? (
-//                   <Dropdown
-//                     items={["all", "pre_sale", "live"]}
-//                     activeItem={status}
-//                     title="status"
-//                     onItemChange={(item) => {
-//                       if (isThreadsSortStatus(item)) {
-//                         track("List_SetStatus", { status: item });
-//                         setStatus(item);
-//                       }
-//                     }}
-//                   />
-//                 ) : (
-//                   <Skeleton width={40} />
-//                 )}
-
-//                 {sortBy !== null ? (
-//                   <Dropdown
-// sortBy()  items={["last_reply", "creation_time", "market_cap"]}
-//                     items={["last_reply", "creation_time", "market_cap"]}
-//                     activeItem={sortBy}
-//                     title="sort by"
-//                     onItemChange={(item) => {
-//                       if (isThreadsSortBy(item)) {
-//                         track("List_SetSortBy", { sortBy: item });
-//                         setSortBy(item);
-//                       }
-//                     }}
-//                   />
-//                 ) : (
-//                   <Skeleton width={40} />
-//                 )}
-
-//                 {direction !== null ? (
-//                   <Dropdown
-//                     items={["asc", "desc"]}
-//                     activeItem={direction}
-//                     title="order"
-//                     onItemChange={(item) => {
-//                       if (isThreadsSortDirection(item)) {
-//                         track("List_SortDirection", { sortDirection: item });
-//                         setDirection(item);
-//                       }
-//                     }}
-//                   />
-//                 ) : (
-//                   <Skeleton width={40} />
-//                 )}
-//               </div>
-//             }
-//           >
-//             <div className="flex flex-col items-center">
-//               <div className="flex flex-wrap gap-6 sm:justify-normal justify-center self-start">
-//                 {isLoading && (
-//                   <>
-//                     <div className="text-regular">Loading...</div>
-//                   </>
-//                 )}
-//                 {isCoinsListExist && (
-//                   <>
-//                     {tokenList.map((item) => (
-//                       <Thread key={item.address} coinMetadata={item} />
-//                     ))}
-//                   </>
-//                 )}
-//                 {isCoinsListEmpty && (
-//                   <>
-//                     <div className="text-regular">No memecoins yet</div>
-//                   </>
-//                 )}
-//               </div>
-//               {((status === "live" && liveNextPageToken) ||
-//                 (status === "pre_sale" && presaleNextPageToken) ||
-//                 (status === "all" && (presaleNextPageToken || liveNextPageToken))) && (
-//                 <div
-//                   onClick={loadMore}
-//                   className="text-regular font-xs flex justify-self-center mt-7 cursor-pointer sm:hover:underline"
-//                 >
-//                   Load more
-//                 </div>
-//               )}
-//             </div>
-//           </ThreadBoard>
-//         </>
-//       )}
-//     </>
-//   );
-// }
