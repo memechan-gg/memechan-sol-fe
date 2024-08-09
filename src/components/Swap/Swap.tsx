@@ -348,7 +348,7 @@ export const Swap = (props: SwapProps) => {
           }
           setIsOpen(false);
         }}
-        className="fixed inset-0 flex items-center justify-center bg-mono-200 md:bg-[#19191957] md:backdrop-blur-[0.5px] md:z-50"
+        className="fixed inset-0 px-3 sm:px-0 flex items-center justify-center bg-[#19191957] backdrop-blur-[0.5px] z-[100]"
       >
         <Card additionalStyles="max-w-[409px]">
           <Card.Header>
