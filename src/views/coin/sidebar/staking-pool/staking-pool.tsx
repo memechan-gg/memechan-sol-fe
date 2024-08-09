@@ -276,6 +276,7 @@ export const StakingPool = ({
     return `${formattedDate1} - ${formattedDate2}`;
   }
 
+  console.log(chanPriceInUSD);
   return (
     <div className="flex flex-col">
       <div className="flex flex-col">

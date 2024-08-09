@@ -133,3 +133,33 @@ export function formatSmallNumber(number: number, decimals: number) {
   const formattedCoefficient = `${coefficient.slice(0, 2)}${coefficient.slice(2)}`;
   return `${formattedCoefficient}e${exponent}`;
 }
+
+export function formatNumberForDisplay(num: number) {
+  const absNum = Math.abs(num);
+
+  let formattedNum;
+  let suffix = "";
+
+  if (absNum >= 1e9) {
+    formattedNum = num / 1e9;
+    suffix = "b";
+  } else if (absNum >= 1e6) {
+    formattedNum = num / 1e6;
+    suffix = "m";
+  } else if (absNum >= 1e3) {
+    formattedNum = num / 1e3;
+    suffix = "k";
+  } else {
+    formattedNum = num;
+  }
+
+  const decimalPlaces =
+    absNum >= 1e6 ? 2 : absNum >= 1e3 ? 1 : absNum >= 100 ? 1 : absNum >= 10 ? 2 : absNum >= 1 ? 3 : 4;
+
+  return (
+    parseFloat(formattedNum.toString()).toLocaleString(undefined, {
+      minimumFractionDigits: decimalPlaces,
+      maximumFractionDigits: decimalPlaces,
+    }) + suffix
+  );
+}

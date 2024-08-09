@@ -11,12 +11,12 @@ export type PriceData = {
 
 const fetchChanPrice = async () => {
   try {
-    const response = await fetch("https://price.jup.ag/v6/price?ids=SOL");
+    const response = await fetch("https://price.jup.ag/v6/price?ids=CHAN");
     const priceData = await response.json();
 
     return priceData.data.CHAN as PriceData;
   } catch (e) {
-    console.error("[fetchSolanafPrice] Cannot fetch the CHAN price:", e);
+    console.error("[fetchChanPrice] Cannot fetch the CHAN price:", e);
   }
 };
 
