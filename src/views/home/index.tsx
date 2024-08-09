@@ -1,5 +1,7 @@
 import InitialDisclaimer from "@/components/intial-disclaimer";
 import { TokenCard } from "@/components/TokenCard";
+import { useMedia } from "@/hooks/useMedia";
+import { Divider } from "@/memechan-ui/Atoms/Divider/Divider";
 import { Tabs } from "@/memechan-ui/Atoms/Tabs";
 import { Typography } from "@/memechan-ui/Atoms/Typography";
 import { formatNumberForTokenCard } from "@/utils/formatNumbersForTokenCard";
@@ -54,6 +56,7 @@ export function Home() {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(true);
   const [isConfirmed, setIsConfirmed] = useState<boolean>(false);
   const [isMounted, setIsMounted] = useState<boolean>(false);
+  const mediaQuery = useMedia();
 
   useEffect(() => {
     setIsMounted(true);
@@ -130,6 +133,14 @@ export function Home() {
 
   return (
     <div className="flex flex-col items-center w-full min-w-80 px-3 pt-3 xl:px-0">
+      <div className="w-full mt-3">
+        <img
+          src={mediaQuery.isSmallDevice ? "/short-banner.png" : "/long-banner.png"}
+          alt="Banner"
+          className="w-full"
+        />
+      </div>
+      <Divider className="mt-6 mb-4" />
       <div className="self-start w-full">
         <Tabs
           className="justify-start items-center gap-x-5 ml-[-5px]"
