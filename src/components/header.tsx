@@ -4,7 +4,6 @@ import { useUser } from "@/context/UserContext";
 import { Button } from "@/memechan-ui/Atoms/Button";
 import { Typography } from "@/memechan-ui/Atoms/Typography";
 import { useWallet } from "@solana/wallet-adapter-react";
-import { useTheme } from "next-themes";
 import Link from "next/link";
 import { useState } from "react";
 import { useRecoilState } from "recoil";
