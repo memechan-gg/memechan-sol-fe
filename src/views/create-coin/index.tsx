@@ -1,23 +1,30 @@
 import { TransactionSentNotification } from "@/components/notifications/transaction-sent-notification";
-import { ThreadBoard } from "@/components/thread";
+import SuccessModal from "@/components/successModal";
 import { useConnection } from "@/context/ConnectionContext";
+import { usePopup } from "@/context/PopupContext";
 import { useBalance } from "@/hooks/useBalance";
+import { useSolanaBalance } from "@/hooks/useSolanaBalance";
+import { useSolanaPrice } from "@/hooks/useSolanaPrice";
 import { useTargetConfig } from "@/hooks/useTargetConfig";
-import {
-  MAX_DESCRIPTION_LENGTH,
-  MAX_NAME_LENGTH,
-  MAX_SYMBOL_LENGTH,
-  TOKEN_INFOS,
-  sleep,
-} from "@avernikoz/memechan-sol-sdk";
+import { Button } from "@/memechan-ui/Atoms";
+import Checkbox from "@/memechan-ui/Atoms/CheckBox/CheckBox";
+import { Divider } from "@/memechan-ui/Atoms/Divider/Divider";
+import { SwapInput } from "@/memechan-ui/Atoms/Input";
+import UncontrolledTextInput from "@/memechan-ui/Atoms/Input/UncontrolledTextInput";
+import TopBar from "@/memechan-ui/Atoms/TopBar/TopBar";
+import { Typography } from "@/memechan-ui/Atoms/Typography";
+import DownArrowIcon from "@/memechan-ui/icons/DownArrowIcon";
+import UpArrowIcon from "@/memechan-ui/icons/UpArrowIcon";
+import { TOKEN_INFOS, sleep } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { track } from "@vercel/analytics";
 import BigNumber from "bignumber.js";
+import { useTheme } from "next-themes";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import Skeleton from "react-loading-skeleton";
+import TwitterIcon from "../../memechan-ui/icons/TwitterIcon";
 import { CreateCoinState, ICreateForm } from "./create-coin.types";
 import {
   createCoinOnBE,
@@ -31,20 +38,36 @@ import {
 
 export function CreateCoin() {
   const {
+    watch,
+    resetField,
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<ICreateForm>();
   const { publicKey, connected, signMessage, sendTransaction } = useWallet();
+  const [isChecked, setIsChecked] = useState(false);
+  const { theme } = useTheme();
+
+  const { isPopupOpen, setIsPopupOpen } = usePopup();
   const [state, setState] = useState<CreateCoinState>("idle");
   const router = useRouter();
   const [inputAmount, setInputAmount] = useState<string>("0");
   const { solanaThresholdAmount } = useTargetConfig();
-
+  const handleChange = () => {
+    setIsChecked((prevState) => !prevState);
+    setInputAmount("0");
+  };
+  const [hasMoreOptions, setHasMoreOptions] = useState(true);
   const { balance: solanaAmount } = useBalance(TOKEN_INFOS["WSOL"].mint.toString(), TOKEN_INFOS["WSOL"].decimals);
-
+  const { data: solanaBalance } = useSolanaBalance();
+  const { data: solanaPriceInUSD } = useSolanaPrice();
+  const [successModalOpened, setSuccessModalOpened] = useState<boolean>(false);
+  const baseCurrency = {
+    currencyName: "SOL",
+    currencyLogoUrl: "/tokens/solana.png",
+    coinBalance: solanaBalance ?? 0,
+  };
   const { connection, memechanClientV2 } = useConnection();
-
   const onSubmit = handleSubmit(async (data) => {
     try {
       if (!connected || !publicKey || !signMessage) {
@@ -100,17 +123,27 @@ export function CreateCoin() {
       setState("ipfs");
       let ipfsUrl = await uploadImageToIPFS(data.image[0]);
       validateCoinParamsWithImage(data, ipfsUrl);
-
+      console.log("before s");
       const { createPoolTransaction, memeMint } = await createMemeCoinAndPool({
         data,
         ipfsUrl,
         publicKey,
         inputAmount: inputAmountIsSpecified ? inputAmount : undefined,
         client: memechanClientV2,
+        checked: isChecked,
       });
-
+      console.log("after s");
       setState("create_bonding_and_meme");
+
+      toast(() => <span>Coin is created</span>);
+
+      if (!createPoolTransaction) return;
       // Pool and meme creation
+      toast(() => <span>Coin is created</span>);
+      console.log("createPoolTransaction");
+      console.log(createPoolTransaction);
+      if (!createPoolTransaction) return;
+
       const signature = await sendTransaction(createPoolTransaction, connection, {
         maxRetries: 3,
         skipPreflight: true,
@@ -199,139 +232,289 @@ export function CreateCoin() {
     }
   });
 
+  const nameInput = watch("name");
+  const symbolInput = watch("symbol");
+  const imageInput = watch("image");
+  const filledRequired = nameInput && symbolInput && imageInput?.length && inputAmount;
+
   return (
-    <div className="w-full flex items-center justify-center">
-      <div className="w-full lg:max-w-3xl">
-        <ThreadBoard title="create memecoin" showNavigateBtn>
-          <form onSubmit={onSubmit} className="flex flex-col gap-4 lowercase">
-            <div className="flex flex-col gap-2">
-              <h4 className="text-sm font-bold text-regular lowercase">Memecoin Details</h4>
-              <div className="flex flex-col lg:flex-row gap-4">
+    <div className="w-full flex flex-col items-center">
+      {successModalOpened && (
+        <SuccessModal
+          setSuccessModalOpened={setSuccessModalOpened}
+          headerText="Pepe successfully created"
+          bodyText="Congrats, you’ve successfully created your memecoin. Now let’s get it’s bonding curve completed. Let’s start with posting these news in your twitter."
+        >
+          <Divider />
+          {/* TODO ALDIN ADD TRANSACTION AND CA */}
+          <div className="flex flex-col">
+            <div className="flex justify-between">
+              <Typography variant="body" color="mono-500">
+                Transaction
+              </Typography>
+              <div>
+                <Typography variant="text-button" underline>
+                  fU1K...YsIF
+                </Typography>
+                <Typography variant="text-button" className="ml-3" underline color="primary-100">
+                  Coppy
+                </Typography>
+              </div>
+            </div>
+            <div className="flex justify-between">
+              <Typography variant="body" color="mono-500">
+                CA
+              </Typography>
+              <div>
+                <Typography variant="text-button" underline>
+                  fU1K...YsIF
+                </Typography>
+                <Typography variant="text-button" className="ml-3" underline color="primary-100">
+                  Coppy
+                </Typography>
+              </div>
+            </div>
+          </div>
+          <div className="mt-[15px] h-14">
+            <Button variant="primary" className="flex items-center justify-center">
+              <TwitterIcon size={16} />
+              <span className="ml-2 flex items-center">
+                <Typography variant="h4">Share in Twitter</Typography>
+              </span>
+            </Button>
+          </div>
+        </SuccessModal>
+      )}
+      <TopBar rightIcon="/diamond.png" title={"Create Memecoin"}></TopBar>
+      <div className="min-w-[345px] w-[-webkit-fill-available] sm:w-full sm:max-w-[406px] custom-outer-shadow flex items-center justify-center border border-mono-400 rounded-sm m-3 sm:mb-[-12px]">
+        <div className="w-full lg:max-w-3xl m-4 ">
+          <form onSubmit={onSubmit} className="flex flex-col ">
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col  gap-4">
                 <div className="flex flex-col gap-1">
-                  <label className="text-regular text-xs">Name</label>
+                  <label>
+                    <Typography variant="body" color="mono-500">
+                      Token Name
+                    </Typography>
+                    <div className="inline-block ml-1">
+                      <Typography variant="body" color="red-100">
+                        *
+                      </Typography>
+                    </div>
+                  </label>
                   <div>
-                    <input
-                      {...register("name", { required: true })}
-                      className="border w-[200px] border-regular rounded-lg p-1"
-                      maxLength={MAX_NAME_LENGTH}
-                    />
+                    <UncontrolledTextInput placeholder="Name" {...register("name", { required: true })} />
                   </div>
                   {errors.name && <p className="text-xs text-red-500">Name is required</p>}
                 </div>
                 <div className="flex flex-col gap-1">
-                  <label className="text-regular text-xs">Symbol</label>
+                  <label>
+                    <Typography variant="body" color="mono-500">
+                      Symbol
+                    </Typography>
+                    <div className="inline-block ml-1">
+                      <Typography variant="body" color="red-100">
+                        *
+                      </Typography>
+                    </div>
+                  </label>
                   <div>
-                    <input
-                      {...register("symbol", { required: true })}
-                      className="border w-[200px] border-regular rounded-lg p-1"
-                      maxLength={MAX_SYMBOL_LENGTH}
-                    />
+                    <UncontrolledTextInput placeholder="SYMBOL" {...register("symbol", { required: true })} />
                   </div>
                   {errors.symbol && <p className="text-xs text-red-500">Synbol is required</p>}
                 </div>
                 <div className="flex flex-col gap-1">
-                  <label className="text-regular text-xs">Image</label>
+                  <label>
+                    <Typography variant="body" color="mono-500">
+                      Picture
+                    </Typography>
+                    <div className="inline-block ml-1">
+                      <Typography variant="body" color="red-100">
+                        *
+                      </Typography>
+                    </div>
+                  </label>
                   <div>
-                    <input
+                    <UncontrolledTextInput
+                      fieldName="image"
+                      resetField={resetField}
                       type="file"
                       {...register("image", { required: true })}
-                      // file limits
-                      accept="image/png, image/jpeg, image/jpg, image/gif"
-                      // only select one fie
-                      multiple={false}
-                      className="border w-[200px] border-regular rounded-lg p-1"
                     />
                   </div>
                   {errors.image && <p className="text-xs text-red-500">Image is required</p>}
                 </div>
               </div>
               <div className="flex flex-col gap-1">
-                <label className="text-regular text-xs">Description</label>
-                <div>
+                <label>
+                  <Typography variant="body" color="mono-500">
+                    Description
+                  </Typography>
+                </label>
+                <div className="h-32 max-h-32 ">
                   <textarea
-                    {...register("description", { required: true })}
-                    className="border w-[200px] border-regular rounded-lg p-1"
-                    maxLength={MAX_DESCRIPTION_LENGTH}
+                    {...register("description", { required: false })}
+                    placeholder="Description"
+                    className="text-[13px] h-32 max-h-32 border border-mono-400 p-4 flex-1 outline-none bg-transparent placeholder:text-[13px] placeholder:font-normal placeholder:leading-5 placeholder-mono-500 w-full"
                   />
                 </div>
-                {errors.description && <p className="text-xs text-red-500">Description is required</p>}
               </div>
             </div>
-            <div className="flex flex-col gap-2">
-              <h4 className="text-sm font-bold text-regular">More Options</h4>
-              <div className="flex flex-col lg:flex-row gap-4 flex-wrap">
-                <div className="flex flex-col gap-1">
-                  <label className="text-regular text-xs">Twitter (optional)</label>
-                  <div>
-                    <input {...register("twitter")} className="border w-[200px] border-regular rounded-lg p-1" />
+            <div className="">
+              {hasMoreOptions && (
+                <div className="w-fit mt-4 cursor-pointer" onClick={() => setHasMoreOptions(false)}>
+                  <Typography variant="text-button" color="green-100" underline>
+                    {"I'm not in hurry"}
+                    <span className="inline-block ml-1">
+                      <DownArrowIcon size={12} fill="var(--color-green-100)" />
+                    </span>
+                  </Typography>
+                </div>
+              )}
+              {!hasMoreOptions ? (
+                <div className="flex mt-4 flex-col gap-4 flex-wrap">
+                  <div className="flex flex-col gap-1">
+                    <label>
+                      <Typography variant="body" color="mono-500">
+                        Website
+                      </Typography>
+                    </label>
+                    <div>
+                      <UncontrolledTextInput placeholder="Website URL" {...register("website")} />
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label>
+                      <Typography variant="body" color="mono-500">
+                        Twitter
+                      </Typography>
+                    </label>
+                    <div>
+                      <UncontrolledTextInput placeholder="Twitter URL" {...register("twitter")} />
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label>
+                      <Typography variant="body" color="mono-500">
+                        Telegram
+                      </Typography>
+                    </label>
+                    <div>
+                      <UncontrolledTextInput placeholder="Telegram URL" {...register("telegram")} />
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label>
+                      <Typography variant="body" color="mono-500">
+                        Discord
+                      </Typography>
+                    </label>
+                    <div>
+                      <UncontrolledTextInput placeholder="Discord URL" {...register("discord")} />
+                    </div>
+                  </div>
+
+                  <div className=" w-fit cursor-pointer" onClick={() => setHasMoreOptions(true)}>
+                    <Typography variant="text-button" color="red-100" underline>
+                      {"Fuck it, I'm in hurry"}
+                      <span className="inline-block ml-1">
+                        <UpArrowIcon size={12} fill="var(--color-red-100)" />
+                      </span>
+                    </Typography>
                   </div>
                 </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-regular text-xs">Telegram (optional)</label>
-                  <div>
-                    <input {...register("telegram")} className="border w-[200px] border-regular rounded-lg p-1" />
-                  </div>
+              ) : null}
+            </div>
+            <div className=" my-4">
+              <Divider />
+            </div>
+            <SwapInput
+              currencyName={baseCurrency.currencyName}
+              inputValue={inputAmount}
+              setInputValue={(e) => setInputAmount(e.target.value)}
+              placeholder="0.00"
+              currencyLogoUrl={baseCurrency.currencyLogoUrl}
+              usdPrice={solanaPriceInUSD?.price ? Number(inputAmount ?? 0) * solanaPriceInUSD.price : 0}
+              label={
+                !isChecked
+                  ? "Be the very first person to buy your token"
+                  : "You can't buy tokens if free creation is selected"
+              }
+              showQuickInput={true}
+              quickInputNumber
+              disabled={isChecked}
+              baseCurrencyAmount={baseCurrency.coinBalance}
+              tokenDecimals={9}
+              // labelRight={publicKey ? `👛 ${baseCurrency.coinBalance ?? 0} ${baseCurrency.currencyName}` : undefined}
+            />
+            <div className="flex flex-col gap-1 mt-4">
+              {!connected || !publicKey || !signMessage ? (
+                <div className="h-14">
+                  <Button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setIsPopupOpen(!isPopupOpen);
+                    }}
+                    variant="primary"
+                  >
+                    Connect Wallet
+                  </Button>
                 </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-regular text-xs">Discord (optional)</label>
-                  <div>
-                    <input {...register("discord")} className="border w-[200px] border-regular rounded-lg p-1" />
-                  </div>
+              ) : filledRequired ? (
+                <div className="h-14">
+                  {+inputAmount > baseCurrency.coinBalance ? (
+                    <Button variant="disabled" className="grid py-2">
+                      <Typography variant="h4"> Insufficient balance</Typography>
+                    </Button>
+                  ) : (
+                    <Button variant="primary" className="grid py-2">
+                      {
+                        {
+                          idle: "Create Now",
+                          sign: "Signing Message...",
+                          ipfs: "Uploading Image...",
+                          create_bonding_and_meme: "Creating Bonding Curve Pool and memecoin...",
+                        }[state]
+                      }
+                      <Typography variant="caption">0.02 SOL to deploy</Typography>
+                    </Button>
+                  )}
                 </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-regular text-xs">Website (optional)</label>
-                  <div>
-                    <input {...register("website")} className="border w-[200px] border-regular rounded-lg p-1" />
-                  </div>
+              ) : (
+                <div className="h-14 bg-mono-400">
+                  <Button variant="disabled" disabled>
+                    <Typography variant="h4" color={theme === "light" ? "mono-200" : "mono-600"}>
+                      Fill required fields to create memecoin
+                    </Typography>
+                  </Button>
                 </div>
+              )}
+              <div className="flex items-center mt-2 border-mono-400 border p-4 w-full">
+                <Checkbox checked={isChecked} onChange={handleChange}>
+                  <Typography variant="body" className="ml-2" color={isChecked ? "primary-100" : "mono-600"}>
+                    Create for free without wallet
+                  </Typography>
+                </Checkbox>
+              </div>
+              <div className="w-full">
+                <img src={"/short-banner.png"} alt="banner" className="w-full mt-2" />
               </div>
             </div>
-            <div className="flex flex-col gap-2">
-              <h4 className="text-sm font-bold text-regular">Buy your meme first</h4>
-              <div className="flex flex-col lg:flex-row gap-4 flex-wrap">
-                <div className="flex flex-col gap-1">
-                  <label className="text-regular text-xs">SOL amount</label>
-                  <div>
-                    <input
-                      className="border w-[200px] border-regular rounded-lg p-1"
-                      onChange={(e) => setInputAmount(e.target.value)}
-                      value={inputAmount}
-                      type="number"
-                      min="0"
-                      placeholder="0"
-                      step={10 ** -9}
-                    />
-                  </div>
-                  <span className="text-regular">
-                    SOL available:{" "}
-                    {publicKey ? (solanaAmount && (+solanaAmount).toFixed(4)) ?? <Skeleton width={40} /> : 0}
-                  </span>
+            {/* IN CASE THEY WANT IT BACK 
+             <div className="border border-mono-400 mt-4 h-13 py-2 px-4 flex items-center">
+              <div className="flex  items-baseline">
+                <div className="  mr-4 flex align-baseline">
+                  <DangerIcon size={13} fill="var(--color-yellow-100)" />
+                </div>
+                <div className="flex items-center">
+                  <Typography variant="body" color="yellow-100">
+                    You’ll be able to add/edit description and links later after your coin is created.
+                  </Typography>
                 </div>
               </div>
-            </div>
-            <div className="text-regular">
-              <i>Creation cost: ~0.02 SOL</i>
-            </div>
-            <div className="flex flex-col gap-1">
-              <div>
-                <button
-                  type="submit"
-                  className="bg-regular text-white font-bold p-2 rounded-lg disabled:opacity-50 lowercase"
-                  disabled={state !== "idle"}
-                >
-                  {
-                    {
-                      idle: "Create memecoin",
-                      sign: "Signing Message...",
-                      ipfs: "Uploading Image...",
-                      create_bonding_and_meme: "Creating Bonding Curve Pool and memecoin...",
-                    }[state]
-                  }
-                </button>
-              </div>
-            </div>
+            </div> */}
           </form>
-        </ThreadBoard>
+        </div>
       </div>
     </div>
   );

@@ -3,7 +3,7 @@ import { useConnection } from "@/context/ConnectionContext";
 import { getWalletTokenAccount } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Connection, PublicKey } from "@solana/web3.js";
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 
 const fetchTokenAccounts = async (publicKey: PublicKey, connection: Connection) => {
   try {
@@ -19,15 +19,13 @@ export function useTokenAccounts() {
   const { publicKey } = useWallet();
   const { connection } = useConnection();
 
-  const { data: tokenAccounts, mutate } = useSWR(
-    publicKey ? [`token-accounts`, publicKey, connection] : null,
-    ([url, pubKey, connection]) => fetchTokenAccounts(pubKey, connection),
-    {
-      refreshInterval: TOKEN_ACCOUNTS_INTERVAL,
-      revalidateIfStale: false,
-      revalidateOnFocus: false,
+  return useQuery({
+    queryKey: [`token-accounts`, publicKey],
+    queryFn: () => {
+      if (publicKey) return fetchTokenAccounts(publicKey, connection);
     },
-  );
-
-  return { tokenAccounts, refetch: mutate };
+    refetchInterval: TOKEN_ACCOUNTS_INTERVAL,
+    refetchOnWindowFocus: false,
+    staleTime: Infinity,
+  });
 }

@@ -20,7 +20,7 @@ export const ChartIframe = ({ src }: { src: string }) => {
   };
 
   return (
-    <div style={{ height: "38rem" }} className={`w-full flex items-center justify-center`}>
+    <div className={`h-[400px] md:h-[600px] w-full flex items-center justify-center custom-outer-shadow`}>
       {!hasError ? (
         <>
           <iframe

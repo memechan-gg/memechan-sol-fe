@@ -39,7 +39,7 @@ export function ThreadBoard({
         {showNavigateBtn && (
           <Link
             href={navigateUrl || "/"}
-            className="hidden md:block absolute right-0 mr-2 bg-title bg-opacity-15 items-center text-xs justify-center font-bold text-regular px-2 py-[2px] rounded-lg hover:bg-opacity-25"
+            className="hidden md:block absolute right-0 mr-2 bg-title bg-opacity-15 items-center text-xs justify-center font-bold text-regular px-2 py-[2px] rounded-lg sm:hover:bg-opacity-25"
           >
             Back
           </Link>
@@ -72,7 +72,7 @@ export function Thread({
       </div>
       <Link href={`/coin/${address}`} onClick={onImageClick}>
         <img
-          className="w-[150px] border border-regular h-[150px] object-cover object-center hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-2"
+          className="w-[150px] border border-regular h-[150px] object-cover object-center sm:hover:outline sm:hover:outline-2 sm:hover:outline-blue-500 sm:hover:outline-offset-2"
           src={image}
           alt="Coin Image"
         />
@@ -81,7 +81,7 @@ export function Thread({
         <div className="text-link cursor-text">
           Created by:{" "}
           <Link href={`/profile/${creator}`}>
-            <span className="font-bold hover:underline">{creator.slice(0, 5) + "..." + creator.slice(-3)}</span>
+            <span className="font-bold sm:hover:underline">{creator.slice(0, 5) + "..." + creator.slice(-3)}</span>
           </Link>
         </div>
         {status === "PRESALE" && (

@@ -1,36 +1,44 @@
-import { Chart } from "@/components/Chart";
-import { ThreadBoard } from "@/components/thread";
 import { TICKETS_INTERVAL } from "@/config/config";
 import { useBoundPoolClient } from "@/hooks/presale/useBoundPoolClient";
-import { usePresaleCoinUniqueHoldersFromBE } from "@/hooks/presale/usePresaleCoinUniqueHoldersFromBE";
-import { useMemePriceFromBE } from "@/hooks/useMemePriceFromBE";
+import { useMedia } from "@/hooks/useMedia";
 import { useTickets } from "@/hooks/useTickets";
-import { getTokenInfo } from "@/hooks/utils";
+import { Button } from "@/memechan-ui/Atoms";
+import { Tabs } from "@/memechan-ui/Atoms/Tabs";
+import TopBar from "@/memechan-ui/Atoms/TopBar/TopBar";
+import { Typography } from "@/memechan-ui/Atoms/Typography";
 import { SeedPoolData } from "@/types/pool";
-import { formatNumber } from "@/utils/formatNumber";
 import { SolanaToken } from "@avernikoz/memechan-sol-sdk";
-import Link from "next/link";
-import { useEffect } from "react";
-import Skeleton from "react-loading-skeleton";
-import { CommentsPanel } from "./comments-panel";
-import { PresaleCoinSidebar } from "./sidebar/presale-coin-sidebar";
+import { Dialog } from "@reach/dialog";
+import { track } from "@vercel/analytics";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { CommentsTab } from "./common-tabs/comments-tab/comments-tab";
+import { ChartTab } from "./presale-coin-tabs/chart-tab/chart-tab";
+import { InfoTab } from "./presale-coin-tabs/info-tab/info-tab";
+import { PresaleCoinSwap } from "./sidebar/swap/presale-coin-swap";
 
-export function PresaleCoin({ coinMetadata, seedPoolData }: { coinMetadata: SolanaToken; seedPoolData: SeedPoolData }) {
-  const price = useMemePriceFromBE({ memeMint: coinMetadata.address, poolType: "seedPool" });
-  const uniqueHoldersData = usePresaleCoinUniqueHoldersFromBE(coinMetadata.address);
+export const mobileTabs = ["Info", "Chart", "Comments"];
+export const desktopTabs = ["Chart", "Comments"];
+
+export function PresaleCoin({
+  coinMetadata,
+  seedPoolData,
+  tab,
+}: {
+  coinMetadata: SolanaToken;
+  seedPoolData: SeedPoolData;
+  tab: string;
+}) {
+  const mediaQuery = useMedia();
+  const router = useRouter();
+  const { data: boundPoolClient, isFetching, isError, isLoading } = useBoundPoolClient(seedPoolData.address);
   const ticketsData = useTickets({
     poolAddress: seedPoolData.address,
     poolStatus: "PRESALE",
     refreshInterval: TICKETS_INTERVAL,
   });
 
-  const { data: boundPoolClient } = useBoundPoolClient(seedPoolData.address);
-
-  const boundPool = boundPoolClient?.boundPoolInstance.poolObjectData;
-
-  const tokenData = boundPool?.quoteReserve
-    ? getTokenInfo({ variant: "publicKey", tokenAddress: boundPool?.quoteReserve.mint })
-    : undefined;
+  const [swapOpen, setSwapOpen] = useState(false);
 
   useEffect(() => {
     let intervalId: number | undefined;
@@ -50,7 +58,19 @@ export function PresaleCoin({ coinMetadata, seedPoolData }: { coinMetadata: Sola
     };
   }, [boundPoolClient]);
 
-  if (boundPoolClient === null) {
+  const onTabChange = (tab: string) => {
+    track("PresaleCoin_SetTab", { status: tab });
+    router.push(
+      {
+        pathname: `/coin/[coinType]`,
+        query: { coinType: coinMetadata.address, tab: tab },
+      },
+      undefined,
+      { shallow: true },
+    );
+  };
+
+  if (!isFetching && isError && (boundPoolClient === null || boundPoolClient === undefined)) {
     return (
       <div className="absolute rounded-xl top-0 left-0 w-full h-full bg-regular bg-opacity-70 flex items-center justify-center">
         <div className="text-white text-center text-balance font-bold text-lg tracking-wide">
@@ -60,87 +80,108 @@ export function PresaleCoin({ coinMetadata, seedPoolData }: { coinMetadata: Sola
     );
   }
 
+  if (isLoading || boundPoolClient === null || boundPoolClient === undefined)
+    return (
+      <div>
+        <Typography variant="h4">Loading...</Typography>
+      </div>
+    );
+
   return (
     <>
-      <div className="flex justify-center">
-        <div className="inline-flex justify-center items-center p-2 border border-black shadow-sm w-full max-w-sm sm:max-w-md">
-          <div className="flex flex-col items-center text-center">
-            <div className="font-bold text-regular">{coinMetadata.name}</div>
-            <div>
-              <Link
-                href={`/profile/${coinMetadata.address}/${coinMetadata.creator}`}
-                className="text-[11px] md:text-xs text-link hover:underline text-ellipsis"
-              >
-                {coinMetadata.creator}
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
-      <ThreadBoard title={coinMetadata.name} showNavigateBtn>
-        <div className="flex flex-col gap-2">
-          <div className="flex flex-wrap flex-row gap-3 gap-x-10">
-            <div className="flex flex-col gap-1">
-              <div className="text-sm font-bold text-regular">Token Name</div>
-              <div className="text-xs font-bold text-regular">{coinMetadata.name}</div>
-            </div>
-            <div className="flex flex-col gap-1">
-              <div className="text-sm font-bold text-regular">Token Ticker</div>
-              <div className="text-xs font-bold text-regular">{coinMetadata.symbol}</div>
-            </div>
-            <div className="flex flex-col gap-1">
-              <div className="text-sm font-bold text-regular">Market Cap</div>
-              <div className="text-xs font-bold text-regular">${formatNumber(coinMetadata.marketcap, 2)}</div>
-            </div>
-            <div className="flex flex-col gap-1">
-              <div className="text-sm font-bold !normal-case text-regular">USD price</div>
-              <div className="text-xs font-bold !normal-case text-regular">
-                {price ? `$${(+price).toFixed(10)}` : <Skeleton />}
-              </div>
-            </div>
-            <div className="flex flex-col gap-1">
-              <div className="text-sm font-bold text-regular">Unique holders</div>
-              <div className="text-xs font-bold text-regular">
-                {uniqueHoldersData ? uniqueHoldersData.fullHolders.length : <Skeleton />}
-              </div>
-            </div>
-            <div className="flex flex-col gap-1">
-              <div className="text-sm font-bold text-link">Created By</div>
-              <Link
-                href={`/profile/${coinMetadata.address}/${coinMetadata.creator}`}
-                className="text-xs font-bold text-link"
-              >
-                {coinMetadata.creator.slice(0, 5)}...
-                {coinMetadata.creator.slice(-3)}
-              </Link>
-            </div>
-          </div>
-          <div className="flex w-full flex-col lg:flex-row gap-6">
-            <div className="flex flex-col gap-3 w-full">
-              {tokenData ? (
-                <Chart address={seedPoolData.address} tokenName={coinMetadata.symbol.toUpperCase()} />
-              ) : null}
-              <div className="flex flex-col gap-3 lg:hidden">
-                <PresaleCoinSidebar
-                  coinMetadata={coinMetadata}
-                  pool={seedPoolData}
-                  uniqueHoldersData={uniqueHoldersData}
-                  ticketsData={ticketsData}
-                />
-              </div>
-              <CommentsPanel coinType={coinMetadata.address} coinCreator={coinMetadata.creator} />
-            </div>
-            <div className="lg:flex hidden w-1/3 flex-col gap-4">
-              <PresaleCoinSidebar
+      <TopBar tokenAddress={coinMetadata.address} tokenSymbol={coinMetadata.symbol} rightIcon={coinMetadata.image} />
+      {mediaQuery.isSmallDevice ? (
+        <>
+          {tab === "Info" && (
+            <div className="w-full px-3">
+              <InfoTab
                 coinMetadata={coinMetadata}
                 pool={seedPoolData}
-                uniqueHoldersData={uniqueHoldersData}
+                boundPoolClient={boundPoolClient}
                 ticketsData={ticketsData}
               />
             </div>
+          )}
+          {tab === "Comments" && (
+            <div className="w-full px-3">
+              <CommentsTab coinAddress={coinMetadata.address} coinCreator={coinMetadata.creator} />
+            </div>
+          )}
+          {tab === "Chart" && (
+            <div className="w-full">
+              <ChartTab seedPoolDataAddress={seedPoolData.address} tokenSymbol={coinMetadata.symbol} />
+            </div>
+          )}
+          <div className="pt-1 flex w-full">
+            <div className="fixed w-[30%] h-12 bottom-[10.7%] right-[7%]">
+              <Button
+                className="custom-outer-shadow"
+                variant="primary"
+                onClick={() => {
+                  setSwapOpen(true);
+                }}
+              >
+                Buy / Claim
+              </Button>
+            </div>
+          </div>
+          <div className=" h-40 w-full ">
+            <div className="relative bottom-[-15%] ml-6 w-[52%] h-12">
+              <Button variant="contained">
+                <img src="/memechan-button.png" alt="Memechan Button" className="w-full h-12" />
+              </Button>
+            </div>
+            <div className="fixed bottom-0 bg-mono-200 border-t border-t-mono-400 h-15 w-screen px-3 justify-between z-50">
+              <Tabs className="justify-between" tabs={mobileTabs} onTabChange={onTabChange} activeTab={tab} immovable />
+            </div>
+          </div>
+          <Dialog
+            isOpen={swapOpen}
+            onDismiss={() => setSwapOpen(false)}
+            className="fixed inset-0 flex items-center justify-center pb-20 bg-black bg-opacity-30 backdrop-blur-[0.8px] z-40"
+          >
+            <div className="w-full px-2 max-h-full overflow-auto shadow-light">
+              <PresaleCoinSwap
+                pool={seedPoolData}
+                tokenSymbol={coinMetadata.symbol}
+                boundPool={boundPoolClient.boundPoolInstance.poolObjectData}
+                ticketsData={ticketsData}
+                memeImage={coinMetadata.image}
+                onClose={() => {
+                  setSwapOpen(false);
+                }}
+              />
+            </div>
+          </Dialog>
+        </>
+      ) : (
+        <div className="grid grid-cols-3 gap-3 px-3 xl:px-0 w-full">
+          <div className="col-span-2 flex flex-col gap-y-2">
+            <div className="flex justify-start">
+              <Tabs
+                className="justify-start items-center gap-x-6"
+                tabs={desktopTabs}
+                onTabChange={onTabChange}
+                activeTab={tab}
+              />
+            </div>
+            {tab === "Comments" && (
+              <CommentsTab coinAddress={coinMetadata.address} coinCreator={coinMetadata.creator} />
+            )}
+            {tab === "Chart" && (
+              <ChartTab seedPoolDataAddress={seedPoolData.address} tokenSymbol={coinMetadata.symbol} />
+            )}
+          </div>
+          <div className="col-span-1 flex flex-col gap-3">
+            <InfoTab
+              coinMetadata={coinMetadata}
+              ticketsData={ticketsData}
+              pool={seedPoolData}
+              boundPoolClient={boundPoolClient}
+            />
           </div>
         </div>
-      </ThreadBoard>
+      )}
     </>
   );
 }

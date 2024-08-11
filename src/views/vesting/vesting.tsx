@@ -2,6 +2,7 @@ import { TransactionSentNotification } from "@/components/notifications/transact
 import { LOW_VESTING_CLAIMABLE_AMOUNT_THRESHOLD } from "@/config/config";
 import { useConnection } from "@/context/ConnectionContext";
 import { useVesting } from "@/hooks/vesting/useVesting";
+import { Typography } from "@/memechan-ui/Atoms/Typography";
 import { confirmTransaction } from "@/utils/confirmTransaction";
 import { CHAN_TOKEN_DECIMALS, VestingClient } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
@@ -22,7 +23,7 @@ export const Vesting = () => {
 
   const { publicKey, sendTransaction } = useWallet();
   const { connection } = useConnection();
-  const { vesting, connected, isLoading, refresh: refreshVesting } = useVesting();
+  const { vesting, connected, isLoading, refetch: refreshVesting } = useVesting();
 
   const updateClaimableAmount = useCallback(async () => {
     if (!vesting) return;
@@ -99,18 +100,25 @@ export const Vesting = () => {
     userIsEligible && new BigNumber(vesting.outstanding.toString()).div(10 ** CHAN_TOKEN_DECIMALS).toString();
 
   return (
-    <div className="flex text-regular justify-center items-center">
+    <div className="flex justify-center items-center p-3 sm-p0">
       <div className="flex flex-col gap-8">
-        <h1 className="max-xxs:text-center text-2xl font-semibold">$CHAN Vesting</h1>
+        <div className="mt-6">
+          <Typography variant="h1">$CHAN Vesting</Typography>
+        </div>
         <div className="flex flex-col gap-1">
-          <h2 className="text-lg font-semibold">Vesting Information</h2>
-          {!connected && "Connect your wallet to find out whether you are eligible for $CHAN vesting."}
+          <Typography variant="h2">Vesting Information</Typography>
+
+          {!connected && (
+            <Typography variant="body">
+              {"Connect your wallet to find out whether you are eligible for $CHAN vesting."}
+            </Typography>
+          )}
           {connected && isLoading && (
             <div>
               You are <Skeleton width={35} inline /> for $CHAN vesting.
             </div>
           )}
-          {userIsNotEligible && <div>You are not eligible for $CHAN vesting.</div>}
+          {userIsNotEligible && <Typography variant="body">You are not eligible for $CHAN vesting.</Typography>}
           {userIsEligible && (
             <div className="flex flex-col gap-2 xs:gap-1">
               <div className="mb-5">You are eligible for $CHAN vesting!</div>
@@ -145,7 +153,7 @@ export const Vesting = () => {
               <input
                 id="amount-to-claim"
                 disabled={inputIsDisabled}
-                className="w-full bg-white text-xs font-bold text-regular p-2 rounded-lg"
+                className="w-full bg-white text-xs font-bold p-2 rounded-lg"
                 value={inputAmount}
                 onChange={(e) =>
                   handleSwapInputChange({

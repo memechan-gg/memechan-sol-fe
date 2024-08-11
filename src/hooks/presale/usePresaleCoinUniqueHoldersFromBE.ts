@@ -1,9 +1,9 @@
 import { BE_URL } from "@/common/solana";
-import { BOUND_POOL_HOLDERS_INTERVAL, MAX_HOLDERS_COUNT } from "@/config/config";
+import { MAX_HOLDERS_COUNT } from "@/config/config";
 import { TokenApiHelper } from "@avernikoz/memechan-sol-sdk";
 import { PublicKey } from "@solana/web3.js";
+import { useQuery } from "@tanstack/react-query";
 import BigNumber from "bignumber.js";
-import useSWR from "swr";
 
 const fetchPresaleCoinUniqueHoldersFromBE = async (memeMint: string) => {
   try {
@@ -23,11 +23,9 @@ const fetchPresaleCoinUniqueHoldersFromBE = async (memeMint: string) => {
 };
 
 export const usePresaleCoinUniqueHoldersFromBE = (memeMint?: string) => {
-  const { data } = useSWR(
-    memeMint ? [`be-holders-${memeMint}`, memeMint] : null,
-    ([url, meme]) => fetchPresaleCoinUniqueHoldersFromBE(meme),
-    { refreshInterval: BOUND_POOL_HOLDERS_INTERVAL, revalidateIfStale: false, revalidateOnFocus: false },
-  );
-
-  return data;
+  return useQuery({
+    queryKey: ["be-holders-presale", memeMint],
+    queryFn: () => (memeMint ? fetchPresaleCoinUniqueHoldersFromBE(memeMint) : undefined),
+    enabled: !!memeMint,
+  });
 };

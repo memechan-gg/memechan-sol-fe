@@ -2,6 +2,7 @@ import { AuthInstance, TokenApiInstance } from "@/common/solana";
 import {
   ADMIN_PUB_KEY,
   CoinDescriptionTooLargeError,
+  CreateBoundPoolTransactionResponse,
   InvalidCoinDescriptionError,
   InvalidCoinImageError,
   InvalidCoinNameError,
@@ -51,38 +52,69 @@ export async function createMemeCoinAndPool({
   ipfsUrl,
   publicKey,
   inputAmount,
+  checked,
 }: {
   data: ICreateForm;
   publicKey: PublicKey;
   ipfsUrl: string;
   inputAmount?: string;
   client: MemechanClientV2;
+  checked?: boolean;
 }) {
-  const result = await TokenApiInstance.createBoundPoolTransaction({
-    admin: ADMIN_PUB_KEY.toBase58(),
-    payer: publicKey.toBase58(),
-    tokenMetadata: {
-      ...data,
-      image: ipfsUrl,
-      telegram: data.telegram ?? "",
-      twitter: data.twitter ?? "",
-      discord: data.discord ?? "",
-      website: data.website ?? "",
-    },
-    quoteToken: TOKEN_INFOS["WSOL"],
-    buyMemeTransactionArgs:
-      inputAmount !== undefined
-        ? {
-            inputAmount,
-            // TODO: Implement output amount printing to user
-            minOutputAmount: "0",
-            slippagePercentage: 0,
-            user: publicKey.toBase58(),
-            memeTicketNumber: MemeTicketClientV2.TICKET_NUMBER_START,
-          }
-        : undefined,
-  });
+  let result: CreateBoundPoolTransactionResponse = {} as any;
+  if (checked) {
+    await TokenApiInstance.createBoundPool({
+      admin: ADMIN_PUB_KEY.toBase58(),
+      payer: publicKey.toBase58(),
+      tokenMetadata: {
+        ...data,
+        image: ipfsUrl,
+        telegram: data.telegram ?? "",
+        twitter: data.twitter ?? "",
+        discord: data.discord ?? "",
+        website: data.website ?? "",
+      },
+      quoteToken: TOKEN_INFOS["WSOL"],
+      buyMemeTransactionArgs:
+        inputAmount !== undefined
+          ? {
+              inputAmount,
+              // TODO: Implement output amount printing to user
+              minOutputAmount: "0",
+              slippagePercentage: 0,
+              user: publicKey.toBase58(),
+              memeTicketNumber: MemeTicketClientV2.TICKET_NUMBER_START,
+            }
+          : undefined,
+    });
 
+    window.location.href = "/";
+  } else {
+    result = await TokenApiInstance.createBoundPoolTransaction({
+      admin: ADMIN_PUB_KEY.toBase58(),
+      payer: publicKey.toBase58(),
+      tokenMetadata: {
+        ...data,
+        image: ipfsUrl,
+        telegram: data.telegram ?? "",
+        twitter: data.twitter ?? "",
+        discord: data.discord ?? "",
+        website: data.website ?? "",
+      },
+      quoteToken: TOKEN_INFOS["WSOL"],
+      buyMemeTransactionArgs:
+        inputAmount !== undefined
+          ? {
+              inputAmount,
+              // TODO: Implement output amount printing to user
+              minOutputAmount: "0",
+              slippagePercentage: 0,
+              user: publicKey.toBase58(),
+              memeTicketNumber: MemeTicketClientV2.TICKET_NUMBER_START,
+            }
+          : undefined,
+    });
+  }
   const buffer = Buffer.from(result.serializedTransactionBase64, "base64");
   const createPoolTransaction = VersionedTransaction.deserialize(buffer);
 

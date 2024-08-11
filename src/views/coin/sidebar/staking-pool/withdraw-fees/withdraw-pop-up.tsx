@@ -1,11 +1,15 @@
-import { Button } from "@/components/button";
-import { DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/dialog";
 import { TransactionSentNotification } from "@/components/notifications/transaction-sent-notification";
 import { useConnection } from "@/context/ConnectionContext";
 import { useStakingPoolClient } from "@/hooks/staking/useStakingPoolClient";
+import { Button } from "@/memechan-ui/Atoms";
+import TextInput from "@/memechan-ui/Atoms/Input/TextInput";
+import { Typography } from "@/memechan-ui/Atoms/Typography";
+import { Card } from "@/memechan-ui/Molecules";
 import { confirmTransaction } from "@/utils/confirmTransaction";
 import { WithdrawFeesDialogProps } from "@/views/coin/coin.types";
 import { CHAN_TOKEN_DECIMALS, MEMECHAN_MEME_TOKEN_DECIMALS } from "@avernikoz/memechan-sol-sdk";
+import { faXmark } from "@fortawesome/free-solid-svg-icons/faXmark";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import { useQuery } from "@tanstack/react-query";
@@ -19,6 +23,7 @@ export const WithdrawFeesPopUp = ({
   livePoolAddress,
   ticketsData: { tickets, refresh: refreshTickets },
   stakingPoolFromApi,
+  closePopUp,
 }: WithdrawFeesDialogProps) => {
   const [memeAmount, setMemeAmount] = useState<string | null>(null);
   const [chanAmount, setChanAmount] = useState<string | null>(null);
@@ -195,69 +200,92 @@ export const WithdrawFeesPopUp = ({
     memeAmount === null || slerfAmount === null || chanAmount === null || isUpdateLoading;
 
   return (
-    <DialogContent>
-      <DialogHeader>
-        <DialogTitle className="text-regular mb-2">Withdraw Fees</DialogTitle>
-        <DialogDescription className="text-regular">Withdraw fees from the staking pool.</DialogDescription>
-      </DialogHeader>
-      <div className="flex w-full flex-col gap-1">
-        <div className="text-xs font-bold text-regular mt-6">Available fees to withdraw</div>
-        <div className="flex flex-row gap-2">
-          <input
-            disabled
-            className="w-full bg-white !normal-case text-xs font-bold text-regular p-2 rounded-lg"
-            value={
-              memeAmount
-                ? Number(memeAmount).toLocaleString(undefined, {
-                    maximumFractionDigits: MEMECHAN_MEME_TOKEN_DECIMALS,
-                  }) +
-                  " " +
-                  tokenSymbol
-                : "loading..."
-            }
-          />
-          <input
-            disabled
-            className="w-full bg-white !normal-case text-xs font-bold text-regular p-2 rounded-lg"
-            value={
-              slerfAmount && tokenInfo
-                ? Number(slerfAmount).toLocaleString(undefined, {
-                    maximumFractionDigits: tokenInfo.decimals,
-                  }) +
-                  " " +
-                  tokenInfo.displayName
-                : "loading..."
-            }
-          />
-          <input
-            disabled
-            className="w-full bg-white !normal-case text-xs font-bold text-regular p-2 rounded-lg"
-            value={
-              chanAmount && tokenInfo
-                ? Number(chanAmount).toLocaleString(undefined, {
-                    maximumFractionDigits: CHAN_TOKEN_DECIMALS,
-                  }) + " Chan"
-                : "loading..."
-            }
-          />
+    <Card>
+      <Card.Header>
+        <div className="flex items-center justify-between w-full">
+          <Typography variant="h4" color="mono-600">
+            Withdraw Fees
+          </Typography>
+          <FontAwesomeIcon icon={faXmark} color="#fff" className="sm:hover:cursor-pointer" onClick={closePopUp} />
         </div>
-      </div>
-      <DialogFooter className="flex-col">
+      </Card.Header>
+      <Card.Body>
+        <div>
+          <Typography variant="body">Withdraw fees from the staking pool.</Typography>
+        </div>
+        <div className="flex w-full flex-col gap-1">
+          <div className="text-xs font-bold text-mono-500 mt-6">Available fees to withdraw</div>
+          <div className="flex flex-col gap-2">
+            <TextInput
+              disabled
+              value={
+                memeAmount
+                  ? Number(memeAmount).toLocaleString(undefined, {
+                      maximumFractionDigits: MEMECHAN_MEME_TOKEN_DECIMALS,
+                    }) +
+                    " " +
+                    tokenSymbol
+                  : "loading..."
+              }
+              setValue={(e) => {
+                setMemeAmount(e);
+              }}
+            />
+            <TextInput
+              disabled
+              value={
+                slerfAmount && tokenInfo
+                  ? Number(slerfAmount).toLocaleString(undefined, {
+                      maximumFractionDigits: tokenInfo.decimals,
+                    }) +
+                    " " +
+                    tokenInfo.displayName
+                  : "loading..."
+              }
+              setValue={(e) => {
+                setSlerfAmount(e);
+              }}
+            />
+            <TextInput
+              disabled
+              value={
+                chanAmount && tokenInfo
+                  ? Number(chanAmount).toLocaleString(undefined, {
+                      maximumFractionDigits: CHAN_TOKEN_DECIMALS,
+                    }) + " Chan"
+                  : "loading..."
+              }
+              setValue={setChanAmount}
+            />
+          </div>
+        </div>
         <Button
           disabled={withdrawFeesButtonIsDisabled || updateFeesButtonIsDisabled}
           onClick={withdrawFees}
-          className="w-full bg-regular bg-opacity-80 hover:bg-opacity-50 disabled:bg-opacity-50 disabled:cursor-not-allowed"
+          variant="primary"
+          className="py-3 mt-5 w-full disabled:bg-opacity-50 disabled:cursor-not-allowed"
         >
-          <div className="text-xs font-bold text-white">{isWithdrawLoading ? "Loading..." : "Withdraw Fees"}</div>
+          <Typography variant="h4" color="mono-600">
+            {isWithdrawLoading ? "Loading..." : "Withdraw Fees"}
+          </Typography>
         </Button>
-        {/* <Button
-          disabled={updateFeesButtonIsDisabled || isWithdrawLoading}
-          onClick={updateFees}
-          className="w-full bg-regular bg-opacity-80 hover:bg-opacity-50 disabled:bg-opacity-50 disabled:cursor-not-allowed"
-        >
-          <div className="text-xs font-bold text-white">{isUpdateLoading ? "Loading..." : "Update Available Fees"}</div>
-        </Button> */}
-      </DialogFooter>
-    </DialogContent>
+      </Card.Body>
+    </Card>
   );
 };
+
+{
+  /* <DialogFooter className="flex-col"> */
+}
+{
+  /* <Button
+  disabled={updateFeesButtonIsDisabled || isWithdrawLoading}
+  onClick={updateFees}
+  className="w-full bg-regular bg-opacity-80 sm:hover:bg-opacity-50 disabled:bg-opacity-50 disabled:cursor-not-allowed"
+>
+  <div className="text-xs font-bold text-white">{isUpdateLoading ? "Loading..." : "Update Available Fees"}</div>
+</Button> */
+}
+{
+  /* </DialogFooter> */
+}

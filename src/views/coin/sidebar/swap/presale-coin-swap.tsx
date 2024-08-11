@@ -1,10 +1,13 @@
 import { ChartApiInstance } from "@/common/solana";
-import { Button } from "@/components/button";
 import { TransactionSentNotification } from "@/components/notifications/transaction-sent-notification";
-import { MAX_SLIPPAGE, MIN_SLIPPAGE } from "@/config/config";
+import { Swap } from "@/components/Swap";
 import { useConnection } from "@/context/ConnectionContext";
 import { useBoundPoolClient } from "@/hooks/presale/useBoundPoolClient";
 import { useBalance } from "@/hooks/useBalance";
+import { useMemePriceFromBE } from "@/hooks/useMemePriceFromBE";
+import { useSlerfPrice } from "@/hooks/useSlerfPrice";
+import { useSolanaBalance } from "@/hooks/useSolanaBalance";
+import { useSolanaPrice } from "@/hooks/useSolanaPrice";
 import { getTokenInfo } from "@/hooks/utils";
 import { GetSwapOutputAmountParams, GetSwapTransactionParams } from "@/types/hooks";
 import { confirmTransaction } from "@/utils/confirmTransaction";
@@ -15,20 +18,21 @@ import {
   MEMECHAN_MEME_TOKEN_DECIMALS,
 } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
+import { useQueryClient } from "@tanstack/react-query";
 import { track } from "@vercel/analytics";
-import { useCallback, useEffect, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { PresaleCoinSwapProps } from "../../coin.types";
 import { presaleSwapParamsAreValid } from "../../coin.utils";
-import { SwapButton } from "./button";
-import { UnavailableTicketsToSellDialog } from "./dialog-unavailable-tickets-to-sell";
-import { InputAmountTitle } from "./input-amount-title";
-import { getFreeMemeTicketIndex, handleSlippageInputChange, handleSwapInputChange, validateSlippage } from "./utils";
+import { getFreeMemeTicketIndex, handleSwapInputChange, validateSlippage } from "./utils";
 
 export const PresaleCoinSwap = ({
   tokenSymbol,
   pool,
+  memeImage,
   boundPool,
+  onClose,
+  ticketsData,
   ticketsData: {
     freeIndexes,
     availableTicketsAmount,
@@ -37,6 +41,8 @@ export const PresaleCoinSwap = ({
     refresh: refreshAvailableTickets,
   },
 }: PresaleCoinSwapProps) => {
+  const { connected } = useWallet();
+  const queryClient = useQueryClient();
   const [coinToMeme, setCoinToMeme] = useState<boolean>(true);
   const [inputAmount, setInputAmount] = useState<string>("");
   const [outputAmount, setOutputAmount] = useState<string | null>(null);
@@ -48,11 +54,20 @@ export const PresaleCoinSwap = ({
   const { connection } = useConnection();
   const { data: boundPoolClient } = useBoundPoolClient(pool.address);
 
-  const tokenInfo = boundPoolClient?.boundPoolInstance.quoteTokenMint
+  const quoteTokenInfo = boundPoolClient?.boundPoolInstance.quoteTokenMint
     ? getTokenInfo({ tokenAddress: boundPoolClient.boundPoolInstance.quoteTokenMint, variant: "publicKey" })
     : null;
-  const memeChanQuoteMint = tokenInfo?.mint || "";
-  const memeChanQuoteTokenDecimals = tokenInfo?.decimals || 6;
+
+  const { data: memePrice } = useMemePriceFromBE({
+    memeMint: boundPool?.memeReserve.mint.toBase58() || "",
+    poolType: "seedPool",
+  });
+
+  const { data: solanaPrice } = useSolanaPrice();
+  const { data: slerfPrice } = useSlerfPrice();
+
+  const memeChanQuoteMint = quoteTokenInfo?.mint || "";
+  const memeChanQuoteTokenDecimals = quoteTokenInfo?.decimals || 6;
 
   const { balance: coinBalance, refetch: refetchCoinBalance } = useBalance(
     memeChanQuoteMint.toString(),
@@ -79,7 +94,7 @@ export const PresaleCoinSwap = ({
       console.log("Starting swap");
 
       if (!boundPoolClient?.boundPoolInstance || !freeIndexes) return;
-      console.log("Starting swap");
+      console.log("Continuing swap");
       if (coinToMeme) {
         let result = undefined;
         try {
@@ -150,6 +165,13 @@ export const PresaleCoinSwap = ({
     return () => clearTimeout(timeoutId);
   }, [updateOutputAmount]);
 
+  const refresh = useCallback(async () => {
+    await refetchCoinBalance();
+    await refreshAvailableTickets();
+    await queryClient.invalidateQueries({ queryKey: ["bound-pool-client", pool.address] });
+    // await memeBalanceRefech();
+  }, [pool.address, queryClient, refetchCoinBalance, refreshAvailableTickets]);
+
   const onSwap = useCallback(async () => {
     if (!publicKey || !outputAmount || !coinBalance) return;
 
@@ -200,6 +222,7 @@ export const PresaleCoinSwap = ({
         const swapSucceeded = await confirmTransaction({ connection, signature });
         if (!swapSucceeded) return;
 
+        console.log("success");
         track("Swap_Success", swapTrackObj);
 
         await ChartApiInstance.updatePrice({ address: pool.address, type: "seedPool" }).catch((e) => {
@@ -242,133 +265,236 @@ export const PresaleCoinSwap = ({
       refreshAvailableTickets();
       refetchCoinBalance();
       updateOutputAmount();
+      refresh();
       setIsSwapping(false);
     }
   }, [
-    availableTicketsAmount,
-    coinBalance,
-    getSwapTransaction,
-    inputAmount,
-    outputAmount,
     publicKey,
-    sendTransaction,
-    coinToMeme,
+    outputAmount,
+    coinBalance,
+    inputAmount,
     slippage,
-    refetchCoinBalance,
-    refreshAvailableTickets,
-    pool.address,
+    coinToMeme,
+    availableTicketsAmount,
+    getSwapTransaction,
+    sendTransaction,
     connection,
+    pool.address,
+    refreshAvailableTickets,
+    refetchCoinBalance,
     updateOutputAmount,
+    refresh,
   ]);
 
-  const swapButtonIsDiabled = isLoadingOutputAmount || isSwapping || outputAmount === null;
+  const swapButtonIsDiabled = isLoadingOutputAmount || isSwapping || (outputAmount === null && connected);
   const poolIsMigratingToLive = boundPool?.locked || boundPool === null;
 
+  const { data: solanaBalance } = useSolanaBalance();
+  const { balance: slerfBalance } = useBalance(quoteTokenInfo?.mint.toBase58() || "", quoteTokenInfo?.decimals || 0);
+  const [baseCurrency, setBaseCurrency] = useState({
+    currencyName: quoteTokenInfo?.symbol || "SOL",
+    currencyLogoUrl:
+      (quoteTokenInfo?.symbol === "SOL" ? "/tokens/solana.png" : "/tokens/slerf.png") || "/tokens/solana.png",
+    coinBalance: (quoteTokenInfo?.symbol === "SOL" ? solanaBalance : +(slerfBalance || "0")) || 0,
+  });
+
+  const [secondCurrency, setSecondCurrency] = useState({
+    currencyName: tokenSymbol,
+    currencyLogoUrl: memeImage,
+    coinBalance: +(availableTicketsAmount ?? 0),
+  });
+
+  const onInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    handleSwapInputChange({
+      decimalPlaces: coinToMeme ? memeChanQuoteTokenDecimals : MEMECHAN_MEME_TOKEN_DECIMALS,
+      e,
+      setValue: setInputAmount,
+    });
+  };
+
+  const toReceive = (
+    outputAmount !== null && !isLoadingOutputAmount
+      ? coinToMeme
+        ? `${parseChainValue(Number(outputAmount), 0, 6)}`
+        : `${parseChainValue(Number(outputAmount), 0, 12)}`
+      : 0
+  ).toString();
+
+  const onReverseClick = () => {
+    setCoinToMeme((prev) => !prev);
+    const copyBaseCurrency = { ...baseCurrency };
+    const copySecondCurrency = { ...secondCurrency };
+    setBaseCurrency(copySecondCurrency);
+    setSecondCurrency(copyBaseCurrency);
+    setInputAmount("0");
+  };
+
+  useEffect(() => {
+    if (baseCurrency.currencyName === "SOL") {
+      setBaseCurrency((prevState) => ({ ...prevState, coinBalance: solanaBalance ?? 0 }));
+      // setMountedSolana(true);
+    }
+    if (baseCurrency.currencyName === "SLERF") {
+      setBaseCurrency((prevState) => ({ ...prevState, coinBalance: +(slerfBalance || "0") }));
+    }
+    if (secondCurrency.currencyName !== "SOL" && secondCurrency.currencyName !== "SLERF") {
+      setSecondCurrency((prevState) => ({
+        ...prevState,
+        coinBalance: +(availableTicketsAmount ?? 0),
+      }));
+    }
+  }, [baseCurrency.currencyName, availableTicketsAmount, secondCurrency.currencyName, solanaBalance, slerfBalance]);
+
+  useEffect(() => {
+    if (baseCurrency.currencyName !== "SOL" && baseCurrency.currencyName !== "SLERF") {
+      // setMountedSolana(true);
+      setBaseCurrency((prevState) => ({
+        ...prevState,
+        coinBalance: +(availableTicketsAmount ?? 0),
+      }));
+    }
+    if (secondCurrency.currencyName === "SOL") {
+      setSecondCurrency((prevState) => ({ ...prevState, coinBalance: solanaBalance ?? 0 }));
+    }
+    if (secondCurrency.currencyName === "SLERF") {
+      setSecondCurrency((prevState) => ({ ...prevState, coinBalance: +(slerfBalance ?? "0") }));
+    }
+  }, [availableTicketsAmount, baseCurrency.currencyName, secondCurrency.currencyName, slerfBalance, solanaBalance]);
+
   return (
-    <>
-      {poolIsMigratingToLive && (
-        <div className="absolute rounded-xl top-0 left-0 w-full h-full bg-regular bg-opacity-70 flex items-center justify-center">
-          <div className="text-white text-center text-balance font-bold text-lg tracking-wide">
-            Pool is currently migrating to the Live Phase. Please wait.
-          </div>
-        </div>
-      )}
-      <div className="flex w-full flex-row gap-2">
-        <SwapButton coinToMeme={coinToMeme} onClick={() => setCoinToMeme(true)} label="Buy" />
-        <SwapButton coinToMeme={!coinToMeme} onClick={() => setCoinToMeme(false)} label="Sell" />
-      </div>
-      <div className="flex w-full flex-col gap-1">
-        {tokenInfo?.mint && (
-          <InputAmountTitle
-            memeBalance={availableTicketsAmount}
-            setInputAmount={setInputAmount}
-            setOutputData={setOutputAmount}
-            coinBalance={coinBalance}
-            coinToMeme={coinToMeme}
-            tokenSymbol={tokenSymbol}
-            quoteMint={tokenInfo.mint.toString()}
-          />
-        )}
-        <input
-          disabled={poolIsMigratingToLive}
-          className="w-full bg-white text-xs font-bold text-regular p-2 rounded-lg"
-          value={inputAmount}
-          onChange={(e) =>
-            handleSwapInputChange({
-              decimalPlaces: coinToMeme ? memeChanQuoteTokenDecimals : MEMECHAN_MEME_TOKEN_DECIMALS,
-              e,
-              setValue: setInputAmount,
-            })
-          }
-          placeholder="0"
-          type="text"
-        />
-        {coinToMeme && (
-          <div className="text-xs font-bold text-regular">
-            available {tokenInfo?.displayName + " "}
-            {publicKey && coinBalance
-              ? Number(coinBalance).toLocaleString(undefined, {
-                  maximumFractionDigits: memeChanQuoteTokenDecimals,
-                }) ?? "loading..."
-              : "0"}
-          </div>
-        )}
-        {!coinToMeme && availableTicketsAmount !== "0" && (
-          <div className="text-xs font-bold text-regular">
-            Available {tokenSymbol} tickets to sell: {parseChainValue(+availableTicketsAmount, 0, 6)}
-          </div>
-        )}
-        {!coinToMeme && unavailableTicketsAmount !== "0" && (
-          <div className="text-xs !normal-case font-bold text-regular">
-            Unavailable {tokenSymbol} tickets to sell (locked): {parseChainValue(+unavailableTicketsAmount, 0, 6)}
-          </div>
-        )}
-        {isLoadingOutputAmount && (
-          <div className="text-xs font-bold text-regular">
-            {coinToMeme ? (
-              <span>{tokenSymbol} tickets to receive: loading...</span>
-            ) : (
-              <span>{tokenInfo?.displayName} to receive: loading...</span>
-            )}
-          </div>
-        )}
-        {outputAmount !== null && !isLoadingOutputAmount && (
-          <div className="text-xs font-bold text-regular">
-            {coinToMeme
-              ? `${tokenSymbol} tickets to receive: ${parseChainValue(Number(outputAmount), 0, 6)}`
-              : `${tokenInfo?.displayName} to receive: ${parseChainValue(Number(outputAmount), 0, 12)}`}
-          </div>
-        )}
-      </div>
-      <div className="flex w-full flex-col gap-1">
-        <div className="text-xs font-bold text-regular">Slippage (0-50%)</div>
-        <input
-          className="w-full bg-white text-xs font-bold text-regular p-2 rounded-lg"
-          value={slippage}
-          onChange={(e) =>
-            handleSlippageInputChange({
-              decimalPlaces: 2,
-              e,
-              setValue: setSlippage,
-              max: MAX_SLIPPAGE,
-              min: MIN_SLIPPAGE,
-            })
-          }
-          type="text"
-        />
-      </div>
-      {unavailableTickets.length > 0 && (
-        <UnavailableTicketsToSellDialog unavailableTickets={unavailableTickets} symbol={tokenSymbol} />
-      )}
-      <Button
-        disabled={swapButtonIsDiabled}
-        onClick={onSwap}
-        className="w-full bg-regular bg-opacity-80 hover:bg-opacity-50 disabled:opacity-50"
-      >
-        <div className="text-xs font-bold text-white">
-          {isLoadingOutputAmount || isSwapping ? "Loading..." : "Swap"}
-        </div>
-      </Button>
-    </>
+    <Swap
+      variant="PRESALE"
+      slippage={slippage}
+      setSlippage={setSlippage}
+      refresh={refresh}
+      isRefreshing={ticketsData.isRefetching}
+      baseCurrency={baseCurrency}
+      secondCurrency={secondCurrency}
+      onInputChange={onInputChange}
+      inputAmount={inputAmount}
+      publicKey={publicKey}
+      isSwapping={isSwapping}
+      isLoadingOutputAmount={isLoadingOutputAmount}
+      onSwap={onSwap}
+      onReverseClick={onReverseClick}
+      toReceive={toReceive}
+      swapButtonIsDisabled={swapButtonIsDiabled}
+      tokenSymbol={tokenSymbol}
+      // stakingPoolFromApi={stakingPoolFromApi}
+      // livePoolId={address}
+      // seedPoolAddress={seedPoolAddress}
+      onClose={onClose}
+      tokenDecimals={coinToMeme ? memeChanQuoteTokenDecimals : MEMECHAN_MEME_TOKEN_DECIMALS}
+      memePrice={memePrice}
+      quotePrice={quoteTokenInfo?.symbol === "SOL" ? solanaPrice : slerfPrice}
+      quoteTokenInfo={quoteTokenInfo}
+    />
   );
 };
+
+// return (
+//   <>
+//     {poolIsMigratingToLive && (
+//       <div className="absolute rounded-xl top-0 left-0 w-full h-full bg-regular bg-opacity-70 flex items-center justify-center">
+//         <div className="text-white text-center text-balance font-bold text-lg tracking-wide">
+//           Pool is currently migrating to the Live Phase. Please wait.
+//         </div>
+//       </div>
+//     )}
+//     <div className="flex w-full flex-row gap-2">
+//       <SwapButton coinToMeme={coinToMeme} onClick={() => setCoinToMeme(true)} label="Buy" />
+//       <SwapButton coinToMeme={!coinToMeme} onClick={() => setCoinToMeme(false)} label="Sell" />
+//     </div>
+//     <div className="flex w-full flex-col gap-1">
+//       {quoteTokenInfo?.mint && (
+//         <InputAmountTitle
+//           memeBalance={availableTicketsAmount}
+//           setInputAmount={setInputAmount}
+//           setOutputData={setOutputAmount}
+//           coinBalance={coinBalance}
+//           coinToMeme={coinToMeme}
+//           tokenSymbol={tokenSymbol}
+//           quoteMint={quoteTokenInfo.mint.toString()}
+//         />
+//       )}
+//       <input
+//         disabled={poolIsMigratingToLive}
+//         className="w-full bg-white text-xs font-bold text-regular p-2 rounded-lg"
+//         value={inputAmount}
+//         onChange={(e) =>
+//           handleSwapInputChange({
+//             decimalPlaces: coinToMeme ? memeChanQuoteTokenDecimals : MEMECHAN_MEME_TOKEN_DECIMALS,
+//             e,
+//             setValue: setInputAmount,
+//           })
+//         }
+//         placeholder="0"
+//         type="text"
+//       />
+//       {coinToMeme && (
+//         <div className="text-xs font-bold text-regular">
+//           available {quoteTokenInfo?.displayName + " "}
+//           {publicKey && coinBalance
+//             ? Number(coinBalance).toLocaleString(undefined, {
+//                 maximumFractionDigits: memeChanQuoteTokenDecimals,
+//               }) ?? "loading..."
+//             : "0"}
+//         </div>
+//       )}
+//       {!coinToMeme && availableTicketsAmount !== "0" && (
+//         <div className="text-xs font-bold text-regular">
+//           Available {tokenSymbol} tickets to sell: {parseChainValue(+availableTicketsAmount, 0, 6)}
+//         </div>
+//       )}
+//       {!coinToMeme && unavailableTicketsAmount !== "0" && (
+//         <div className="text-xs !normal-case font-bold text-regular">
+//           Unavailable {tokenSymbol} tickets to sell (locked): {parseChainValue(+unavailableTicketsAmount, 0, 6)}
+//         </div>
+//       )}
+//       {isLoadingOutputAmount && (
+//         <div className="text-xs font-bold text-regular">
+//           {coinToMeme ? (
+//             <span>{tokenSymbol} tickets to receive: loading...</span>
+//           ) : (
+//             <span>{quoteTokenInfo?.displayName} to receive: loading...</span>
+//           )}
+//         </div>
+//       )}
+//       {outputAmount !== null && !isLoadingOutputAmount && (
+//         <div className="text-xs font-bold text-regular">
+//           {coinToMeme
+//             ? `${tokenSymbol} tickets to receive: ${parseChainValue(Number(outputAmount), 0, 6)}`
+//             : `${quoteTokenInfo?.displayName} to receive: ${parseChainValue(Number(outputAmount), 0, 12)}`}
+//         </div>
+//       )}
+//     </div>
+//     <div className="flex w-full flex-col gap-1">
+//       <div className="text-xs font-bold text-regular">Slippage (0-50%)</div>
+//       <input
+//         className="w-full bg-white text-xs font-bold text-regular p-2 rounded-lg"
+//         value={slippage}
+//         onChange={(e) =>
+//           handleSlippageInputChange({
+//             decimalPlaces: 2,
+//             e,
+//             setValue: setSlippage,
+//             max: MAX_SLIPPAGE,
+//             min: MIN_SLIPPAGE,
+//           })
+//         }
+//         type="text"
+//       />
+//     </div>
+//     {unavailableTickets.length > 0 && (
+//       <UnavailableTicketsToSellDialog unavailableTickets={unavailableTickets} symbol={tokenSymbol} />
+//     )}
+//     <Button
+//       disabled={swapButtonIsDiabled}
+//       onClick={onSwap}
+//       className="w-full bg-regular bg-opacity-80 sm:hover:bg-opacity-50 disabled:opacity-50"
+//     >
+//       <div className="text-xs font-bold text-white">
+//         {isLoadingOutputAmount || isSwapping ? "Loading..." : "Swap"}
+//       </div>
+//     </Button>
+//   </>
