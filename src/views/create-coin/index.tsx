@@ -364,7 +364,7 @@ export function CreateCoin() {
               {hasMoreOptions && (
                 <div className="w-fit mt-4 cursor-pointer" onClick={() => setHasMoreOptions(false)}>
                   <Typography variant="text-button" color="green-100">
-                    [Add socials]
+                    [Add Socials]
                     <span className="inline-block ml-1">
                       <DownArrowIcon size={12} fill="var(--color-green-100)" />
                     </span>
