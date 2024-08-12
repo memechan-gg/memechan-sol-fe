@@ -110,7 +110,7 @@ export function TokenCard({
               />
               <div className="ml-4 flex-1 min-w-0">
                 <div className="text-black text-sm">
-                  <div className={showOnClick ? "line-clamp" : ""}>
+                  <div className={showOnClick ? "line-clamp" : "break-words"}>
                     <div className="text-mono-600">
                       <span className=" text-mono-500">{">> "}</span>
                       {description}
