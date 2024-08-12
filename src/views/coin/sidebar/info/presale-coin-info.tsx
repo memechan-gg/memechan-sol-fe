@@ -1,6 +1,7 @@
 import { getTokenInfo } from "@/hooks/utils";
 import { Typography } from "@/memechan-ui/Atoms/Typography";
 import { Card } from "@/memechan-ui/Molecules";
+import { formatNumberForDisplay } from "@/utils/formatNumber";
 import { timeSince } from "@/utils/timeSpents";
 import { MEME_TOKEN_DECIMALS } from "@avernikoz/memechan-sol-sdk";
 import { useTheme } from "next-themes";
@@ -61,7 +62,7 @@ export const PresaleCoinInfo = ({ metadata, boundPool, tokenInfo }: PresaleCoinI
           <Typography variant="body" color="mono-600">
             {pooledMemeCoin ? (
               <div>
-                {pooledMemeCoin} {symbol}
+                {formatNumberForDisplay(Number(pooledMemeCoin))} {symbol}
               </div>
             ) : (
               <Skeleton
@@ -79,7 +80,7 @@ export const PresaleCoinInfo = ({ metadata, boundPool, tokenInfo }: PresaleCoinI
           <Typography variant="body" color="mono-600">
             {slerfIn ? (
               <div>
-                {slerfIn} {quoteTokenInfo?.symbol || "SOL"}
+                {formatNumberForDisplay(Number(slerfIn))} {quoteTokenInfo?.symbol || "SOL"}
               </div>
             ) : (
               <Skeleton

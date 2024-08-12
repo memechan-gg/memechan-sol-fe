@@ -8,6 +8,7 @@ import { Button } from "@/memechan-ui/Atoms";
 import { Divider } from "@/memechan-ui/Atoms/Divider/Divider";
 import { Typography } from "@/memechan-ui/Atoms/Typography";
 import { confirmTransaction } from "@/utils/confirmTransaction";
+import { formatNumberForDisplay } from "@/utils/formatNumber";
 import { CHAN_TOKEN_DECIMALS, MEMECHAN_MEME_TOKEN_DECIMALS } from "@avernikoz/memechan-sol-sdk";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
@@ -308,7 +309,7 @@ export const StakingPool = ({
             <Typography variant="body" color="mono-600">
               {stakedAmount ? (
                 <div>
-                  {Number(stakedAmount).toLocaleString()} <span className="!normal-case">{tokenSymbol}</span>
+                  {formatNumberForDisplay(Number(stakedAmount))} <span className="!normal-case">{tokenSymbol}</span>
                 </div>
               ) : (
                 <div>
@@ -347,7 +348,7 @@ export const StakingPool = ({
             <Typography variant="body" color="mono-600">
               {availableAmountToUnstake ? (
                 <span>
-                  {Number(availableAmountToUnstake).toLocaleString()}{" "}
+                  {formatNumberForDisplay(Number(availableAmountToUnstake))}{" "}
                   <span className="!normal-case">{tokenSymbol}</span>
                 </span>
               ) : (

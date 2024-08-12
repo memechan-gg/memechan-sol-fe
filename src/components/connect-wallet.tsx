@@ -2,7 +2,7 @@ import { usePopup } from "@/context/PopupContext";
 import { UserContextType, useUser } from "@/context/UserContext";
 import { useSolanaBalance } from "@/hooks/useSolanaBalance";
 import { Typography } from "@/memechan-ui/Atoms/Typography";
-import { formatNumber } from "@/utils/formatNumber";
+import { formatNumberForDisplay } from "@/utils/formatNumber";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { track } from "@vercel/analytics";
 import { useTheme } from "next-themes";
@@ -73,7 +73,7 @@ export const ConnectWallet = (props: { account: UserContextType; disconnect: () 
                 {props.account.address.slice(0, 4)}...{props.account.address.slice(-4)}
               </h4>
               {solanaBalance !== undefined && solanaBalance !== null && (
-                <p className="font-normal">{formatNumber(solanaBalance, 5)} SOL</p>
+                <p className="font-normal">{formatNumberForDisplay(Number(solanaBalance))} SOL</p>
               )}
             </>
           </div>
