@@ -141,6 +141,21 @@ export function Home() {
         />
       </div>
       <Divider className="mt-6 mb-4" />
+      {/* Remove this divider after including top cards */}
+      {/* TODO ALDIN Call it with right data */}
+      {/* <Divider className="mt-6 mb-6" />
+      <SlideCardWrapper>
+        {Array.from({ length: 3 }).map((_, index) => (
+          <div
+            key={index}
+            className={`flex-shrink-1 ${index === 0 ? "" : "ml-4"} w-full`}
+            style={{ display: "inline-block" }}
+          >
+            <SlideCard />
+          </div>
+        ))}
+      </SlideCardWrapper>
+      <Divider className="mt-5 mb-4" /> */}
       <div className="self-start w-full">
         <Tabs
           className="justify-start items-center gap-x-5 ml-[-5px]"
