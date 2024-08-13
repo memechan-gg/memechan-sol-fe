@@ -4,6 +4,7 @@ import { ConvertedHolderItem } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import { useTheme } from "next-themes";
+import { Oval } from "react-loader-spinner";
 import { HoldersProps } from "../../coin.types";
 import { getSlicedAddress } from "./utils";
 
@@ -27,8 +28,8 @@ export const PresaleCoinHolders = ({ poolAddress, coinMetadata, uniqueHoldersDat
         </div>
         <div className="flex flex-col gap-1">
           {
-            <div>
-              <Typography variant="h4">Loading...</Typography>
+            <div className="flex justify-center">
+              <Oval visible={true} color="#3e3e3e" secondaryColor="#979797" />
             </div>
           }
         </div>

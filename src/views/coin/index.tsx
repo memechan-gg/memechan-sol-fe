@@ -1,7 +1,7 @@
 import { useLivePool } from "@/hooks/live/useLivePool";
 import { useSeedPool } from "@/hooks/presale/useSeedPool";
 import { useToken } from "@/hooks/useToken";
-import { Typography } from "@/memechan-ui/Atoms/Typography";
+import { Oval } from "react-loader-spinner";
 import { CoinNotFound } from "./coin-not-found";
 import { LiveCoin } from "./live-coin";
 import { PresaleCoin } from "./presale-coin";
@@ -23,8 +23,8 @@ export function Coin({ coin, tab }: CoinProps) {
 
   if (tokenIsLoading || seedPoolIsLoading || livePoolIsLoading)
     return (
-      <div className="text-regular">
-        <Typography variant="h4">Loading...</Typography>
+      <div className="text-regular mt-2">
+        <Oval visible={true} color="#3e3e3e" secondaryColor="#979797" />
       </div>
     );
   if (!token) return <CoinNotFound />;

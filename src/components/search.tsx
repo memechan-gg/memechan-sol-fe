@@ -68,7 +68,9 @@ export const Search = ({
               />
             </span>
           }
-          className={`py-2.5 h-10 pl-3 pr-4 rounded-sm ${theme === "dark" ? "pink-border" : ""}`}
+          className={`py-2.5 h-10 pl-3 pr-4 rounded-sm !transition-opacity !duration-1000 !ease-in-out ${
+            theme === "dark" ? "pink-border" : ""
+          }`}
         />
       )}
     </div>
