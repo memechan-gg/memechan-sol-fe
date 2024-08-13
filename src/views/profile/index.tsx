@@ -7,6 +7,7 @@ import { Typography } from "@/memechan-ui/Atoms/Typography";
 import { formatNumberForTokenCard } from "@/utils/formatNumbersForTokenCard";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useEffect, useState } from "react";
+import { Oval } from "react-loader-spinner";
 import { getSlicedAddressV2 } from "../coin/sidebar/holders/utils";
 import { NoCoinsPage } from "./no-coins-page";
 
@@ -152,7 +153,7 @@ export function Profile({ address, coin }: ProfileProps) {
       <div className="flex flex-col items-center w-full mt-3 px-3 xl:px-0">
         {isLoading ? (
           <div>
-            <Typography variant="h4">Loading...</Typography>{" "}
+            <Oval visible={true} color="#3e3e3e" secondaryColor="#979797" />
           </div>
         ) : error ? (
           <div className="text-red-500">{error}</div>

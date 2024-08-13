@@ -16,7 +16,7 @@ export const LiveContent = ({ token }: Props) => {
       <div className="flex gap-1 flex-col items-start">
         <span className="text-[13px] text-mono-500 font-light leading-[16px]">Marketcap</span>
         <span className={`${textColor} font-bold text-[13px] leading-[16px]`}>
-          ${formatNumberForDisplay(marketcap)}
+          ${formatNumberForDisplay(marketcap || 0)}
         </span>
       </div>
       <div className="flex gap-1 flex-col items-start">

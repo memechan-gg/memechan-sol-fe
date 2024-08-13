@@ -5,13 +5,13 @@ import { useTickets } from "@/hooks/useTickets";
 import { Button } from "@/memechan-ui/Atoms";
 import { Tabs } from "@/memechan-ui/Atoms/Tabs";
 import TopBar from "@/memechan-ui/Atoms/TopBar/TopBar";
-import { Typography } from "@/memechan-ui/Atoms/Typography";
 import { SeedPoolData } from "@/types/pool";
 import { SolanaToken } from "@avernikoz/memechan-sol-sdk";
 import { Dialog } from "@reach/dialog";
 import { track } from "@vercel/analytics";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { Oval } from "react-loader-spinner";
 import { CommentsTab } from "./common-tabs/comments-tab/comments-tab";
 import { ChartTab } from "./presale-coin-tabs/chart-tab/chart-tab";
 import { InfoTab } from "./presale-coin-tabs/info-tab/info-tab";
@@ -82,8 +82,8 @@ export function PresaleCoin({
 
   if (isLoading || boundPoolClient === null || boundPoolClient === undefined)
     return (
-      <div>
-        <Typography variant="h4">Loading...</Typography>
+      <div className="mt-2">
+        <Oval visible={true} color="#3e3e3e" secondaryColor="#979797" />
       </div>
     );
 

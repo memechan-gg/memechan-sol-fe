@@ -76,7 +76,7 @@ export function Home() {
   const [activeTab, setActiveTab] = useState(tabs[0]);
 
   if (!isMounted) {
-    return <Typography>Loading...</Typography>;
+    return <Oval visible={true} color="#3e3e3e" secondaryColor="#979797" />;
   }
 
   if (!isConfirmed) {

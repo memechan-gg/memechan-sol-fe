@@ -2,6 +2,7 @@ import { Typography } from "@/memechan-ui/Atoms/Typography";
 import { Card } from "@/memechan-ui/Molecules";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useTheme } from "next-themes";
+import { Oval } from "react-loader-spinner";
 import { LiveCoinHoldersProps } from "../../coin.types";
 import { getSlicedAddress } from "./utils";
 
@@ -82,7 +83,7 @@ export const LiveCoinHolders = ({ coinMetadata, uniqueHoldersData, livePool }: L
               );
             })}
           {uniqueHoldersData && uniqueHoldersData.holders.length === 0 && <Typography>No holders yet.</Typography>}
-          {!uniqueHoldersData && <Typography variant="h4">Loading...</Typography>}
+          {!uniqueHoldersData && <Oval visible={true} color="#3e3e3e" secondaryColor="#979797" />}
         </Card.Body>
       </Card>
     </div>
