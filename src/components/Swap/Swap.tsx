@@ -249,6 +249,7 @@ export const Swap = (props: SwapProps) => {
               stakingPoolFromApi={stakingPoolFromApi}
               tokenSymbol={tokenSymbol}
               quoteTokenInfo={quoteTokenInfo}
+              memePrice={memePrice}
             />
           ) : (
             <>

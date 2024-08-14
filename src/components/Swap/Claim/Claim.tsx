@@ -8,6 +8,11 @@ export const Claim = (props: ClaimProps) => {
   return variant === "LIVE" ? (
     <LiveClaim {...props} />
   ) : (
-    <PresaleClaim tokenSymbol={props.tokenSymbol} quoteTokenInfo={props.quoteTokenInfo} />
+    <PresaleClaim
+      tokenSymbol={props.tokenSymbol}
+      quoteTokenInfo={props.quoteTokenInfo}
+      seedPoolAddress={props.seedPoolAddress}
+      memePrice={props.memePrice}
+    />
   );
 };
