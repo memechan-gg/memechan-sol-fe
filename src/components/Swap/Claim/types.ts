@@ -7,11 +7,14 @@ export interface LiveClaimProps {
   stakingPoolFromApi: ReturnType<typeof useStakingPoolFromApi>["data"];
   tokenSymbol: string;
   quoteTokenInfo?: TokenInfo | null;
+  memePrice?: string;
 }
 
 export interface PresaleClaimProps {
   tokenSymbol: string;
   quoteTokenInfo?: TokenInfo | null;
+  seedPoolAddress?: string;
+  memePrice?: string;
 }
 
 export interface ClaimProps extends LiveClaimProps {
