@@ -8,7 +8,7 @@ import { track } from "@vercel/analytics";
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import SolanaIcon from "../memechan-ui/icons/solana-icon.svg";
 
 export const ConnectWallet = (props: { account: UserContextType; disconnect: () => Promise<void> }) => {
@@ -103,23 +103,70 @@ export const ConnectWallet = (props: { account: UserContextType; disconnect: () 
             <Image src={SolanaIcon} alt="solana" />
           </div>
           <div>
-            {wallets.map((w) => (
-              <button
-                key={w.adapter.name}
-                onClick={() => connectWallet(w.adapter.name)}
-                className="p-4 h-16 w-full mt-2 sm:rounded-sm border border-mono-400 shadow-light bg-mono-200 flex items-center justify-between font-bold sm:hover:opacity-80"
-              >
-                <div className="flex items-center">
-                  <img alt={w.adapter.name} width={24} className="mr-4" src={w.adapter.icon} />
-                  {w.adapter.name}
-                </div>
-                {w.readyState === "Installed" && (
-                  <Typography variant="body" color="mono-500">
-                    Detected
-                  </Typography>
-                )}
-              </button>
-            ))}
+            {(() => {
+              const socialWallets = ["Sign in with Apple", "Sign in with Twitter", "Sign in with Google"];
+              const sortedWallets = wallets.sort((a, b) => {
+                const aIsSocial = socialWallets.includes(a.adapter.name);
+                const bIsSocial = socialWallets.includes(b.adapter.name);
+
+                if (aIsSocial && !bIsSocial) return 1;
+                if (!aIsSocial && bIsSocial) return -1;
+                return 0;
+              });
+
+              let dividerInserted = false;
+
+              return sortedWallets.map((w, index) => {
+                const isSocial = socialWallets.includes(w.adapter.name);
+                const shouldInsertDivider = !dividerInserted && isSocial && index > 0;
+
+                if (shouldInsertDivider) {
+                  dividerInserted = true;
+                  return (
+                    <React.Fragment key={`divider-${w.adapter.name}`}>
+                      <div className="my-4 flex items-center">
+                        <div className="flex-grow border-t border-mono-400"></div>
+                        <span className="mx-4 text-mono-500">or</span>
+                        <div className="flex-grow border-t border-mono-400"></div>
+                      </div>
+                      <button
+                        key={w.adapter.name}
+                        onClick={() => connectWallet(w.adapter.name)}
+                        className="p-4 h-16 w-full mt-2 sm:rounded-sm border border-mono-400 shadow-light bg-mono-200 flex items-center justify-between font-bold sm:hover:opacity-80"
+                      >
+                        <div className="flex items-center">
+                          <img alt={w.adapter.name} width={24} className="mr-4" src={w.adapter.icon} />
+                          {w.adapter.name}
+                        </div>
+                        {w.readyState === "Installed" && !isSocial && (
+                          <Typography variant="body" color="mono-500">
+                            Detected
+                          </Typography>
+                        )}
+                      </button>
+                    </React.Fragment>
+                  );
+                }
+
+                return (
+                  <button
+                    key={w.adapter.name}
+                    onClick={() => connectWallet(w.adapter.name)}
+                    className="p-4 h-16 w-full mt-2 sm:rounded-sm border border-mono-400 shadow-light bg-mono-200 flex items-center justify-between font-bold sm:hover:opacity-80"
+                  >
+                    <div className="flex items-center">
+                      <img alt={w.adapter.name} width={24} className="mr-4" src={w.adapter.icon} />
+                      {w.adapter.name}
+                    </div>
+                    {w.readyState === "Installed" && !isSocial && (
+                      <Typography variant="body" color="mono-500">
+                        Detected
+                      </Typography>
+                    )}
+                  </button>
+                );
+              });
+            })()}
           </div>
         </div>
       )}
