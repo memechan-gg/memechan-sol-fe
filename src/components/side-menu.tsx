@@ -140,7 +140,7 @@ export default function SideMenu(props: { account: UserContextType; disconnect: 
                 <div className="bottom-border w-full" />
                 <div className="mt-6 sm:mt-2 flex w-full justify-between">
                   <ThemeSwitcher />
-                  {media.isSmallDevice && <PointsComponent />}
+                  {media.isSmallDevice && connected && <PointsComponent />}
                 </div>
               </Popover.Panel>
             </>

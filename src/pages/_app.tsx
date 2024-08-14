@@ -2,6 +2,7 @@ import { Layout } from "@/components/layout";
 import { SolanaProvider } from "@/components/provider/solana";
 import { ConnectionProvider } from "@/context/ConnectionContext";
 import { PopupProvider } from "@/context/PopupContext";
+import { ReferrerProvider } from "@/context/ReferrerContext"; // Import ReferrerProvider
 import { UserProvider } from "@/context/UserContext";
 import "@/styles/globals.css";
 import "@/styles/skeleton-chart-custom.css";
@@ -72,13 +73,15 @@ export default function App({ Component, pageProps }: AppProps) {
             <QueryClientProvider client={queryClient}>
               <ConnectionProvider>
                 <PopupProvider>
-                  <ThemeProvider attribute="class" defaultTheme="dark" value={{ light: "light", dark: "dark" }}>
-                    <Layout>
-                      <Component {...pageProps} />
-                      <SpeedInsights />
-                      <Analytics />
-                    </Layout>
-                  </ThemeProvider>
+                  <ReferrerProvider>
+                    <ThemeProvider attribute="class" defaultTheme="dark" value={{ light: "light", dark: "dark" }}>
+                      <Layout>
+                        <Component {...pageProps} />
+                        <SpeedInsights />
+                        <Analytics />
+                      </Layout>
+                    </ThemeProvider>
+                  </ReferrerProvider>
                 </PopupProvider>
               </ConnectionProvider>
               {process.env.NODE_ENV === "development" && <ReactQueryDevtools initialIsOpen={false} />}

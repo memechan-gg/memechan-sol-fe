@@ -1,4 +1,5 @@
 import { TICKETS_INTERVAL } from "@/config/config";
+import { useReferrerContext } from "@/context/ReferrerContext";
 import { useBoundPoolClient } from "@/hooks/presale/useBoundPoolClient";
 import { useMedia } from "@/hooks/useMedia";
 import { useTickets } from "@/hooks/useTickets";
@@ -31,6 +32,7 @@ export function PresaleCoin({
   seedPoolData: SeedPoolData;
   tab: string;
 }) {
+  const referrer = useReferrerContext();
   const mediaQuery = useMedia();
   const router = useRouter();
   const { data: boundPoolClient, isFetching, isError, isLoading } = useBoundPoolClient(seedPoolData.address);
@@ -62,14 +64,32 @@ export function PresaleCoin({
 
   const onTabChange = (tab: string) => {
     track("PresaleCoin_SetTab", { status: tab });
-    router.push(
-      {
-        pathname: `/coin/[coinType]`,
-        query: { coinType: coinMetadata.address, tab: tab },
-      },
-      undefined,
-      { shallow: true },
-    );
+    if (referrer.referrer) {
+      router.push(
+        {
+          pathname: `/coin/[coinType]`,
+          query: { coinType: coinMetadata.address, tab: tab, referrer: referrer.referrer },
+        },
+        undefined,
+        { shallow: true },
+      );
+    } else {
+      router.push(
+        {
+          pathname: `/coin/[coinType]`,
+          query: { coinType: coinMetadata.address, tab: tab },
+        },
+        undefined,
+        { shallow: true },
+      );
+    }
+    if (mediaQuery.isSmallDevice) {
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: "instant",
+      });
+    }
   };
 
   if (!isFetching && isError && (boundPoolClient === null || boundPoolClient === undefined)) {

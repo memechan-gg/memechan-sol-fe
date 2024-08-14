@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
+import { useReferrerContext } from "@/context/ReferrerContext";
 import { useMedia } from "@/hooks/useMedia";
 import Checkbox from "@/memechan-ui/Atoms/CheckBox/CheckBox";
 import { Divider } from "@/memechan-ui/Atoms/Divider/Divider";
@@ -37,6 +38,7 @@ export function TokenCard({
   showOnClick = false,
   disableContent,
 }: TokenCardProps) {
+  const referrer = useReferrerContext();
   const { theme } = useTheme();
   const { name, address, image, symbol, description, status, socialLinks } = token;
   const router = useRouter();
@@ -49,14 +51,25 @@ export function TokenCard({
   const renderFooter = socialLinks?.discord || socialLinks?.telegram || socialLinks?.twitter || socialLinks?.website;
   const handleCardClick = () => {
     const tab = media.isSmallDevice ? "Info" : "Chart";
-    router.push(
-      {
-        pathname: `/coin/[coinType]`,
-        query: { coinType: address, tab: tab },
-      },
-      undefined,
-      { shallow: true },
-    );
+    if (referrer.referrer) {
+      router.push(
+        {
+          pathname: `/coin/[coinType]`,
+          query: { coinType: address, tab: tab, referrer: referrer.referrer },
+        },
+        undefined,
+        { shallow: true },
+      );
+    } else {
+      router.push(
+        {
+          pathname: `/coin/[coinType]`,
+          query: { coinType: address, tab: tab },
+        },
+        undefined,
+        { shallow: true },
+      );
+    }
     if (onClick) onClick();
   };
 
