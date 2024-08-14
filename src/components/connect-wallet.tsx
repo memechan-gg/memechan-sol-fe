@@ -103,23 +103,34 @@ export const ConnectWallet = (props: { account: UserContextType; disconnect: () 
             <Image src={SolanaIcon} alt="solana" />
           </div>
           <div>
-            {wallets.map((w) => (
-              <button
-                key={w.adapter.name}
-                onClick={() => connectWallet(w.adapter.name)}
-                className="p-4 h-16 w-full mt-2 sm:rounded-sm border border-mono-400 shadow-light bg-mono-200 flex items-center justify-between font-bold sm:hover:opacity-80"
-              >
-                <div className="flex items-center">
-                  <img alt={w.adapter.name} width={24} className="mr-4" src={w.adapter.icon} />
-                  {w.adapter.name}
-                </div>
-                {w.readyState === "Installed" && (
-                  <Typography variant="body" color="mono-500">
-                    Detected
-                  </Typography>
-                )}
-              </button>
-            ))}
+            {wallets
+              .sort((a, b) => {
+                const socialWallets = ["Sign in with Apple", "Sign in with Twitter", "Sign in with Google"];
+                const aIsSocial = socialWallets.includes(a.adapter.name);
+                const bIsSocial = socialWallets.includes(b.adapter.name);
+
+                if (aIsSocial && !bIsSocial) return 1;
+                if (!aIsSocial && bIsSocial) return -1;
+                return 0;
+              })
+              .map((w) => (
+                <button
+                  key={w.adapter.name}
+                  onClick={() => connectWallet(w.adapter.name)}
+                  className="p-4 h-16 w-full mt-2 sm:rounded-sm border border-mono-400 shadow-light bg-mono-200 flex items-center justify-between font-bold sm:hover:opacity-80"
+                >
+                  <div className="flex items-center">
+                    <img alt={w.adapter.name} width={24} className="mr-4" src={w.adapter.icon} />
+                    {w.adapter.name}
+                  </div>
+                  {w.readyState === "Installed" &&
+                    !["Sign in with Apple", "Sign in with Twitter", "Sign in with Google"].includes(w.adapter.name) && (
+                      <Typography variant="body" color="mono-500">
+                        Detected
+                      </Typography>
+                    )}
+                </button>
+              ))}
           </div>
         </div>
       )}

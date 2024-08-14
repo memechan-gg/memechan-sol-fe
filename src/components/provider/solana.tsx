@@ -6,19 +6,19 @@ import { PhantomWalletAdapter, SolflareWalletAdapter, TrustWalletAdapter } from 
 
 registerMoonGateWallet({
   authMode: "Google",
-  position: "top-right",
+  position: "bottom-right",
   logoDataUri: "OPTIONAL ADD IN-WALLET LOGO URL HERE",
   buttonLogoUri: "ADD OPTIONAL LOGO FOR WIDGET BUTTON HERE",
 });
 registerMoonGateWallet({
   authMode: "Twitter",
-  position: "top-right",
+  position: "bottom-right",
   logoDataUri: "OPTIONAL ADD IN-WALLET LOGO URL HERE",
   buttonLogoUri: "ADD OPTIONAL LOGO FOR WIDGET BUTTON HERE",
 });
 registerMoonGateWallet({
   authMode: "Apple",
-  position: "top-right",
+  position: "bottom-right",
   logoDataUri: "OPTIONAL ADD IN-WALLET LOGO URL HERE",
   buttonLogoUri: "ADD OPTIONAL LOGO FOR WIDGET BUTTON HERE",
 });
