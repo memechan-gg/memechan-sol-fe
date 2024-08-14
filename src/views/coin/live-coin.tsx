@@ -1,3 +1,4 @@
+import { useReferrerContext } from "@/context/ReferrerContext";
 import { useSeedPool } from "@/hooks/presale/useSeedPool";
 import { useStakingPoolFromApi } from "@/hooks/staking/useStakingPoolFromApi";
 import { useMedia } from "@/hooks/useMedia";
@@ -26,6 +27,7 @@ export function LiveCoin({
   livePoolData: LivePoolData;
   tab: string;
 }) {
+  const referrer = useReferrerContext();
   const { data: stakingPoolFromApi } = useStakingPoolFromApi(coinMetadata.address);
   const { data: seedPoolData } = useSeedPool(coinMetadata.address);
   const mediaQuery = useMedia();
@@ -34,14 +36,25 @@ export function LiveCoin({
 
   const onTabChange = (tab: string) => {
     track("Live_SetTab", { status: tab });
-    router.push(
-      {
-        pathname: `/coin/[coinType]`,
-        query: { coinType: coinMetadata.address, tab: tab },
-      },
-      undefined,
-      { shallow: true },
-    );
+    if (referrer.referrer) {
+      router.push(
+        {
+          pathname: `/coin/[coinType]`,
+          query: { coinType: coinMetadata.address, tab: tab, referrer: referrer.referrer },
+        },
+        undefined,
+        { shallow: true },
+      );
+    } else {
+      router.push(
+        {
+          pathname: `/coin/[coinType]`,
+          query: { coinType: coinMetadata.address, tab: tab },
+        },
+        undefined,
+        { shallow: true },
+      );
+    }
     if (mediaQuery.isSmallDevice) {
       window.scrollTo({
         top: 0,

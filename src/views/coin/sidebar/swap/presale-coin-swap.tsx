@@ -2,6 +2,7 @@ import { ChartApiInstance } from "@/common/solana";
 import { TransactionSentNotification } from "@/components/notifications/transaction-sent-notification";
 import { Swap } from "@/components/Swap";
 import { useConnection } from "@/context/ConnectionContext";
+import { useReferrerContext } from "@/context/ReferrerContext";
 import { useBoundPoolClient } from "@/hooks/presale/useBoundPoolClient";
 import { useBalance } from "@/hooks/useBalance";
 import { useMemePriceFromBE } from "@/hooks/useMemePriceFromBE";
@@ -17,6 +18,7 @@ import {
   GetBuyMemeTransactionOutput,
   GetSellMemeTransactionOutput,
   MEMECHAN_MEME_TOKEN_DECIMALS,
+  resolveReferrer,
 } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -47,6 +49,7 @@ export const PresaleCoinSwap = ({
   const { connected } = useWallet();
   const queryClient = useQueryClient();
   const { theme } = useTheme();
+  const { referrer } = useReferrerContext();
   const [coinToMeme, setCoinToMeme] = useState<boolean>(true);
   const [inputAmount, setInputAmount] = useState<string>("");
   const [outputAmount, setOutputAmount] = useState<string | null>(null);
@@ -99,8 +102,16 @@ export const PresaleCoinSwap = ({
 
       if (!boundPoolClient?.boundPoolInstance || !freeIndexes) return;
       console.log("Continuing swap");
+
+      console.log("Resolving referer if present");
+      let undecodedReferrer = undefined;
+      if (referrer) {
+        undecodedReferrer = await resolveReferrer(connection, referrer);
+      }
+
       if (coinToMeme) {
         let result = undefined;
+
         try {
           result = await boundPoolClient.boundPoolInstance.getBuyMemeTransaction({
             user: publicKey,
@@ -108,6 +119,7 @@ export const PresaleCoinSwap = ({
             minOutputAmount,
             slippagePercentage,
             memeTicketNumber: getFreeMemeTicketIndex(freeIndexes, boundPoolClient.version as "V1" | "V2"),
+            referrer: undecodedReferrer,
           });
         } catch (e) {
           console.log(e);
@@ -128,7 +140,7 @@ export const PresaleCoinSwap = ({
         }),
       } as { side: "sell"; result: GetSellMemeTransactionOutput };
     },
-    [publicKey, boundPoolClient, freeIndexes],
+    [publicKey, boundPoolClient, freeIndexes, referrer, connection],
   );
 
   const updateOutputAmount = useCallback(async () => {

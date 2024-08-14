@@ -18,7 +18,7 @@ export const Header = () => {
   const account = useUser();
   const { openPopup } = usePopup();
   const media = useMedia();
-  const { disconnect } = useWallet();
+  const { disconnect, connected } = useWallet();
   const [search, setSearch] = useRecoilState(searchAtom);
   const [isSearchActive, setIsSearchActive] = useState(false);
 
@@ -84,7 +84,7 @@ export const Header = () => {
                   search={search}
                   setSearch={setSearch}
                 />
-                {!media.isSmallDevice && <PointsComponent />}
+                {!media.isSmallDevice && connected && <PointsComponent />}
                 <ProfileManagment account={account} disconnect={disconnect} />
               </div>
             </>
