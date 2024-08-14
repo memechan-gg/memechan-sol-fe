@@ -21,5 +21,5 @@ const fetchChanPrice = async () => {
 };
 
 export function useChanPrice() {
-  return useQuery({ queryKey: ["solana-price"], queryFn: fetchChanPrice, staleTime: Infinity });
+  return useQuery({ queryKey: ["chan-price"], queryFn: fetchChanPrice, staleTime: Infinity });
 }
