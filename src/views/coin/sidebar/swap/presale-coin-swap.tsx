@@ -9,6 +9,7 @@ import { useSlerfPrice } from "@/hooks/useSlerfPrice";
 import { useSolanaBalance } from "@/hooks/useSolanaBalance";
 import { useSolanaPrice } from "@/hooks/useSolanaPrice";
 import { getTokenInfo } from "@/hooks/utils";
+import { Typography } from "@/memechan-ui/Atoms/Typography";
 import { GetSwapOutputAmountParams, GetSwapTransactionParams } from "@/types/hooks";
 import { confirmTransaction } from "@/utils/confirmTransaction";
 import { parseChainValue } from "@/utils/parseChainValue";
@@ -20,10 +21,12 @@ import {
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { track } from "@vercel/analytics";
+import { useTheme } from "next-themes";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { PresaleCoinSwapProps } from "../../coin.types";
 import { presaleSwapParamsAreValid } from "../../coin.utils";
+import { UnavailableTicketsToSellDialog } from "./dialog-unavailable-tickets-to-sell";
 import { getFreeMemeTicketIndex, handleSwapInputChange, validateSlippage } from "./utils";
 
 export const PresaleCoinSwap = ({
@@ -43,6 +46,7 @@ export const PresaleCoinSwap = ({
 }: PresaleCoinSwapProps) => {
   const { connected } = useWallet();
   const queryClient = useQueryClient();
+  const { theme } = useTheme();
   const [coinToMeme, setCoinToMeme] = useState<boolean>(true);
   const [inputAmount, setInputAmount] = useState<string>("");
   const [outputAmount, setOutputAmount] = useState<string | null>(null);
@@ -362,33 +366,46 @@ export const PresaleCoinSwap = ({
   }, [availableTicketsAmount, baseCurrency.currencyName, secondCurrency.currencyName, slerfBalance, solanaBalance]);
 
   return (
-    <Swap
-      variant="PRESALE"
-      slippage={slippage}
-      setSlippage={setSlippage}
-      refresh={refresh}
-      isRefreshing={ticketsData.isRefetching}
-      baseCurrency={baseCurrency}
-      secondCurrency={secondCurrency}
-      onInputChange={onInputChange}
-      inputAmount={inputAmount}
-      publicKey={publicKey}
-      isSwapping={isSwapping}
-      isLoadingOutputAmount={isLoadingOutputAmount}
-      onSwap={onSwap}
-      onReverseClick={onReverseClick}
-      toReceive={toReceive}
-      swapButtonIsDisabled={swapButtonIsDiabled}
-      tokenSymbol={tokenSymbol}
-      // stakingPoolFromApi={stakingPoolFromApi}
-      // livePoolId={address}
-      // seedPoolAddress={seedPoolAddress}
-      onClose={onClose}
-      tokenDecimals={coinToMeme ? memeChanQuoteTokenDecimals : MEMECHAN_MEME_TOKEN_DECIMALS}
-      memePrice={memePrice}
-      quotePrice={quoteTokenInfo?.symbol === "SOL" ? solanaPrice : slerfPrice}
-      quoteTokenInfo={quoteTokenInfo}
-    />
+    <>
+      {unavailableTicketsAmount !== "0" && (
+        <div className="text-xs !normal-case font-bold text-regular">
+          <Typography variant="h4" color={theme === "light" ? "primary-100" : "mono-600"}>
+            Unavailable {tokenSymbol} tickets to sell (locked): {parseChainValue(+unavailableTicketsAmount, 0, 6)}
+          </Typography>
+        </div>
+      )}
+
+      {unavailableTickets.length > 0 && (
+        <UnavailableTicketsToSellDialog unavailableTickets={unavailableTickets} symbol={tokenSymbol} />
+      )}
+      <Swap
+        variant="PRESALE"
+        slippage={slippage}
+        setSlippage={setSlippage}
+        refresh={refresh}
+        isRefreshing={ticketsData.isRefetching}
+        baseCurrency={baseCurrency}
+        secondCurrency={secondCurrency}
+        onInputChange={onInputChange}
+        inputAmount={inputAmount}
+        publicKey={publicKey}
+        isSwapping={isSwapping}
+        isLoadingOutputAmount={isLoadingOutputAmount}
+        onSwap={onSwap}
+        onReverseClick={onReverseClick}
+        toReceive={toReceive}
+        swapButtonIsDisabled={swapButtonIsDiabled}
+        tokenSymbol={tokenSymbol}
+        // stakingPoolFromApi={stakingPoolFromApi}
+        // livePoolId={address}
+        // seedPoolAddress={seedPoolAddress}
+        onClose={onClose}
+        tokenDecimals={coinToMeme ? memeChanQuoteTokenDecimals : MEMECHAN_MEME_TOKEN_DECIMALS}
+        memePrice={memePrice}
+        quotePrice={quoteTokenInfo?.symbol === "SOL" ? solanaPrice : slerfPrice}
+        quoteTokenInfo={quoteTokenInfo}
+      />
+    </>
   );
 };
 

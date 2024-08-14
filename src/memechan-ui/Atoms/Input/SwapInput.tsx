@@ -134,6 +134,11 @@ export const SwapInput: React.FC<SwapInputProps> = ({
                   WebkitAppearance: "none",
                   MozAppearance: "textfield",
                 }}
+                onKeyDown={(e) => {
+                  if (e.key === ",") {
+                    e.preventDefault();
+                  }
+                }}
               />
             ) : (
               <div>
