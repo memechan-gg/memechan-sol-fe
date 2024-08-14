@@ -1,16 +1,25 @@
+import { TICKETS_INTERVAL } from "@/config/config";
+import { useTickets } from "@/hooks/useTickets";
 import { Button } from "@/memechan-ui/Atoms";
 import { Divider } from "@/memechan-ui/Atoms/Divider/Divider";
 import { Typography } from "@/memechan-ui/Atoms/Typography";
+import { parseChainValue } from "@/utils/parseChainValue";
 import Cookies from "js-cookie";
 import { useTheme } from "next-themes";
 import { useState } from "react";
+import Skeleton from "react-loading-skeleton";
 import { PresaleClaimProps } from "./types";
 
 export const PresaleClaim = (props: PresaleClaimProps) => {
-  const { tokenSymbol, quoteTokenInfo } = props;
+  const { tokenSymbol, quoteTokenInfo, seedPoolAddress, memePrice } = props;
   const { theme } = useTheme();
   const [isConfirmed, setIsConfirmed] = useState<boolean>(() => {
     return !!Boolean(Cookies.get("isClaimConfirmed"));
+  });
+  const ticketsData = useTickets({
+    poolAddress: seedPoolAddress,
+    poolStatus: "PRESALE",
+    refreshInterval: TICKETS_INTERVAL,
   });
   return (
     <>
@@ -60,10 +69,29 @@ export const PresaleClaim = (props: PresaleClaimProps) => {
               </Typography>
               <div>
                 <Typography variant="body" color="mono-600">
-                  69,420 {tokenSymbol}
-                </Typography>{" "}
+                  {ticketsData.status === "pending" ? (
+                    <Skeleton
+                      width={45}
+                      baseColor={theme === "light" ? "#bc6857" : "#3e3e3e"}
+                      highlightColor={theme === "light" ? "#e5ad90" : "#979797"}
+                    />
+                  ) : (
+                    <>
+                      {parseChainValue(+ticketsData.stakedAmount, 0, 2)} {tokenSymbol}
+                    </>
+                  )}
+                </Typography>
+                {" / "}
                 <Typography variant="body" color="mono-500">
-                  / $13.42
+                  {ticketsData.status === "pending" || !memePrice ? (
+                    <Skeleton
+                      width={45}
+                      baseColor={theme === "light" ? "#bc6857" : "#3e3e3e"}
+                      highlightColor={theme === "light" ? "#e5ad90" : "#979797"}
+                    />
+                  ) : (
+                    <>${parseChainValue(+ticketsData.stakedAmount * +memePrice, 0, 2)}</>
+                  )}
                 </Typography>
               </div>
             </div>
