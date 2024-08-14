@@ -25,7 +25,7 @@ export const PresaleClaim = (props: PresaleClaimProps) => {
               tokens after it’s going live.
             </Typography>
             <Typography variant="body" color="mono-600" className="list-item mt-5">
-              Your tokens will be linearly vested for 1 week since coin goes live.
+              Your tokens will be linearly vested for 3 days since coin goes live.
             </Typography>
             <Typography variant="body" color="mono-600" className="list-item mt-5">
               Tokens that are not claimed will earn trading fees revenue share for you.
