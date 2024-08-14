@@ -1,53 +1,93 @@
-import { Button } from "@/components/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/dialog";
+import { Button } from "@/memechan-ui/Atoms";
+import { Divider } from "@/memechan-ui/Atoms/Divider/Divider";
+import { Typography } from "@/memechan-ui/Atoms/Typography";
+import { Card } from "@/memechan-ui/Molecules";
 import { formatNumber } from "@/utils/formatNumber";
 import { MEMECHAN_MEME_TOKEN_DECIMALS } from "@avernikoz/memechan-sol-sdk";
+import { faClose } from "@fortawesome/free-solid-svg-icons/faClose";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Dialog } from "@reach/dialog";
 import BigNumber from "bignumber.js";
+import { useTheme } from "next-themes";
+import { useState } from "react";
 import { UnavailableTicketsToSellDialogParams } from "../../coin.types";
 
 export const UnavailableTicketsToSellDialog = ({
   unavailableTickets,
   symbol,
 }: UnavailableTicketsToSellDialogParams) => {
-  return (
-    <Dialog>
-      <DialogTrigger>
-        <Button className="w-full bg-regular bg-opacity-80 sm:hover:bg-opacity-50">
-          <div className="text-xs font-bold text-white">Locked Tickets</div>
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="max-w-[40vw]">
-        <DialogHeader>
-          <DialogTitle className="text-regular mb-4">Locked Tickets</DialogTitle>
-        </DialogHeader>
-        <div className="flex flex-col gap-1">
-          {unavailableTickets.map((ticket, index) => {
-            const memeTicketLink = `https://explorer.solana.com/address/${ticket.id.toString()}`;
-            const unlockTimestampInMs = new BigNumber(ticket.jsonFields.untilTimestamp).multipliedBy(1000).toNumber();
+  const { theme } = useTheme();
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(true);
 
-            return (
-              <div key={index} className="flex justify-between flex-row gap-2 text-xs font-bold text-regular">
-                <a target="_blank" href={memeTicketLink}>
-                  <span className="sm:hover:underline font-bold">
-                    {index + 1}. {ticket.id.toString().slice(0, 5)}...{ticket.id.toString().slice(-3)}
-                  </span>
-                </a>
+  return (
+    <>
+      <Button
+        onClick={() => {
+          setIsDialogOpen(true);
+        }}
+        variant="primary"
+      >
+        <div className="text-xs font-bold text-white">Locked Tickets</div>
+      </Button>
+      <Dialog
+        isOpen={isDialogOpen}
+        onDismiss={() => setIsDialogOpen(false)}
+        className="fixed inset-0 flex items-center justify-center bg-mono-200 md:bg-[#19191957] md:backdrop-blur-[0.5px] md:z-50"
+      >
+        <div className="max-w-xl max-h-full mx-2 overflow-auto bg-mono-200 shadow-ligsht">
+          <Card>
+            <Card.Header>
+              <div className="flex items-center justify-between w-full">
+                <Typography variant="h4" color={theme === "light" ? "mono-200" : "mono-600"}>
+                  Locked Tickets
+                </Typography>
                 <div>
-                  <span className="font-normal">
-                    {formatNumber(+ticket.amountWithDecimals, MEMECHAN_MEME_TOKEN_DECIMALS)} {symbol}
-                  </span>
-                </div>
-                <div>
-                  <span className="font-normal">
-                    Unlocks at: {new Date(unlockTimestampInMs).toLocaleDateString()}{" "}
-                    {new Date(unlockTimestampInMs).toLocaleTimeString()}
-                  </span>
+                  <Divider vertical className={`ml-1 ${theme === "light" ? "bg-mono-200" : "bg-mono-500"}`} />
+                  <Typography
+                    onClick={() => {
+                      setIsDialogOpen(false);
+                    }}
+                    className="pl-1 mt-[2px]"
+                  >
+                    <FontAwesomeIcon icon={faClose} color="white" fontSize={20} />
+                  </Typography>
                 </div>
               </div>
-            );
-          })}
+            </Card.Header>
+            <Card.Body>
+              <div className="flex flex-col gap-4">
+                {unavailableTickets.map((ticket, index) => {
+                  const memeTicketLink = `https://explorer.solana.com/address/${ticket.id.toString()}`;
+                  const unlockTimestampInMs = new BigNumber(ticket.jsonFields.untilTimestamp)
+                    .multipliedBy(1000)
+                    .toNumber();
+
+                  return (
+                    <div key={index} className="flex justify-between flex-row gap-5 text-xs font-bold text-regular">
+                      <a target="_blank" href={memeTicketLink}>
+                        <Typography variant="h4" color={theme === "light" ? "mono-600" : "mono-600"}>
+                          {index + 1}. {ticket.id.toString().slice(0, 5)}...{ticket.id.toString().slice(-3)}
+                        </Typography>
+                      </a>
+                      <div>
+                        <Typography variant="h4" color={theme === "light" ? "mono-600" : "mono-600"}>
+                          {formatNumber(+ticket.amountWithDecimals, MEMECHAN_MEME_TOKEN_DECIMALS)} {symbol}
+                        </Typography>
+                      </div>
+                      <div>
+                        <Typography variant="h4" color={theme === "light" ? "mono-600" : "mono-600"}>
+                          Unlocks at: {new Date(unlockTimestampInMs).toLocaleDateString()}{" "}
+                          {new Date(unlockTimestampInMs).toLocaleTimeString()}{" "}
+                        </Typography>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </Card.Body>
+          </Card>{" "}
         </div>
-      </DialogContent>
-    </Dialog>
+      </Dialog>
+    </>
   );
 };

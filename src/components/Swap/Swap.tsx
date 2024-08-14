@@ -123,7 +123,7 @@ export const Swap = (props: SwapProps) => {
       {successModalOpened && (
         <SuccessModal
           headerText="Successfully purchased WCHAN"
-          bodyText="You’re now a WCHAN presale participant! Once it goes live your tokens vesting is started. You’ll be able to claim them hourly within 1 week on “Claim” section or keep them staked to earn trading fees share."
+          bodyText="You’re now a WCHAN presale participant! Once it goes live your tokens vesting is started. You’ll be able to claim them hourly within 3 days on “Claim” section or keep them staked to earn trading fees share."
           setSuccessModalOpened={setSuccessModalOpened}
         >
           <Card additionalStyles="mt-3 no-shadow">
@@ -249,6 +249,7 @@ export const Swap = (props: SwapProps) => {
               stakingPoolFromApi={stakingPoolFromApi}
               tokenSymbol={tokenSymbol}
               quoteTokenInfo={quoteTokenInfo}
+              memePrice={memePrice}
             />
           ) : (
             <>
