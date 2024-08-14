@@ -4,7 +4,6 @@ import { Button } from "@/memechan-ui/Atoms";
 import { Divider } from "@/memechan-ui/Atoms/Divider/Divider";
 import { Typography } from "@/memechan-ui/Atoms/Typography";
 import { Card } from "@/memechan-ui/Molecules";
-import { formatNumberForDisplay } from "@/utils/formatNumber";
 import { parseChainValue } from "@/utils/parseChainValue";
 import { faCopy } from "@fortawesome/free-solid-svg-icons/faCopy";
 import { faXmark } from "@fortawesome/free-solid-svg-icons/faXmark";
@@ -49,7 +48,7 @@ export const PointsComponent = ({ onClick }: { onClick?: () => void }) => {
                   >
                     <div className="flex flex-col items-start">
                       <p className="text-[13px] font-bold inline-block">
-                        {formatNumberForDisplay(points?.toNumber() ?? 0)}
+                        {parseChainValue(points?.toNumber() ?? 0, 0, 2)}
                       </p>
                       <p className="text-[13px] font-normal inline-block">Points</p>
                     </div>
