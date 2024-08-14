@@ -7,20 +7,14 @@ import { PhantomWalletAdapter, SolflareWalletAdapter, TrustWalletAdapter } from 
 registerMoonGateWallet({
   authMode: "Google",
   position: "bottom-right",
-  logoDataUri: "OPTIONAL ADD IN-WALLET LOGO URL HERE",
-  buttonLogoUri: "ADD OPTIONAL LOGO FOR WIDGET BUTTON HERE",
 });
 registerMoonGateWallet({
   authMode: "Twitter",
   position: "bottom-right",
-  logoDataUri: "OPTIONAL ADD IN-WALLET LOGO URL HERE",
-  buttonLogoUri: "ADD OPTIONAL LOGO FOR WIDGET BUTTON HERE",
 });
 registerMoonGateWallet({
   authMode: "Apple",
   position: "bottom-right",
-  logoDataUri: "OPTIONAL ADD IN-WALLET LOGO URL HERE",
-  buttonLogoUri: "ADD OPTIONAL LOGO FOR WIDGET BUTTON HERE",
 });
 
 const wallets = [new PhantomWalletAdapter(), new SolflareWalletAdapter(), new TrustWalletAdapter()];
