@@ -6,9 +6,11 @@ import { Button } from "@/memechan-ui/Atoms";
 import { Tabs } from "@/memechan-ui/Atoms/Tabs";
 import TopBar from "@/memechan-ui/Atoms/TopBar/TopBar";
 import { SeedPoolData } from "@/types/pool";
+import { headingVariants } from "@/utils/motionVariants";
 import { SolanaToken } from "@avernikoz/memechan-sol-sdk";
 import { Dialog } from "@reach/dialog";
 import { track } from "@vercel/analytics";
+import { motion } from "framer-motion";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Oval } from "react-loader-spinner";
@@ -173,12 +175,14 @@ export function PresaleCoin({
             )}
           </div>
           <div className="col-span-1 flex flex-col gap-3">
-            <InfoTab
-              coinMetadata={coinMetadata}
-              ticketsData={ticketsData}
-              pool={seedPoolData}
-              boundPoolClient={boundPoolClient}
-            />
+            <motion.div variants={headingVariants} initial="hidden" animate="visible">
+              <InfoTab
+                coinMetadata={coinMetadata}
+                ticketsData={ticketsData}
+                pool={seedPoolData}
+                boundPoolClient={boundPoolClient}
+              />
+            </motion.div>
           </div>
         </div>
       )}

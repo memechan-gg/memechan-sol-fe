@@ -3,8 +3,10 @@ import { UserContextType, useUser } from "@/context/UserContext";
 import { useSolanaBalance } from "@/hooks/useSolanaBalance";
 import { Typography } from "@/memechan-ui/Atoms/Typography";
 import { formatNumberForDisplay } from "@/utils/formatNumber";
+import { shakeAnimation } from "@/utils/motionVariants";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { track } from "@vercel/analytics";
+import { motion } from "framer-motion";
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
@@ -79,16 +81,18 @@ export const ConnectWallet = (props: { account: UserContextType; disconnect: () 
           </div>
         </Link>
       ) : (
-        <div
+        <motion.div
           role="button"
-          className={`h-full w-full px-3 text-primary-100 text-[0.75rem] font-bold flex flex-col ${connected ? "items-start" : "items-center"} justify-center hover:bg-primary-100  hover:text-white transition-colors focus-visible:outline-none`}
+          className={`h-full w-full px-3 text-primary-100 text-[0.75rem] font-bold flex flex-col items-center justify-center hover:bg-primary-100 hover:text-white transition-colors focus-visible:outline-none`}
           onClick={() => {
             isPopupOpen ? closePopup() : openPopup();
           }}
           ref={popoverButtonRef}
+          variants={shakeAnimation}
+          animate="visible"
         >
           {isPopupOpen ? "Cancel" : "Connect"}
-        </div>
+        </motion.div>
       )}
 
       {isPopupOpen && (
