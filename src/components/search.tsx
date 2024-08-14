@@ -1,11 +1,12 @@
 import { Button } from "@/memechan-ui/Atoms";
 import TextInput from "@/memechan-ui/Atoms/Input/TextInput";
+import { inputVariants } from "@/utils/motionVariants";
 import { faClose } from "@fortawesome/free-solid-svg-icons/faClose";
 import { faSearch } from "@fortawesome/free-solid-svg-icons/faSearch";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { motion } from "framer-motion";
 import { useTheme } from "next-themes";
 import { Dispatch, SetStateAction, useEffect, useRef } from "react";
-import { colors } from "../../tailwind.config";
 
 export const Search = ({
   isSearchActive,
@@ -44,34 +45,33 @@ export const Search = ({
           </Button>
         </div>
       )}
-
       {isSearchActive && (
-        <TextInput
-          ref={inputRef}
-          value={search}
-          placeholder="Search"
-          setValue={setSearch}
-          startAdornment={
-            <span className="m-px mr-3 flex fa-">
-              <FontAwesomeIcon size="sm" color={colors["mono-600"]} icon={faSearch} />
-            </span>
-          }
-          endAdornment={
-            <span className="cursor-pointer flex">
-              <FontAwesomeIcon
-                icon={faClose}
-                size="lg"
-                onClick={() => {
-                  setSearch("");
-                  setIsSearchActive(false);
-                }}
-              />
-            </span>
-          }
-          className={`py-2.5 h-10 pl-3 pr-4 rounded-sm !transition-opacity !duration-1000 !ease-in-out ${
-            theme === "dark" ? "pink-border" : ""
-          }`}
-        />
+        <motion.div initial="hidden" animate="visible" exit="exit" variants={inputVariants} className="overflow-hidden">
+          <TextInput
+            ref={inputRef}
+            value={search}
+            placeholder="Search"
+            setValue={setSearch}
+            startAdornment={
+              <span className="m-px mr-3 flex fa-">
+                <FontAwesomeIcon size="sm" icon={faSearch} />
+              </span>
+            }
+            endAdornment={
+              <span className="cursor-pointer flex">
+                <FontAwesomeIcon
+                  icon={faClose}
+                  size="lg"
+                  onClick={() => {
+                    setSearch("");
+                    setIsSearchActive(false);
+                  }}
+                />
+              </span>
+            }
+            className={`py-2.5 h-10 pl-3 pr-4 rounded-sm ${theme === "dark" ? "pink-border" : ""}`}
+          />
+        </motion.div>
       )}
     </div>
   );

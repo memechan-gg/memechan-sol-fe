@@ -5,12 +5,13 @@ import { Divider } from "@/memechan-ui/Atoms/Divider/Divider";
 import TopBar from "@/memechan-ui/Atoms/TopBar/TopBar";
 import { Typography } from "@/memechan-ui/Atoms/Typography";
 import { formatNumberForTokenCard } from "@/utils/formatNumbersForTokenCard";
+import { cardsVariants, headingVariants } from "@/utils/motionVariants";
 import { useWallet } from "@solana/wallet-adapter-react";
+import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Oval } from "react-loader-spinner";
 import { getSlicedAddressV2 } from "../coin/sidebar/holders/utils";
 import { NoCoinsPage } from "./no-coins-page";
-
 type ProfileProps = {
   address: string;
   coin: string;
@@ -128,27 +129,30 @@ export function Profile({ address, coin }: ProfileProps) {
   return (
     <>
       <TopBar rightIcon="/heart.png" title={"Profile"} />
-      <div className="w-full flex flex-col p-3 xl:px-0 pt-2 items-center">
-        <div className="h-[194px] p-4 w-full border rounded-sm border-mono-400 custom-outer-shadow">
-          <div className="flex flex-col">
-            <div className="flex flex-col text-regular">
-              <img
-                className="w-[102px] h-[102px] object-cover object-center border border-mono-300"
-                src="/android-chrome-192x192.png"
-                alt="Profile Image"
-              />
-              <div className="text-xs mt-4 cursor-pointer sm:hover:underline">
-                <a target="_blank" rel="noreferrer" href={`https://solana.fm/address/${address}`}>
-                  <Typography variant="h4">{slicedAddress}</Typography>
-                </a>
+      <motion.div className="w-full mt-3" initial="hidden" animate="visible" variants={headingVariants}>
+        <div className="w-full flex flex-col p-3 xl:px-0 pt-2 items-center">
+          <div className="h-[194px] p-4 w-full border rounded-sm border-mono-400 custom-outer-shadow">
+            <div className="flex flex-col">
+              <div className="flex flex-col text-regular">
+                <img
+                  className="w-[102px] h-[102px] object-cover object-center border border-mono-300"
+                  src="/android-chrome-192x192.png"
+                  alt="Profile Image"
+                />
+                <div className="text-xs mt-4 cursor-pointer sm:hover:underline">
+                  <a target="_blank" rel="noreferrer" href={`https://solana.fm/address/${address}`}>
+                    <Typography variant="h4">{slicedAddress}</Typography>
+                  </a>
+                </div>
+                <Typography variant="body" color="mono-500">
+                  {slicedAddress} / 👛 {solanaBalance ?? 0} SOL
+                </Typography>
               </div>
-              <Typography variant="body" color="mono-500">
-                {slicedAddress} / 👛 {solanaBalance ?? 0} SOL
-              </Typography>
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
+
       <Divider />
       <div className="flex flex-col items-center w-full mt-3 px-3 xl:px-0">
         {isLoading ? (
@@ -162,14 +166,21 @@ export function Profile({ address, coin }: ProfileProps) {
         ) : (
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 justify-center w-full">
             {tokens.map((token, index) => (
-              <div key={index} className="w-full lg:w-auto lg:p-0">
+              <motion.div
+                key={index}
+                className="w-full lg:w-auto lg:p-0"
+                custom={index}
+                initial="hidden"
+                animate="visible"
+                variants={cardsVariants}
+              >
                 <TokenCard
                   progressInfo={formatNumberForTokenCard({ token })}
                   key={token.mint}
                   token={token}
                   showOnClick
                 />
-              </div>
+              </motion.div>
             ))}
           </div>
         )}

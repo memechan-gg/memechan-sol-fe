@@ -5,10 +5,11 @@ import { Button } from "@/memechan-ui/Atoms";
 import { Tabs } from "@/memechan-ui/Atoms/Tabs";
 import TopBar from "@/memechan-ui/Atoms/TopBar/TopBar";
 import { LivePoolData } from "@/types/pool";
-import { formatNumber } from "@/utils/formatNumber";
+import { headingVariants } from "@/utils/motionVariants";
 import { SolanaToken } from "@avernikoz/memechan-sol-sdk";
 import { Dialog } from "@reach/dialog";
 import { track } from "@vercel/analytics";
+import { motion } from "framer-motion";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { CommentsTab } from "./common-tabs/comments-tab/comments-tab";
@@ -16,7 +17,6 @@ import { ChartTab } from "./live-coin-tabs/chart-tab/chart-tab";
 import { InfoTab } from "./live-coin-tabs/info-tab/info-tab";
 import { desktopTabs, mobileTabs } from "./presale-coin";
 import { LiveCoinSwap } from "./sidebar/swap/live-coin-swap";
-
 export function LiveCoin({
   coinMetadata,
   livePoolData,
@@ -135,12 +135,14 @@ export function LiveCoin({
             {tab === "Chart" && <ChartTab coinAddress={coinMetadata.address} livePoolDataId={livePoolData.id} />}
           </div>
           <div className="col-span-1 flex flex-col gap-3">
-            <InfoTab
-              coinMetadata={coinMetadata}
-              pool={livePoolData}
-              stakingPoolFromApi={stakingPoolFromApi}
-              seedPoolData={seedPoolData}
-            />
+            <motion.div variants={headingVariants} initial="hidden" animate="visible">
+              <InfoTab
+                coinMetadata={coinMetadata}
+                pool={livePoolData}
+                stakingPoolFromApi={stakingPoolFromApi}
+                seedPoolData={seedPoolData}
+              />
+            </motion.div>
           </div>
         </div>
       )}
