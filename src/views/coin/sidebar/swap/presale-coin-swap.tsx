@@ -264,6 +264,11 @@ export const PresaleCoinSwap = ({
       }
     } catch (e) {
       console.error("[Swap.onSwap] Swap error:", e);
+
+      if (e instanceof Error && e.message.includes("403")) {
+        return;
+      }
+
       toast.error("Swap failed. Please, try again");
     } finally {
       refreshAvailableTickets();

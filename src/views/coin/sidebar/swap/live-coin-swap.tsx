@@ -243,6 +243,13 @@ export const LiveCoinSwap = ({
 
           if (swapTxResult.value.err) {
             console.error("[LiveCoinSwap.onSwap] Sell failed:", JSON.stringify(swapTxResult, null, 2));
+            if (
+              typeof swapTxResult.value.err === "object" &&
+              "message" in swapTxResult.value.err &&
+              (swapTxResult.value.err as any).message.includes("403")
+            ) {
+              return;
+            }
             toast("Swap failed. Please, try again");
             return;
           }
@@ -276,6 +283,13 @@ export const LiveCoinSwap = ({
 
           if (swapTxResult.value.err) {
             console.error("[LiveCoinSwap.onSwap] Sell failed:", JSON.stringify(swapTxResult, null, 2));
+            if (
+              typeof swapTxResult.value.err === "object" &&
+              "message" in swapTxResult.value.err &&
+              (swapTxResult.value.err as any).message.includes("403")
+            ) {
+              return;
+            }
             toast("Swap failed. Please, try again");
             return;
           }
@@ -293,8 +307,10 @@ export const LiveCoinSwap = ({
       return;
     } catch (e) {
       console.error("[LiveCoinSwap.onSwap] Swap error:", e);
+      if (e instanceof Error && e.message.includes("403")) {
+        return;
+      }
       toast.error("Failed to swap. Please, try again");
-      return;
     } finally {
       setIsSwapping(false);
     }
