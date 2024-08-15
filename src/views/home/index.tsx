@@ -5,8 +5,10 @@ import { Divider } from "@/memechan-ui/Atoms/Divider/Divider";
 import { Tabs } from "@/memechan-ui/Atoms/Tabs";
 import { Typography } from "@/memechan-ui/Atoms/Typography";
 import { formatNumberForTokenCard } from "@/utils/formatNumbersForTokenCard";
+import { cardsVariants, headingVariants } from "@/utils/motionVariants";
 import { Dialog } from "@reach/dialog";
 import { track } from "@vercel/analytics";
+import { motion } from "framer-motion";
 import Cookies from "js-cookie";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Oval } from "react-loader-spinner";
@@ -76,7 +78,11 @@ export function Home() {
   const [activeTab, setActiveTab] = useState(tabs[0]);
 
   if (!isMounted) {
-    return <Typography>Loading...</Typography>;
+    return (
+      <div className="mt-10">
+        <Oval visible={true} color="#3e3e3e" secondaryColor="#979797" />
+      </div>
+    );
   }
 
   if (!isConfirmed) {
@@ -133,14 +139,29 @@ export function Home() {
 
   return (
     <div className="flex flex-col items-center w-full min-w-80 px-3 pt-3 xl:px-0">
-      <div className="w-full mt-3">
+      <motion.div className="w-full mt-3" initial="hidden" animate="visible" variants={headingVariants}>
         <img
           src={mediaQuery.isSmallDevice ? "/short-banner.png" : "/long-banner.png"}
           alt="Banner"
           className="w-full"
         />
-      </div>
+      </motion.div>
       <Divider className="mt-6 mb-4" />
+      {/* Remove this divider after including top cards */}
+      {/* TODO ALDIN Call it with right data */}
+      {/* <Divider className="mt-6 mb-6" />
+      <SlideCardWrapper>
+        {Array.from({ length: 3 }).map((_, index) => (
+          <div
+            key={index}
+            className={`flex-shrink-1 ${index === 0 ? "" : "ml-4"} w-full`}
+            style={{ display: "inline-block" }}
+          >
+            <SlideCard />
+          </div>
+        ))}
+      </SlideCardWrapper>
+      <Divider className="mt-5 mb-4" /> */}
       <div className="self-start w-full">
         <Tabs
           className="justify-start items-center gap-x-5 ml-[-5px]"
@@ -166,13 +187,15 @@ export function Home() {
       {isCoinsListExist && (
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 justify-center w-full">
           {tokenList.map((token, index) => (
-            <TokenCard
+            <motion.div
               key={`${token.address}`}
-              progressInfo={formatNumberForTokenCard({ token })}
-              token={token}
-              showCheckmark
-              showOnClick
-            />
+              custom={index}
+              initial="hidden"
+              animate="visible"
+              variants={cardsVariants}
+            >
+              <TokenCard progressInfo={formatNumberForTokenCard({ token })} token={token} showCheckmark showOnClick />
+            </motion.div>
           ))}
           {isCoinsListEmpty && <Typography>No memecoins yet</Typography>}
         </div>

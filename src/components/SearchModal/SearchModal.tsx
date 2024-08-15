@@ -3,6 +3,7 @@ import { BE_URL } from "@/common/solana";
 import { Typography } from "@/memechan-ui/Atoms/Typography";
 import { SolanaToken } from "@avernikoz/memechan-sol-sdk";
 import { useQuery } from "@tanstack/react-query";
+import { Oval } from "react-loader-spinner";
 import { useRecoilState } from "recoil";
 import { useDebounceValue } from "usehooks-ts";
 import { TokenCard } from "../TokenCard";
@@ -27,8 +28,12 @@ export const SearchModal = () => {
 
   return (
     <div className="w-full px-3 mt-3 sm:mt-6 xl:px-0">
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 justify-center w-full">
-        {isLoading && <Typography variant="h4">Loading...</Typography>}
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 justify-center w-full relative">
+        {isLoading && (
+          <div className="absolute inset-20 flex items-center justify-center">
+            <Oval visible={true} color="#3e3e3e" secondaryColor="#979797" />
+          </div>
+        )}
         {tokens?.map((token) => <TokenCard showOnClick key={token.address} token={token} onClick={handleTokenClick} />)}
       </div>
       {isCoinsListEmpty && (

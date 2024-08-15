@@ -1,3 +1,4 @@
+import { formatNumberForDisplay } from "@/utils/formatNumber";
 import { useTheme } from "next-themes";
 import { ChangeEvent, useRef } from "react";
 import Skeleton from "react-loading-skeleton";
@@ -153,7 +154,7 @@ export const SwapInput: React.FC<SwapInputProps> = ({
             )}
             <div className="text-xs text-black-35 dark:text-white-35">
               {usdPrice !== 0 && usdPrice !== undefined && (
-                <Typography color="mono-500">${usdPrice.toFixed(2)}</Typography>
+                <Typography color="mono-500">${formatNumberForDisplay(usdPrice)}</Typography>
               )}
             </div>
           </div>

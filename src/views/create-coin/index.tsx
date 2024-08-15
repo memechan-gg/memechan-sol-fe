@@ -15,10 +15,12 @@ import TopBar from "@/memechan-ui/Atoms/TopBar/TopBar";
 import { Typography } from "@/memechan-ui/Atoms/Typography";
 import DownArrowIcon from "@/memechan-ui/icons/DownArrowIcon";
 import UpArrowIcon from "@/memechan-ui/icons/UpArrowIcon";
+import { headingVariants } from "@/utils/motionVariants";
 import { TOKEN_INFOS, sleep } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { track } from "@vercel/analytics";
 import BigNumber from "bignumber.js";
+import { motion } from "framer-motion";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -286,7 +288,12 @@ export function CreateCoin() {
         </SuccessModal>
       )}
       <TopBar rightIcon="/diamond.png" title={"Create Memecoin"}></TopBar>
-      <div className="min-w-[345px] w-[-webkit-fill-available] sm:w-full sm:max-w-[406px] custom-outer-shadow flex items-center justify-center border border-mono-400 rounded-sm m-3 sm:mb-[-12px]">
+      <motion.div
+        className="min-w-[345px] w-[-webkit-fill-available] sm:w-full sm:max-w-[406px] custom-outer-shadow flex items-center justify-center border border-mono-400 rounded-sm m-3 sm:mb-[-12px]"
+        initial="hidden"
+        animate="visible"
+        variants={headingVariants}
+      >
         <div className="w-full lg:max-w-3xl m-4 ">
           <form onSubmit={onSubmit} className="flex flex-col ">
             <div className="flex flex-col gap-4">
@@ -515,7 +522,7 @@ export function CreateCoin() {
             </div> */}
           </form>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

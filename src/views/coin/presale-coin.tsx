@@ -1,17 +1,20 @@
 import { TICKETS_INTERVAL } from "@/config/config";
+import { useReferrerContext } from "@/context/ReferrerContext";
 import { useBoundPoolClient } from "@/hooks/presale/useBoundPoolClient";
 import { useMedia } from "@/hooks/useMedia";
 import { useTickets } from "@/hooks/useTickets";
 import { Button } from "@/memechan-ui/Atoms";
 import { Tabs } from "@/memechan-ui/Atoms/Tabs";
 import TopBar from "@/memechan-ui/Atoms/TopBar/TopBar";
-import { Typography } from "@/memechan-ui/Atoms/Typography";
 import { SeedPoolData } from "@/types/pool";
+import { headingVariants } from "@/utils/motionVariants";
 import { SolanaToken } from "@avernikoz/memechan-sol-sdk";
 import { Dialog } from "@reach/dialog";
 import { track } from "@vercel/analytics";
+import { motion } from "framer-motion";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { Oval } from "react-loader-spinner";
 import { CommentsTab } from "./common-tabs/comments-tab/comments-tab";
 import { ChartTab } from "./presale-coin-tabs/chart-tab/chart-tab";
 import { InfoTab } from "./presale-coin-tabs/info-tab/info-tab";
@@ -29,6 +32,7 @@ export function PresaleCoin({
   seedPoolData: SeedPoolData;
   tab: string;
 }) {
+  const referrer = useReferrerContext();
   const mediaQuery = useMedia();
   const router = useRouter();
   const { data: boundPoolClient, isFetching, isError, isLoading } = useBoundPoolClient(seedPoolData.address);
@@ -60,14 +64,32 @@ export function PresaleCoin({
 
   const onTabChange = (tab: string) => {
     track("PresaleCoin_SetTab", { status: tab });
-    router.push(
-      {
-        pathname: `/coin/[coinType]`,
-        query: { coinType: coinMetadata.address, tab: tab },
-      },
-      undefined,
-      { shallow: true },
-    );
+    if (referrer.referrer) {
+      router.push(
+        {
+          pathname: `/coin/[coinType]`,
+          query: { coinType: coinMetadata.address, tab: tab, referrer: referrer.referrer },
+        },
+        undefined,
+        { shallow: true },
+      );
+    } else {
+      router.push(
+        {
+          pathname: `/coin/[coinType]`,
+          query: { coinType: coinMetadata.address, tab: tab },
+        },
+        undefined,
+        { shallow: true },
+      );
+    }
+    if (mediaQuery.isSmallDevice) {
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: "instant",
+      });
+    }
   };
 
   if (!isFetching && isError && (boundPoolClient === null || boundPoolClient === undefined)) {
@@ -82,8 +104,8 @@ export function PresaleCoin({
 
   if (isLoading || boundPoolClient === null || boundPoolClient === undefined)
     return (
-      <div>
-        <Typography variant="h4">Loading...</Typography>
+      <div className="mt-2">
+        <Oval visible={true} color="#3e3e3e" secondaryColor="#979797" />
       </div>
     );
 
@@ -173,12 +195,14 @@ export function PresaleCoin({
             )}
           </div>
           <div className="col-span-1 flex flex-col gap-3">
-            <InfoTab
-              coinMetadata={coinMetadata}
-              ticketsData={ticketsData}
-              pool={seedPoolData}
-              boundPoolClient={boundPoolClient}
-            />
+            <motion.div variants={headingVariants} initial="hidden" animate="visible">
+              <InfoTab
+                coinMetadata={coinMetadata}
+                ticketsData={ticketsData}
+                pool={seedPoolData}
+                boundPoolClient={boundPoolClient}
+              />
+            </motion.div>
           </div>
         </div>
       )}

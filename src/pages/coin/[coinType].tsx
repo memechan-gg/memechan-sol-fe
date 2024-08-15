@@ -5,13 +5,20 @@ import { useRouter } from "next/router";
 export default function CoinPage() {
   const router = useRouter();
   const media = useMedia();
-  let { coinType, tab } = router.query as { coinType: string; tab: string };
+  let { coinType, tab, referrer } = router.query as { coinType: string; tab: string; referrer?: string };
 
   if (!media.isSmallDevice && tab === "Info") {
-    router.push({
-      pathname: `/coin/[coinType]`,
-      query: { coinType: coinType, tab: "Chart" },
-    });
+    if (referrer) {
+      router.push({
+        pathname: `/coin/[coinType]`,
+        query: { coinType: coinType, tab: "Chart", referrer: referrer },
+      });
+    } else {
+      router.push({
+        pathname: `/coin/[coinType]`,
+        query: { coinType: coinType, tab: "Chart" },
+      });
+    }
   }
 
   return <Coin coin={coinType} tab={tab} />;

@@ -1,3 +1,4 @@
+import { useReferrerContext } from "@/context/ReferrerContext";
 import { useSeedPool } from "@/hooks/presale/useSeedPool";
 import { useStakingPoolFromApi } from "@/hooks/staking/useStakingPoolFromApi";
 import { useMedia } from "@/hooks/useMedia";
@@ -5,10 +6,11 @@ import { Button } from "@/memechan-ui/Atoms";
 import { Tabs } from "@/memechan-ui/Atoms/Tabs";
 import TopBar from "@/memechan-ui/Atoms/TopBar/TopBar";
 import { LivePoolData } from "@/types/pool";
-import { formatNumber } from "@/utils/formatNumber";
+import { headingVariants } from "@/utils/motionVariants";
 import { SolanaToken } from "@avernikoz/memechan-sol-sdk";
 import { Dialog } from "@reach/dialog";
 import { track } from "@vercel/analytics";
+import { motion } from "framer-motion";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { CommentsTab } from "./common-tabs/comments-tab/comments-tab";
@@ -16,7 +18,6 @@ import { ChartTab } from "./live-coin-tabs/chart-tab/chart-tab";
 import { InfoTab } from "./live-coin-tabs/info-tab/info-tab";
 import { desktopTabs, mobileTabs } from "./presale-coin";
 import { LiveCoinSwap } from "./sidebar/swap/live-coin-swap";
-
 export function LiveCoin({
   coinMetadata,
   livePoolData,
@@ -26,6 +27,7 @@ export function LiveCoin({
   livePoolData: LivePoolData;
   tab: string;
 }) {
+  const referrer = useReferrerContext();
   const { data: stakingPoolFromApi } = useStakingPoolFromApi(coinMetadata.address);
   const { data: seedPoolData } = useSeedPool(coinMetadata.address);
   const mediaQuery = useMedia();
@@ -34,14 +36,25 @@ export function LiveCoin({
 
   const onTabChange = (tab: string) => {
     track("Live_SetTab", { status: tab });
-    router.push(
-      {
-        pathname: `/coin/[coinType]`,
-        query: { coinType: coinMetadata.address, tab: tab },
-      },
-      undefined,
-      { shallow: true },
-    );
+    if (referrer.referrer) {
+      router.push(
+        {
+          pathname: `/coin/[coinType]`,
+          query: { coinType: coinMetadata.address, tab: tab, referrer: referrer.referrer },
+        },
+        undefined,
+        { shallow: true },
+      );
+    } else {
+      router.push(
+        {
+          pathname: `/coin/[coinType]`,
+          query: { coinType: coinMetadata.address, tab: tab },
+        },
+        undefined,
+        { shallow: true },
+      );
+    }
     if (mediaQuery.isSmallDevice) {
       window.scrollTo({
         top: 0,
@@ -135,12 +148,14 @@ export function LiveCoin({
             {tab === "Chart" && <ChartTab coinAddress={coinMetadata.address} livePoolDataId={livePoolData.id} />}
           </div>
           <div className="col-span-1 flex flex-col gap-3">
-            <InfoTab
-              coinMetadata={coinMetadata}
-              pool={livePoolData}
-              stakingPoolFromApi={stakingPoolFromApi}
-              seedPoolData={seedPoolData}
-            />
+            <motion.div variants={headingVariants} initial="hidden" animate="visible">
+              <InfoTab
+                coinMetadata={coinMetadata}
+                pool={livePoolData}
+                stakingPoolFromApi={stakingPoolFromApi}
+                seedPoolData={seedPoolData}
+              />
+            </motion.div>
           </div>
         </div>
       )}

@@ -1,20 +1,24 @@
 import { searchAtom } from "@/atoms";
 import { usePopup } from "@/context/PopupContext";
 import { useUser } from "@/context/UserContext";
+import { useMedia } from "@/hooks/useMedia";
 import { Button } from "@/memechan-ui/Atoms/Button";
 import { Typography } from "@/memechan-ui/Atoms/Typography";
 import { useWallet } from "@solana/wallet-adapter-react";
+import { useTheme } from "next-themes";
 import Link from "next/link";
 import { useState } from "react";
 import { useRecoilState } from "recoil";
 import { Logo } from "./logo";
+import { PointsComponent } from "./points-component";
 import { ProfileManagment } from "./profile-management";
 import { Search } from "./search";
 
 export const Header = () => {
   const account = useUser();
   const { openPopup } = usePopup();
-  const { disconnect } = useWallet();
+  const media = useMedia();
+  const { disconnect, connected } = useWallet();
   const [search, setSearch] = useRecoilState(searchAtom);
   const [isSearchActive, setIsSearchActive] = useState(false);
 
@@ -80,6 +84,7 @@ export const Header = () => {
                   search={search}
                   setSearch={setSearch}
                 />
+                {!media.isSmallDevice && connected && <PointsComponent />}
                 <ProfileManagment account={account} disconnect={disconnect} />
               </div>
             </>

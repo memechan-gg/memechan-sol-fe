@@ -134,7 +134,7 @@ export function formatSmallNumber(number: number, decimals: number) {
   return `${formattedCoefficient}e${exponent}`;
 }
 
-export function formatNumberForDisplay(num: number) {
+export function formatNumberForDisplay(num: number, isInteger: boolean = false) {
   const absNum = Math.abs(num);
 
   let formattedNum;
@@ -146,20 +146,34 @@ export function formatNumberForDisplay(num: number) {
   } else if (absNum >= 1e6) {
     formattedNum = num / 1e6;
     suffix = "m";
-  } else if (absNum >= 1e3) {
+  } else if (absNum >= 1e5) {
     formattedNum = num / 1e3;
     suffix = "k";
   } else {
     formattedNum = num;
   }
 
-  const decimalPlaces =
-    absNum >= 1e6 ? 2 : absNum >= 1e3 ? 1 : absNum >= 100 ? 1 : absNum >= 10 ? 2 : absNum >= 1 ? 3 : 4;
+  const decimalPlaces = isInteger
+    ? 0
+    : absNum >= 1e6
+      ? 2
+      : absNum >= 1e5
+        ? 2
+        : absNum >= 100
+          ? 1
+          : absNum >= 10
+            ? 2
+            : absNum >= 1
+              ? 3
+              : 4;
 
   return (
-    parseFloat(formattedNum.toString()).toLocaleString(undefined, {
-      minimumFractionDigits: decimalPlaces,
-      maximumFractionDigits: decimalPlaces,
-    }) + suffix
+    parseFloat(formattedNum.toString())
+      .toLocaleString("en-US", {
+        minimumFractionDigits: decimalPlaces,
+        maximumFractionDigits: decimalPlaces,
+        useGrouping: true,
+      })
+      .replace(/,/g, " ") + suffix
   );
 }

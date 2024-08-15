@@ -1,4 +1,5 @@
 import { UserContextType } from "@/context/UserContext";
+import { useMedia } from "@/hooks/useMedia";
 import ThemeSwitcher from "@/memechan-ui/Atoms/ThemeSwitcher/ThemeSwitcher";
 import { RpcConnectionDialog } from "@/views/rpc-connection/rpc-connection-dialog";
 import { faClose } from "@fortawesome/free-solid-svg-icons/faClose";
@@ -12,10 +13,12 @@ import Link from "next/link";
 import { useState } from "react";
 import TelegramIcon from "../memechan-ui/icons/telegram-icon.svg";
 import TwitterIcon from "../memechan-ui/icons/twitter-icon.svg";
+import { PointsComponent } from "./points-component";
 
 export default function SideMenu(props: { account: UserContextType; disconnect: () => Promise<void> }) {
   const { connected } = useWallet();
   const { theme } = useTheme();
+  const media = useMedia();
 
   const [isOpen, setIsOpen] = useState(false);
   return (
@@ -135,8 +138,9 @@ export default function SideMenu(props: { account: UserContextType; disconnect: 
                   </a>
                 </div>
                 <div className="bottom-border w-full" />
-                <div className="mt-6 sm:mt-2">
+                <div className="mt-6 sm:mt-2 flex w-full justify-between">
                   <ThemeSwitcher />
+                  {media.isSmallDevice && connected && <PointsComponent />}
                 </div>
               </Popover.Panel>
             </>
