@@ -5,6 +5,7 @@ import { PopupProvider } from "@/context/PopupContext";
 import { UserProvider } from "@/context/UserContext";
 import "@/styles/globals.css";
 import "@/styles/skeleton-chart-custom.css";
+import { TelegramProvider } from "@/utils/telegramProvider";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -67,25 +68,27 @@ export default function App({ Component, pageProps }: AppProps) {
       </Head>
       <NextProgress options={{ showSpinner: false }} />
       <RecoilRoot>
-        <SolanaProvider>
-          <UserProvider>
-            <QueryClientProvider client={queryClient}>
-              <ConnectionProvider>
-                <PopupProvider>
-                  <ThemeProvider attribute="class" defaultTheme="dark" value={{ light: "light", dark: "dark" }}>
-                    <Layout>
-                      <Component {...pageProps} />
-                      <SpeedInsights />
-                      <Analytics />
-                    </Layout>
-                  </ThemeProvider>
-                </PopupProvider>
-              </ConnectionProvider>
-              {process.env.NODE_ENV === "development" && <ReactQueryDevtools initialIsOpen={false} />}
-            </QueryClientProvider>
-            <Toaster position="bottom-right" />
-          </UserProvider>
-        </SolanaProvider>
+        <TelegramProvider>
+          <SolanaProvider>
+            <UserProvider>
+              <QueryClientProvider client={queryClient}>
+                <ConnectionProvider>
+                  <PopupProvider>
+                    <ThemeProvider attribute="class" defaultTheme="dark" value={{ light: "light", dark: "dark" }}>
+                      <Layout>
+                        <Component {...pageProps} />
+                        <SpeedInsights />
+                        <Analytics />
+                      </Layout>
+                    </ThemeProvider>
+                  </PopupProvider>
+                </ConnectionProvider>
+                {process.env.NODE_ENV === "development" && <ReactQueryDevtools initialIsOpen={false} />}
+              </QueryClientProvider>
+              <Toaster position="bottom-right" />
+            </UserProvider>
+          </SolanaProvider>
+        </TelegramProvider>
       </RecoilRoot>
     </>
   );
