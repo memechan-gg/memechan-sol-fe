@@ -3,6 +3,7 @@ import { UserContextType, useUser } from "@/context/UserContext";
 import { useSolanaBalance } from "@/hooks/useSolanaBalance";
 import { Typography } from "@/memechan-ui/Atoms/Typography";
 import { formatNumber } from "@/utils/formatNumber";
+import { useTelegram } from "@/utils/telegramProvider";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { track } from "@vercel/analytics";
 import { useTheme } from "next-themes";
@@ -19,6 +20,7 @@ export const ConnectWallet = (props: { account: UserContextType; disconnect: () 
   const popoverRef = useRef<HTMLDivElement>(null);
   const popoverButtonRef = useRef<HTMLDivElement>(null);
   const account = useUser();
+  const { user } = useTelegram();
 
   const connectWallet = async (walletName: string) => {
     const wallet = wallets.find((w) => w.adapter.name === walletName);
@@ -105,7 +107,8 @@ export const ConnectWallet = (props: { account: UserContextType; disconnect: () 
           <div>
             {(() => {
               const socialWallets = ["Sign in with Apple", "Sign in with Twitter", "Sign in with Google"];
-              const sortedWallets = wallets.sort((a, b) => {
+              const filteredWallets = user ? wallets.filter((w) => !socialWallets.includes(w.adapter.name)) : wallets;
+              const sortedWallets = filteredWallets.sort((a, b) => {
                 const aIsSocial = socialWallets.includes(a.adapter.name);
                 const bIsSocial = socialWallets.includes(b.adapter.name);
 
