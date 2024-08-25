@@ -1,9 +1,9 @@
 import { VESTING_INTERVAL } from "@/config/config";
 import { useConnection } from "@/context/ConnectionContext";
+import { VestingClient } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Connection, PublicKey } from "@solana/web3.js";
 import { useQuery } from "@tanstack/react-query";
-import { VestingClient } from "memechan-sol-sdk";
 
 const fetchVesting = async (user: PublicKey, connection: Connection) => {
   try {

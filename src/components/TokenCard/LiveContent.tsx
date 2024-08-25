@@ -1,7 +1,7 @@
 import { formatSmallNumber } from "@/utils/formatNumber";
 import { parseChainValue } from "@/utils/parseChainValue";
 import { timeSince } from "@/utils/timeSpents";
-import { SolanaToken } from "memechan-sol-sdk";
+import { SolanaToken } from "@avernikoz/memechan-sol-sdk";
 import { useTheme } from "next-themes";
 interface Props {
   token: SolanaToken;

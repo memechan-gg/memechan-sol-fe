@@ -1,6 +1,6 @@
 import { SIMULATION_KEYPAIR } from "@/common/solana";
+import { NoWalletAdapter } from "@avernikoz/memechan-sol-sdk";
 import { ConnectionConfig } from "@solana/web3.js";
-import { NoWalletAdapter } from "memechan-sol-sdk";
 
 // Connection Config
 export const MEMECHAN_RPC_ENDPOINT = "https://georgeanne-ejqyzl-fast-mainnet.helius-rpc.com";

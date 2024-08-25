@@ -1,6 +1,6 @@
 import { Typography } from "@/memechan-ui/Atoms/Typography";
 import { parseChainValue } from "@/utils/parseChainValue";
-import { SolanaToken } from "memechan-sol-sdk";
+import { SolanaToken } from "@avernikoz/memechan-sol-sdk";
 import { useTheme } from "next-themes";
 interface Props {
   token: SolanaToken;

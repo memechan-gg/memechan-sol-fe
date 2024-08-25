@@ -1,9 +1,9 @@
 import { TOKEN_ACCOUNTS_INTERVAL } from "@/config/config";
 import { useConnection } from "@/context/ConnectionContext";
+import { getWalletTokenAccount } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Connection, PublicKey } from "@solana/web3.js";
 import { useQuery } from "@tanstack/react-query";
-import { getWalletTokenAccount } from "memechan-sol-sdk";
 
 const fetchTokenAccounts = async (publicKey: PublicKey, connection: Connection) => {
   try {

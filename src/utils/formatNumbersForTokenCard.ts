@@ -1,7 +1,7 @@
 import { QUOTE_TOKEN_DECIMALS } from "@/constants/constants";
 import { getTokenInfo } from "@/hooks/utils";
+import { SolanaToken } from "@avernikoz/memechan-sol-sdk";
 import BigNumber from "bignumber.js";
-import { SolanaToken } from "memechan-sol-sdk";
 import { parseChainValue } from "./parseChainValue";
 import { timeSince } from "./timeSpents";
 

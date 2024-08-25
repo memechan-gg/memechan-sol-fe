@@ -1,8 +1,8 @@
 import { LIVE_POOL_HOLDERS_INTERVAL, MAX_HOLDERS_COUNT } from "@/config/config";
 import { useConnection } from "@/context/ConnectionContext";
+import { MemechanClient, MemechanClientV2, getStakingPoolClientFromId } from "@avernikoz/memechan-sol-sdk";
 import { PublicKey } from "@solana/web3.js";
 import { useQuery } from "@tanstack/react-query";
-import { MemechanClient, MemechanClientV2, getStakingPoolClientFromId } from "memechan-sol-sdk";
 
 const fetchLiveUniqueHolders = async (
   mint: string,

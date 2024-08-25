@@ -13,14 +13,14 @@ import { Typography } from "@/memechan-ui/Atoms/Typography";
 import { GetSwapOutputAmountParams, GetSwapTransactionParams } from "@/types/hooks";
 import { confirmTransaction } from "@/utils/confirmTransaction";
 import { parseChainValue } from "@/utils/parseChainValue";
-import { useWallet } from "@solana/wallet-adapter-react";
-import { useQueryClient } from "@tanstack/react-query";
-import { track } from "@vercel/analytics";
 import {
   GetBuyMemeTransactionOutput,
   GetSellMemeTransactionOutput,
   MEMECHAN_MEME_TOKEN_DECIMALS,
-} from "memechan-sol-sdk";
+} from "@avernikoz/memechan-sol-sdk";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { useQueryClient } from "@tanstack/react-query";
+import { track } from "@vercel/analytics";
 import { useTheme } from "next-themes";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";

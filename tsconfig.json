@@ -14,8 +14,7 @@
     "incremental": true,
     "paths": {
       "@/*": ["./src/*"],
-      "@raydium-io/raydium-sdk": ["./node_modules/@raydium-io/raydium-sdk"],
-      "*": ["node_modules/*"]
+      "@raydium-io/raydium-sdk": ["./node_modules/@raydium-io/raydium-sdk"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],

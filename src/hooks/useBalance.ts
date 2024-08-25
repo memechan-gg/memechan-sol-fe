@@ -1,5 +1,5 @@
 import { NATIVE_MINT_STRING } from "@/common/solana";
-import { getMintBalanceFromTokenAccounts } from "memechan-sol-sdk";
+import { getMintBalanceFromTokenAccounts } from "@avernikoz/memechan-sol-sdk";
 import { useSolanaBalance } from "./useSolanaBalance";
 import { useTokenAccounts } from "./useTokenAccounts";
 

@@ -1,8 +1,8 @@
 import { Typography } from "@/memechan-ui/Atoms/Typography";
 import { Card } from "@/memechan-ui/Molecules";
+import { ConvertedHolderItem } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
-import { ConvertedHolderItem } from "memechan-sol-sdk";
 import { useTheme } from "next-themes";
 import { HoldersProps } from "../../coin.types";
 import { getSlicedAddress } from "./utils";
