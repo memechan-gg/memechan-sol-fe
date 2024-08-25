@@ -1,5 +1,5 @@
 import { MAX_SLIPPAGE, MIN_SLIPPAGE } from "@/config/config";
-import { MemeTicketClient, MemeTicketClientV2 } from "@avernikoz/memechan-sol-sdk";
+import { MemeTicketClient, MemeTicketClientV2 } from "memechan-sol-sdk";
 import { ChangeEvent, SetStateAction } from "react";
 import toast from "react-hot-toast";
 

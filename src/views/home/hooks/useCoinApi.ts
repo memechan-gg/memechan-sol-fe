@@ -1,5 +1,5 @@
 import { TokenApiInstance } from "@/common/solana";
-import { SolanaToken } from "@avernikoz/memechan-sol-sdk";
+import { SolanaToken } from "memechan-sol-sdk";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useInterval } from "usehooks-ts";

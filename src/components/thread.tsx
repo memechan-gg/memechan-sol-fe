@@ -1,6 +1,6 @@
 import { parseChainValue } from "@/utils/parseChainValue";
-import { SolanaToken } from "@avernikoz/memechan-sol-sdk";
 import { track } from "@vercel/analytics";
+import { SolanaToken } from "memechan-sol-sdk";
 import Link from "next/link";
 
 export function NoticeBoard({ title, children }: { title: string; children: React.ReactNode }) {

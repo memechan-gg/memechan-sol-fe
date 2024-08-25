@@ -1,12 +1,7 @@
 import { useConnection } from "@/context/ConnectionContext";
-import {
-  MemechanClient,
-  MemechanClientV2,
-  NoBoundPoolExist,
-  getBoundPoolClientFromId,
-} from "@avernikoz/memechan-sol-sdk";
 import { PublicKey } from "@solana/web3.js";
 import { useQuery } from "@tanstack/react-query";
+import { MemechanClient, MemechanClientV2, NoBoundPoolExist, getBoundPoolClientFromId } from "memechan-sol-sdk";
 
 const fetchBoundPoolClient = async (poolAddress: string, client: MemechanClient, clientV2: MemechanClientV2) => {
   try {

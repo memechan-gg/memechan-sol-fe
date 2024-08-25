@@ -1,7 +1,7 @@
 import { useConnection } from "@/context/ConnectionContext";
-import { MemechanClient, MemechanClientV2, getStakingPoolClientFromId } from "@avernikoz/memechan-sol-sdk";
 import { PublicKey } from "@solana/web3.js";
 import { useQuery } from "@tanstack/react-query";
+import { MemechanClient, MemechanClientV2, getStakingPoolClientFromId } from "memechan-sol-sdk";
 
 const fetchStakingPoolClient = async (poolAddress: string, client: MemechanClient, clientV2: MemechanClientV2) => {
   try {

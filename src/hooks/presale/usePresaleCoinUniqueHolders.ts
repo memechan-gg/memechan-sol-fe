@@ -1,10 +1,10 @@
 import { MAX_HOLDERS_COUNT } from "@/config/config";
 import { useConnection } from "@/context/ConnectionContext";
 import { getBoundPoolHolderPercentage } from "@/views/coin/sidebar/holders/utils";
-import { MemechanClient, MemechanClientV2, getBoundPoolClientFromId } from "@avernikoz/memechan-sol-sdk";
 import { PublicKey } from "@solana/web3.js";
 import { useQuery } from "@tanstack/react-query";
 import BigNumber from "bignumber.js";
+import { MemechanClient, MemechanClientV2, getBoundPoolClientFromId } from "memechan-sol-sdk";
 
 export const fetchPresaleCoinUniqueHolders = async (
   poolAddress: string,

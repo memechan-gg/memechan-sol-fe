@@ -1,6 +1,6 @@
-import { MEMECHAN_MEME_TOKEN_DECIMALS, MemeTicketFields } from "@avernikoz/memechan-sol-sdk";
 import { PublicKey } from "@solana/web3.js";
 import BigNumber from "bignumber.js";
+import { MEMECHAN_MEME_TOKEN_DECIMALS, MemeTicketFields } from "memechan-sol-sdk";
 
 // export const getBondingCurvePercentage = (uniqueHolders: Map<string, MemeTicketFields[]>) => {
 //   const rawBondingCurveAmount = Array.from(uniqueHolders.values()).reduce(

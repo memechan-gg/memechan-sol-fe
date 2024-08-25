@@ -1,7 +1,7 @@
 import { QUOTE_TOKEN_DECIMALS } from "@/constants/constants";
 import { getTokenInfo } from "@/hooks/utils";
-import { BoundPoolClient, BoundPoolClientV2 } from "@avernikoz/memechan-sol-sdk";
 import BigNumber from "bignumber.js";
+import { BoundPoolClient, BoundPoolClientV2 } from "memechan-sol-sdk";
 
 export const getBoundPoolProgress = (
   boundPool: BoundPoolClient["poolObjectData"] | BoundPoolClientV2["poolObjectData"],

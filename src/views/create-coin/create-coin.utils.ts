@@ -1,4 +1,5 @@
 import { AuthInstance, TokenApiInstance } from "@/common/solana";
+import { PublicKey, VersionedTransaction } from "@solana/web3.js";
 import {
   ADMIN_PUB_KEY,
   CoinDescriptionTooLargeError,
@@ -14,8 +15,7 @@ import {
   MemechanClientV2,
   TOKEN_INFOS,
   validateCreateCoinParams,
-} from "@avernikoz/memechan-sol-sdk";
-import { PublicKey, VersionedTransaction } from "@solana/web3.js";
+} from "memechan-sol-sdk";
 import toast from "react-hot-toast";
 import { ICreateForm } from "./create-coin.types";
 

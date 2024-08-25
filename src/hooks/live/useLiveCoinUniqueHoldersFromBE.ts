@@ -1,8 +1,8 @@
 import { BE_URL } from "@/common/solana";
 import { MAX_HOLDERS_COUNT } from "@/config/config";
-import { TokenApiHelper } from "@avernikoz/memechan-sol-sdk";
 import { PublicKey } from "@solana/web3.js";
 import { useQuery } from "@tanstack/react-query";
+import { TokenApiHelper } from "memechan-sol-sdk";
 
 const fetchLiveCoinUniqueHoldersFromBE = async (memeMint: string, stakingPoolAddress: string) => {
   try {
