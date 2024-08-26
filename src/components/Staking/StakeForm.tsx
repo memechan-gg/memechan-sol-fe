@@ -87,7 +87,7 @@ const AdditionalInfo = ({ baseAPR, pointBoost, apr }: { baseAPR: string; pointBo
       <span>Your Point Boost</span>
       <span className="font-bold text-white">{pointBoost}</span>
     </div>
-    <div className="flex justify-between mt-2 text-green-600">
+    <div className="flex justify-between mt-2 text-green-700">
       <span>Your APR</span>
       <span className="font-bold">{apr}</span>
     </div>
