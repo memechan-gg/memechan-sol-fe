@@ -1,8 +1,8 @@
 import { useMedia } from "@/hooks/useMedia";
 import { useEffect, useState } from "react";
-import PointsMarket from "./staking/PointsMarket";
-import StakeForm from "./staking/StakeForm";
-import StakeInfo from "./staking/StakeInfo";
+import PointsMarket from "../../components/Staking/PointsMarket";
+import StakeForm from "../../components/Staking/StakeForm";
+import StakeInfo from "../../components/Staking/StakeInfo";
 
 export function Staking() {
   const mediaQuery = useMedia();
