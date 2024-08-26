@@ -1,7 +1,9 @@
 import { flip, offset, shift, useFloating } from "@floating-ui/react-dom";
 import { useTheme } from "next-themes";
-import React, { useRef, useState } from "react";
-import PointsComponent from "./Points/PointsComponent";
+import dynamic from "next/dynamic";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+
+const PointsComponent = dynamic(() => import("./Points/PointsComponent"), { ssr: false });
 
 interface PointsDisplayProps {
   points: number;
@@ -9,27 +11,43 @@ interface PointsDisplayProps {
 
 const PointsIcon: React.FC<PointsDisplayProps> = ({ points }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const { theme } = useTheme();
-  const referenceElement = useRef<HTMLDivElement>(null); // Reference element for floating UI
+  const referenceElement = useRef<HTMLDivElement>(null);
 
   const { x, y, strategy, refs } = useFloating({
-    placement: "bottom", // Position the floating component at the bottom of the reference element
+    placement: "bottom",
     middleware: [offset(10), shift(), flip()],
   });
 
-  // Toggle the floating PointsComponent
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const { borderColor, textColor } = useMemo(() => {
+    return {
+      borderColor: theme === "light" ? "border-[#7F0002]" : "border-pink-500",
+      textColor: theme === "light" ? "#7F0002" : "text-pink-500",
+    };
+  }, [theme]);
+
   const togglePointsComponent = () => {
     setIsOpen((prev) => !prev);
   };
 
-  // Determine the color based on the theme
-  const borderColor = theme === "light" ? "border-[#7F0002]" : "border-pink-500";
-  const textColor = theme === "light" ? "#7F0002" : "text-pink-500";
+  // Custom function to format number with commas
+  const formatNumber = (num: number): string => {
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+
+  if (!mounted) {
+    return null; // or return a skeleton/placeholder
+  }
 
   return (
     <>
       <div
-        ref={refs.setReference} // Set the reference element for floating UI
+        ref={refs.setReference}
         className={`h-10 flex items-center gap-2 px-3 rounded-sm border border-solid bg-inherit box-content cursor-pointer ${borderColor}`}
         onClick={togglePointsComponent}
       >
@@ -37,22 +55,20 @@ const PointsIcon: React.FC<PointsDisplayProps> = ({ points }) => {
           🔥
         </span>
         <div className={`text-sm leading-4 ${textColor}`}>
-          {" "}
-          {/* Apply the determined text color */}
-          <span className="font-semibold">{points.toLocaleString()}</span>
+          <span className="font-semibold">{formatNumber(points)}</span>
           <br />
           <span className="font-light">Points</span>
         </div>
       </div>
 
-      {isOpen && (
+      {isOpen && mounted && (
         <div
-          ref={refs.setFloating} // Set the floating element for floating UI
+          ref={refs.setFloating}
           style={{
             position: strategy,
             top: y ?? 0,
             left: x ?? 0,
-            zIndex: 1000, // Ensure the floating component is on top
+            zIndex: 1000,
           }}
           className="mt-2"
         >
