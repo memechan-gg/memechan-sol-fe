@@ -37,4 +37,5 @@ next-env.d.ts
 .env.sentry-build-plugin
 
 .env
+.env.local
 .env.production
