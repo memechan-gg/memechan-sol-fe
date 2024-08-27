@@ -38,12 +38,12 @@ const AmountDisplay = ({
   amount: string;
   valueInUSD: string;
 }) => (
-  <div className="mt-2 flex justify-between items-center px-4 py-2 rounded-sm border shadow-sm bg-neutral-800 border-neutral-700">
-    <div className="flex items-center font-bold text-white">
+  <div className="mt-2 flex justify-between items-center px-4 py-2 rounded-sm border shadow-sm dark:bg-neutral-800 border-neutral-700">
+    <div className="flex items-center font-bold dark:text-white">
       <img loading="lazy" src={iconSrc} alt={`${label} icon`} className="w-6 h-6 mr-2" />
       <span>{label}</span>
     </div>
-    <div className="text-right font-bold text-white">{amount}</div>
+    <div className="text-right font-bold dark:text-white">{amount}</div>
     <div className="text-sm text-neutral-400">{valueInUSD}</div>
   </div>
 );
@@ -78,7 +78,7 @@ const PointsMarket = () => {
   };
 
   return (
-    <div className="flex flex-col pb-3 mt-3 max-w-full rounded-sm border border-solid shadow-sm bg-neutral-800 border-neutral-700 w-[406px]">
+    <div className="flex flex-col pb-3 mt-3 max-w-full rounded-sm border border-solid shadow-sm bg-white dark:bg-neutral-800 border-neutral-700 w-[406px]">
       <Header title="Points Market" />
       <div className="flex flex-col mx-4 mt-4">
         <WarningSection message="More points you have – the bigger revenue share you get. You can trade points." />
