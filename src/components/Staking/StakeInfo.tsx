@@ -7,12 +7,12 @@ const Header = ({ title }: { title: string }) => (
 
 // DetailCard Component
 const DetailCard = ({ label, value, action }: { label: string; value: string; action?: string }) => (
-  <div className="flex flex-col flex-1 p-4 rounded-sm border border-solid shadow-sm bg-white dark:bg-neutral-800 border-neutral-700">
+  <div className="flex flex-col flex-1 p-4 rounded-sm border border-solid shadow-sm bg-neutral-800 border-neutral-700">
     <div className="flex justify-between text-sm">
-      <div className="dark:text-white">{label}</div>
+      <div className="text-white">{label}</div>
       {action && <div className="underline text-neutral-400">{action}</div>}
     </div>
-    <div className="mt-5 text-base font-bold dark:text-white">{value}</div>
+    <div className="mt-5 text-base font-bold text-white">{value}</div>
   </div>
 );
 
@@ -26,21 +26,21 @@ const Warning = ({ message }: { message: string }) => (
 
 // Earnings Component
 const Earnings = ({ label, value, action }: { label: string; value: string; action: string }) => (
-  <div className="flex flex-col p-4 mx-4 mt-4 text-sm rounded-sm border border-solid shadow-sm dark:bg-neutral-800 border-neutral-700">
+  <div className="flex flex-col p-4 mx-4 mt-4 text-sm rounded-sm border border-solid shadow-sm bg-neutral-800 border-neutral-700">
     <div className="flex justify-between">
-      <div className="dark:text-white">{label}</div>
+      <div className="text-white">{label}</div>
       <div className="text-right text-pink-500 underline cursor-pointer">{action}</div>
     </div>
     <div className="flex justify-between mt-6">
       <div className="text-neutral-400">{label}</div>
-      <div className="font-bold dark:text-white">{value}</div>
+      <div className="font-bold text-white">{value}</div>
     </div>
   </div>
 );
 
 // StakeInfo Component
 const StakeInfo = () => (
-  <div className="flex flex-col pb-4 mx-auto w-full rounded-sm border border-solid shadow-sm bg-white dark:bg-neutral-800 border-neutral-700 max-md:mt-3">
+  <div className="flex flex-col pb-4 mx-auto w-full rounded-sm border border-solid shadow-sm bg-neutral-800 border-neutral-700 max-md:mt-3">
     {/* Header */}
     <Header title="Your Stake" />
     {/* Stake Details */}

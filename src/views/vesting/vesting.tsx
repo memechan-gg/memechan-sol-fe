@@ -6,7 +6,7 @@ import { Typography } from "@/memechan-ui/Atoms/Typography";
 import { confirmTransaction } from "@/utils/confirmTransaction";
 import { CHAN_TOKEN_DECIMALS, VestingClient } from "@avernikoz/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
-import BigNumber from "bignumber.js"; 
+import BigNumber from "bignumber.js";
 import { BN } from "bn.js";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";

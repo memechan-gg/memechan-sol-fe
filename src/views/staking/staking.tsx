@@ -10,7 +10,7 @@ export function Staking() {
 
   useEffect(() => {
     // Simulate a data fetch
-    const timer = setTimeout(() => { 
+    const timer = setTimeout(() => {
       setIsLoading(false);
     }, 2000);
 
