@@ -24,10 +24,11 @@ const PointsIcon: React.FC<PointsDisplayProps> = ({ points }) => {
     setMounted(true);
   }, []);
 
-  const { borderColor, textColor } = useMemo(() => {
+  const { borderColor, textColor, hoverBgColor } = useMemo(() => {
     return {
       borderColor: theme === "light" ? "border-[#7F0002]" : "border-pink-500",
-      textColor: theme === "light" ? "#7F0002" : "text-pink-500",
+      textColor: theme === "light" ? "text-[#7F0002]" : "text-pink-500",
+      hoverBgColor: theme === "light" ? "hover:bg-[#7F0002]" : "hover:bg-pink-500",
     };
   }, [theme]);
 
@@ -48,13 +49,13 @@ const PointsIcon: React.FC<PointsDisplayProps> = ({ points }) => {
     <>
       <div
         ref={refs.setReference}
-        className={`h-10 flex items-center gap-2 px-3 rounded-sm border border-solid bg-inherit box-content cursor-pointer ${borderColor}`}
+        className={`h-10 flex items-center gap-2 px-3 rounded-sm border border-solid bg-inherit box-content cursor-pointer ${borderColor} ${hoverBgColor} hover:text-white transition-colors group`}
         onClick={togglePointsComponent}
       >
-        <span className="text-base tracking-normal text-neutral-800" aria-hidden="true">
+        <span className="text-base tracking-normal group-hover:text-white transition-colors" aria-hidden="true">
           🔥
         </span>
-        <div className={`text-sm leading-4 ${textColor}`}>
+        <div className={`text-sm leading-4 ${textColor} group-hover:text-white transition-colors`}>
           <span className="font-semibold">{formatNumber(points)}</span>
           <br />
           <span className="font-light">Points</span>

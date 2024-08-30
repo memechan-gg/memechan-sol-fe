@@ -26,9 +26,9 @@ const PointsComponent: React.FC<PointsComponentProps> = ({ points }) => {
   return (
     <Draggable>
       <div
-        className={`flex flex-col pb-4 mx-auto w-full max-w-md rounded-sm border border-solid shadow-sm ${
+        className={`flex flex-col pb-4 mx-auto w-full max-w-md rounded-sm border border-solid shadow-md ${
           theme === "light"
-            ? "bg-white border-neutral-300 text-mono-800"
+            ? "bg-white border-[#800000] text-mono-800"
             : "bg-neutral-800 border-neutral-700 text-mono-200"
         }`}
       >
@@ -36,11 +36,11 @@ const PointsComponent: React.FC<PointsComponentProps> = ({ points }) => {
         <div
           className="flex justify-between items-center px-4 py-1.5 w-full text-sm font-bold"
           style={{
-            backgroundColor: theme === "light" ? "#800001" : "#2d2d2d", // Default to a darker color in dark mode
-            color: theme === "light" ? "#ffffff" : "#ffffff", // Keep text white in both modes
+            backgroundColor: theme === "light" ? "#800001" : "#2d2d2d",
+            color: "#ffffff", // Keep text white in both modes
           }}
         >
-          <span className="text-green-700">Points</span>
+          <span className="text-white">Points</span>
           <button onClick={handleClose} className="text-white" aria-label="Close">
             ✕
           </button>
