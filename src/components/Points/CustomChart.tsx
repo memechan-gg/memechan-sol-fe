@@ -1,3 +1,5 @@
+import { useTheme } from "next-themes";
+import React, { useMemo } from "react";
 import { Line, LineChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 
 const data = [
@@ -13,16 +15,24 @@ const data = [
   { x: 25, y: 500 },
 ];
 
-// CustomChart.tsx
-
 const CustomChart: React.FC = () => {
+  const { theme } = useTheme();
+
+  const { backgroundColor, borderColor, lineColor } = useMemo(() => {
+    return {
+      backgroundColor: theme === "light" ? "#FFFFFF" : "#262626",
+      borderColor: theme === "light" ? "#7F0002" : "#FF69B4",
+      lineColor: theme === "light" ? "#7F0002" : "#FF69B4",
+    };
+  }, [theme]);
+
   return (
-    <div style={{ backgroundColor: "#262626", border: "2px solid #FF69B4", padding: "8px" }}>
+    <div style={{ backgroundColor, border: `2px solid ${borderColor}`, padding: "8px" }}>
       <ResponsiveContainer width="100%" height={180}>
         <LineChart data={data} margin={{ top: 8, right: 8, bottom: 8, left: 8 }}>
           <XAxis dataKey="x" hide />
           <YAxis hide />
-          <Line type="monotone" dataKey="y" stroke="#FF69B4" dot={{ r: 8 }} strokeWidth={2} />
+          <Line type="monotone" dataKey="y" stroke={lineColor} dot={{ r: 8 }} strokeWidth={2} />
         </LineChart>
       </ResponsiveContainer>
     </div>

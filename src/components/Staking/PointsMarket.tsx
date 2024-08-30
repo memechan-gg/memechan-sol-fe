@@ -1,30 +1,49 @@
+import { useTheme } from "next-themes";
 import Button from "./Button";
 
 // Header Component
-const Header = ({ title }: { title: string }) => (
-  <div className="flex justify-start items-center px-4 py-1.5 w-full text-sm font-bold text-white bg-neutral-700">
-    {title}
-  </div>
-);
+const Header = ({ title }: { title: string }) => {
+  const { theme } = useTheme();
+  const bgColor = theme === "light" ? "bg-[#800000]" : "bg-neutral-700";
+  const textColor = "text-white";
+
+  return (
+    <div className={`flex justify-start items-center px-4 py-1.5 w-full text-sm font-bold ${textColor} ${bgColor}`}>
+      {title}
+    </div>
+  );
+};
 
 // WarningSection Component
-const WarningSection = ({ message }: { message: string }) => (
-  <div className="flex gap-4 items-start px-4 py-2 w-full text-sm text-yellow-500 border border-solid border-neutral-700">
-    <div>⚠️</div>
-    <div className="flex-1 leading-5">{message}</div>
-  </div>
-);
+const WarningSection = ({ message }: { message: string }) => {
+  const { theme } = useTheme();
+  const borderColor = theme === "light" ? "border-neutral-300" : "border-neutral-700";
+
+  return (
+    <div
+      className={`flex gap-4 items-start px-4 py-2 w-full text-sm text-yellow-500 border border-solid ${borderColor}`}
+    >
+      <div>⚠️</div>
+      <div className="flex-1 leading-5">{message}</div>
+    </div>
+  );
+};
 
 // PaySection Component
-const PaySection = ({ label, value }: { label: string; value: string }) => (
-  <div className="flex justify-between text-sm text-neutral-400 mt-4">
-    <div>{label}</div>
-    <div className="flex items-center">
-      <div className="mr-2">👛</div>
-      <div>{value}</div>
+const PaySection = ({ label, value }: { label: string; value: string }) => {
+  const { theme } = useTheme();
+  const textColor = theme === "light" ? "text-neutral-600" : "text-neutral-400";
+
+  return (
+    <div className={`flex justify-between text-sm ${textColor} mt-4`}>
+      <div>{label}</div>
+      <div className="flex items-center">
+        <div className="mr-2">👛</div>
+        <div>{value}</div>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 // AmountDisplay Component
 const AmountDisplay = ({
@@ -37,31 +56,47 @@ const AmountDisplay = ({
   label: string;
   amount: string;
   valueInUSD: string;
-}) => (
-  <div className="mt-2 flex justify-between items-center px-4 py-2 rounded-sm border shadow-sm bg-neutral-800 border-neutral-700">
-    <div className="flex items-center font-bold text-white">
-      <img loading="lazy" src={iconSrc} alt={`${label} icon`} className="w-6 h-6 mr-2" />
-      <span>{label}</span>
+}) => {
+  const { theme } = useTheme();
+  const bgColor = theme === "light" ? "bg-white" : "bg-neutral-800";
+  const borderColor = theme === "light" ? "border-neutral-300" : "border-neutral-700";
+  const textColor = theme === "light" ? "text-black" : "text-white";
+  const secondaryTextColor = theme === "light" ? "text-neutral-600" : "text-neutral-400";
+
+  return (
+    <div
+      className={`mt-2 flex justify-between items-center px-4 py-2 rounded-sm border shadow-sm ${bgColor} ${borderColor}`}
+    >
+      <div className={`flex items-center font-bold ${textColor}`}>
+        <img loading="lazy" src={iconSrc} alt={`${label} icon`} className="w-6 h-6 mr-2" />
+        <span>{label}</span>
+      </div>
+      <div className={`text-right font-bold ${textColor}`}>{amount}</div>
+      <div className={`text-sm ${secondaryTextColor}`}>{valueInUSD}</div>
     </div>
-    <div className="text-right font-bold text-white">{amount}</div>
-    <div className="text-sm text-neutral-400">{valueInUSD}</div>
-  </div>
-);
+  );
+};
 
 // PercentageSelection Component
-const PercentageSelection = ({ onSelect }: { onSelect: (percentage: number) => void }) => (
-  <div className="flex mt-2 text-neutral-400">
-    {["10%", "20%", "25%", "50%", "75%", "100%"].map((percentage, index) => (
-      <div
-        key={index}
-        className="flex-1 text-center py-1 cursor-pointer border border-neutral-700"
-        onClick={() => onSelect(parseInt(percentage))}
-      >
-        {percentage}
-      </div>
-    ))}
-  </div>
-);
+const PercentageSelection = ({ onSelect }: { onSelect: (percentage: number) => void }) => {
+  const { theme } = useTheme();
+  const textColor = theme === "light" ? "text-neutral-600" : "text-neutral-400";
+  const borderColor = theme === "light" ? "border-neutral-300" : "border-neutral-700";
+
+  return (
+    <div className={`flex mt-2 ${textColor}`}>
+      {["10%", "20%", "25%", "50%", "75%", "100%"].map((percentage, index) => (
+        <div
+          key={index}
+          className={`flex-1 text-center py-1 cursor-pointer border ${borderColor}`}
+          onClick={() => onSelect(parseInt(percentage))}
+        >
+          {percentage}
+        </div>
+      ))}
+    </div>
+  );
+};
 
 // ImageSection Component
 const ImageSection = ({ iconSrc, bannerSrc }: { iconSrc: string; bannerSrc: string }) => (
@@ -73,12 +108,19 @@ const ImageSection = ({ iconSrc, bannerSrc }: { iconSrc: string; bannerSrc: stri
 
 // PointsMarket Component
 const PointsMarket = () => {
+  const { theme } = useTheme();
+  const bgColor = theme === "light" ? "bg-white" : "bg-neutral-800";
+  const borderColor = theme === "light" ? "border-[#800000]" : "border-neutral-700";
+  const buttonColor = theme === "light" ? "bg-[#7F0002]" : "bg-pink-500";
+
   const handleBuyPointsClick = () => {
     console.log("Buy Points button clicked");
   };
 
   return (
-    <div className="flex flex-col pb-3 mt-3 max-w-full rounded-sm border border-solid shadow-sm bg-neutral-800 border-neutral-700 w-[406px]">
+    <div
+      className={`flex flex-col pb-3 mt-3 max-w-full rounded-sm border border-solid shadow-sm ${bgColor} ${borderColor} w-[406px]`}
+    >
       <Header title="Points Market" />
       <div className="flex flex-col mx-4 mt-4">
         <WarningSection message="More points you have – the bigger revenue share you get. You can trade points." />
@@ -101,7 +143,7 @@ const PointsMarket = () => {
           amount="10,000"
           valueInUSD="$14.24"
         />
-        <Button onClick={handleBuyPointsClick} className="mt-4 py-3 w-full text-white bg-pink-500 rounded-sm">
+        <Button onClick={handleBuyPointsClick} className={`mt-4 py-3 w-full text-white ${buttonColor} rounded-sm`}>
           Buy Points
         </Button>
       </div>
