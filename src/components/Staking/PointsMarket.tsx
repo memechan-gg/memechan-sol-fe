@@ -1,3 +1,4 @@
+import { useWallet } from "@solana/wallet-adapter-react";
 import { useTheme } from "next-themes";
 import Button from "./Button";
 
@@ -106,9 +107,15 @@ const ImageSection = ({ iconSrc, bannerSrc }: { iconSrc: string; bannerSrc: stri
   </div>
 );
 
+// Skeleton Component
+const Skeleton = ({ className }: { className?: string }) => (
+  <div className={`animate-pulse bg-gray-300 dark:bg-gray-700 ${className}`}></div>
+);
+
 // PointsMarket Component
 const PointsMarket = () => {
   const { theme } = useTheme();
+  const { publicKey, connected } = useWallet();
   const bgColor = theme === "light" ? "bg-white" : "bg-neutral-800";
   const borderColor = theme === "light" ? "border-[#800000]" : "border-neutral-700";
   const buttonColor = theme === "light" ? "bg-[#7F0002]" : "bg-pink-500";
@@ -122,31 +129,44 @@ const PointsMarket = () => {
       className={`flex flex-col pb-3 mt-3 max-w-full rounded-sm border border-solid shadow-sm ${bgColor} ${borderColor} w-[406px]`}
     >
       <Header title="Points Market" />
-      <div className="flex flex-col mx-4 mt-4">
-        <WarningSection message="More points you have – the bigger revenue share you get. You can trade points." />
-        <PaySection label="Pay" value="1.00 SOL" />
-        <AmountDisplay
-          iconSrc="https://cdn.builder.io/api/v1/image/assets/TEMP/01a0b0916fda2f17a08f95f1875875a70319b63150160b5be215021cef862278?placeholderIfAbsent=true&apiKey=eb6ecc156c044c5d8658095d2908b55b"
-          label="SOL"
-          amount="0.01"
-          valueInUSD="$14.24"
-        />
-        <PercentageSelection onSelect={(percentage) => console.log(`Selected ${percentage}%`)} />
-        <ImageSection
-          iconSrc="https://cdn.builder.io/api/v1/image/assets/TEMP/47e41819572a9880b2d40dca19317a55baf0eb2ad29056179ffe44da6f941a82?placeholderIfAbsent=true&apiKey=eb6ecc156c044c5d8658095d2908b55b"
-          bannerSrc="https://cdn.builder.io/api/v1/image/assets/TEMP/e1ec88d310064d7639a5e7990cd35c2028c74b844358dbdac682cd7102be6cac?placeholderIfAbsent=true&apiKey=eb6ecc156c044c5d8658095d2908b55b"
-        />
-        <PaySection label="Receive" value="28,420 Points" />
-        <AmountDisplay
-          iconSrc="https://cdn.builder.io/api/v1/image/assets/TEMP/bb0d8e360bbf3425ce978a991e625bdb23f481f8f11d2482d58389f19d9e7b74?placeholderIfAbsent=true&apiKey=eb6ecc156c044c5d8658095d2908b55b"
-          label="Points"
-          amount="10,000"
-          valueInUSD="$14.24"
-        />
-        <Button onClick={handleBuyPointsClick} className={`mt-4 py-3 w-full text-white ${buttonColor} rounded-sm`}>
-          Buy Points
-        </Button>
-      </div>
+      {connected ? (
+        <div className="flex flex-col mx-4 mt-4">
+          <WarningSection message="More points you have – the bigger revenue share you get. You can trade points." />
+          <PaySection label="Pay" value="1.00 SOL" />
+          <AmountDisplay
+            iconSrc="https://cdn.builder.io/api/v1/image/assets/TEMP/01a0b0916fda2f17a08f95f1875875a70319b63150160b5be215021cef862278?placeholderIfAbsent=true&apiKey=eb6ecc156c044c5d8658095d2908b55b"
+            label="SOL"
+            amount="0.01"
+            valueInUSD="$14.24"
+          />
+          <PercentageSelection onSelect={(percentage) => console.log(`Selected ${percentage}%`)} />
+          <ImageSection
+            iconSrc="https://cdn.builder.io/api/v1/image/assets/TEMP/47e41819572a9880b2d40dca19317a55baf0eb2ad29056179ffe44da6f941a82?placeholderIfAbsent=true&apiKey=eb6ecc156c044c5d8658095d2908b55b"
+            bannerSrc="https://cdn.builder.io/api/v1/image/assets/TEMP/e1ec88d310064d7639a5e7990cd35c2028c74b844358dbdac682cd7102be6cac?placeholderIfAbsent=true&apiKey=eb6ecc156c044c5d8658095d2908b55b"
+          />
+          <PaySection label="Receive" value="28,420 Points" />
+          <AmountDisplay
+            iconSrc="https://cdn.builder.io/api/v1/image/assets/TEMP/bb0d8e360bbf3425ce978a991e625bdb23f481f8f11d2482d58389f19d9e7b74?placeholderIfAbsent=true&apiKey=eb6ecc156c044c5d8658095d2908b55b"
+            label="Points"
+            amount="10,000"
+            valueInUSD="$14.24"
+          />
+          <Button onClick={handleBuyPointsClick} className={`mt-4 py-3 w-full text-white ${buttonColor} rounded-sm`}>
+            Buy Points
+          </Button>
+        </div>
+      ) : (
+        <div className="flex flex-col mx-4 mt-4">
+          <Skeleton className="h-16 w-full mb-4" /> {/* WarningSection */}
+          <Skeleton className="h-6 w-full mb-4" /> {/* PaySection */}
+          <Skeleton className="h-12 w-full mb-4" /> {/* AmountDisplay */}
+          <Skeleton className="h-10 w-full mb-4" /> {/* PercentageSelection */}
+          <Skeleton className="h-40 w-full mb-4" /> {/* ImageSection */}
+          <Skeleton className="h-6 w-full mb-4" /> {/* PaySection */}
+          <Skeleton className="h-12 w-full mb-4" /> {/* AmountDisplay */}
+          <Skeleton className="h-12 w-full" /> {/* Button */}
+        </div>
+      )}
     </div>
   );
 };

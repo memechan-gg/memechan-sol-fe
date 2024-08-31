@@ -1,6 +1,5 @@
 import { useMedia } from "@/hooks/useMedia";
 import { useEffect, useState } from "react";
-import PointsMarket from "../../components/Staking/PointsMarket";
 import StakeForm from "../../components/Staking/StakeForm";
 import StakeInfo from "../../components/Staking/StakeInfo";
 
@@ -49,10 +48,7 @@ export function Staking() {
               </div>
               {/* Right Section: StakeForm and PointsMarket */}
               <div className="flex flex-col w-[33%] max-md:w-full">
-                <div className="flex flex-col gap-5">
-                  <StakeForm />
-                  <PointsMarket />
-                </div>
+                <StakeForm />
               </div>
             </div>
           </div>

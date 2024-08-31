@@ -1,5 +1,5 @@
 import { useTheme } from "next-themes";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Draggable from "react-draggable";
 import CustomChart from "./CustomChart";
 import PointsDisplay from "./PointsDisplay";
@@ -14,19 +14,24 @@ interface PointsComponentProps {
 const PointsComponent: React.FC<PointsComponentProps> = ({ points }) => {
   const [isVisible, setIsVisible] = useState(true);
   const { theme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleClose = () => {
     setIsVisible(false);
   };
 
-  if (!isVisible) {
+  if (!isVisible || !mounted) {
     return null;
   }
 
   return (
     <Draggable>
       <div
-        className={`flex flex-col pb-4 mx-auto w-full max-w-md rounded-sm border border-solid shadow-md ${
+        className={`flex flex-col pb-4 mx-auto w-full min-w-[320px] max-w-md rounded-sm border border-solid shadow-md ${
           theme === "light"
             ? "bg-white border-[#800000] text-mono-800"
             : "bg-neutral-800 border-neutral-700 text-mono-200"
@@ -36,8 +41,8 @@ const PointsComponent: React.FC<PointsComponentProps> = ({ points }) => {
         <div
           className="flex justify-between items-center px-4 py-1.5 w-full text-sm font-bold"
           style={{
-            backgroundColor: theme === "light" ? "#800001" : "#2d2d2d",
-            color: "#ffffff", // Keep text white in both modes
+            backgroundColor: theme === "light" ? "#800001" : "#404040",
+            color: "#ffffff",
           }}
         >
           <span className="text-white">Points</span>
@@ -47,7 +52,7 @@ const PointsComponent: React.FC<PointsComponentProps> = ({ points }) => {
         </div>
 
         {/* Content area with reduced top margin */}
-        <div className="space-y-4 mr-4 ml-4">
+        <div className="space-y-4 mx-4 mt-4">
           <PointsInfo />
           <PointsDisplay points={points} />
           <div className="my-1">

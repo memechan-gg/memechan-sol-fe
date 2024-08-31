@@ -8,7 +8,6 @@ import Link from "next/link";
 import { useState } from "react";
 import { useRecoilState } from "recoil";
 import { Logo } from "./logo";
-import PointsComponent from "./points";
 import { ProfileManagment } from "./profile-management";
 import { Search } from "./search";
 
@@ -87,7 +86,7 @@ export const Header = () => {
                   search={search}
                   setSearch={setSearch}
                 />
-                <PointsComponent points={94232} />
+                {/* <PointsComponent points={94232} /> */}
                 <ProfileManagment account={account} disconnect={disconnect} />
               </div>
             </>

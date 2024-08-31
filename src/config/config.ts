@@ -4,6 +4,7 @@ import { ConnectionConfig } from "@solana/web3.js";
 
 // Connection Config
 export const MEMECHAN_RPC_ENDPOINT = "https://eve-68gxcl-fast-mainnet.helius-rpc.com";
+// export const MEMECHAN_RPC_ENDPOINT = "https://lusa-4nbpxk-fast-devnet.helius-rpc.com"; //dev
 export const IS_TEST_ENV = false;
 export const TX_CONFIRMATION_TIMEOUT_IN_MS = 15_000;
 
