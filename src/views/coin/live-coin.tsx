@@ -5,7 +5,6 @@ import { Button } from "@/memechan-ui/Atoms";
 import { Tabs } from "@/memechan-ui/Atoms/Tabs";
 import TopBar from "@/memechan-ui/Atoms/TopBar/TopBar";
 import { LivePoolData } from "@/types/pool";
-import { formatNumber } from "@/utils/formatNumber";
 import { SolanaToken } from "@avernikoz/memechan-sol-sdk";
 import { Dialog } from "@reach/dialog";
 import { track } from "@vercel/analytics";
@@ -145,89 +144,5 @@ export function LiveCoin({
         </div>
       )}
     </>
-    // <>
-    //   <div className="flex justify-center">
-    //     <div className="inline-flex justify-center items-center p-2 border border-black shadow-sm w-full max-w-sm sm:max-w-md">
-    //       <div className="flex flex-col items-center text-center">
-    //         <div className="font-bold text-regular">{coinMetadata.name}</div>
-    //         <div>
-    //           <Link
-    //             href={`/profile/${coinMetadata.address}/${coinMetadata.creator}`}
-    //             className="text-[11px] md:text-xs text-link sm:hover:underline text-ellipsis"
-    //           >
-    //             {coinMetadata.creator}
-    //           </Link>
-    //         </div>
-    //       </div>
-    //     </div>
-    //   </div>
-    // <div className="flex flex-col gap-3 lg:hidden">
-    //     <LiveCoinSidebar
-    //       pool={livePoolData}
-    //       coinMetadata={coinMetadata}
-    //       uniqueHoldersData={uniqueHoldersData}
-    //       seedPoolData={seedPoolData}
-    //       stakingPoolFromApi={stakingPoolFromApi}
-    //     />
-    //   </div>
-    //   <ThreadBoard title={coinMetadata.name} showNavigateBtn>
-    //     <div className="flex flex-col gap-2">
-    //       <div className="flex flex-wrap flex-row gap-3 gap-x-10">
-    //         <div className="flex flex-col gap-1">
-    //           <div className="text-sm font-bold text-regular">Token Name</div>
-    //           <div className="text-xs font-bold text-regular">{coinMetadata.name}</div>
-    //         </div>
-    //         <div className="flex flex-col gap-1">
-    //           <div className="text-sm font-bold text-regular">Token Ticker</div>
-    //           <div className="text-xs font-bold text-regular">{coinMetadata.symbol}</div>
-    //         </div>
-    //         <div className="flex flex-col gap-1">
-    //           <div className="text-sm font-bold text-regular">Market Cap</div>
-    //           <div className="text-xs font-bold text-regular">
-    //             {" "}
-    //             {prices ? `$${formatNumber(+prices.priceInUsd * 1_000_000_000, 2)}` : "-"}
-    //           </div>
-    //         </div>
-    //         <div className="flex flex-col gap-1">
-    //           <div className="text-sm font-bold !normal-case text-regular">USD price</div>
-    //           <div className="text-xs font-bold !normal-case text-regular">
-    //             {prices ? `$${(+prices.priceInUsd).toFixed(10)}` : "-"}
-    //           </div>
-    //         </div>
-    //         <div className="flex flex-col gap-1">
-    //           <div className="text-sm font-bold text-regular">Unique holders</div>
-    //           <div className="text-xs font-bold text-regular">
-    //             {uniqueHoldersData ? uniqueHoldersData.fullHolders.length : <Skeleton />}
-    //           </div>
-    //         </div>
-    //         <div className="flex flex-col gap-1">
-    //           <div className="text-sm font-bold text-link">Created By</div>
-    //           <Link
-    //             href={`/profile/${coinMetadata.address}/${coinMetadata.creator}`}
-    //             className="text-xs font-bold text-link"
-    //           >
-    //             {coinMetadata.creator.slice(0, 5)}...
-    //             {coinMetadata.creator.slice(-3)}
-    //           </Link>
-    //         </div>
-    //       </div>
-    //       <div className="flex w-full flex-col lg:flex-row gap-6">
-    //         <div className="flex flex-col gap-3 w-full">
-    //
-    //           <CommentsTab coinAddress={coinMetadata.address} coinCreator={coinMetadata.creator} />
-    //         </div>
-    //         <div className="lg:flex hidden w-1/3 flex-col gap-4">
-    //           <LiveCoinSidebar
-    //             pool={livePoolData}
-    //             coinMetadata={coinMetadata}
-    //             uniqueHoldersData={uniqueHoldersData}
-    //             seedPoolData={seedPoolData}
-    //             stakingPoolFromApi={stakingPoolFromApi}
-    //           />
-    //         </div>
-    //       </div>
-    //     </div>
-    //   </ThreadBoard>
-    // </>
   );
 }

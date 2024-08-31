@@ -76,7 +76,7 @@ export default function SideMenu(props: { account: UserContextType; disconnect: 
                   />
                 </div>
                 <Link
-                  href={`/vesting`}
+                  href={`/staking`}
                   onClick={() => {
                     close();
                   }}
@@ -86,7 +86,7 @@ export default function SideMenu(props: { account: UserContextType; disconnect: 
                     className="min-h-14 hover:cursor-pointer sm:mt-2 font-bold  w-full text-xs text-left rounded flex  items-center space-x-[12px]  sm:min-h-12 sm:hover:opacity-80"
                   >
                     <span>🪤</span>
-                    <span className={theme === "light" ? "mono-400" : "white"}>$CHAN vesting</span>
+                    <span className={theme === "light" ? "mono-400" : "white"}>vCHAN staking</span>
                   </div>
                 </Link>
                 <Link

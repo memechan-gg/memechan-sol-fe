@@ -67,6 +67,12 @@ export const Header = () => {
                   </div>
                 )}
                 <Typography variant="h4" color="mono-600" className="ml-6 sm:hover:text-primary-100">
+                  <Link href="/staking" rel="noopener noreferrer">
+                    <span className="mr-3">📈</span>
+                    vCHAN Staking
+                  </Link>
+                </Typography>
+                <Typography variant="h4" color="mono-600" className="ml-6 sm:hover:text-primary-100">
                   <Link href="https://docs.memechan.gg/" target="_blank" rel="noopener noreferrer">
                     <span className="mr-3">🤓</span>
                     Docs
@@ -80,6 +86,7 @@ export const Header = () => {
                   search={search}
                   setSearch={setSearch}
                 />
+                {/* <PointsComponent points={94232} /> */}
                 <ProfileManagment account={account} disconnect={disconnect} />
               </div>
             </>

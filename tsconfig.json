@@ -14,7 +14,8 @@
     "incremental": true,
     "paths": {
       "@/*": ["./src/*"],
-      "@raydium-io/raydium-sdk": ["./node_modules/@raydium-io/raydium-sdk"]
+      "@raydium-io/raydium-sdk": ["./node_modules/@raydium-io/raydium-sdk"],
+      "@solana/spl-token": ["./node_modules/@solana/spl-token"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
