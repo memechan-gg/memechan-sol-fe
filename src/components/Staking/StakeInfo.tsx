@@ -119,7 +119,15 @@ const DetailCard = ({
 
       const signedTx = await wallet.signTransaction(initAccountsTx);
       const txId = await connection.sendRawTransaction(signedTx.serialize());
-      await connection.confirmTransaction(txId);
+
+      // Replace the deprecated confirmTransaction call with this:
+      const latestBlockhash = await connection.getLatestBlockhash();
+      await connection.confirmTransaction({
+        signature: txId,
+        blockhash: latestBlockhash.blockhash,
+        lastValidBlockHeight: latestBlockhash.lastValidBlockHeight,
+      });
+
       console.log("Wallet accounts initialized. Transaction ID:", txId);
       return { userVAcc, userVeAcc };
     } catch (error) {
