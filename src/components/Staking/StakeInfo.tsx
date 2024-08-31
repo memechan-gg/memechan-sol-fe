@@ -5,8 +5,8 @@ import {
   getAssociatedTokenAddress,
   TOKEN_2022_PROGRAM_ID,
 } from "@solana/spl-token";
-import { useAnchorWallet, useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { PublicKey, Transaction } from "@solana/web3.js";
+import { useAnchorWallet, useConnection, useWallet, WalletContextState } from "@solana/wallet-adapter-react";
+import { Connection, PublicKey, Transaction } from "@solana/web3.js";
 import BN from "bn.js";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
@@ -83,6 +83,51 @@ const DetailCard = ({
 
   const wallet = useWallet();
 
+  async function initializeWalletAccounts(wallet: WalletContextState, connection: Connection) {
+    if (!wallet.publicKey) throw new Error("Wallet not connected");
+
+    const vChanMint = new PublicKey(process.env.NEXT_PUBLIC_VCHAN_TOKEN_ADDRESS!);
+    const veChanMint = new PublicKey(process.env.NEXT_PUBLIC_VECHAN_TOKEN_ADDRESS!);
+
+    const userVAcc = await getAssociatedTokenAddress(vChanMint, wallet.publicKey);
+    const userVeAcc = await getAssociatedTokenAddress(veChanMint, wallet.publicKey, false, TOKEN_2022_PROGRAM_ID);
+
+    const initAccountsTx = new Transaction();
+
+    initAccountsTx.add(
+      createAssociatedTokenAccountIdempotentInstruction(wallet.publicKey, userVAcc, wallet.publicKey, vChanMint),
+    );
+
+    initAccountsTx.add(
+      createAssociatedTokenAccountIdempotentInstruction(
+        wallet.publicKey,
+        userVeAcc,
+        wallet.publicKey,
+        veChanMint,
+        TOKEN_2022_PROGRAM_ID,
+      ),
+    );
+
+    const latestBlockhash = await connection.getLatestBlockhash();
+    initAccountsTx.recentBlockhash = latestBlockhash.blockhash;
+    initAccountsTx.feePayer = wallet.publicKey;
+
+    try {
+      if (!wallet.signTransaction) {
+        throw new Error("Wallet does not support transaction signing or is not connected");
+      }
+
+      const signedTx = await wallet.signTransaction(initAccountsTx);
+      const txId = await connection.sendRawTransaction(signedTx.serialize());
+      await connection.confirmTransaction(txId);
+      console.log("Wallet accounts initialized. Transaction ID:", txId);
+      return { userVAcc, userVeAcc };
+    } catch (error) {
+      console.error("Error initializing wallet accounts:", error);
+      throw error;
+    }
+  }
+
   const handleUnstake = async () => {
     if (!wallet.publicKey || !stake || !client || !connection) {
       setUnstakeError("Missing required data for unstaking");
@@ -93,52 +138,16 @@ const DetailCard = ({
     setUnstakeError(null);
 
     try {
-      console.log("\nPreparing Unstake Tokens Transaction...");
+      console.log("Initializing wallet accounts...");
+      const { userVAcc, userVeAcc } = await initializeWalletAccounts(wallet, connection);
+      console.log("Wallet accounts initialized successfully.");
+
+      console.log("Preparing Unstake Tokens Transaction...");
       console.log("Stake object:", stake);
 
       if (!stake.address) {
         throw new Error("Stake address is undefined");
       }
-
-      // Get the vCHAN mint address
-      const vChanMint = new PublicKey("vCHANTQ8fiK13PvYABK9HbjbAJuzwiUsBC6VFfhKZT7");
-
-      // Get the veCHAN mint address
-      const veChanMint = new PublicKey("VEchantZvFUiEimQtJhRExGhyWNwUMUH6wC88sN4mGj");
-
-      // Get the associated token addresses
-      const userVAcc = await getAssociatedTokenAddress(vChanMint, wallet.publicKey);
-      const userVeAcc = await getAssociatedTokenAddress(veChanMint, wallet.publicKey, false, TOKEN_2022_PROGRAM_ID);
-
-      console.log("User vCHAN Account (userVAcc):", userVAcc.toBase58());
-      console.log("User veCHAN Account (userVeAcc):", userVeAcc.toBase58());
-
-      // Create a new transaction for account initialization
-      const initAccountsTx = new Transaction();
-
-      // Add CreateAssociatedAccountIdempotent instructions
-      initAccountsTx.add(
-        createAssociatedTokenAccountIdempotentInstruction(
-          wallet.publicKey, // payer
-          userVAcc, // associatedToken
-          wallet.publicKey, // owner
-          vChanMint, // mint
-        ),
-      );
-
-      initAccountsTx.add(
-        createAssociatedTokenAccountIdempotentInstruction(
-          wallet.publicKey, // payer
-          userVeAcc, // associatedToken
-          wallet.publicKey, // owner
-          veChanMint, // mint
-          TOKEN_2022_PROGRAM_ID,
-        ),
-      );
-
-      // Send the account initialization transaction
-      const initAccountsTxId = await wallet.sendTransaction(initAccountsTx, connection);
-      console.log("Accounts initialized successfully. Transaction signature:", initAccountsTxId);
 
       // Now build the unstake transaction using the client method
       const unstakeTokensTx = await client.buildUnstakeTokensTransaction(wallet.publicKey, stake.address);
