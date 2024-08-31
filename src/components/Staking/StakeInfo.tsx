@@ -373,7 +373,7 @@ const StakeInfo = () => {
           </>
         ) : (
           <div className="p-4 text-center">
-            <p>You don't have any active stakes.</p>
+            <p>You don&apos;t have any active stakes.</p>
             {/* You might want to add a button or link here to guide users on how to stake */}
           </div>
         )
