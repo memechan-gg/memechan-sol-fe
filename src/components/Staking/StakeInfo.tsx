@@ -11,11 +11,9 @@ import BN from "bn.js";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 
-// Declare the types yourself
-type ParsedReward = any; // Replace 'any' with the actual type if you know it
+type ParsedReward = any;
 type UserRewards = any;
 
-// Import or define the UserStake type based on the SDK class
 type UserStakeJSON = {
   owner: string;
   mint: string;
@@ -43,7 +41,6 @@ type UserStake = {
   toJSON(): UserStakeJSON;
 };
 
-// Header Component
 const Header = ({ title }: { title: string }) => {
   const { theme } = useTheme();
   const bgColor = theme === "light" ? "bg-[#800000]" : "bg-neutral-700";
@@ -120,7 +117,6 @@ const DetailCard = ({
       const signedTx = await wallet.signTransaction(initAccountsTx);
       const txId = await connection.sendRawTransaction(signedTx.serialize());
 
-      // Replace the deprecated confirmTransaction call with this:
       const latestBlockhash = await connection.getLatestBlockhash();
       await connection.confirmTransaction({
         signature: txId,
@@ -157,13 +153,10 @@ const DetailCard = ({
         throw new Error("Stake address is undefined");
       }
 
-      // Now build the unstake transaction using the client method
       const unstakeTokensTx = await client.buildUnstakeTokensTransaction(wallet.publicKey, stake.address);
 
-      // Set the fee payer
       unstakeTokensTx.feePayer = wallet.publicKey;
 
-      // Fetch the latest blockhash
       const { blockhash } = await connection.getLatestBlockhash();
       unstakeTokensTx.recentBlockhash = blockhash;
 
@@ -173,11 +166,8 @@ const DetailCard = ({
         throw new Error("Wallet is not connected or doesn't support signing");
       }
 
-      // Send the unstake transaction
       const unstakeTokensTxId = await wallet.sendTransaction(unstakeTokensTx, connection);
       console.log("Tokens unstaked successfully. Transaction signature:", unstakeTokensTxId);
-
-      // You might want to update the UI or state here to reflect the successful unstake
     } catch (error) {
       console.error("Error unstaking tokens:", error);
       if (error instanceof Error) {
@@ -214,7 +204,6 @@ const DetailCard = ({
   );
 };
 
-// Warning Component
 const Warning = ({ message }: { message: string }) => {
   const { theme } = useTheme();
   const borderColor = theme === "light" ? "border-neutral-300" : "border-neutral-700";
@@ -227,7 +216,6 @@ const Warning = ({ message }: { message: string }) => {
   );
 };
 
-// Earnings Component
 const Earnings = ({ label, value, action }: { label: string; value: string; action?: string }) => {
   const { theme } = useTheme();
   const bgColor = theme === "light" ? "bg-white" : "bg-neutral-800";
@@ -266,15 +254,13 @@ const StakeInfo = () => {
   const [displayedStakedAmount, setDisplayedStakedAmount] = useState<number>(0);
 
   useEffect(() => {
-    // Reset the displayed staked amount to 0 on component mount/refresh
     setDisplayedStakedAmount(0);
 
-    // If stakeData is available, update the displayed amount after a short delay
     if (stakeData && stakeData.userStakes.length > 0) {
       const timer = setTimeout(() => {
         const amount = stakeData.userStakes[0]?.data?.amount?.toNumber() ?? 0;
         setDisplayedStakedAmount(amount / 1e9);
-      }, 100); // 100ms delay
+      }, 100);
 
       return () => clearTimeout(timer);
     }
@@ -303,7 +289,6 @@ const StakeInfo = () => {
     }
 
     try {
-      // Get eligible rewards
       const eligibleRewards = VeChanStakingClient.getEligibleRewards(rewards, userStake, userRewards);
       console.log("Eligible rewards:", JSON.stringify(eligibleRewards, null, 2));
 
@@ -312,14 +297,13 @@ const StakeInfo = () => {
         return 0;
       }
 
-      // Calculate total reward amount
       const totalRewardAmount = eligibleRewards.reduce((total: any, reward: any) => {
         return total.add(new BN((reward.fields as any).amount ?? 0));
       }, new BN(0));
 
       console.log("Total reward amount (in lamports):", totalRewardAmount.toString());
 
-      const amountInSol = totalRewardAmount.toNumber() / 1e9; // Convert from lamports to SOL
+      const amountInSol = totalRewardAmount.toNumber() / 1e9;
       console.log("Total reward amount (in SOL):", amountInSol);
 
       return amountInSol;
@@ -357,11 +341,7 @@ const StakeInfo = () => {
             <div className="flex flex-wrap gap-3 mx-4 mt-4">
               <DetailCard
                 label="Staked"
-                value={`${
-                  stakeData.userStakes[0]?.data?.withdrawnAt?.toNumber() !== 0
-                    ? formatAmount(0)
-                    : formatAmount((stakeData.userStakes[0]?.data?.amount?.toNumber() ?? 0) / 1e9)
-                } vCHAN`}
+                value={`${formatAmount((stakeData.userStakes[0]?.data?.amount?.toNumber() ?? 0) / 1e9)} vCHAN`}
                 action="Unstake"
                 stake={stakeData.userStakes[0]}
                 client={client}
@@ -397,14 +377,12 @@ const StakeInfo = () => {
       ) : (
         <div className="p-4">
           {connected ? (
-            // Loading state
             <div className="flex flex-wrap gap-3 mb-4">
               <Skeleton className="h-20 w-full sm:w-[calc(33.33%-0.5rem)]" />
               <Skeleton className="h-20 w-full sm:w-[calc(33.33%-0.5rem)]" />
               <Skeleton className="h-20 w-full sm:w-[calc(33.33%-0.5rem)]" />
             </div>
           ) : (
-            // Not connected state
             <p className="text-center">Please connect your wallet to view your stake information.</p>
           )}
         </div>
@@ -413,7 +391,6 @@ const StakeInfo = () => {
   );
 };
 
-// Hook to fetch stake data
 const useStakeData = () => {
   const { publicKey } = useWallet();
   const { connection } = useConnection();

@@ -23,7 +23,6 @@ import { useEffect, useState } from "react";
 
 import { MEMECHAN_RPC_ENDPOINT } from "@/config/config";
 
-// Header Component
 const Header = ({ title }: { title: string }) => {
   const { theme } = useTheme();
   const bgColor = theme === "light" ? "bg-[#800000]" : "bg-neutral-700";
@@ -38,7 +37,6 @@ const Header = ({ title }: { title: string }) => {
   );
 };
 
-// StakingInfo Component
 const StakingInfo = ({ label, value }: { label: string; value: string }) => {
   const { theme } = useTheme();
   const textColor = theme === "light" ? "text-neutral-600" : "text-neutral-400";
@@ -54,7 +52,6 @@ const StakingInfo = ({ label, value }: { label: string; value: string }) => {
   );
 };
 
-// PeridoInfo Component
 const PeridoInfo = ({ label }: { label: string }) => {
   const { theme } = useTheme();
   const textColor = theme === "light" ? "text-neutral-600" : "text-neutral-400";
@@ -66,7 +63,6 @@ const PeridoInfo = ({ label }: { label: string }) => {
   );
 };
 
-// StakeAmount Component
 const StakeAmount = ({
   stakeAmount,
   setStakeAmount,
@@ -119,7 +115,6 @@ const StakeAmount = ({
   );
 };
 
-// PeriodSelection Component
 const PeriodSelection = ({
   selectedPeriod,
   onPeriodChange,
@@ -151,7 +146,6 @@ const PeriodSelection = ({
   );
 };
 
-// ReceiveInfo Component
 const ReceiveInfo = ({ receiveAmount }: { receiveAmount: number }) => {
   const { theme } = useTheme();
   const bgColor = theme === "light" ? "bg-white" : "bg-neutral-800";
@@ -174,7 +168,6 @@ const ReceiveInfo = ({ receiveAmount }: { receiveAmount: number }) => {
   );
 };
 
-// AdditionalInfo Component
 const AdditionalInfo = ({ baseAPR, pointBoost, apr }: { baseAPR: string; pointBoost: string; apr: string }) => {
   const { theme } = useTheme();
   const textColor = theme === "light" ? "text-neutral-600" : "text-neutral-400";
@@ -198,12 +191,10 @@ const AdditionalInfo = ({ baseAPR, pointBoost, apr }: { baseAPR: string; pointBo
   );
 };
 
-// Skeleton Component
 const Skeleton = ({ className }: { className?: string }) => (
   <div className={`animate-pulse bg-gray-300 dark:bg-gray-700 ${className}`}></div>
 );
 
-// Main StakeForm Component
 const StakeForm = () => {
   const [rewardState, setRewardState] = useState<PublicKey | null>(null);
 
@@ -299,51 +290,41 @@ const StakeForm = () => {
 
       const lockDuration = getLockDuration(selectedPeriod);
 
-      // Inside your handleStake function or wherever you need to calculate these values
       const vChanMint = new PublicKey(process.env.NEXT_PUBLIC_VCHAN_TOKEN_ADDRESS!);
       const veChanMint = new PublicKey(process.env.NEXT_PUBLIC_VECHAN_TOKEN_ADDRESS!);
 
-      // Calculate stakingState and stakingStateSigner
       const stakingState = getStakingStatePDA(vChanMint, veChanMint);
       const stakingStateSigner = getStakingStateSigner(stakingState);
 
-      // Use these calculated values in your buildStakeTokensTransaction call
       const { transaction: stakeTokensTx, stake } = await buildStakeTokensTransaction(
         new BN(lockDuration),
-        new BN(Math.floor(stakeAmount * 1e9)), // Convert to lamports
+        new BN(Math.floor(stakeAmount * 1e9)),
         anchorWallet.publicKey,
         userVAcc,
         userVeAcc,
-        null, // No vesting account
+        null,
         vChanMint,
         veChanMint,
-        stakingState, // Use the calculated stakingState
-        stakingStateSigner, // Use the calculated stakingStateSigner
-        client.program, // Assuming this is available on the client
+        stakingState,
+        stakingStateSigner,
+        client.program,
       );
 
-      // Get recent blockhash
       const latestBlockhash = await connection.getLatestBlockhash();
 
-      // Set the recent blockhash and fee payer
       stakeTokensTx.recentBlockhash = latestBlockhash.blockhash;
       stakeTokensTx.feePayer = anchorWallet.publicKey;
 
-      // Sign the transaction with any additional signers if required
       stakeTokensTx.partialSign(stake);
 
-      // Sign the transaction with the user's wallet
       const signedTx = await anchorWallet.signTransaction(stakeTokensTx);
 
-      // Check if all required signatures are present
       if (!signedTx.signatures.every((sig) => sig.signature)) {
         throw new Error("Not all required signatures are present.");
       }
 
-      // Send the transaction
       const txId = await connection.sendRawTransaction(signedTx.serialize());
 
-      // Confirm the transaction
       await connection.confirmTransaction({
         signature: txId,
         blockhash: latestBlockhash.blockhash,
@@ -543,7 +524,7 @@ async function buildStakeTokensTransaction(
   veChanMint: PublicKey,
   stakingState: PublicKey,
   stakingStateSigner: PublicKey,
-  program: any, // Replace 'any' with the actual type of your program
+  program: any,
 ): Promise<{ transaction: Transaction; stake: Keypair }> {
   const stake = Keypair.generate();
   const stakeSigner = getUserStakeSigner(stake.publicKey);
