@@ -20,8 +20,10 @@ import { BN } from "bn.js";
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 import { MEMECHAN_RPC_ENDPOINT } from "@/config/config";
+import { sleep } from "./utils";
 
 const Header = ({ title }: { title: string }) => {
   const { theme } = useTheme();
@@ -332,10 +334,15 @@ const StakeForm = () => {
       });
 
       console.log("Staking successful. Transaction ID:", txId);
+      toast.success(`Staking successful. Transaction ID: ${txId}`); // Add toast notification here
       setStakeAmount(0);
       setReceiveAmount(0);
+      sleep(1500).then(() => {
+        window.location.reload();
+      });
     } catch (error) {
       console.error("Error staking tokens:", error);
+      toast.error("Error staking");
       setStakeError(`Staking failed: ${error instanceof Error ? error.message : "Unknown error"}`);
     } finally {
       setIsStaking(false);

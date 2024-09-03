@@ -10,6 +10,8 @@ import { Connection, PublicKey, Transaction } from "@solana/web3.js";
 import BN from "bn.js";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { sleep } from "./utils";
 
 type ParsedReward = any;
 type UserRewards = any;
@@ -166,14 +168,51 @@ const DetailCard = ({
         throw new Error("Wallet is not connected or doesn't support signing");
       }
 
-      const unstakeTokensTxId = await wallet.sendTransaction(unstakeTokensTx, connection);
-      console.log("Tokens unstaked successfully. Transaction signature:", unstakeTokensTxId);
+      try {
+        const unstakeTokensTxId = await wallet.sendTransaction(unstakeTokensTx, connection);
+        console.log("Tokens unstaked successfully. Transaction signature:", unstakeTokensTxId);
+
+        // Wait for the transaction confirmation
+        const latestBlockhash = await connection.getLatestBlockhash();
+        const confirmation = await connection.confirmTransaction({
+          signature: unstakeTokensTxId,
+          blockhash: latestBlockhash.blockhash,
+          lastValidBlockHeight: latestBlockhash.lastValidBlockHeight,
+        });
+
+        if (confirmation.value.err) {
+          throw new Error("Transaction failed: " + JSON.stringify(confirmation.value.err));
+        } else {
+          toast.success(`Unstaking successful. Transaction ID: ${unstakeTokensTxId}`);
+          sleep(1500).then(() => {
+            window.location.reload();
+          });
+        }
+      } catch (transactionError) {
+        console.error("Error during transaction:", transactionError);
+
+        if (transactionError instanceof Error) {
+          toast.error(`Unstaking transaction failed: ${transactionError.message}`);
+          setUnstakeError(`Unstaking transaction failed: ${transactionError.message}`);
+        } else {
+          toast.error("An unknown error occurred during the transaction");
+          setUnstakeError("An unknown error occurred during the transaction");
+        }
+      }
     } catch (error) {
       console.error("Error unstaking tokens:", error);
+
       if (error instanceof Error) {
-        setUnstakeError(`Unstaking failed: ${error.message}`);
+        if (error.message.includes("custom program error: Unlock timestamp has not yet passed")) {
+          toast.error("Unstaking failed: Unlock timestamp has not yet passed.");
+          setUnstakeError("Unstaking failed: Unlock timestamp has not yet passed.");
+        } else {
+          toast.error(`Unstaking failed: ${error.message}`);
+          setUnstakeError(`Unstaking failed: ${error.message}`);
+        }
       } else {
-        setUnstakeError("An unknown error occurred while unstaking");
+        toast.error("An unknown error occurred during unstaking");
+        setUnstakeError("An unknown error occurred during unstaking");
       }
     } finally {
       setIsUnstaking(false);
@@ -251,20 +290,26 @@ const StakeInfo = () => {
   const bgColor = theme === "light" ? "bg-white" : "bg-neutral-800";
   const borderColor = theme === "light" ? "border-[#800000]" : "border-neutral-700";
 
-  const [displayedStakedAmount, setDisplayedStakedAmount] = useState<number>(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 3;
 
-  useEffect(() => {
-    setDisplayedStakedAmount(0);
+  const handleNextPage = () => {
+    setCurrentPage((prevPage) => prevPage + 1);
+  };
 
-    if (stakeData && stakeData.userStakes.length > 0) {
-      const timer = setTimeout(() => {
-        const amount = stakeData.userStakes[0]?.data?.amount?.toNumber() ?? 0;
-        setDisplayedStakedAmount(amount / 1e9);
-      }, 100);
+  const handlePreviousPage = () => {
+    setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
+  };
 
-      return () => clearTimeout(timer);
-    }
-  }, [stakeData]);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+
+  // Filter out stakes where withdrawnAt is not equal to "0"
+  const filteredStakes = stakeData?.userStakes.filter((stake: any) => {
+    return stake.data.withdrawnAt?.toString() === "0";
+  });
+
+  const paginatedStakes = filteredStakes?.slice(startIndex, endIndex);
 
   if (error) {
     return <div>Error: {error}</div>;
@@ -278,40 +323,7 @@ const StakeInfo = () => {
     return "Coming soon";
   };
 
-  const getRewardsAmount = (rewards: ParsedReward[], userStake: UserStake | undefined, userRewards: UserRewards) => {
-    console.log("Rewards data:", JSON.stringify(rewards, null, 2));
-    console.log("User stake:", JSON.stringify(userStake, null, 2));
-    console.log("User rewards:", JSON.stringify(userRewards, null, 2));
-
-    if (!rewards || rewards.length === 0 || !userStake || !userRewards) {
-      console.log("Missing required data for reward calculation");
-      return 0;
-    }
-
-    try {
-      const eligibleRewards = VeChanStakingClient.getEligibleRewards(rewards, userStake, userRewards);
-      console.log("Eligible rewards:", JSON.stringify(eligibleRewards, null, 2));
-
-      if (eligibleRewards.length === 0) {
-        console.log("No eligible rewards found");
-        return 0;
-      }
-
-      const totalRewardAmount = eligibleRewards.reduce((total: any, reward: any) => {
-        return total.add(new BN((reward.fields as any).amount ?? 0));
-      }, new BN(0));
-
-      console.log("Total reward amount (in lamports):", totalRewardAmount.toString());
-
-      const amountInSol = totalRewardAmount.toNumber() / 1e9;
-      console.log("Total reward amount (in SOL):", amountInSol);
-
-      return amountInSol;
-    } catch (error) {
-      console.error("Error calculating eligible rewards:", error);
-      return 0;
-    }
-  };
+  const getRewardsAmount = (rewards: ParsedReward[], userStake: UserStake | undefined, userRewards: UserRewards) => {};
 
   const getLockedUntil = (timestamp: number) => {
     if (timestamp === 0) {
@@ -319,12 +331,7 @@ const StakeInfo = () => {
     }
     return new Date(timestamp * 1000).toLocaleDateString();
   };
-  if (stakeData && stakeData.userStakes.length > 0) {
-    console.log(
-      "Staked amount:",
-      `${formatAmount((stakeData.userStakes[0]?.data?.amount?.toNumber() ?? 0) / 1e9)} vCHAN`,
-    );
-  }
+
   return (
     <div
       className={`
@@ -336,36 +343,52 @@ const StakeInfo = () => {
     >
       <Header title="Your Stake" />
       {connected && stakeData ? (
-        stakeData.userStakes.length > 0 ? (
+        filteredStakes?.length > 0 ? (
           <>
             <div className="flex flex-wrap gap-3 mx-4 mt-4">
-              <DetailCard
-                label="Staked"
-                value={`${formatAmount((stakeData.userStakes[0]?.data?.amount?.toNumber() ?? 0) / 1e9)} vCHAN`}
-                action="Unstake"
-                stake={stakeData.userStakes[0]}
-                client={client}
-              />
-              <DetailCard
-                label="Locked Until"
-                value={getLockedUntil(stakeData.userStakes[0]?.data?.lockedUntilTs?.toNumber() ?? 0)}
-              />
-              <DetailCard label="Current APR" value={calculateAPR()} />
+              {paginatedStakes.map((stake: any, index: number) => {
+                const amountInNumber: number = stake.data?.amount?.toNumber() ?? 0;
+                const formattedAmount = formatAmount(amountInNumber / 1e9);
+
+                return (
+                  <div key={index} className="w-full sm:w-[calc(33.33%-0.5rem)]">
+                    <DetailCard
+                      label="Staked"
+                      value={`${formattedAmount} vCHAN`}
+                      action="Unstake"
+                      stake={stake}
+                      client={client}
+                    />
+                    <DetailCard
+                      label="Locked Until"
+                      value={getLockedUntil(stake.data?.lockedUntilTs?.toNumber() ?? 0)}
+                    />
+                    <DetailCard label="Current APR" value={calculateAPR()} />
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="flex justify-center mt-4">
+              <button
+                onClick={handlePreviousPage}
+                disabled={currentPage === 1}
+                className={`px-4 py-2 mr-2 text-sm font-semibold ${currentPage === 1 ? "text-gray-400" : "text-pink-500"}`}
+              >
+                Previous
+              </button>
+              <button
+                onClick={handleNextPage}
+                disabled={endIndex >= filteredStakes?.length}
+                className={`px-4 py-2 text-sm font-semibold ${endIndex >= filteredStakes?.length ? "text-gray-400" : "text-pink-500"}`}
+              >
+                Next
+              </button>
             </div>
             <Warning message="Earn or buy more Points to boost APR!" />
             {(() => {
-              const rewardsAmount = getRewardsAmount(
-                stakeData.rewards,
-                stakeData.userStakes[0]?.data,
-                stakeData.userRewards,
-              );
-              return (
-                <Earnings
-                  label="SOL Earned"
-                  value={rewardsAmount > 0 ? `${formatAmount(rewardsAmount)} SOL` : "Coming soon"}
-                  action={rewardsAmount > 0 ? "Claim All" : undefined}
-                />
-              );
+              const rewardsAmount = getRewardsAmount(stakeData.rewards, filteredStakes[0]?.data, stakeData.userRewards);
+              return <Earnings label="SOL Earned" value="Coming soon" />;
             })()}
           </>
         ) : (
