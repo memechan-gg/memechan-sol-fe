@@ -17,7 +17,7 @@ import {
   GetBuyMemeTransactionOutput,
   GetSellMemeTransactionOutput,
   MEMECHAN_MEME_TOKEN_DECIMALS,
-} from "@avernikoz/memechan-sol-sdk";
+} from "@kitakitsune/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { track } from "@vercel/analytics";

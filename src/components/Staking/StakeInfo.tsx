@@ -1,5 +1,5 @@
-import { VeChanStakingClient } from "@avernikoz/memechan-sol-sdk";
 import { AnchorProvider } from "@coral-xyz/anchor";
+import { VeChanStakingClient } from "@kitakitsune/memechan-sol-sdk";
 import {
   createAssociatedTokenAccountIdempotentInstruction,
   getAssociatedTokenAddress,

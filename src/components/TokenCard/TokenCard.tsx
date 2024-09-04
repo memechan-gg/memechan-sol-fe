@@ -4,7 +4,7 @@ import Checkbox from "@/memechan-ui/Atoms/CheckBox/CheckBox";
 import { Divider } from "@/memechan-ui/Atoms/Divider/Divider";
 import { Typography } from "@/memechan-ui/Atoms/Typography";
 import { Card } from "@/memechan-ui/Molecules";
-import { SolanaToken } from "@avernikoz/memechan-sol-sdk";
+import { SolanaToken } from "@kitakitsune/memechan-sol-sdk";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/router";
 import { useState } from "react";
