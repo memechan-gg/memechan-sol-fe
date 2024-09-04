@@ -12,7 +12,7 @@ import { useSolanaBalance } from "@/hooks/useSolanaBalance";
 import { useSolanaPrice } from "@/hooks/useSolanaPrice";
 import { GetLiveSwapTransactionParams, GetSwapOutputAmountParams } from "@/types/hooks";
 import { parseChainValue } from "@/utils/parseChainValue";
-import { MEMECHAN_MEME_TOKEN_DECIMALS, SwapMemeOutput, buildTxs } from "@avernikoz/memechan-sol-sdk";
+import { MEMECHAN_MEME_TOKEN_DECIMALS, SwapMemeOutput, buildTxs } from "@kitakitsune/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import { track } from "@vercel/analytics";

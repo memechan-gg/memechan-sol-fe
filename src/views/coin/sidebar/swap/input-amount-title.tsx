@@ -1,6 +1,6 @@
 // import { MEMECHAN_QUOTE_TOKEN_DECIMALS } from "@/common/solana";
 import { getTokenInfo } from "@/hooks/utils";
-import { MEMECHAN_MEME_TOKEN_DECIMALS, SwapMemeOutput } from "@avernikoz/memechan-sol-sdk";
+import { MEMECHAN_MEME_TOKEN_DECIMALS, SwapMemeOutput } from "@kitakitsune/memechan-sol-sdk";
 import { Dispatch, SetStateAction } from "react";
 import { InputAmountButtons } from "./input-amount-buttons";
 

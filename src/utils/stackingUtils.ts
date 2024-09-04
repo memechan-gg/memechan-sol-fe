@@ -1,5 +1,10 @@
-import { getUserStakeSigner, TOKEN_INFOS, VeChanStakingClient, VESTING_PROGRAM_ID } from "@avernikoz/memechan-sol-sdk";
 import { AnchorProvider, BN, Wallet } from "@coral-xyz/anchor";
+import {
+  getUserStakeSigner,
+  TOKEN_INFOS,
+  VeChanStakingClient,
+  VESTING_PROGRAM_ID,
+} from "@kitakitsune/memechan-sol-sdk";
 import { ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import { Connection, Keypair, PublicKey, sendAndConfirmTransaction } from "@solana/web3.js";
 

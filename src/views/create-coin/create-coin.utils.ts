@@ -14,7 +14,7 @@ import {
   MemechanClientV2,
   TOKEN_INFOS,
   validateCreateCoinParams,
-} from "@avernikoz/memechan-sol-sdk";
+} from "@kitakitsune/memechan-sol-sdk";
 import { PublicKey, VersionedTransaction } from "@solana/web3.js";
 import toast from "react-hot-toast";
 import { ICreateForm } from "./create-coin.types";
