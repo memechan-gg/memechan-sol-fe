@@ -13,7 +13,7 @@
     "child_process": false
   },
   "dependencies": {
-    "@kitakitsune/memechan-sol-sdk": "2.2.35",
+    "@kitakitsune/memechan-sol-sdk": "2.3.1ß",
     "@coral-xyz/anchor": "^0.30.1",
     "@floating-ui/react-dom": "^2.1.1",
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
