@@ -4,7 +4,7 @@ import {
   MemechanClientV2,
   NoBoundPoolExist,
   getBoundPoolClientFromId,
-} from "@avernikoz/memechan-sol-sdk";
+} from "@kitakitsune/memechan-sol-sdk";
 import { PublicKey } from "@solana/web3.js";
 import { useQuery } from "@tanstack/react-query";
 

@@ -1,5 +1,5 @@
 import { parseChainValue } from "@/utils/parseChainValue";
-import { SolanaToken } from "@avernikoz/memechan-sol-sdk";
+import { SolanaToken } from "@kitakitsune/memechan-sol-sdk";
 import { track } from "@vercel/analytics";
 import Link from "next/link";
 
