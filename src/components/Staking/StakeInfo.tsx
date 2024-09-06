@@ -432,10 +432,10 @@ const useStakeData = () => {
       setError(null);
 
       try {
-        const programId = process.env.NEXT_PUBLIC_MEMECHAN_PROGRAM_ID_V2;
+        const programId = process.env.NEXT_PUBLIC_MEMECHAN_PROGRAM_ID_STAKING;
 
         if (!programId) {
-          throw new Error("NEXT_PUBLIC_MEMECHAN_PROGRAM_ID_V2 is not defined");
+          throw new Error("NEXT_PUBLIC_MEMECHAN_PROGRAM_ID_STAKING is not defined");
         }
 
         const provider = new AnchorProvider(connection, anchorWallet, { commitment: "confirmed" });
