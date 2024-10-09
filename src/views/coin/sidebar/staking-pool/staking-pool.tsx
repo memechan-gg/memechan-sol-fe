@@ -8,7 +8,7 @@ import { Button } from "@/memechan-ui/Atoms";
 import { Divider } from "@/memechan-ui/Atoms/Divider/Divider";
 import { Typography } from "@/memechan-ui/Atoms/Typography";
 import { confirmTransaction } from "@/utils/confirmTransaction";
-import { CHAN_TOKEN_DECIMALS, MEMECHAN_MEME_TOKEN_DECIMALS } from "@kitakitsune/memechan-sol-sdk";
+import { CHAN_TOKEN_DECIMALS, MEMECHAN_MEME_TOKEN_DECIMALS } from "@rinegade/memechan-sol-sdk";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import { useQuery } from "@tanstack/react-query";

@@ -1,5 +1,5 @@
 import { useStakingPoolFromApi } from "@/hooks/staking/useStakingPoolFromApi";
-import { TokenInfo } from "@kitakitsune/memechan-sol-sdk";
+import { TokenInfo } from "@rinegade/memechan-sol-sdk";
 
 export interface LiveClaimProps {
   seedPoolAddress?: string;

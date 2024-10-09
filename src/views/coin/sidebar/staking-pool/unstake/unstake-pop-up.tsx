@@ -9,7 +9,7 @@ import { confirmTransaction } from "@/utils/confirmTransaction";
 import { UnstakeDialogProps } from "@/views/coin/coin.types";
 import { faXmark } from "@fortawesome/free-solid-svg-icons/faXmark";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { MEMECHAN_MEME_TOKEN_DECIMALS } from "@kitakitsune/memechan-sol-sdk";
+import { MEMECHAN_MEME_TOKEN_DECIMALS } from "@rinegade/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import { track } from "@vercel/analytics";

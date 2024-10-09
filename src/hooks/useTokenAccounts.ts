@@ -1,6 +1,6 @@
 import { TOKEN_ACCOUNTS_INTERVAL } from "@/config/config";
 import { useConnection } from "@/context/ConnectionContext";
-import { getWalletTokenAccount } from "@kitakitsune/memechan-sol-sdk";
+import { getWalletTokenAccount } from "@rinegade/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Connection, PublicKey } from "@solana/web3.js";
 import { useQuery } from "@tanstack/react-query";

@@ -5,7 +5,7 @@ import { Card } from "@/memechan-ui/Molecules";
 import { formatNumber } from "@/utils/formatNumber";
 import { faClose } from "@fortawesome/free-solid-svg-icons/faClose";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { MEMECHAN_MEME_TOKEN_DECIMALS } from "@kitakitsune/memechan-sol-sdk";
+import { MEMECHAN_MEME_TOKEN_DECIMALS } from "@rinegade/memechan-sol-sdk";
 import { Dialog } from "@reach/dialog";
 import BigNumber from "bignumber.js";
 import { useTheme } from "next-themes";

@@ -4,7 +4,7 @@ import { useConnection } from "@/context/ConnectionContext";
 import { useVesting } from "@/hooks/vesting/useVesting";
 import { Typography } from "@/memechan-ui/Atoms/Typography";
 import { confirmTransaction } from "@/utils/confirmTransaction";
-import { CHAN_TOKEN_DECIMALS, VestingClient } from "@kitakitsune/memechan-sol-sdk";
+import { CHAN_TOKEN_DECIMALS, VestingClient } from "@rinegade/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import BigNumber from "bignumber.js";
 import { BN } from "bn.js";

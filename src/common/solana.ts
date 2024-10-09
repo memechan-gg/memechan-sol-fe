@@ -1,4 +1,4 @@
-import { Auth, ChartApi, PoolAPI, SocialAPI, TokenAPI } from "@kitakitsune/memechan-sol-sdk";
+import { Auth, ChartApi, PoolAPI, SocialAPI, TokenAPI } from "@rinegade/memechan-sol-sdk";
 import { Keypair, PublicKey } from "@solana/web3.js";
 
 export const SIMULATION_KEYPAIR = Keypair.fromSeed(

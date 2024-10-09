@@ -13,7 +13,7 @@ import UpArrowIcon from "@/memechan-ui/icons/UpArrowIcon";
 import { Card } from "@/memechan-ui/Molecules";
 import { faClose } from "@fortawesome/free-solid-svg-icons/faClose";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { TokenInfo } from "@kitakitsune/memechan-sol-sdk";
+import { TokenInfo } from "@rinegade/memechan-sol-sdk";
 import { Dialog } from "@reach/dialog";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";

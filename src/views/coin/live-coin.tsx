@@ -5,7 +5,7 @@ import { Button } from "@/memechan-ui/Atoms";
 import { Tabs } from "@/memechan-ui/Atoms/Tabs";
 import TopBar from "@/memechan-ui/Atoms/TopBar/TopBar";
 import { LivePoolData } from "@/types/pool";
-import { SolanaToken } from "@kitakitsune/memechan-sol-sdk";
+import { SolanaToken } from "@rinegade/memechan-sol-sdk";
 import { Dialog } from "@reach/dialog";
 import { track } from "@vercel/analytics";
 import { useRouter } from "next/router";

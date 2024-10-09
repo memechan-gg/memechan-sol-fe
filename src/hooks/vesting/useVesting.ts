@@ -1,6 +1,6 @@
 import { VESTING_INTERVAL } from "@/config/config";
 import { useConnection } from "@/context/ConnectionContext";
-import { VestingClient } from "@kitakitsune/memechan-sol-sdk";
+import { VestingClient } from "@rinegade/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Connection, PublicKey } from "@solana/web3.js";
 import { useQuery } from "@tanstack/react-query";

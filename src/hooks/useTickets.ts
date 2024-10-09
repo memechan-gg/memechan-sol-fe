@@ -1,6 +1,6 @@
 import { useConnection } from "@/context/ConnectionContext";
 import { PoolStatus } from "@/types/pool";
-import { MemechanClient, MemechanClientV2, MemeTicketClient, MemeTicketClientV2 } from "@kitakitsune/memechan-sol-sdk";
+import { MemechanClient, MemechanClientV2, MemeTicketClient, MemeTicketClientV2 } from "@rinegade/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import { useQuery } from "@tanstack/react-query";

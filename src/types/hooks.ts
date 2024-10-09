@@ -1,4 +1,4 @@
-import { SwapMemeOutput } from "@kitakitsune/memechan-sol-sdk";
+import { SwapMemeOutput } from "@rinegade/memechan-sol-sdk";
 
 export type SwapParams = {
   inputAmount: string;

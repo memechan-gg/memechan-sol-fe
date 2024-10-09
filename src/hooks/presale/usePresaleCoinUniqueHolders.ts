@@ -1,7 +1,7 @@
 import { MAX_HOLDERS_COUNT } from "@/config/config";
 import { useConnection } from "@/context/ConnectionContext";
 import { getBoundPoolHolderPercentage } from "@/views/coin/sidebar/holders/utils";
-import { MemechanClient, MemechanClientV2, getBoundPoolClientFromId } from "@kitakitsune/memechan-sol-sdk";
+import { MemechanClient, MemechanClientV2, getBoundPoolClientFromId } from "@rinegade/memechan-sol-sdk";
 import { PublicKey } from "@solana/web3.js";
 import { useQuery } from "@tanstack/react-query";
 import BigNumber from "bignumber.js";

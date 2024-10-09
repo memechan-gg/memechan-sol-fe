@@ -1,6 +1,6 @@
 import { BE_URL } from "@/common/solana";
 import { MAX_HOLDERS_COUNT } from "@/config/config";
-import { TokenApiHelper } from "@kitakitsune/memechan-sol-sdk";
+import { TokenApiHelper } from "@rinegade/memechan-sol-sdk";
 import { PublicKey } from "@solana/web3.js";
 import { useQuery } from "@tanstack/react-query";
 

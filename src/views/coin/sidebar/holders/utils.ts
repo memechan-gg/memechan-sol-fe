@@ -1,4 +1,4 @@
-import { MEMECHAN_MEME_TOKEN_DECIMALS, MemeTicketFields } from "@kitakitsune/memechan-sol-sdk";
+import { MEMECHAN_MEME_TOKEN_DECIMALS, MemeTicketFields } from "@rinegade/memechan-sol-sdk";
 import { PublicKey } from "@solana/web3.js";
 import BigNumber from "bignumber.js";
 

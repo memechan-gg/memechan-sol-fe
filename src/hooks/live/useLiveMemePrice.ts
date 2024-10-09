@@ -1,6 +1,6 @@
 import { LIVE_POOL_PRICE_INTERVAL } from "@/config/config";
 import { useConnection } from "@/context/ConnectionContext";
-import { MemechanClient, MemechanClientV2, getLivePoolClientFromId } from "@kitakitsune/memechan-sol-sdk";
+import { MemechanClient, MemechanClientV2, getLivePoolClientFromId } from "@rinegade/memechan-sol-sdk";
 import { Connection, PublicKey } from "@solana/web3.js";
 import { useQuery } from "@tanstack/react-query";
 import { useSlerfPrice } from "../useSlerfPrice";

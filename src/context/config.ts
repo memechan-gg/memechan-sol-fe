@@ -1,6 +1,6 @@
 import { SIMULATION_KEYPAIR } from "@/common/solana";
 import { IS_TEST_ENV } from "@/config/config";
-import { NoWalletAdapter } from "@kitakitsune/memechan-sol-sdk";
+import { NoWalletAdapter } from "@rinegade/memechan-sol-sdk";
 import { ConnectionConfig } from "@solana/web3.js";
 
 export const CONNECTION_CONFIG: ConnectionConfig = {

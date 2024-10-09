@@ -1,7 +1,7 @@
 import { searchAtom } from "@/atoms";
 import { BE_URL } from "@/common/solana";
 import { Typography } from "@/memechan-ui/Atoms/Typography";
-import { SolanaToken } from "@kitakitsune/memechan-sol-sdk";
+import { SolanaToken } from "@rinegade/memechan-sol-sdk";
 import { useQuery } from "@tanstack/react-query";
 import { useRecoilState } from "recoil";
 import { useDebounceValue } from "usehooks-ts";
