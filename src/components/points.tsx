@@ -36,13 +36,12 @@ const PointsIcon: React.FC<PointsDisplayProps> = ({ points }) => {
     setIsOpen((prev) => !prev);
   };
 
-  // Custom function to format number with commas
   const formatNumber = (num: number): string => {
     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
   if (!mounted) {
-    return null; // or return a skeleton/placeholder
+    return null;
   }
 
   return (
