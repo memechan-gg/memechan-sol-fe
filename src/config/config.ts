@@ -1,5 +1,5 @@
 import { SIMULATION_KEYPAIR } from "@/common/solana";
-import { NoWalletAdapter } from "@avernikoz/memechan-sol-sdk";
+import { NoWalletAdapter } from "@rinegade/memechan-sol-sdk";
 import { ConnectionConfig } from "@solana/web3.js";
 
 // Connection Config

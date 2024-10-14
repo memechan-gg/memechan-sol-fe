@@ -7,7 +7,7 @@ import { Tabs } from "@/memechan-ui/Atoms/Tabs";
 import TopBar from "@/memechan-ui/Atoms/TopBar/TopBar";
 import { LivePoolData } from "@/types/pool";
 import { headingVariants } from "@/utils/motionVariants";
-import { SolanaToken } from "@avernikoz/memechan-sol-sdk";
+import { SolanaToken } from "@rinegade/memechan-sol-sdk";
 import { Dialog } from "@reach/dialog";
 import { track } from "@vercel/analytics";
 import { motion } from "framer-motion";

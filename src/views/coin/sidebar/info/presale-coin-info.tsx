@@ -3,7 +3,7 @@ import { Typography } from "@/memechan-ui/Atoms/Typography";
 import { Card } from "@/memechan-ui/Molecules";
 import { formatNumberForDisplay } from "@/utils/formatNumber";
 import { timeSince } from "@/utils/timeSpents";
-import { MEME_TOKEN_DECIMALS } from "@avernikoz/memechan-sol-sdk";
+import { MEME_TOKEN_DECIMALS } from "@rinegade/memechan-sol-sdk";
 import { useTheme } from "next-themes";
 import Link from "next/link";
 import toast from "react-hot-toast";

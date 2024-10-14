@@ -16,7 +16,7 @@ import { Typography } from "@/memechan-ui/Atoms/Typography";
 import DownArrowIcon from "@/memechan-ui/icons/DownArrowIcon";
 import UpArrowIcon from "@/memechan-ui/icons/UpArrowIcon";
 import { headingVariants } from "@/utils/motionVariants";
-import { TOKEN_INFOS, sleep } from "@avernikoz/memechan-sol-sdk";
+import { TOKEN_INFOS, sleep } from "@rinegade/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { track } from "@vercel/analytics";
 import BigNumber from "bignumber.js";

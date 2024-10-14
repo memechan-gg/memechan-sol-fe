@@ -7,7 +7,7 @@ import { Typography } from "@/memechan-ui/Atoms/Typography";
 import { Card } from "@/memechan-ui/Molecules";
 import { confirmTransaction } from "@/utils/confirmTransaction";
 import { UnstakeDialogProps } from "@/views/coin/coin.types";
-import { MEMECHAN_MEME_TOKEN_DECIMALS } from "@avernikoz/memechan-sol-sdk";
+import { MEMECHAN_MEME_TOKEN_DECIMALS } from "@rinegade/memechan-sol-sdk";
 import { faXmark } from "@fortawesome/free-solid-svg-icons/faXmark";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useWallet } from "@solana/wallet-adapter-react";

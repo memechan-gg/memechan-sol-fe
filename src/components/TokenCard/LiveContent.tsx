@@ -1,6 +1,6 @@
 import { formatNumberForDisplay, formatSmallNumber } from "@/utils/formatNumber";
 import { timeSince } from "@/utils/timeSpents";
-import { SolanaToken } from "@avernikoz/memechan-sol-sdk";
+import { SolanaToken } from "@rinegade/memechan-sol-sdk";
 import { useTheme } from "next-themes";
 interface Props {
   token: SolanaToken;

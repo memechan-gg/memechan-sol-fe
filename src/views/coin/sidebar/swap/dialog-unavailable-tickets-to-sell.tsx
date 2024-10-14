@@ -3,7 +3,7 @@ import { Divider } from "@/memechan-ui/Atoms/Divider/Divider";
 import { Typography } from "@/memechan-ui/Atoms/Typography";
 import { Card } from "@/memechan-ui/Molecules";
 import { formatNumber } from "@/utils/formatNumber";
-import { MEMECHAN_MEME_TOKEN_DECIMALS } from "@avernikoz/memechan-sol-sdk";
+import { MEMECHAN_MEME_TOKEN_DECIMALS } from "@rinegade/memechan-sol-sdk";
 import { faClose } from "@fortawesome/free-solid-svg-icons/faClose";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Dialog } from "@reach/dialog";

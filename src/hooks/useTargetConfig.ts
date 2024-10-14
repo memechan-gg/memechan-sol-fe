@@ -1,7 +1,7 @@
 import { NATIVE_MINT_STRING } from "@/common/solana";
 import { TARGET_CONFIG_INTERVAL } from "@/config/config";
 import { useConnection } from "@/context/ConnectionContext";
-import { TargetConfigClient, TokenInfo } from "@avernikoz/memechan-sol-sdk";
+import { TargetConfigClient, TokenInfo } from "@rinegade/memechan-sol-sdk";
 import { Connection } from "@solana/web3.js";
 import { useQuery } from "@tanstack/react-query";
 import BigNumber from "bignumber.js";

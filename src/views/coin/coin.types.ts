@@ -12,7 +12,7 @@ import {
   SolanaToken,
   TokenInfo,
   getBoundPoolClientFromId,
-} from "@avernikoz/memechan-sol-sdk";
+} from "@rinegade/memechan-sol-sdk";
 
 type BoundPool = Awaited<ReturnType<typeof getBoundPoolClientFromId>>["boundPoolInstance"]["poolObjectData"] | null;
 

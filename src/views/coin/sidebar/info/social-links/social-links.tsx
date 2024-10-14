@@ -1,4 +1,4 @@
-import { SolanaToken } from "@avernikoz/memechan-sol-sdk";
+import { SolanaToken } from "@rinegade/memechan-sol-sdk";
 import { SocialLink } from "./social-link";
 
 export const SocialLinks = ({ socialLinks }: { socialLinks: SolanaToken["socialLinks"] }) => {

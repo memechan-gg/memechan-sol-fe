@@ -1,5 +1,5 @@
 import { useConnection } from "@/context/ConnectionContext";
-import { MemechanClient, MemechanClientV2, getLivePoolClientFromId } from "@avernikoz/memechan-sol-sdk";
+import { MemechanClient, MemechanClientV2, getLivePoolClientFromId } from "@rinegade/memechan-sol-sdk";
 import { PublicKey } from "@solana/web3.js";
 import { useQuery } from "@tanstack/react-query";
 

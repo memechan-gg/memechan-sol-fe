@@ -1,5 +1,5 @@
 import { useConnection } from "@/context/ConnectionContext";
-import { getReferrerLink } from "@avernikoz/memechan-sol-sdk";
+import { getReferrerLink } from "@rinegade/memechan-sol-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Connection } from "@solana/web3.js";
 import { useQuery } from "@tanstack/react-query";

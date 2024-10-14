@@ -1,7 +1,7 @@
 import { usePresaleCoinUniqueHoldersFromBE } from "@/hooks/presale/usePresaleCoinUniqueHoldersFromBE";
 import { useTickets } from "@/hooks/useTickets";
 import { SeedPoolData } from "@/types/pool";
-import { BoundPoolClient, BoundPoolClientV2, SolanaToken } from "@avernikoz/memechan-sol-sdk";
+import { BoundPoolClient, BoundPoolClientV2, SolanaToken } from "@rinegade/memechan-sol-sdk";
 import { PresaleCoinSidebar } from "../../sidebar/presale-coin-sidebar";
 
 export function InfoTab({
