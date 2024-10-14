@@ -4,7 +4,7 @@ import {
   getStakingStateSigner,
   getUserStakeSigner,
   VeChanStakingClient,
-} from "@avernikoz/memechan-sol-sdk";
+} from "@rinegade/memechan-sol-sdk";
 import { AnchorProvider, BN as BNN } from "@coral-xyz/anchor";
 import {
   createAssociatedTokenAccountIdempotentInstruction,
