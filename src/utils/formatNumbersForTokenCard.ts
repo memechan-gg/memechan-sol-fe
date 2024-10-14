@@ -16,7 +16,9 @@ export const formatNumberForTokenCard = ({ token }: Props) => {
 
   if (token.quoteSymbol === "SOL") {
     return {
-      progress: (Number(token.quoteIn) / Number(token.quoteLimit)) * 100 ?? undefined,
+      progress: isNaN((Number(token.quoteIn) / Number(token.quoteLimit)) * 100)
+        ? undefined
+        : (Number(token.quoteIn) / Number(token.quoteLimit)) * 100,
       totalQuoteAmount: parseChainValue(Number(token.quoteLimit), QUOTE_TOKEN_DECIMALS, 2) ?? undefined,
       currentQuoteAmount: parseChainValue(Number(token.quoteIn), QUOTE_TOKEN_DECIMALS, 4) ?? undefined,
       participactsAmount: token.holdersCount?.toString() ?? "",
@@ -35,7 +37,9 @@ export const formatNumberForTokenCard = ({ token }: Props) => {
       .toString();
 
     return {
-      progress: (Number(formattedSlerfIn) / Number(token.quoteLimit)) * 100 ?? undefined,
+      progress: isNaN((Number(formattedSlerfIn) / Number(token.quoteLimit)) * 100)
+        ? undefined
+        : (Number(formattedSlerfIn) / Number(token.quoteLimit)) * 100,
       totalQuoteAmount: token?.quoteLimit,
       currentQuoteAmount: parseChainValue(Number(formattedSlerfIn), 0, 2) ?? undefined,
       participactsAmount: token.holdersCount?.toString() ?? "",
@@ -44,7 +48,9 @@ export const formatNumberForTokenCard = ({ token }: Props) => {
   }
 
   return {
-    progress: Number(token.quoteIn) / Number(token.quoteLimit) ?? undefined,
+    progress: isNaN((Number(token.quoteIn) / Number(token.quoteLimit)) * 100)
+      ? undefined
+      : (Number(token.quoteIn) / Number(token.quoteLimit)) * 100,
     totalQuoteAmount: token?.quoteLimit,
     currentQuoteAmount: parseChainValue(Number(token.quoteIn), 0, 2) ?? undefined,
     participactsAmount: token.holdersCount?.toString() ?? "",
