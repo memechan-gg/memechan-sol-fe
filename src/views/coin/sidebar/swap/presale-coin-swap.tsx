@@ -302,8 +302,7 @@ export const PresaleCoinSwap = ({
   const { balance: slerfBalance } = useBalance(quoteTokenInfo?.mint.toBase58() || "", quoteTokenInfo?.decimals || 0);
   const [baseCurrency, setBaseCurrency] = useState({
     currencyName: quoteTokenInfo?.symbol || "SOL",
-    currencyLogoUrl:
-      (quoteTokenInfo?.symbol === "SOL" ? "/tokens/solana.png" : "/tokens/slerf.png") || "/tokens/solana.png",
+    currencyLogoUrl: quoteTokenInfo?.symbol === "SOL" ? "/tokens/solana.png" : "/tokens/slerf.png",
     coinBalance: (quoteTokenInfo?.symbol === "SOL" ? solanaBalance : +(slerfBalance || "0")) || 0,
   });
 
