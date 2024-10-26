@@ -38,7 +38,7 @@ export const PointsComponent = ({ onClick }: { onClick?: () => void }) => {
                 <div className="sm:h-[40px]">
                   <Button
                     variant="secondary"
-                    startIcon={<div className="text-[16px]">🔥</div>}
+                    startIcon={<div className="text-[16px] animate-pulse">🔥</div>}
                     className={`pl-3 pr-6 py-2 sm:pr-3 sm:pl-3 gap-x-2 ${
                       theme === "light"
                         ? "text-primary-100 hover:text-mono-200 active:text-mono-200"

@@ -483,7 +483,9 @@ export function CreateCoin() {
                           create_bonding_and_meme: "Creating Bonding Curve Pool and memecoin...",
                         }[state]
                       }
-                      <Typography variant="caption">0.02 SOL to deploy</Typography>
+                      <Typography variant="caption" className={`${isChecked ? "line-through" : ""}`}>
+                        0.02 SOL to deploy
+                      </Typography>
                     </Button>
                   )}
                 </div>
